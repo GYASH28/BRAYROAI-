@@ -26,6 +26,20 @@
   outline-offset:4px!important;
 }
 
+/* The final mobile capability sizing is container-relative, not viewport-relative.
+   94% leaves a deliberate sliver of the next discipline as a swipe cue while keeping
+   each card large enough to read as a complete thought. This late rule also neutralizes
+   legacy 82vw sizing from the original responsive layer. */
+@media(max-width:760px){
+  .capability-steps>.cap-step{
+    flex:0 0 94%!important;
+    width:94%!important;
+    min-width:94%!important;
+    max-width:94%!important;
+    box-sizing:border-box!important;
+  }
+}
+
 @media (prefers-contrast:more){
   .plan-path__meta,.case-study-story__intro span,.client-row__meta span,.case-meta span{color:#333A43!important}
   .plan-path--ongoing .plan-path__meta{color:#D3D7DD!important}

@@ -30,6 +30,7 @@ jobs:
         run: |
           test -f dist/index.html
           test -f dist/plans.html
+          test -f dist/case-studies/fakhrimart.html
           test -f dist/styles.css
           test -f dist/app.js
           test -f dist/site-fixes.css
@@ -39,6 +40,7 @@ jobs:
           test -f dist/experience-fixes.css
           test -f dist/experience.js
           test -f dist/commercial.css
+          test -f dist/commercial-fixes.css
           test -f dist/commercial.js
           test -f dist/plans.js
           test -f dist/assets/hero-background.webp
@@ -48,6 +50,7 @@ jobs:
           test -f dist/assets/fakhrimart-case-mobile.png
           grep -q 'BRAYROAI' dist/index.html
           grep -q 'BRAYROAI' dist/plans.html
+          grep -q 'FAKHRI' dist/case-studies/fakhrimart.html
           grep -q '₹17,999' dist/plans.html
           ! grep -qi 'YKG Digital' dist/index.html
           grep -q '/commercial.css' dist/site-fixes.js
@@ -77,7 +80,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'BRAYROAI' && curl -fsS http://127.0.0.1:4173/plans.html | grep -q '₹17,999'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'BRAYROAI' && curl -fsS http://127.0.0.1:4173/plans.html | grep -q '₹17,999' && curl -fsS http://127.0.0.1:4173/case-studies/fakhrimart.html | grep -q 'PORTFOLIO PROP'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -92,7 +95,7 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
-      - name: Capture homepage and Plans visual references
+      - name: Capture homepage, Plans and case-study visual references
         run: |
           mkdir -p artifacts/screenshots
           node - <<'JS'
@@ -103,7 +106,9 @@ jobs:
               ['home-desktop','http://127.0.0.1:4173/',1440,1000],
               ['home-mobile','http://127.0.0.1:4173/',390,844],
               ['plans-desktop','http://127.0.0.1:4173/plans.html',1440,1000],
-              ['plans-mobile','http://127.0.0.1:4173/plans.html',390,844]
+              ['plans-mobile','http://127.0.0.1:4173/plans.html',390,844],
+              ['case-desktop','http://127.0.0.1:4173/case-studies/fakhrimart.html',1440,1000],
+              ['case-mobile','http://127.0.0.1:4173/case-studies/fakhrimart.html',390,844]
             ]){
               const context=await browser.newContext({viewport:{width,height}});
               const page=await context.newPage();
@@ -131,6 +136,8 @@ jobs:
           node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json
           npx lighthouse http://127.0.0.1:4173/plans.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/plans.json
           node tests/lighthouse-budget.mjs artifacts/lighthouse/plans.json
+          npx lighthouse http://127.0.0.1:4173/case-studies/fakhrimart.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/case.json
+          node tests/lighthouse-budget.mjs artifacts/lighthouse/case.json
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4

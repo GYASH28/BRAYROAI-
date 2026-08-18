@@ -1,27 +1,45 @@
-# YKG Digital — agency website
+# BRAYROAI
 
-Production source for the current **YKG Digital** creative-technology agency website. This repository is intentionally separate from the personal Yash Ganesh portfolio.
+Production website for **BRAYROAI**, a creative technology studio combining design, frontend engineering, digital product work and useful AI systems.
+
+## Brand
+
+**Design. Engineering. AI.**
+
+Hero promise: **Digital, designed to feel different.**
+
+Core idea: **INTELLIGENT CRAFT.**
+
+## Experience
+
+The site is a single-page editorial narrative with:
+
+- cinematic founder-led hero
+- point-of-view manifesto
+- four-part sticky capability story
+- real selected work
+- live FakhriMart client proof
+- BRAYROAI / LAB
+- process story
+- founder/studio section
+- project engagement close
+- responsive, reduced-motion and keyboard-aware interaction behavior
 
 ## Stack
-Vite · semantic HTML · CSS · vanilla JavaScript
 
-## Current source
-- `index.html` — canonical one-page agency experience
-- `public/styles.css` — canonical visual system
-- `public/app.js` — primary interaction and scroll-motion system
-- `public/site-fixes.css` / `public/site-fixes.js` — surgical QA/accessibility hardening
-- `public/assets/` — current hero/founder imagery
-- `tests/` — integrity, browser, accessibility, responsive, Lighthouse and load checks
+- semantic HTML
+- CSS
+- vanilla JavaScript
+- Vite
+- Playwright + axe for browser/accessibility QA
+- Lighthouse launch guardrails
+- GitHub Actions
+- Vercel
 
-## Run locally
-```bash
-npm ci
-npm run dev
-```
+## Quality gates
 
-## Static production gate
-```bash
-npm run qa:static
-```
+`npm run qa:static` checks syntax, integrity and production build.
 
-CI additionally runs Chromium interaction tests, axe checks, seven viewport overflow checks, a 720-request concurrency test and mobile Lighthouse.
+CI additionally runs browser interaction tests, accessibility checks, responsive overflow tests, stress/load checks and Lighthouse budgets.
+
+The personal portfolio repository and `ykg.vercel.app` are separate projects and are not part of this codebase.

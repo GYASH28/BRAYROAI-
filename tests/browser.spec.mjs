@@ -12,17 +12,19 @@ async function waitForIntro(page){
   await page.waitForFunction(()=>document.body.classList.contains('hero-ready'),null,{timeout:4000});
 }
 
-test('homepage preserves the recovered YKG identity and core chapters', async ({ page }) => {
+test('homepage is fully branded as BRAYROAI and keeps the complete studio narrative', async ({ page }) => {
   const errors=captureRuntimeErrors(page);
   await page.goto('/',{waitUntil:'networkidle'});
   await waitForIntro(page);
-  await expect(page).toHaveTitle('YKG Digital — Design + Engineering');
-  await expect(page.locator('h1')).toContainText('Digital experiences');
-  await expect(page.locator('h1')).toContainText('built to be remembered.');
+  await expect(page).toHaveTitle('BRAYROAI — Design. Engineering. AI.');
+  await expect(page.locator('.brand-word')).toHaveText('BRAYROAI');
+  await expect(page.locator('h1')).toContainText('Digital, designed');
+  await expect(page.locator('h1')).toContainText('to feel different.');
   await expect(page.locator('h1')).toHaveCount(1);
-  for(const id of ['top','intro','services','work','client-proof','lab','about','engage']) await expect(page.locator(`#${id}`)).toHaveCount(1);
+  for(const id of ['top','intro','services','work','client-proof','lab','process','about','engage']) await expect(page.locator(`#${id}`)).toHaveCount(1);
   await expect(page.locator('.hero-bg-layer img')).toHaveJSProperty('complete',true);
   await expect(page.locator('.hero-subject-layer img')).toHaveJSProperty('complete',true);
+  await expect(page.locator('body')).not.toContainText('YKG Digital');
   expect(errors).toEqual([]);
 });
 
@@ -34,7 +36,7 @@ test('homepage has no serious or critical accessibility violations', async ({ pa
   expect(blocking,blocking.map(v=>`${v.id}: ${v.help}\n${v.nodes.map(n=>n.failureSummary).join('\n')}`).join('\n\n')).toEqual([]);
 });
 
-test('mobile navigation has its background, focus management and clean close state', async ({ page }) => {
+test('mobile navigation has branded background, focus containment and clean close state', async ({ page }) => {
   await page.setViewportSize({width:390,height:844});
   await page.goto('/',{waitUntil:'networkidle'});
   await waitForIntro(page);
@@ -61,18 +63,34 @@ test('mobile navigation has its background, focus management and clean close sta
   await expect(toggle).toBeFocused();
 });
 
-test('navigation and capability storytelling remain interactive', async ({ page }) => {
+test('four BRAYROAI capabilities stay interactive and update their visual stage', async ({ page }) => {
   await page.goto('/',{waitUntil:'networkidle'});
   await waitForIntro(page);
   await page.locator('.desktop-nav a[href="#services"]').click();
   await expect(page).toHaveURL(/#services$/);
   const steps=page.locator('[data-cap-step]');
-  await expect(steps).toHaveCount(5);
-  await steps.nth(2).click();
-  await expect(steps.nth(2)).toHaveClass(/is-active/);
-  await expect(page.locator('[data-cap-panel="2"]')).toHaveClass(/is-active/);
-  await steps.nth(4).click();
-  await expect(steps.nth(4)).toHaveClass(/is-active/);
+  await expect(steps).toHaveCount(4);
+  for(let index=0;index<4;index++){
+    await steps.nth(index).click();
+    await expect(steps.nth(index)).toHaveClass(/is-active/);
+    await expect(page.locator(`[data-cap-panel="${index}"]`)).toHaveClass(/is-active/);
+  }
+});
+
+test('no chapter is an empty viewport-sized shell after it is visited', async ({ page }) => {
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await waitForIntro(page);
+  for(const id of ['intro','services','work','client-proof','lab','process','about','engage']){
+    const section=page.locator(`#${id}`);
+    await section.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(180);
+    const visibleText=await section.locator('h2,h3,p,a').evaluateAll(items=>items.filter(el=>{
+      const s=getComputedStyle(el),r=el.getBoundingClientRect();
+      return s.visibility!=='hidden'&&Number(s.opacity)>.05&&r.width>0&&r.height>0;
+    }).length);
+    expect(visibleText,`#${id} rendered without meaningful visible content`).toBeGreaterThan(0);
+  }
 });
 
 test('deferred media activates near the relevant chapters', async ({ page }) => {
@@ -90,7 +108,21 @@ test('deferred media activates near the relevant chapters', async ({ page }) => 
   await expect.poll(async()=>aboutImage.evaluate(img=>img.naturalWidth),{timeout:8000}).toBeGreaterThan(0);
 });
 
-test('reduced-motion mode removes blocking/continuous motion', async ({ browser }) => {
+test('enhanced interaction layer responds without becoming required for content', async ({ page }) => {
+  await page.goto('/',{waitUntil:'networkidle'});
+  await waitForIntro(page);
+  await page.locator('#services').scrollIntoViewIfNeeded();
+  await expect(page.locator('.chapter-entered')).not.toHaveCount(0);
+  const progress=page.locator('[data-capability-progress]');
+  await expect(progress).toHaveCount(1);
+  await page.locator('[data-cap-step="2"]').click();
+  await expect(progress).toHaveCSS('transform',/matrix/);
+  await page.locator('#process').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(220);
+  await expect(page.locator('.process-row.is-current')).toHaveCount(1);
+});
+
+test('reduced-motion mode removes blocking and continuous motion', async ({ browser }) => {
   const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});
   const page=await context.newPage();
   await page.goto('/',{waitUntil:'networkidle'});
@@ -98,6 +130,9 @@ test('reduced-motion mode removes blocking/continuous motion', async ({ browser 
   await expect(page.locator('body')).toHaveClass(/hero-ready/);
   expect(await page.evaluate(()=>getComputedStyle(document.documentElement).scrollBehavior)).toBe('auto');
   expect(await page.locator('.cursor-orb').evaluate(el=>getComputedStyle(el).display)).toBe('none');
+  await page.locator('#about').scrollIntoViewIfNeeded();
+  const transform=await page.locator('.about-portrait img').evaluate(el=>getComputedStyle(el).translate);
+  expect(['none','0px','0px 0px'].includes(transform)).toBeTruthy();
   await context.close();
 });
 
@@ -119,7 +154,7 @@ for(const viewport of [
   });
 }
 
-test('contact and project destinations remain intentional',async({page})=>{
+test('contact and real project destinations remain intentional',async({page})=>{
   await page.goto('/',{waitUntil:'domcontentloaded'});
   await expect(page.locator('a[href^="mailto:yashganesh.work@gmail.com"]')).not.toHaveCount(0);
   await expect(page.locator('a[href="https://lernioai.vercel.app/"]')).not.toHaveCount(0);

@@ -39,6 +39,8 @@ jobs:
           test -f dist/experience.css
           test -f dist/experience-fixes.css
           test -f dist/experience.js
+          test -f dist/refinement.css
+          test -f dist/refinement.js
           test -f dist/commercial.css
           test -f dist/commercial-fixes.css
           test -f dist/commercial-accessibility.css
@@ -56,12 +58,14 @@ jobs:
           ! grep -qi 'YKG Digital' dist/index.html
           grep -q '/commercial.css' dist/site-fixes.js
           grep -q '/commercial.js' dist/site-fixes.js
+          grep -q '/refinement.js' dist/site-fixes.js
+          grep -q '/refinement.css' dist/commercial-accessibility.css
           grep -q '/commercial-accessibility.css' dist/commercial.js
           grep -q '/commercial-accessibility.css' dist/plans.html
           grep -q '/commercial-accessibility.css' dist/case-studies/fakhrimart.html
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 2700
+          test "$TOTAL" -lt 2750
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
@@ -120,12 +124,13 @@ jobs:
               if(url.endsWith('/')){
                 await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
                 await page.waitForFunction(()=>document.body.classList.contains('commercial-ready'));
-                for(const selector of ['#plans-snapshot','#work','#client-proof','#clients','#about','#engage']){
+                await page.waitForFunction(()=>document.body.classList.contains('refinement-ready'));
+                for(const selector of ['#plans-snapshot','#intro','#services','#work','#client-proof','#clients','#lab','#process','#about','#engage']){
                   await page.locator(selector).scrollIntoViewIfNeeded();
-                  await page.waitForTimeout(120);
+                  await page.waitForTimeout(140);
                 }
                 await page.evaluate(()=>scrollTo(0,0));
-                await page.waitForTimeout(250);
+                await page.waitForTimeout(300);
               }
               await page.screenshot({path:`artifacts/screenshots/${name}.png`,fullPage:true});
               await context.close();

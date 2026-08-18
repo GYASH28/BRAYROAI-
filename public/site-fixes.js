@@ -134,11 +134,16 @@
 
   const experienceScript=document.createElement('script');
   experienceScript.src='/experience.js';
-  experienceScript.defer=true;
+  experienceScript.async=false;
   document.body.appendChild(experienceScript);
 
   const commercialScript=document.createElement('script');
   commercialScript.src='/commercial.js';
-  commercialScript.defer=true;
+  commercialScript.async=false;
   document.body.appendChild(commercialScript);
+
+  const refinementScript=document.createElement('script');
+  refinementScript.src='/refinement.js';
+  refinementScript.async=false;
+  document.body.appendChild(refinementScript);
 })();

@@ -1,3 +1,5 @@
+@import url('/refinement.css');
+
 /* WCAG contrast hardening for BRAYROAI commercial surfaces.
    Brand blue/orange stay vivid on dark surfaces and shift darker only when used as text on bone/light surfaces. */
 
@@ -8,6 +10,15 @@
 .case-study-step b{color:#A23D10!important}
 .clients-head h2 em{color:#A23D10!important}
 .client-row__meta span{color:#555D67!important}
+
+/* The final conversion chapter must never be paint-skipped. The older global
+   content-visibility optimization is useful for heavy middle chapters, but on the closing
+   section it can expose a blank canvas during fast jumps/full-page capture before the
+   browser decides to realize the skipped subtree. The CTA is too important for that trade. */
+.engage{
+  content-visibility:visible!important;
+  contain-intrinsic-size:none!important;
+}
 
 /* Plans: retain blue signal, use a deeper accessible blue behind small white badge text. */
 .price-card__badge{background:#2A5BC7!important;color:#fff!important;font-weight:700!important}
@@ -22,6 +33,20 @@
 .case-page a:focus-visible,.case-page button:focus-visible{
   outline:3px solid #2A5BC7!important;
   outline-offset:4px!important;
+}
+
+/* The final mobile capability sizing is container-relative, not viewport-relative.
+   94% leaves a deliberate sliver of the next discipline as a swipe cue while keeping
+   each card large enough to read as a complete thought. This late rule also neutralizes
+   legacy 82vw sizing from the original responsive layer. */
+@media(max-width:760px){
+  .capability-steps>.cap-step{
+    flex:0 0 94%!important;
+    width:94%!important;
+    min-width:94%!important;
+    max-width:94%!important;
+    box-sizing:border-box!important;
+  }
 }
 
 @media (prefers-contrast:more){

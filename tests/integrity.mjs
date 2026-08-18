@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 const root=process.cwd();
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const html=read('index.html'),plans=read('plans.html'),caseStudy=read('case-studies/fakhrimart.html'),css=read('public/styles.css'),fixes=read('public/site-fixes.css'),polish=read('public/polish.css'),experienceCss=read('public/experience.css'),experienceFixes=read('public/experience-fixes.css'),commercialCss=read('public/commercial.css'),commercialFixes=read('public/commercial-fixes.css'),js=read('public/app.js'),enhancements=read('public/site-fixes.js'),experienceJs=read('public/experience.js'),commercialJs=read('public/commercial.js'),plansJs=read('public/plans.js');
+const html=read('index.html'),plans=read('plans.html'),caseStudy=read('case-studies/fakhrimart.html'),css=read('public/styles.css'),fixes=read('public/site-fixes.css'),polish=read('public/polish.css'),experienceCss=read('public/experience.css'),experienceFixes=read('public/experience-fixes.css'),commercialCss=read('public/commercial.css'),commercialFixes=read('public/commercial-fixes.css'),commercialA11y=read('public/commercial-accessibility.css'),js=read('public/app.js'),enhancements=read('public/site-fixes.js'),experienceJs=read('public/experience.js'),commercialJs=read('public/commercial.js'),plansJs=read('public/plans.js');
 const errors=[]; const expect=(condition,message)=>{if(!condition) errors.push(message)};
 
 expect(html.includes('BRAYROAI — Design. Engineering. AI.'),'BRAYROAI title missing');
@@ -12,7 +12,7 @@ expect(!/YKG Digital|YKG DIGITAL|YKG \/|YKG\b/.test(html),'legacy YKG naming rem
 
 for(const id of ['main','top','intro','services','work','client-proof','lab','process','about','engage']) expect(html.includes(`id="${id}"`),`missing #${id}`);
 for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png']) expect(fs.existsSync(path.join(root,'public/assets',asset)),`missing ${asset}`);
-for(const asset of ['public/experience.css','public/experience-fixes.css','public/experience.js','public/commercial.css','public/commercial-fixes.css','public/commercial.js','public/plans.js','plans.html','case-studies/fakhrimart.html']) expect(fs.existsSync(path.join(root,asset)),`missing ${asset}`);
+for(const asset of ['public/experience.css','public/experience-fixes.css','public/experience.js','public/commercial.css','public/commercial-fixes.css','public/commercial-accessibility.css','public/commercial.js','public/plans.js','plans.html','case-studies/fakhrimart.html']) expect(fs.existsSync(path.join(root,asset)),`missing ${asset}`);
 
 expect((html.match(/data-cap-step=/g)||[]).length===4,'BRAYROAI must expose exactly four capability chapters');
 for(const name of ['Web Experiences','Product Design','Frontend Engineering','AI Systems']) expect(html.includes(name),`missing capability ${name}`);
@@ -41,17 +41,21 @@ expect(commercialJs.includes('fakhrimart-case-desktop.png')&&commercialJs.includ
 expect(commercialJs.includes("clients.id='clients'")&&commercialJs.includes('FakhriMart'),'real Clients section missing');
 expect(commercialJs.includes("snapshot.id='plans-snapshot'")&&commercialJs.includes('/plans.html'),'Plans second-destination snapshot missing');
 expect(commercialJs.includes('/case-studies/fakhrimart.html'),'homepage does not link the full FakhriMart case study');
+expect(commercialJs.includes('/commercial-accessibility.css'),'homepage does not load commercial accessibility hardening');
 expect(commercialCss.includes('.case-study-story')&&commercialCss.includes('.clients-section')&&commercialCss.includes('.pricing-grid'),'commercial visual system incomplete');
 expect(commercialFixes.includes('.case-page')&&commercialFixes.includes('.case-mobile-proof'),'dedicated case-study visual system incomplete');
+expect(commercialA11y.includes('.price-card__badge')&&commercialA11y.includes('.case-study-step b')&&commercialA11y.includes(':focus-visible'),'commercial accessibility system incomplete');
 
 for(const price of ['₹9,999','₹17,999','₹25K–35K+','₹2,499','₹3,999','₹5,999+']) expect(plans.includes(price),`plans page missing price ${price}`);
 for(const name of ['DIGITAL MAKEOVER','FULL WEBSITE','BESPOKE EXPERIENCE','LAUNCH','GROW','PRO']) expect(plans.includes(name),`plans page missing ${name}`);
 expect(plans.includes('BEST BALANCE')&&plans.includes('RECOMMENDED'),'pricing recommendation hierarchy missing');
+expect(plans.includes('/commercial-accessibility.css'),'Plans page does not load accessibility hardening');
 expect(!/data-countdown|class="[^"]*(old-price|strikethrough)[^"]*"|save\s+\d+%|ends\s+in\s+\d+/i.test(plans),'plans page contains a dark-pattern pricing mechanism');
 expect(plansJs.includes("data-price-tab")||plansJs.includes('dataset.priceTab'),'plans toggle logic missing');
 
 expect(caseStudy.includes('FAKHRI')&&caseStudy.includes('MART.'),'case-study title missing');
 expect(caseStudy.includes('/assets/fakhrimart-case-desktop.png')&&caseStudy.includes('/assets/fakhrimart-case-mobile.png'),'case study does not use real client captures');
+expect(caseStudy.includes('/commercial-accessibility.css'),'case study does not load accessibility hardening');
 expect(caseStudy.includes('A REAL SITE.')&&caseStudy.includes('NOT A')&&caseStudy.includes('PORTFOLIO PROP.'),'case study real-work framing missing');
 expect(caseStudy.includes('https://fakhriyarns.vercel.app/'),'case study live destination missing');
 expect(!/\b(?:conversion rate|revenue|sales increased|traffic increased)\b/i.test(caseStudy),'case study contains unverified business-performance claims');
@@ -73,4 +77,4 @@ for(const ref of caseRefs){
 }
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Integrity OK: BRAYROAI + real FakhriMart case study + Clients + Plans checked`);
+console.log(`Integrity OK: BRAYROAI + real FakhriMart case study + Clients + Plans + accessibility checked`);

@@ -32,16 +32,22 @@ test('chapter progress actually scrubs with scroll instead of being decorative-o
   expect(after).toBeLessThanOrEqual(1);
 });
 
-test('capability panels use a real staged transition and keep the chosen panel readable', async ({page}) => {
+test('capability panels expose the staged BRAYROAI transition while selected content stays readable', async ({page}) => {
   await ready(page);
   await page.locator('#services').scrollIntoViewIfNeeded();
-  const step=page.locator('[data-cap-step="2"]');
-  await step.click();
-  await page.waitForTimeout(760);
-  const active=page.locator('[data-cap-panel="2"]');
-  const inactive=page.locator('[data-cap-panel="0"]');
-  await expect(active).toHaveClass(/is-active/);
+  const active=page.locator('.cap-visual.is-active');
+  await expect(active).toHaveCount(1);
   expect(Number(await active.evaluate(el=>getComputedStyle(el).opacity))).toBeGreaterThan(.9);
+  const transition=await active.evaluate(el=>{
+    const style=getComputedStyle(el);
+    return {property:style.transitionProperty,duration:style.transitionDuration,clip:style.clipPath,filter:style.filter};
+  });
+  expect(transition.property).toContain('opacity');
+  expect(transition.property).toContain('clip-path');
+  expect(transition.duration.split(',').some(value=>parseFloat(value)>=.45)).toBeTruthy();
+  expect(transition.clip).not.toBe('none');
+  expect(transition.filter).toBe('none');
+  const inactive=page.locator('.cap-visual:not(.is-active)').first();
   expect(Number(await inactive.evaluate(el=>getComputedStyle(el).opacity))).toBeLessThan(.15);
 });
 

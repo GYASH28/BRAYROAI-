@@ -14,14 +14,15 @@ test('Plans page restores both one-time and ongoing pricing paths',async({page})
   await expect(page.locator('body')).toContainText('₹5,999+');
 });
 
-test('pricing choice architecture highlights the balanced option without fake urgency',async({page})=>{
+test('pricing choice architecture highlights the balanced option without dark-pattern mechanics',async({page})=>{
   await page.goto('/plans.html',{waitUntil:'networkidle'});
   await expect(page.locator('[data-price-panel="build"] .price-card--recommended')).toHaveCount(1);
   await expect(page.locator('[data-price-panel="build"] .price-card--recommended')).toContainText('BEST BALANCE');
+  await expect(page.locator('[data-price-panel="ongoing"] .price-card--recommended')).toContainText('RECOMMENDED');
+  await expect(page.locator('[data-countdown], .old-price, .strikethrough')).toHaveCount(0);
   const text=(await page.locator('body').innerText()).toLowerCase();
-  expect(text).not.toContain('limited time');
-  expect(text).not.toContain('countdown');
-  expect(text).not.toMatch(/save \d+%/);
+  expect(text).not.toMatch(/save\s+\d+%/);
+  expect(text).not.toMatch(/ends\s+in\s+\d+/);
 });
 
 test('build and ongoing tabs switch without losing the pricing page context',async({page})=>{

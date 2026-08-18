@@ -1,16 +1,22 @@
-name: BRAYROAI CI
+name: BRAYROAI Launch Quality Gate
 
 on:
   push:
-    branches: [main]
+    branches: [main, brayroai-v2-cinematic]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: brayroai-qa-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  static-quality:
+    name: Build + integrity
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,4 +25,65 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run qa:static
+      - name: Guard production bundle size
+        run: |
+          test $(find dist -type f | wc -l) -gt 5
+          TOTAL=$(du -sk dist | cut -f1)
+          echo "dist size: ${TOTAL}KB"
+          test "$TOTAL" -lt 18000
+
+  browser-and-load:
+    name: Browser, a11y, load + Lighthouse
+    needs: static-quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install QA tooling without changing project dependencies
+        run: npm install --no-save @playwright/test@latest @axe-core/playwright@latest lighthouse@latest
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
       - run: npm run build
+      - name: Start production preview
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
+          for i in {1..40}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/brayroai-preview.log
+          exit 1
+      - name: Concurrent stress test
+        env:
+          BASE_URL: http://127.0.0.1:4173
+          STRESS_REQUESTS: 720
+          STRESS_CONCURRENCY: 36
+        run: npm run test:stress
+      - name: Cross-viewport interaction + accessibility tests
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: npx playwright test
+      - name: Lighthouse mobile audits
+        run: |
+          mkdir -p artifacts/lighthouse
+          npx lighthouse http://127.0.0.1:4173/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/home.json
+          npx lighthouse http://127.0.0.1:4173/work.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/work.json
+          npx lighthouse http://127.0.0.1:4173/work/fakhrimart.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/fakhrimart.json
+          node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json artifacts/lighthouse/work.json artifacts/lighthouse/fakhrimart.json
+      - name: Upload QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brayroai-qa-${{ github.run_number }}
+          path: |
+            artifacts/
+            test-results/
+            /tmp/brayroai-preview.log
+          if-no-files-found: ignore
+          retention-days: 14

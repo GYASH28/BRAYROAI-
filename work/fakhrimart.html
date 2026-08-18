@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#09090B" />
-  <meta name="description" content="FakhriMart case study — client web experience by BRAYROAI." />
+  <meta name="description" content="FakhriMart case study — commerce web experience by BRAYROAI." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:title" content="FakhriMart — BRAYROAI / Work" />
+  <meta property="og:description" content="A wholesale catalogue turned into a clearer digital sales surface." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="/assets/fakhri-mart-home.webp" />
   <title>FakhriMart — BRAYROAI / Work</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preload" href="/assets/fakhri-mart-home.webp" as="image" fetchpriority="high" />
   <link rel="stylesheet" href="/brayroai-core.css" />
   <link rel="stylesheet" href="/brayroai-sections.css" />
   <link rel="stylesheet" href="/brayroai-pages.css" />
@@ -13,49 +21,61 @@
 </head>
 <body data-page="case">
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-transition" data-page-transition aria-hidden="true"><span>BRAYROAI</span><i></i></div>
   <div class="progress" aria-hidden="true"><span></span></div>
-  <div class="signal-cursor" aria-hidden="true"></div>
+  <div class="signal-cursor" aria-hidden="true"><i></i></div>
+
   <header class="site-header solid" data-header>
     <a class="wordmark" href="/" aria-label="BRAYROAI home"><span>BRAYRO</span><b>AI</b><i>/</i></a>
     <nav aria-label="Primary navigation"><a class="active" href="/work">Work</a><a href="/#capabilities">Capabilities</a><a href="/#lab">Lab</a><a href="/#about">Studio</a></nav>
-    <a class="header-cta magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Start a project <span>↗</span></a>
+    <div class="header-actions"><a class="header-cta magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Start a project <span>↗</span></a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><b class="sr-only">Open menu</b></button></div>
   </header>
+
+  <aside class="mobile-menu" id="mobile-menu" data-mobile-menu aria-hidden="true">
+    <div class="mobile-menu-noise" aria-hidden="true"></div><p>BRAYROAI / NAVIGATION</p>
+    <nav aria-label="Mobile navigation"><a href="/"><span>00</span>Home</a><a href="/work"><span>01</span>Work</a><a href="/#capabilities"><span>02</span>Capabilities</a><a href="/#lab"><span>03</span>Lab</a></nav>
+    <div class="mobile-menu-foot"><span>DESIGN. ENGINEERING. AI.</span><a href="mailto:yashganesh.work@gmail.com">yashganesh.work@gmail.com ↗</a></div>
+  </aside>
+
   <main id="main" class="case-main">
     <section class="case-hero section-dark">
+      <div class="case-hero-grid" aria-hidden="true"></div>
       <div class="shell case-title">
-        <p class="chapter"><span>BRAYROAI / WORK / 01</span></p>
-        <h1>FakhriMart</h1>
-        <p>A wholesale catalogue turned into a clearer, faster digital sales surface.</p>
+        <p class="chapter" data-reveal><span>BRAYROAI / WORK / 01</span></p>
+        <h1 class="cinematic-title" data-reveal>FakhriMart</h1>
+        <p data-reveal>A wholesale catalogue turned into a clearer, faster digital sales surface.</p>
       </div>
-      <div class="shell case-specs"><span><b>ROLE</b>Strategy / Design / Build</span><span><b>CATEGORY</b>Commerce / Web Experience</span><span><b>STATUS</b>Client work</span><span><b>DELIVERY</b>Responsive / Deployed</span></div>
-      <div class="case-hero-image shell"><img src="/assets/fakhri-mart-home.webp" alt="FakhriMart homepage" /></div>
+      <div class="shell case-specs" data-reveal><span><b>ROLE</b>Strategy / Design / Build</span><span><b>CATEGORY</b>Commerce / Web Experience</span><span><b>STATUS</b>Client work</span><span><b>DELIVERY</b>Responsive / Deployed</span></div>
+      <div class="case-hero-image shell" data-reveal><img src="/assets/fakhri-mart-home.webp" alt="FakhriMart homepage" fetchpriority="high" decoding="async" /><i aria-hidden="true"></i></div>
     </section>
 
-    <section class="case-intro section-bone" data-reveal><div class="shell case-two-col"><p class="chapter dark"><span>01</span> / THE IDEA</p><div><h2>From catalogue page<br/><em>to sales surface.</em></h2><p>The goal was not to decorate a wholesale website. It was to make product discovery, brand hierarchy, and enquiry feel clearer—while keeping the experience fast enough to work in the real world.</p></div></div></section>
+    <section class="case-intro section-bone"><div class="shell case-two-col"><p class="chapter dark" data-reveal><span>01</span> / THE IDEA</p><div data-reveal><h2 class="cinematic-title">From catalogue page<br/><em>to sales surface.</em></h2><p>The goal was not to decorate a wholesale website. It was to make product discovery, brand hierarchy, and enquiry feel clearer—while keeping the experience fast enough to work in the real world.</p></div></div></section>
 
     <section class="case-showcase section-dark">
-      <div class="shell case-shot wide" data-reveal><div class="shot-label"><span>DESKTOP / HOME</span><span>REAL INTERFACE</span></div><img src="/assets/desktop-light-home-section-00.png" alt="FakhriMart desktop homepage section" loading="lazy" /></div>
+      <div class="shell case-showcase-intro" data-reveal><p class="chapter"><span>INTERFACE PROOF</span> / REAL SCREENS</p><p>The design argument is visible in the shipped interface—not in presentation mockups.</p></div>
+      <div class="shell case-shot wide" data-reveal><div class="shot-label"><span>DESKTOP / HOME</span><span>REAL INTERFACE</span></div><img src="/assets/desktop-light-home-section-00.png" alt="FakhriMart desktop homepage section" loading="lazy" decoding="async" /></div>
       <div class="shell case-pair">
-        <div class="case-shot" data-reveal><div class="shot-label"><span>CATALOGUE</span><span>PRODUCT DISCOVERY</span></div><img src="/assets/desktop-light-catalogue-section-00.png" alt="FakhriMart catalogue section" loading="lazy" /></div>
-        <div class="case-shot phone-shot" data-reveal><div class="shot-label"><span>MOBILE</span><span>RESPONSIVE</span></div><img src="/assets/fakhrimart-mobile-current.avif" alt="FakhriMart mobile website" loading="lazy" /></div>
+        <div class="case-shot" data-reveal><div class="shot-label"><span>CATALOGUE</span><span>PRODUCT DISCOVERY</span></div><img src="/assets/desktop-light-catalogue-section-00.png" alt="FakhriMart catalogue section" loading="lazy" decoding="async" /></div>
+        <div class="case-shot phone-shot" data-reveal><div class="shot-label"><span>MOBILE</span><span>RESPONSIVE</span></div><img src="/assets/fakhrimart-mobile-current.avif" alt="FakhriMart mobile website" loading="lazy" decoding="async" /></div>
       </div>
     </section>
 
-    <section class="case-decisions section-bone" data-reveal><div class="shell"><p class="chapter dark"><span>02</span> / THE SYSTEM</p><div class="decision-grid"><article><span>01</span><h3>Hierarchy first</h3><p>Products, categories, and enquiry routes were given a clearer visual order so the interface communicates before it decorates.</p></article><article><span>02</span><h3>Responsive by design</h3><p>Desktop and mobile are treated as separate compositions, not the same layout squeezed into different widths.</p></article><article><span>03</span><h3>Interaction with purpose</h3><p>Motion and transitions are used to guide attention and pace instead of constantly asking to be noticed.</p></article></div></div></section>
+    <section class="case-decisions section-bone"><div class="shell"><p class="chapter dark" data-reveal><span>02</span> / THE SYSTEM</p><div class="decision-grid"><article data-reveal><span>01</span><h3>Hierarchy first</h3><p>Products, categories, and enquiry routes were given a clearer visual order so the interface communicates before it decorates.</p><b aria-hidden="true"></b></article><article data-reveal><span>02</span><h3>Responsive by design</h3><p>Desktop and mobile are treated as separate compositions, not the same layout squeezed into different widths.</p><b aria-hidden="true"></b></article><article data-reveal><span>03</span><h3>Interaction with purpose</h3><p>Motion and transitions are used to guide attention and pace instead of constantly asking to be noticed.</p><b aria-hidden="true"></b></article></div></div></section>
 
-    <section class="case-compare section-dark" data-reveal>
-      <div class="shell case-two-col"><p class="chapter"><span>03</span> / TRANSFORMATION</p><div><h2>Clarity is<br/><em>the upgrade.</em></h2><p>Use the control to compare interface states. The point is not a cosmetic before/after—it is a stronger information system.</p></div></div>
-      <div class="shell compare" data-compare style="--split:52%">
-        <img class="compare-after" src="/assets/desktop-light-compare.png" alt="FakhriMart redesigned interface" loading="lazy" />
-        <div class="compare-before"><img src="/assets/fakhrimart-desktop-current.avif" alt="Earlier FakhriMart interface" loading="lazy" /></div>
+    <section class="case-compare section-dark">
+      <div class="shell case-two-col"><p class="chapter" data-reveal><span>03</span> / TRANSFORMATION</p><div data-reveal><h2 class="cinematic-title">Clarity is<br/><em>the upgrade.</em></h2><p>Use the control to compare interface states. The point is not a cosmetic before/after—it is a stronger information system.</p></div></div>
+      <div class="shell compare" data-compare style="--split:52%" data-reveal>
+        <img class="compare-after" src="/assets/desktop-light-compare.png" alt="FakhriMart redesigned interface" loading="lazy" decoding="async" />
+        <div class="compare-before"><img src="/assets/fakhrimart-desktop-current.avif" alt="Earlier FakhriMart interface" loading="lazy" decoding="async" /></div>
         <div class="compare-line" aria-hidden="true"><i></i></div>
         <input type="range" min="8" max="92" value="52" aria-label="Compare interface states" />
         <span class="compare-label before-label">BEFORE</span><span class="compare-label after-label">AFTER</span>
       </div>
     </section>
 
-    <section class="case-close section-bone" data-reveal><div class="shell"><p class="chapter dark"><span>04</span> / NEXT</p><h2>One project down.<br/><em>What should we build next?</em></h2><div class="case-close-actions"><a class="button button-dark magnetic" href="/work">Back to work <span>←</span></a><a class="button button-primary magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Talk about your project <span>↗</span></a></div></div></section>
+    <section class="case-close section-bone"><div class="shell" data-reveal><p class="chapter dark"><span>04</span> / NEXT</p><h2 class="cinematic-title">One project down.<br/><em>What should we build next?</em></h2><div class="case-close-actions"><a class="button button-dark magnetic" href="/work">Back to work <span>←</span></a><a class="button button-primary magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Talk about your project <span>↗</span></a></div></div></section>
   </main>
+
   <footer class="site-footer"><div class="shell footer-top"><a class="footer-word" href="/"><span>BRAYRO</span><b>AI</b><i>/</i></a><p>Premium digital experiences and intelligent systems.</p><div><a href="/">Home</a><a href="/work">Work</a><a href="/#lab">Lab</a><a href="mailto:yashganesh.work@gmail.com">Email</a></div></div><div class="shell footer-bottom"><span>DESIGN. ENGINEERING. AI.</span><span>© 2026 BRAYROAI</span><span>PUNE / INDIA</span></div></footer>
   <script type="module" src="/brayroai.js"></script>
 </body>

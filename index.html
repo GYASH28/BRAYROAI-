@@ -4,58 +4,95 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#09090B" />
-  <meta name="description" content="BRAYROAI is a creative technology studio building premium websites, digital products, frontend experiences, and intelligent systems." />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="description" content="BRAYROAI is a creative technology studio building premium websites, digital experiences, frontend systems, and useful AI products." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta property="og:title" content="BRAYROAI — Design. Engineering. AI." />
   <meta property="og:description" content="Digital, designed to feel different. Premium digital experiences and intelligent systems for modern brands." />
   <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/fakhri-mart-home.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
   <title>BRAYROAI — Design. Engineering. AI.</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preload" href="/assets/ykg-hero-v13-4k.jpg" as="image" fetchpriority="high" />
   <link rel="stylesheet" href="/brayroai-core.css" />
   <link rel="stylesheet" href="/brayroai-sections.css" />
   <link rel="stylesheet" href="/brayroai-pages.css" />
   <link rel="stylesheet" href="/brayroai-responsive.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "BRAYROAI",
+    "description": "Creative technology studio building premium digital experiences and intelligent systems.",
+    "areaServed": "Worldwide",
+    "founder": {"@type":"Person","name":"Yash Ganesh"},
+    "knowsAbout": ["Web Design","Frontend Engineering","Product Design","Artificial Intelligence"]
+  }
+  </script>
 </head>
 <body data-page="home">
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-transition" data-page-transition aria-hidden="true"><span>BRAYROAI</span><i></i></div>
   <div class="progress" aria-hidden="true"><span></span></div>
-  <div class="signal-cursor" aria-hidden="true"></div>
+  <div class="signal-cursor" aria-hidden="true"><i></i></div>
 
   <div class="loader" aria-hidden="true">
     <div class="loader-mark"><span>BRAYRO</span><b>AI</b><i>/</i></div>
     <div class="loader-track"><span></span></div>
-    <div class="loader-meta"><span>INTELLIGENT CRAFT.</span><span>CREATIVE TECHNOLOGY STUDIO</span></div>
+    <div class="loader-meta"><span>INTELLIGENT CRAFT.</span><span>DESIGN / ENGINEERING / AI</span></div>
   </div>
 
   <header class="site-header" data-header>
     <a class="wordmark" href="/" aria-label="BRAYROAI home"><span>BRAYRO</span><b>AI</b><i>/</i></a>
     <nav aria-label="Primary navigation">
-      <a href="#work">Work</a>
-      <a href="#capabilities">Capabilities</a>
-      <a href="#lab">Lab</a>
-      <a href="#about">Studio</a>
+      <a href="#work" data-nav-section="work">Work</a>
+      <a href="#capabilities" data-nav-section="capabilities">Capabilities</a>
+      <a href="#lab" data-nav-section="lab">Lab</a>
+      <a href="#about" data-nav-section="about">Studio</a>
     </nav>
-    <a class="header-cta magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Start a project <span>↗</span></a>
+    <div class="header-actions">
+      <a class="header-cta magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Start a project <span>↗</span></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><b class="sr-only">Open menu</b></button>
+    </div>
   </header>
 
+  <aside class="mobile-menu" id="mobile-menu" data-mobile-menu aria-hidden="true">
+    <div class="mobile-menu-noise" aria-hidden="true"></div>
+    <p>BRAYROAI / NAVIGATION</p>
+    <nav aria-label="Mobile navigation">
+      <a href="#work"><span>01</span>Work</a>
+      <a href="#capabilities"><span>02</span>Capabilities</a>
+      <a href="#lab"><span>03</span>Lab</a>
+      <a href="#about"><span>04</span>Studio</a>
+    </nav>
+    <div class="mobile-menu-foot"><span>DESIGN. ENGINEERING. AI.</span><a href="mailto:yashganesh.work@gmail.com">yashganesh.work@gmail.com ↗</a></div>
+  </aside>
+
   <main id="main">
-    <section class="hero" data-hero>
+    <section class="hero" data-hero data-section="hero">
       <div class="hero-sticky">
         <div class="hero-atmosphere" aria-hidden="true">
-          <div class="hero-light hero-light-blue"></div>
-          <div class="hero-light hero-light-orange"></div>
+          <div class="hero-light hero-light-blue" data-depth="-0.5"></div>
+          <div class="hero-light hero-light-orange" data-depth="0.6"></div>
           <div class="hero-grid"></div>
           <div class="hero-grain"></div>
         </div>
 
-        <div class="hero-word" aria-hidden="true"><span>BRAYRO</span><b>AI</b></div>
+        <div class="hero-word" aria-hidden="true" data-depth="-0.22"><span>BRAYRO</span><b>AI</b></div>
+        <div class="hero-coordinate hero-coordinate-a" aria-hidden="true">18.5204° N</div>
+        <div class="hero-coordinate hero-coordinate-b" aria-hidden="true">73.8567° E</div>
 
-        <div class="hero-portrait-wrap">
+        <div class="hero-portrait-wrap" data-depth="0.18">
           <div class="portrait-frame" aria-hidden="true"></div>
-          <img class="hero-portrait" src="/assets/ykg-hero-v13-4k.jpg" alt="Yash Ganesh, founder of BRAYROAI" fetchpriority="high" />
+          <img class="hero-portrait" src="/assets/ykg-hero-v13-4k.jpg" alt="Yash Ganesh, founder of BRAYROAI" fetchpriority="high" decoding="async" />
+          <div class="portrait-edge" aria-hidden="true"></div>
         </div>
 
         <div class="hero-copy">
           <p class="kicker"><span>01</span> / CREATIVE TECHNOLOGY STUDIO</p>
-          <h1>Digital, designed<br/>to feel <em>different.</em></h1>
+          <h1 class="hero-title" data-title-reveal><span>Digital, designed</span><span>to feel <em>different.</em></span></h1>
           <p class="hero-lede">BRAYROAI builds premium websites, digital experiences, and AI-powered systems for modern brands.</p>
           <div class="hero-actions">
             <a class="button button-primary magnetic" href="#work">Show me the work <span>↘</span></a>
@@ -70,159 +107,177 @@
       </div>
     </section>
 
-    <section id="point-of-view" class="pov section-dark" data-reveal>
+    <section id="point-of-view" class="pov section-dark" data-section="pov">
       <div class="shell pov-grid">
-        <p class="chapter"><span>02</span> / POINT OF VIEW</p>
-        <div class="pov-copy">
-          <h2>Technology should feel <span class="blue">considered.</span><br/>Design should feel <span class="orange">useful.</span></h2>
+        <p class="chapter" data-reveal><span>02</span> / POINT OF VIEW</p>
+        <div class="pov-copy" data-reveal>
+          <h2 class="cinematic-title">Technology should feel <span class="blue">considered.</span><br/>Design should feel <span class="orange">useful.</span></h2>
           <p>Good digital work is not decoration. Every frame, interaction, system, and line of code should make the experience clearer, more memorable, or more capable.</p>
         </div>
-        <div class="pov-note"><span>INTELLIGENT CRAFT.</span><p>Taste + technical ability.<br/>Emotion + precision.<br/>Identity + useful intelligence.</p></div>
+        <div class="pov-note" data-reveal><span>INTELLIGENT CRAFT.</span><p>Taste + technical ability.<br/>Emotion + precision.<br/>Identity + useful intelligence.</p></div>
       </div>
+      <div class="signal-line shell" aria-hidden="true"><span>AUTHORED</span><i></i><span>PRECISE</span><i></i><span>ALIVE</span><i></i><span>USEFUL</span></div>
     </section>
 
-    <section id="capabilities" class="capabilities section-bone" data-capabilities>
+    <section id="capabilities" class="capabilities section-bone" data-capabilities data-section="capabilities">
       <div class="shell capabilities-head">
-        <p class="chapter dark"><span>03</span> / CAPABILITIES</p>
-        <h2>Four disciplines.<br/><em>One build system.</em></h2>
-        <p>Strategy stays connected to design. Design stays connected to engineering. AI only enters where it creates real value.</p>
+        <p class="chapter dark" data-reveal><span>03</span> / CAPABILITIES</p>
+        <h2 class="cinematic-title" data-reveal>Four disciplines.<br/><em>One build system.</em></h2>
+        <p data-reveal>Strategy stays connected to design. Design stays connected to engineering. AI only enters where it creates real value.</p>
       </div>
 
-      <div class="capability-stage shell">
+      <div class="capability-stage shell" data-capability-stage>
         <aside class="capability-rail" aria-label="Capabilities index">
-          <button class="active" data-cap-target="0"><span>01</span> Web Experiences</button>
-          <button data-cap-target="1"><span>02</span> Product Design</button>
-          <button data-cap-target="2"><span>03</span> Frontend Engineering</button>
-          <button data-cap-target="3"><span>04</span> AI Systems</button>
+          <button class="active" data-cap-target="0"><span>01</span><b>Web Experiences</b><i></i></button>
+          <button data-cap-target="1"><span>02</span><b>Product Design</b><i></i></button>
+          <button data-cap-target="2"><span>03</span><b>Frontend Engineering</b><i></i></button>
+          <button data-cap-target="3"><span>04</span><b>AI Systems</b><i></i></button>
         </aside>
         <div class="capability-panels">
           <article class="cap-panel active" data-cap-panel="0">
             <div class="cap-orbit" aria-hidden="true"><i></i><b>/01</b></div>
+            <p class="cap-eyebrow">BRAND → INTERFACE → RESPONSE</p>
             <h3>Web<br/>Experiences</h3>
             <p>Premium responsive websites, landing pages, portfolios, brand sites, and conversion-focused experiences shaped around real business use.</p>
             <ul><li>Art-directed responsive layouts</li><li>Scroll narrative & interaction</li><li>Performance-minded delivery</li></ul>
           </article>
           <article class="cap-panel" data-cap-panel="1">
             <div class="cap-orbit" aria-hidden="true"><i></i><b>/02</b></div>
+            <p class="cap-eyebrow">LOGIC → FLOW → SYSTEM</p>
             <h3>Product<br/>Design</h3>
             <p>Interfaces, design systems, dashboards, product flows, and prototypes shaped for clarity, usability, and distinctive product character.</p>
             <ul><li>Interaction systems</li><li>Design systems</li><li>Prototype-to-product thinking</li></ul>
           </article>
           <article class="cap-panel" data-cap-panel="2">
             <div class="cap-orbit" aria-hidden="true"><i></i><b>/03</b></div>
+            <p class="cap-eyebrow">DETAIL → BEHAVIOR → DELIVERY</p>
             <h3>Frontend<br/>Engineering</h3>
             <p>High-fidelity implementation with responsive behavior, motion, accessibility, and performance built in—not patched on at the end.</p>
             <ul><li>Modern frontend architecture</li><li>Motion & interaction engineering</li><li>Accessibility & QA</li></ul>
           </article>
           <article class="cap-panel" data-cap-panel="3">
             <div class="cap-orbit" aria-hidden="true"><i></i><b>/04</b></div>
+            <p class="cap-eyebrow">TASK → INTELLIGENCE → OUTCOME</p>
             <h3>AI<br/>Systems</h3>
             <p>Useful AI interfaces, assistants, workflows, internal tools, and automations designed around real tasks instead of hype.</p>
             <ul><li>Assistants & knowledge interfaces</li><li>Workflow automation</li><li>Product integrations</li></ul>
           </article>
         </div>
+        <div class="capability-progress" aria-hidden="true"><span></span><b>01 / 04</b></div>
       </div>
     </section>
 
-    <section id="work" class="work section-dark">
-      <div class="shell work-head" data-reveal>
-        <p class="chapter"><span>04</span> / SELECTED WORK</p>
-        <h2>Real work is<br/><em>the hero.</em></h2>
-        <a class="text-route" href="/work">View full archive <span>↗</span></a>
+    <section id="work" class="work section-dark" data-section="work">
+      <div class="shell work-head">
+        <p class="chapter" data-reveal><span>04</span> / SELECTED WORK</p>
+        <h2 class="cinematic-title" data-reveal>Real work is<br/><em>the hero.</em></h2>
+        <a class="text-route" href="/work" data-reveal>View full archive <span>↗</span></a>
       </div>
 
-      <article class="work-story work-fakhri">
+      <article class="work-story work-fakhri" data-work-story>
         <div class="work-sticky">
           <div class="work-image-shell">
-            <img src="/assets/fakhri-mart-home.webp" alt="FakhriMart wholesale catalogue website" loading="lazy" />
+            <img src="/assets/fakhri-mart-home.webp" alt="FakhriMart wholesale catalogue website" loading="lazy" decoding="async" />
             <div class="work-image-shade"></div>
+            <div class="work-scan" aria-hidden="true"></div>
           </div>
+          <div class="work-number" aria-hidden="true">01</div>
           <div class="work-content shell">
             <div class="work-meta"><span>01</span><span>CLIENT WORK</span><span>COMMERCE / WEB</span></div>
             <h3>FakhriMart</h3>
             <p>A wholesale catalogue turned into a clearer, faster digital sales surface—with stronger hierarchy, catalogue presentation, and enquiry flow.</p>
             <a class="button button-primary magnetic" href="/work/fakhrimart">View case study <span>↗</span></a>
           </div>
+          <div class="work-progress" aria-hidden="true"><span></span></div>
         </div>
       </article>
 
-      <article class="work-story work-lernio">
+      <article class="work-story work-lernio" data-work-story>
         <div class="work-sticky">
           <div class="work-image-shell work-image-ai">
-            <img src="/assets/hero-ai.avif" alt="Lernio AI product preview" loading="lazy" />
+            <img src="/assets/hero-ai.avif" alt="Lernio AI product preview" loading="lazy" decoding="async" />
             <div class="work-image-shade"></div>
+            <div class="work-scan" aria-hidden="true"></div>
           </div>
+          <div class="work-number" aria-hidden="true">02</div>
           <div class="work-content shell">
             <div class="work-meta"><span>02</span><span>PRODUCT / LAB</span><span>EDTECH / AI</span></div>
             <h3>Lernio AI</h3>
             <p>A learning operating system exploring tutoring, revision, planning, analytics, and adaptive study workflows as one connected experience.</p>
             <a class="button button-outline" href="/work">Explore the build <span>→</span></a>
           </div>
+          <div class="work-progress" aria-hidden="true"><span></span></div>
         </div>
       </article>
     </section>
 
-    <section class="proof section-bone" data-reveal>
+    <section class="proof section-bone" data-section="proof">
       <div class="shell proof-grid">
-        <p class="chapter dark"><span>05</span> / PROOF OVER CLAIMS</p>
-        <div class="proof-copy">
-          <h2>Built to look sharper.<br/><em>Built to work smarter.</em></h2>
+        <p class="chapter dark" data-reveal><span>05</span> / PROOF OVER CLAIMS</p>
+        <div class="proof-copy" data-reveal>
+          <h2 class="cinematic-title">Built to look sharper.<br/><em>Built to work smarter.</em></h2>
           <p>No invented KPIs. No theatre. The strongest proof is the actual interface, the interaction, the shipped product, and the thinking behind it.</p>
         </div>
-        <div class="proof-strip" aria-label="FakhriMart project details">
+        <div class="proof-strip" aria-label="FakhriMart project details" data-reveal>
           <span>REAL CLIENT WORK</span><span>DESIGN → BUILD → DEPLOY</span><span>RESPONSIVE</span><span>INTERACTION</span>
         </div>
       </div>
     </section>
 
-    <section id="lab" class="lab section-dark">
-      <div class="shell lab-head" data-reveal>
-        <p class="chapter"><span>06</span> / BRAYROAI LAB</p>
-        <h2>Curiosity, with<br/><em>a shipping habit.</em></h2>
-        <p>The lab is where product experiments, AI interfaces, internal systems, and new interaction ideas get tested before they become capabilities.</p>
+    <section id="lab" class="lab section-dark" data-section="lab">
+      <div class="shell lab-head">
+        <p class="chapter" data-reveal><span>06</span> / BRAYROAI LAB</p>
+        <h2 class="cinematic-title" data-reveal>Curiosity, with<br/><em>a shipping habit.</em></h2>
+        <p data-reveal>The lab is where product experiments, AI interfaces, internal systems, and new interaction ideas get tested before they become capabilities.</p>
       </div>
       <div class="shell lab-grid">
-        <article class="lab-item" data-reveal><span class="lab-no">L/01</span><h3>Lernio AI</h3><p>Learning OS / adaptive study systems</p><div class="lab-signal"><i></i><i></i><i></i><i></i></div></article>
-        <article class="lab-item" data-reveal><span class="lab-no">L/02</span><h3>B.R.A.C.E.</h3><p>Desktop AI assistant / agent interface</p><div class="lab-rings" aria-hidden="true"><i></i><i></i><b></b></div></article>
-        <article class="lab-item" data-reveal><span class="lab-no">L/03</span><h3>WebForge OS</h3><p>Studio workflow / build automation</p><div class="lab-grid-mini" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+        <article class="lab-item" data-reveal tabindex="0"><span class="lab-no">L/01</span><h3>Lernio AI</h3><p>Learning OS / adaptive study systems</p><div class="lab-signal" aria-hidden="true"><i></i><i></i><i></i><i></i></div><b class="lab-arrow">↗</b></article>
+        <article class="lab-item" data-reveal tabindex="0"><span class="lab-no">L/02</span><h3>B.R.A.C.E.</h3><p>Desktop AI assistant / agent interface</p><div class="lab-rings" aria-hidden="true"><i></i><i></i><b></b></div><b class="lab-arrow">↗</b></article>
+        <article class="lab-item" data-reveal tabindex="0"><span class="lab-no">L/03</span><h3>WebForge OS</h3><p>Studio workflow / build automation</p><div class="lab-grid-mini" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div><b class="lab-arrow">↗</b></article>
       </div>
     </section>
 
-    <section class="process section-bone" data-reveal>
+    <section class="studio-statement section-dark" aria-label="BRAYROAI principle">
+      <div class="studio-statement-track" data-statement-track aria-hidden="true"><span>MAKE THE INTERFACE COMMUNICATE BEFORE IT DECORATES.</span><span>MAKE THE INTERFACE COMMUNICATE BEFORE IT DECORATES.</span></div>
+    </section>
+
+    <section class="process section-bone" data-section="process">
       <div class="shell">
-        <p class="chapter dark"><span>07</span> / PROCESS</p>
-        <div class="process-line">
-          <div><span>01</span><strong>Understand</strong><p>Find the real problem, audience, constraints, and signal.</p></div>
+        <p class="chapter dark" data-reveal><span>07</span> / PROCESS</p>
+        <div class="process-line" data-reveal>
+          <div data-process-step><span>01</span><strong>Understand</strong><p>Find the real problem, audience, constraints, and signal.</p><b></b></div>
           <i>→</i>
-          <div><span>02</span><strong>Shape</strong><p>Turn strategy into hierarchy, story, interaction, and system.</p></div>
+          <div data-process-step><span>02</span><strong>Shape</strong><p>Turn strategy into hierarchy, story, interaction, and system.</p><b></b></div>
           <i>→</i>
-          <div><span>03</span><strong>Build</strong><p>Engineer the experience with responsive behavior and polish.</p></div>
+          <div data-process-step><span>03</span><strong>Build</strong><p>Engineer the experience with responsive behavior and polish.</p><b></b></div>
           <i>→</i>
-          <div><span>04</span><strong>Ship</strong><p>Test, refine, launch, and make the work useful in the real world.</p></div>
+          <div data-process-step><span>04</span><strong>Ship</strong><p>Test, refine, launch, and make the work useful in the real world.</p><b></b></div>
         </div>
       </div>
     </section>
 
-    <section id="about" class="founder section-dark">
+    <section id="about" class="founder section-dark" data-section="about">
       <div class="shell founder-grid">
         <div class="founder-image" data-reveal>
-          <img src="/assets/ykg-hero-v13-4k.jpg" alt="Yash Ganesh" loading="lazy" />
+          <img src="/assets/ykg-hero-v13-4k.jpg" alt="Yash Ganesh" loading="lazy" decoding="async" />
           <span>FOUNDER / CREATIVE DIRECTION / ENGINEERING</span>
+          <i aria-hidden="true">BRAYROAI / 2026</i>
         </div>
         <div class="founder-copy" data-reveal>
           <p class="chapter"><span>08</span> / FOUNDER-LED</p>
-          <h2>A studio with<br/><em>a point of view.</em></h2>
+          <h2 class="cinematic-title">A studio with<br/><em>a point of view.</em></h2>
           <p>BRAYROAI is founder-led by Yash Ganesh. Design direction and engineering stay connected from the first idea to the shipped build, so the work feels authored instead of assembled.</p>
           <div class="founder-signature"><span>YASH GANESH</span><b>Founder — BRAYROAI</b></div>
         </div>
       </div>
     </section>
 
-    <section class="final-cta section-dark" data-reveal>
+    <section class="final-cta section-dark" data-section="contact">
       <div class="final-lights" aria-hidden="true"><i></i><b></b></div>
-      <div class="shell final-inner">
+      <div class="final-grid" aria-hidden="true"></div>
+      <div class="shell final-inner" data-reveal>
         <p class="chapter"><span>09</span> / START A PROJECT</p>
-        <h2>Have something<br/><em>worth building?</em></h2>
+        <h2 class="cinematic-title">Have something<br/><em>worth building?</em></h2>
         <p>Bring the idea, the rough brief, or the problem. We’ll shape what the digital experience needs to become.</p>
         <a class="button button-primary button-large magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Talk about your project <span>↗</span></a>
       </div>

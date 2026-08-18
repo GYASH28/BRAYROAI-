@@ -10,7 +10,8 @@ export default defineConfig({
     rollupOptions:{
       input:{
         home:resolve(process.cwd(),'index.html'),
-        plans:resolve(process.cwd(),'plans.html')
+        plans:resolve(process.cwd(),'plans.html'),
+        fakhrimart:resolve(process.cwd(),'case-studies/fakhrimart.html')
       }
     }
   }

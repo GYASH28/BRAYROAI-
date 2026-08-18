@@ -13,6 +13,12 @@
 h1,h2,h3,h4{overflow-wrap:normal;text-wrap:balance}
 p{overflow-wrap:anywhere;text-wrap:pretty}
 
+/* One desktop content grid. Several later experience layers had drifted a few pixels
+   from the original 1280px shell, which reads as accidental in large type layouts. */
+@media(min-width:761px){
+  body .shell{width:min(1280px,calc(100% - 56px))!important;margin-inline:auto!important}
+}
+
 /* Prevent absolute metadata and arrows from colliding with real copy. */
 .plan-path{padding-right:74px}
 .plan-path p{padding-right:18px}
@@ -88,17 +94,19 @@ body.refinement-ready .giant-contact{--contact-progress:var(--ref-enter,1)}
 body.refinement-ready .giant-contact::after{content:"";position:absolute;left:0;bottom:-1px;width:100%;height:2px;background:linear-gradient(90deg,var(--blue),var(--orange));transform:scaleX(var(--contact-progress));transform-origin:left;pointer-events:none}
 
 /* Individual transform properties keep choreography from fighting existing hover/reveal transforms. */
-.manifesto-copy,.manifesto-side,.manifesto-object,.principle-line,.case-gallery__frame,.case-study-step,.client-copy,.live-stack,.client-row__name,.client-row>a,.lab-card,.studio-standard,.about-portrait,.about-copy,.studio-matrix>div,.engage-title h2,.engage-card{transition-property:translate,scale,transform,opacity,background,border-color,box-shadow;transition-duration:.16s,.16s,.45s,.35s,.35s,.35s,.45s;transition-timing-function:linear,linear,var(--ref-ease),ease,ease,ease,var(--ref-ease)}
+.manifesto-copy,.manifesto-side,.manifesto-object,.principle-line,.case-gallery__frame,.case-study-step,.client-copy,.live-stack,.client-row__name,.client-row>a,.lab-card,.studio-standard,.about-portrait,.about-copy,.studio-matrix>div,.engage-title h2,.engage-card{transition-property:translate,scale,transform,background,border-color,box-shadow;transition-duration:.16s,.16s,.45s,.35s,.35s,.45s;transition-timing-function:linear,linear,var(--ref-ease),ease,ease,var(--ref-ease)}
 
 /* ---------- Capability story: deliberate horizontal interaction on narrow screens ---------- */
 .capability-steps{overscroll-behavior-x:contain;scrollbar-width:none}
 .capability-steps::-webkit-scrollbar{display:none}
 .cap-step{scroll-snap-stop:always}
 
-/* ---------- Plans + case study progressive scroll motion ---------- */
+/* ---------- Plans + case study progressive scroll motion ----------
+   Do not animate parent opacity: it blends text against the background mid-scroll and can
+   make otherwise accessible copy temporarily fail contrast. Motion is geometry-only. */
 @supports (animation-timeline:view()){
-  @keyframes ref-rise{from{opacity:.72;translate:0 28px}to{opacity:1;translate:0 0}}
-  @keyframes ref-scale{from{scale:.975;opacity:.82}to{scale:1;opacity:1}}
+  @keyframes ref-rise{from{translate:0 28px}to{translate:0 0}}
+  @keyframes ref-scale{from{scale:.975}to{scale:1}}
   @keyframes ref-line-in{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
 
   .pricing-grid .price-card{animation:ref-rise linear both;animation-timeline:view();animation-range:entry 4% entry 56%}

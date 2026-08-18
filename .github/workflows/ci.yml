@@ -33,14 +33,19 @@ jobs:
           test -f dist/app.js
           test -f dist/site-fixes.css
           test -f dist/site-fixes.js
+          test -f dist/polish.css
+          test -f dist/experience.css
+          test -f dist/experience.js
           test -f dist/assets/hero-background.webp
           test -f dist/assets/yash-cutout.webp
           test -f dist/assets/about-yash.webp
           grep -q 'BRAYROAI' dist/index.html
           ! grep -qi 'YKG Digital' dist/index.html
+          grep -q '/experience.css' dist/site-fixes.js
+          grep -q '/experience.js' dist/site-fixes.js
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 2600
+          test "$TOTAL" -lt 2700
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
@@ -90,12 +95,13 @@ jobs:
               const page=await context.newPage();
               await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
               await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
+              await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
               for(const id of ['intro','services','work','client-proof','lab','process','about','engage']){
                 await page.locator(`#${id}`).scrollIntoViewIfNeeded();
-                await page.waitForTimeout(160);
+                await page.waitForTimeout(180);
               }
               await page.evaluate(()=>scrollTo(0,0));
-              await page.waitForTimeout(300);
+              await page.waitForTimeout(360);
               await page.screenshot({path:`artifacts/screenshots/${name}.png`,fullPage:true});
               await context.close();
             }

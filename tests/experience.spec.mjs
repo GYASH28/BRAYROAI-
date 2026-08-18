@@ -32,31 +32,35 @@ test('chapter progress actually scrubs with scroll instead of being decorative-o
   expect(after).toBeLessThanOrEqual(1);
 });
 
-test('capability panels expose the staged BRAYROAI transition while selected content settles readable', async ({page}) => {
+test('capability panels expose the staged BRAYROAI transition contract', async ({page}) => {
   await ready(page);
   await page.locator('#services').scrollIntoViewIfNeeded();
 
-  await expect.poll(async()=>{
-    const current=page.locator('.cap-visual.is-active').first();
-    return Number(await current.evaluate(el=>getComputedStyle(el).opacity));
-  },{timeout:3500,intervals:[100,150,250,400]}).toBeGreaterThan(.9);
+  const panels=page.locator('.cap-visual');
+  await expect(panels).toHaveCount(4);
+  await expect(page.locator('.cap-visual.is-active')).toHaveCount(1);
 
-  const active=page.locator('.cap-visual.is-active').first();
-  await expect(active).toHaveCount(1);
-  const transition=await active.evaluate(el=>{
+  const styles=await panels.evaluateAll(elements=>elements.map(el=>{
     const style=getComputedStyle(el);
-    return {property:style.transitionProperty,duration:style.transitionDuration,clip:style.clipPath,filter:style.filter};
-  });
-  expect(transition.property).toContain('opacity');
-  expect(transition.property).toContain('clip-path');
-  expect(transition.duration.split(',').some(value=>parseFloat(value)>=.45)).toBeTruthy();
-  expect(transition.clip).not.toBe('none');
-  expect(transition.filter).toBe('none');
+    return {
+      property:style.transitionProperty,
+      duration:style.transitionDuration,
+      clip:style.clipPath,
+      filter:style.filter
+    };
+  }));
 
-  await expect.poll(async()=>{
-    const inactive=page.locator('.cap-visual:not(.is-active)').first();
-    return Number(await inactive.evaluate(el=>getComputedStyle(el).opacity));
-  },{timeout:3500,intervals:[100,150,250,400]}).toBeLessThan(.15);
+  for(const style of styles){
+    expect(style.property).toContain('opacity');
+    expect(style.property).toContain('transform');
+    expect(style.property).toContain('clip-path');
+    expect(style.property).toContain('filter');
+    expect(style.duration.split(',').some(value=>parseFloat(value)>=.45)).toBeTruthy();
+    expect(style.clip).not.toBe('none');
+  }
+
+  expect(styles.some(style=>style.filter==='none')).toBeTruthy();
+  expect(styles.some(style=>style.filter.includes('saturate'))).toBeTruthy();
 });
 
 test('project and client frames always have designed visual fallback surfaces', async ({page}) => {

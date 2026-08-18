@@ -8,6 +8,16 @@
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
   const onHome = location.pathname === '/' || location.pathname.endsWith('/index.html');
 
+  /* This one layout rule must win before refinement-ready is announced. The original
+     responsive layer sizes capability cards in vw; the v6 story uses a container-relative
+     snap rail instead. Keeping this synchronous avoids a late stylesheet race on mobile. */
+  if (onHome) {
+    const railContract = document.createElement('style');
+    railContract.dataset.refinementRail = '';
+    railContract.textContent = '@media(max-width:760px){.capability-steps>.cap-step{flex:0 0 94%!important;width:94%!important;min-width:94%!important;max-width:94%!important;box-sizing:border-box!important}}';
+    document.head.appendChild(railContract);
+  }
+
   let attempts = 0;
   const boot = () => {
     /* Commercial content is authored synchronously by commercial.js. Wait for it rather

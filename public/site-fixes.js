@@ -9,6 +9,11 @@
   experienceStyles.href='/experience.css';
   document.head.appendChild(experienceStyles);
 
+  const experienceFixes=document.createElement('link');
+  experienceFixes.rel='stylesheet';
+  experienceFixes.href='/experience-fixes.css';
+  document.head.appendChild(experienceFixes);
+
   /* Accessibility finish: keep decorative background type out of the rendered text layer and lift footer microcopy above AA contrast. */
   const finish=document.createElement('style');
   finish.textContent='.engage-word{display:none!important}.footer,.footer .shell,.footer .shell>*{color:#A5AAB3!important}';

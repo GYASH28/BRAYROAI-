@@ -32,12 +32,17 @@ test('chapter progress actually scrubs with scroll instead of being decorative-o
   expect(after).toBeLessThanOrEqual(1);
 });
 
-test('capability panels expose the staged BRAYROAI transition while selected content stays readable', async ({page}) => {
+test('capability panels expose the staged BRAYROAI transition while selected content settles readable', async ({page}) => {
   await ready(page);
   await page.locator('#services').scrollIntoViewIfNeeded();
-  const active=page.locator('.cap-visual.is-active');
+
+  await expect.poll(async()=>{
+    const current=page.locator('.cap-visual.is-active').first();
+    return Number(await current.evaluate(el=>getComputedStyle(el).opacity));
+  },{timeout:3500,intervals:[100,150,250,400]}).toBeGreaterThan(.9);
+
+  const active=page.locator('.cap-visual.is-active').first();
   await expect(active).toHaveCount(1);
-  expect(Number(await active.evaluate(el=>getComputedStyle(el).opacity))).toBeGreaterThan(.9);
   const transition=await active.evaluate(el=>{
     const style=getComputedStyle(el);
     return {property:style.transitionProperty,duration:style.transitionDuration,clip:style.clipPath,filter:style.filter};
@@ -47,8 +52,11 @@ test('capability panels expose the staged BRAYROAI transition while selected con
   expect(transition.duration.split(',').some(value=>parseFloat(value)>=.45)).toBeTruthy();
   expect(transition.clip).not.toBe('none');
   expect(transition.filter).toBe('none');
-  const inactive=page.locator('.cap-visual:not(.is-active)').first();
-  expect(Number(await inactive.evaluate(el=>getComputedStyle(el).opacity))).toBeLessThan(.15);
+
+  await expect.poll(async()=>{
+    const inactive=page.locator('.cap-visual:not(.is-active)').first();
+    return Number(await inactive.evaluate(el=>getComputedStyle(el).opacity));
+  },{timeout:3500,intervals:[100,150,250,400]}).toBeLessThan(.15);
 });
 
 test('project and client frames always have designed visual fallback surfaces', async ({page}) => {

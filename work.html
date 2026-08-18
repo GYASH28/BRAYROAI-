@@ -2,10 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#09090B" />
-  <meta name="description" content="Selected work and experiments by BRAYROAI." />
+  <meta name="description" content="Selected client work, products, and studio experiments by BRAYROAI." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:title" content="Work — BRAYROAI" />
+  <meta property="og:description" content="Real interfaces, product thinking, experiments, and client builds by BRAYROAI." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/fakhri-mart-home.webp" />
   <title>Work — BRAYROAI</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/site.webmanifest" />
   <link rel="stylesheet" href="/brayroai-core.css" />
   <link rel="stylesheet" href="/brayroai-sections.css" />
   <link rel="stylesheet" href="/brayroai-pages.css" />
@@ -13,51 +20,64 @@
 </head>
 <body data-page="work">
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-transition" data-page-transition aria-hidden="true"><span>BRAYROAI</span><i></i></div>
   <div class="progress" aria-hidden="true"><span></span></div>
-  <div class="signal-cursor" aria-hidden="true"></div>
+  <div class="signal-cursor" aria-hidden="true"><i></i></div>
+
   <header class="site-header solid" data-header>
     <a class="wordmark" href="/" aria-label="BRAYROAI home"><span>BRAYRO</span><b>AI</b><i>/</i></a>
     <nav aria-label="Primary navigation"><a class="active" href="/work">Work</a><a href="/#capabilities">Capabilities</a><a href="/#lab">Lab</a><a href="/#about">Studio</a></nav>
-    <a class="header-cta magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Start a project <span>↗</span></a>
+    <div class="header-actions"><a class="header-cta magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Start a project <span>↗</span></a><button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><b class="sr-only">Open menu</b></button></div>
   </header>
+
+  <aside class="mobile-menu" id="mobile-menu" data-mobile-menu aria-hidden="true">
+    <div class="mobile-menu-noise" aria-hidden="true"></div><p>BRAYROAI / NAVIGATION</p>
+    <nav aria-label="Mobile navigation"><a href="/"><span>00</span>Home</a><a href="/work"><span>01</span>Work</a><a href="/#capabilities"><span>02</span>Capabilities</a><a href="/#lab"><span>03</span>Lab</a></nav>
+    <div class="mobile-menu-foot"><span>DESIGN. ENGINEERING. AI.</span><a href="mailto:yashganesh.work@gmail.com">yashganesh.work@gmail.com ↗</a></div>
+  </aside>
+
   <main id="main" class="archive-main">
-    <section class="archive-hero section-dark">
+    <section class="archive-hero section-dark" data-section="work">
+      <div class="archive-hero-grid" aria-hidden="true"></div>
       <div class="shell">
-        <p class="chapter"><span>BRAYROAI / WORK</span></p>
-        <h1>Selected work,<br/><em>shown properly.</em></h1>
-        <p>Real interfaces, product thinking, experiments, and client builds. No invented metrics; the work carries the argument.</p>
+        <p class="chapter" data-reveal><span>BRAYROAI / WORK</span></p>
+        <h1 class="cinematic-title" data-reveal>Selected work,<br/><em>shown properly.</em></h1>
+        <p data-reveal>Real interfaces, product thinking, experiments, and client builds. No invented metrics; the work carries the argument.</p>
       </div>
     </section>
+
     <section class="archive-grid section-bone">
       <div class="shell">
         <a class="archive-project" href="/work/fakhrimart" data-reveal>
-          <div class="archive-image"><img src="/assets/fakhri-mart-home.webp" alt="FakhriMart project preview" /><span>VIEW CASE ↗</span></div>
+          <div class="archive-image"><img src="/assets/fakhri-mart-home.webp" alt="FakhriMart project preview" decoding="async" /><span>VIEW CASE ↗</span><i aria-hidden="true">01</i></div>
           <div class="archive-meta"><span>01 / CLIENT WORK</span><span>COMMERCE / WEB EXPERIENCE</span><span>LIVE BUILD</span></div>
           <h2>FakhriMart</h2>
           <p>A wholesale catalogue redesigned as a stronger browsing and enquiry experience.</p>
         </a>
-        <article class="archive-project" data-reveal>
-          <div class="archive-image archive-image-blue"><img src="/assets/hero-ai.avif" alt="Lernio AI project preview" /><span>LAB / PRODUCT</span></div>
+        <article class="archive-project" data-reveal tabindex="0">
+          <div class="archive-image archive-image-blue"><img src="/assets/hero-ai.avif" alt="Lernio AI project preview" loading="lazy" decoding="async" /><span>LAB / PRODUCT</span><i aria-hidden="true">02</i></div>
           <div class="archive-meta"><span>02 / LAB</span><span>EDTECH / AI PRODUCT</span><span>IN DEVELOPMENT</span></div>
           <h2>Lernio AI</h2>
           <p>A learning operating system connecting tutoring, revision, planning, analytics, and adaptive study workflows.</p>
         </article>
-        <article class="archive-project archive-text-project" data-reveal>
-          <div class="archive-system-visual"><span>BRACE://</span><i></i><i></i><i></i><b>AGENT RUNTIME</b></div>
+        <article class="archive-project archive-text-project" data-reveal tabindex="0">
+          <div class="archive-system-visual"><span>BRACE://</span><i></i><i></i><i></i><b>AGENT RUNTIME</b><em aria-hidden="true">03</em></div>
           <div class="archive-meta"><span>03 / LAB</span><span>AI / DESKTOP PRODUCT</span><span>EXPERIMENT</span></div>
           <h2>B.R.A.C.E.</h2>
           <p>A desktop AI assistant exploring voice, memory, agent routing, and a more spatial interface for everyday computing.</p>
         </article>
-        <article class="archive-project archive-text-project" data-reveal>
-          <div class="archive-system-visual orange-system"><span>WEBFORGE/OS</span><i></i><i></i><i></i><b>STUDIO AUTOMATION</b></div>
+        <article class="archive-project archive-text-project" data-reveal tabindex="0">
+          <div class="archive-system-visual orange-system"><span>WEBFORGE/OS</span><i></i><i></i><i></i><b>STUDIO AUTOMATION</b><em aria-hidden="true">04</em></div>
           <div class="archive-meta"><span>04 / SYSTEMS</span><span>WORKFLOW / AUTOMATION</span><span>INTERNAL</span></div>
           <h2>WebForge OS</h2>
           <p>An internal studio workflow concept for moving a web project from brief to build, QA, deployment, and client handoff.</p>
         </article>
       </div>
     </section>
-    <section class="archive-close section-dark" data-reveal><div class="shell"><p class="chapter"><span>NEXT</span> / YOUR PROJECT</p><h2>Make digital<br/><em>feel different.</em></h2><a class="button button-primary button-large magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Start a project <span>↗</span></a></div></section>
+
+    <section class="archive-close section-dark" data-reveal><div class="shell"><p class="chapter"><span>NEXT</span> / YOUR PROJECT</p><h2 class="cinematic-title">Make digital<br/><em>feel different.</em></h2><a class="button button-primary button-large magnetic" href="mailto:yashganesh.work@gmail.com?subject=Project%20with%20BRAYROAI">Start a project <span>↗</span></a></div></section>
   </main>
+
   <footer class="site-footer"><div class="shell footer-top"><a class="footer-word" href="/"><span>BRAYRO</span><b>AI</b><i>/</i></a><p>Premium digital experiences and intelligent systems.</p><div><a href="/">Home</a><a href="/#capabilities">Capabilities</a><a href="/#lab">Lab</a><a href="mailto:yashganesh.work@gmail.com">Email</a></div></div><div class="shell footer-bottom"><span>DESIGN. ENGINEERING. AI.</span><span>© 2026 BRAYROAI</span><span>PUNE / INDIA</span></div></footer>
   <script type="module" src="/brayroai.js"></script>
 </body>

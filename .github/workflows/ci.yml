@@ -41,6 +41,7 @@ jobs:
           test -f dist/experience.js
           test -f dist/commercial.css
           test -f dist/commercial-fixes.css
+          test -f dist/commercial-accessibility.css
           test -f dist/commercial.js
           test -f dist/plans.js
           test -f dist/assets/hero-background.webp
@@ -55,6 +56,9 @@ jobs:
           ! grep -qi 'YKG Digital' dist/index.html
           grep -q '/commercial.css' dist/site-fixes.js
           grep -q '/commercial.js' dist/site-fixes.js
+          grep -q '/commercial-accessibility.css' dist/commercial.js
+          grep -q '/commercial-accessibility.css' dist/plans.html
+          grep -q '/commercial-accessibility.css' dist/case-studies/fakhrimart.html
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
           test "$TOTAL" -lt 2700

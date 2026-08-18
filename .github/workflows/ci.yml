@@ -35,6 +35,7 @@ jobs:
           test -f dist/site-fixes.js
           test -f dist/polish.css
           test -f dist/experience.css
+          test -f dist/experience-fixes.css
           test -f dist/experience.js
           test -f dist/assets/hero-background.webp
           test -f dist/assets/yash-cutout.webp
@@ -42,6 +43,7 @@ jobs:
           grep -q 'BRAYROAI' dist/index.html
           ! grep -qi 'YKG Digital' dist/index.html
           grep -q '/experience.css' dist/site-fixes.js
+          grep -q '/experience-fixes.css' dist/site-fixes.js
           grep -q '/experience.js' dist/site-fixes.js
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"

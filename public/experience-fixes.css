@@ -1,0 +1,37 @@
+/* BRAYROAI v5 hardening — fixes discovered by the full accessibility/responsive gate. */
+
+/* Every chapter owns its decorative artwork. This keeps oversized pseudo-type and
+   ambient washes from escaping to the page origin while preserving sticky children. */
+.chapter{position:relative;overflow-x:clip}
+.chapter-wash--blue{left:0!important;right:auto!important}
+.chapter-wash--orange{right:0!important;left:auto!important}
+
+/* The chapter rail is deliberately tiny metadata, so use true AA-safe signal colors
+   instead of low-opacity decorative text. */
+.chapter[data-theme-section="dark"] .chapter-signal{color:#A5AAB3!important}
+.chapter[data-theme-section="dark"] .chapter-signal b{color:#FF6B2C!important}
+.chapter[data-theme-section="paper"] .chapter-signal{color:#5A5F68!important}
+.chapter[data-theme-section="paper"] .chapter-signal b{color:#8A2D08!important}
+.chapter-signal span{opacity:1!important}
+
+/* Capability body copy remains readable even where the animated orange wash crosses
+   the dark stage. This is intentionally above AA rather than sitting on the threshold. */
+.cap-step p{color:#A5AAB3!important}
+
+/* Keep secondary studio metadata above AA at its intentionally compact size. */
+.studio-matrix span{color:#626A74!important}
+.hero-signal-deck p{color:#A5AAB3!important}
+
+/* The closing word is atmosphere, not readable copy. Paint it as an outlined CSS
+   glyph while the DOM node itself has zero-sized text, preventing decorative type
+   from masquerading as low-contrast content to accessibility tooling. */
+.experience-word{font-size:0!important;line-height:0!important;color:transparent!important}
+.experience-word::before{content:"BRAYROAI";display:block;font:800 clamp(118px,22vw,360px)/.72 'Space Grotesk',sans-serif;letter-spacing:-.1em;white-space:nowrap;color:transparent;-webkit-text-stroke:1px rgba(243,240,234,.11);text-stroke:1px rgba(243,240,234,.11)}
+
+@media(max-width:760px){
+  .experience-word::before{font-size:34vw}
+  /* Mobile uses smaller canvases; keep decorative display type fully chapter-bound. */
+  .manifesto::before,.lab::before,.client-proof::before{max-width:100%;overflow:hidden}
+}
+
+@media(prefers-reduced-motion:reduce){.experience-word{transform:none!important}}

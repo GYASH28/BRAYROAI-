@@ -18,23 +18,18 @@ jobs:
         with:
           ref: actual-site-recovery
           fetch-depth: 1
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      - name: Remove recovery debris and stale implementation
+      - name: Clean stale source and add current metadata
         run: |
           set -euo pipefail
           rm -rf reference-capture assets
           rm -f favicon.svg site.webmanifest
-          rm -f .github/workflows/capture-actual-site.yml
-          rm -f .github/workflows/promote-actual-site.yml
-
-      - name: Add current site metadata assets
-        run: |
           mkdir -p public
+
           cat > public/favicon.svg <<'SVG'
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="YKG Digital">
             <rect width="64" height="64" rx="14" fill="#0a0a08"/>
@@ -44,16 +39,7 @@ jobs:
           SVG
 
           cat > public/site.webmanifest <<'JSON'
-          {
-            "name":"YKG Digital",
-            "short_name":"YKG",
-            "description":"Creative technology studio for web design, development, AI products and interactive experiences.",
-            "start_url":"/",
-            "display":"standalone",
-            "background_color":"#0a0a08",
-            "theme_color":"#0b0a08",
-            "icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]
-          }
+          {"name":"YKG Digital","short_name":"YKG","description":"Creative technology studio for web design, development, AI products and interactive experiences.","start_url":"/","display":"standalone","background_color":"#0a0a08","theme_color":"#0b0a08","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]}
           JSON
 
           python3 - <<'PY'
@@ -61,175 +47,76 @@ jobs:
           p=Path('index.html')
           s=p.read_text()
           marker='<meta content="#0b0a08" name="theme-color"/>'
-          addition='''<meta content="#0b0a08" name="theme-color"/>\n<link href="/favicon.svg" rel="icon" type="image/svg+xml"/>\n<link href="/site.webmanifest" rel="manifest"/>'''
-          if '/favicon.svg' not in s:
-              s=s.replace(marker,addition)
+          addition=marker+'\n<link href="/favicon.svg" rel="icon" type="image/svg+xml"/>\n<link href="/site.webmanifest" rel="manifest"/>'
+          if '/favicon.svg' not in s: s=s.replace(marker,addition)
           p.write_text(s)
           PY
 
-      - name: Align repository documentation with the actual website
-        run: |
           cat > README.md <<'MD'
           # YKG Digital — agency website
 
-          This repository contains the production source for the current **YKG Digital** creative-technology agency website.
-
-          The site is intentionally kept separate from the personal Yash Ganesh portfolio. Portfolio code and deployments are not part of this repository.
+          Production source for the current **YKG Digital** creative-technology agency website. This repository is intentionally separate from the personal Yash Ganesh portfolio.
 
           ## Stack
-          - Vite
-          - Semantic HTML
-          - CSS
-          - Vanilla JavaScript
+          Vite · semantic HTML · CSS · vanilla JavaScript
 
-          ## Source structure
+          ## Current source
           - `index.html` — canonical one-page agency experience
-          - `public/styles.css` — recovered visual system used by the canonical live reference
+          - `public/styles.css` — canonical visual system
           - `public/app.js` — primary interaction and scroll-motion system
-          - `public/site-fixes.css` — small QA/accessibility corrections layered without redesigning the site
-          - `public/site-fixes.js` — progressive mobile-navigation hardening
-          - `public/assets/` — current hero/founder image assets
+          - `public/site-fixes.css` / `public/site-fixes.js` — surgical QA/accessibility hardening
+          - `public/assets/` — current hero/founder imagery
           - `tests/` — integrity, browser, accessibility, responsive, Lighthouse and load checks
-          - `.github/workflows/ci.yml` — pre-merge quality gate
-          - `.github/workflows/production-smoke.yml` — post-merge production verification
 
-          ## Development
+          ## Run locally
           ```bash
           npm ci
           npm run dev
           ```
 
-          ## Production QA
+          ## Static production gate
           ```bash
           npm run qa:static
           ```
 
-          The CI gate additionally runs Chromium interaction tests, axe accessibility checks, seven viewport overflow checks, a 720-request concurrency test and a mobile Lighthouse audit.
+          CI additionally runs Chromium interaction tests, axe checks, seven viewport overflow checks, a 720-request concurrency test and mobile Lighthouse.
           MD
 
           cat > DESIGN.md <<'MD'
           # YKG Digital — implementation design note
 
-          ## Source of truth
-          The current YKG Digital website is the visual and interaction source of truth. Maintenance work should preserve its existing art direction rather than replacing it with the retired BRAYROAI implementation.
+          The current YKG Digital website is the visual and interaction source of truth. Preserve this art direction rather than restoring the retired BRAYROAI implementation.
 
           ## Visual language
           - Dark ink foundation with warm paper/orange chapters.
-          - Space Grotesk display type, Manrope interface/body type, DM Mono for metadata.
+          - Space Grotesk display type, Manrope body/interface type and DM Mono metadata.
           - Full-screen photographic hero with independent background, oversized YKG DIGITAL typography and founder cutout layers.
-          - Large editorial headings and intentionally varied section environments rather than uniform SaaS cards.
-          - Orange is the primary signal color; lime, sky and warm neutrals are secondary accents.
+          - Editorial section changes rather than repetitive SaaS cards.
+          - Orange is the primary signal; lime, sky and warm neutrals are secondary accents.
 
           ## Interaction language
-          - Short fail-safe intro sequence.
-          - Scroll progress and chapter indicator.
-          - Shared-requestAnimationFrame scroll choreography for hero depth, manifesto motion, client-proof parallax and capability activation.
-          - Lazy activation of external FakhriMart frames.
-          - Fine-pointer-only cursor/magnetic/tilt effects.
-          - Full reduced-motion path.
-          - Mobile navigation with focus containment and Escape/focus-return behavior.
+          - Short fail-safe intro sequence, scroll progress and chapter indicator.
+          - One requestAnimationFrame scroll choreography for hero depth, manifesto motion, client proof and capability activation.
+          - Lazy external FakhriMart frames; fine-pointer-only cursor/magnetics/tilt; full reduced-motion path.
+          - Mobile navigation must retain focus containment, Escape close and focus return.
 
-          ## Non-negotiable QA rules
-          - No serious/critical axe violations.
-          - No document-level horizontal overflow at 360, 390, 430, 768, 1024, 1440 or 1920px.
-          - Required hero imagery must resolve before release.
-          - The conversion and project links must remain intentional and reachable.
-          - Google Fonts and the FakhriMart iframe origin must remain compatible with the production CSP.
-          - Keep animation dependency-free unless a future feature clearly justifies a library.
+          ## Release rules
+          - Zero serious/critical axe violations.
+          - No document overflow at 360, 390, 430, 768, 1024, 1440 or 1920px.
+          - Hero imagery and conversion/project destinations must resolve.
+          - CSP must permit the site’s Google Fonts and FakhriMart iframe origin.
           MD
 
-      - name: Replace stale production verification
-        run: |
-          cat > .github/workflows/production-smoke.yml <<'YAML'
-          name: YKG Digital Production Smoke
-
-          on:
-            push:
-              branches: [main]
-            workflow_dispatch:
-
-          permissions:
-            contents: read
-
-          jobs:
-            production-smoke:
-              name: Live browser + load + Lighthouse
-              runs-on: ubuntu-latest
-              timeout-minutes: 25
-              env:
-                PROD_URL: https://brayroai-studio.vercel.app
-              steps:
-                - uses: actions/checkout@v4
-                - uses: actions/setup-node@v4
-                  with:
-                    node-version: 22
-                    cache: npm
-                - run: npm ci
-                - name: Install production QA tooling
-                  run: npm install --no-save @playwright/test@latest @axe-core/playwright@latest lighthouse@latest
-                - name: Install Chromium
-                  run: npx playwright install --with-deps chromium
-                - name: Wait for Git deployment and verify canonical assets
-                  run: |
-                    set -euo pipefail
-                    ready=0
-                    for i in {1..36}; do
-                      if curl -fsSL "$PROD_URL/" | grep -q 'Digital experiences' \
-                        && curl -fsSL "$PROD_URL/styles.css" >/dev/null \
-                        && curl -fsSL "$PROD_URL/app.js" >/dev/null \
-                        && curl -fsSL "$PROD_URL/assets/hero-background.webp" >/dev/null \
-                        && curl -fsSL "$PROD_URL/robots.txt" | grep -q 'User-agent'; then
-                        ready=1
-                        break
-                      fi
-                      sleep 10
-                    done
-                    test "$ready" -eq 1
-                - name: Production concurrent load test
-                  env:
-                    BASE_URL: ${{ env.PROD_URL }}
-                    STRESS_REQUESTS: 360
-                    STRESS_CONCURRENCY: 20
-                  run: npm run test:stress
-                - name: Production browser and accessibility suite
-                  env:
-                    BASE_URL: ${{ env.PROD_URL }}
-                  run: npx playwright test
-                - name: Production Lighthouse mobile audit
-                  run: |
-                    mkdir -p artifacts/production-lighthouse
-                    npx lighthouse "$PROD_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
-                    node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json
-                - name: Upload production QA evidence
-                  if: always()
-                  uses: actions/upload-artifact@v4
-                  with:
-                    name: ykg-production-qa-${{ github.run_number }}
-                    path: |
-                      artifacts/
-                      test-results/
-                    if-no-files-found: ignore
-                    retention-days: 14
-          YAML
-
-      - name: Validate clean tree before commit
+      - name: Validate and commit clean application tree
         run: |
           npm ci
           npm run qa:static
           test ! -d reference-capture
           test ! -d assets
-          test ! -e .github/workflows/capture-actual-site.yml
-          test ! -e .github/workflows/promote-actual-site.yml
-          grep -q 'YKG Digital' README.md
-          grep -q 'YKG Digital' DESIGN.md
           test -f public/favicon.svg
           test -f public/site.webmanifest
-
-      - name: Commit final clean source and remove this one-time workflow
-        run: |
-          rm -f .github/workflows/finalize-actual-site.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "chore: finalize clean YKG Digital production source"
+          git commit -m "chore: finalize clean YKG Digital application source"
           git push origin HEAD:actual-site-recovery

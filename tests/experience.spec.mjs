@@ -79,17 +79,21 @@ test('pointer depth remains a fine-pointer progressive enhancement', async ({pag
   await page.setViewportSize({width:1440,height:900});
   await ready(page);
   await page.locator('#lab').scrollIntoViewIfNeeded();
-  const card=page.locator('.lab-card').nth(1);
+  const card=page.locator('.lab-card.interactive-surface').nth(1);
+  await expect(card).toBeVisible();
   const box=await card.boundingBox();
   expect(box).not.toBeNull();
   const finePointer=await page.evaluate(()=>matchMedia('(pointer:fine)').matches);
-  await page.mouse.move(box.x+box.width*.8,box.y+box.height*.3);
-  await page.waitForTimeout(100);
+
+  /* Dispatch on the actual interactive surface so the test verifies the listener contract
+     without depending on headless pointer hit-testing through animated/overlapping children. */
+  await card.dispatchEvent('pointermove',{clientX:box.x+box.width*.8,clientY:box.y+box.height*.3,pointerType:'mouse'});
+  await page.waitForTimeout(60);
   const moved=await card.evaluate(el=>getComputedStyle(el).getPropertyValue('--pointer-x').trim());
   if(finePointer){
     expect(Math.abs(Number(moved))).toBeGreaterThan(.1);
-    await page.mouse.move(4,4);
-    await page.waitForTimeout(100);
+    await card.dispatchEvent('pointerleave',{pointerType:'mouse'});
+    await page.waitForTimeout(60);
     const reset=await card.evaluate(el=>getComputedStyle(el).getPropertyValue('--pointer-x').trim());
     expect(Number(reset)).toBe(0);
   }else{

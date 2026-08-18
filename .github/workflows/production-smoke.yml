@@ -1,11 +1,7 @@
-name: BRAYROAI Production Smoke
+name: YKG Digital Production Smoke
 
 on:
   push:
-    branches: [main]
-    paths:
-      - '.github/workflows/production-smoke.yml'
-  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -14,9 +10,11 @@ permissions:
 
 jobs:
   production-smoke:
-    name: Live site browser + load + Lighthouse
+    name: Live browser + load + Lighthouse
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      PROD_URL: https://brayroai-studio.vercel.app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,34 +26,42 @@ jobs:
         run: npm install --no-save @playwright/test@latest @axe-core/playwright@latest lighthouse@latest
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Production route smoke
+      - name: Wait for Git deployment and verify canonical assets
         run: |
-          curl --fail --silent --show-error --location https://brayroai.vercel.app/ >/dev/null
-          curl --fail --silent --show-error --location https://brayroai.vercel.app/work >/dev/null
-          curl --fail --silent --show-error --location https://brayroai.vercel.app/work/fakhrimart >/dev/null
-          curl --fail --silent --show-error --location https://brayroai.vercel.app/robots.txt | grep -q 'User-agent'
+          set -euo pipefail
+          ready=0
+          for i in {1..36}; do
+            if curl -fsSL "$PROD_URL/" | grep -q 'Digital experiences' \
+              && curl -fsSL "$PROD_URL/styles.css" >/dev/null \
+              && curl -fsSL "$PROD_URL/app.js" >/dev/null \
+              && curl -fsSL "$PROD_URL/assets/hero-background.webp" >/dev/null \
+              && curl -fsSL "$PROD_URL/robots.txt" | grep -q 'User-agent'; then
+              ready=1
+              break
+            fi
+            sleep 10
+          done
+          test "$ready" -eq 1
       - name: Production concurrent load test
         env:
-          BASE_URL: https://brayroai.vercel.app
+          BASE_URL: ${{ env.PROD_URL }}
           STRESS_REQUESTS: 360
           STRESS_CONCURRENCY: 20
         run: npm run test:stress
       - name: Production browser and accessibility suite
         env:
-          BASE_URL: https://brayroai.vercel.app
+          BASE_URL: ${{ env.PROD_URL }}
         run: npx playwright test
-      - name: Production Lighthouse mobile audits
+      - name: Production Lighthouse mobile audit
         run: |
           mkdir -p artifacts/production-lighthouse
-          npx lighthouse https://brayroai.vercel.app/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
-          npx lighthouse https://brayroai.vercel.app/work --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/work.json
-          npx lighthouse https://brayroai.vercel.app/work/fakhrimart --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/fakhrimart.json
-          node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json artifacts/production-lighthouse/work.json artifacts/production-lighthouse/fakhrimart.json
+          npx lighthouse "$PROD_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
+          node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json
       - name: Upload production QA evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: brayroai-production-qa-${{ github.run_number }}
+          name: ykg-production-qa-${{ github.run_number }}
           path: |
             artifacts/
             test-results/

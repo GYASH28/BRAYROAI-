@@ -20,18 +20,23 @@ const capProgress = document.querySelector('.capability-progress');
 let lastY = scrollY;
 let ticking = false;
 let activeCap = 0;
-let pointerNX = 0;
-let pointerNY = 0;
+
+function completeLoader(immediate = false) {
+  if (!loader) {
+    body.classList.add('loaded');
+    return;
+  }
+  loader.classList.add('done');
+  body.classList.add('loaded');
+  sessionStorage.setItem('brayroai-intro', '1');
+  if (immediate) loader.hidden = true;
+  else setTimeout(() => { loader.hidden = true; }, 620);
+}
 
 if (loader) {
   const seen = sessionStorage.getItem('brayroai-intro');
-  const finish = () => {
-    loader.classList.add('done');
-    body.classList.add('loaded');
-    sessionStorage.setItem('brayroai-intro', '1');
-  };
-  if (seen || reduced) finish();
-  else setTimeout(finish, 1250);
+  if (seen || reduced) completeLoader(true);
+  else setTimeout(() => completeLoader(false), 1080);
 } else body.classList.add('loaded');
 
 function activateCap(index) {
@@ -57,8 +62,10 @@ capButtons.forEach((button, index) => {
   button.addEventListener('click', () => {
     activateCap(index);
     if (desktopMotion && capStage) {
-      const stageTop = scrollY + capStage.getBoundingClientRect().top;
-      const usable = Math.max(1, capStage.offsetHeight - innerHeight);
+      const stageRect = capStage.getBoundingClientRect();
+      const stageHeight = capStage.offsetHeight;
+      const stageTop = scrollY + stageRect.top;
+      const usable = Math.max(1, stageHeight - innerHeight);
       const target = stageTop + (index / Math.max(1, capPanels.length - 1)) * usable;
       scrollTo({ top: target, behavior: reduced ? 'auto' : 'smooth' });
     }
@@ -66,64 +73,97 @@ capButtons.forEach((button, index) => {
 });
 capPanels.forEach((panel, index) => panel.setAttribute('aria-hidden', index === 0 ? 'false' : 'true'));
 
-function updateFrame() {
+function readFrame() {
   const y = scrollY;
   const viewport = innerHeight;
-  const max = Math.max(1, document.documentElement.scrollHeight - viewport);
+  const documentHeight = document.documentElement.scrollHeight;
+  const menuOpen = body.classList.contains('menu-open');
+
+  const heroData = hero && !reduced ? (() => {
+    const rect = hero.getBoundingClientRect();
+    const height = hero.offsetHeight;
+    return { rect, height };
+  })() : null;
+
+  const capData = capStage && capPanels.length && desktopMotion ? (() => {
+    const rect = capStage.getBoundingClientRect();
+    return { rect };
+  })() : null;
+
+  const storyData = workStories.map(story => ({
+    story,
+    rect: story.getBoundingClientRect(),
+    height: story.offsetHeight
+  }));
+
+  const statementData = statement && !reduced ? (() => {
+    const parent = statement.parentElement;
+    return {
+      rect: parent.getBoundingClientRect(),
+      width: statement.scrollWidth,
+      viewportWidth: innerWidth
+    };
+  })() : null;
+
+  return { y, viewport, documentHeight, menuOpen, heroData, capData, storyData, statementData };
+}
+
+function writeFrame(frame) {
+  const { y, viewport, documentHeight, menuOpen, heroData, capData, storyData, statementData } = frame;
+  const max = Math.max(1, documentHeight - viewport);
   const documentProgress = clamp(0, y / max, 1);
 
   if (progressBar) progressBar.style.transform = `scaleX(${documentProgress})`;
   if (header) {
     header.classList.toggle('scrolled', y > 80);
-    if (!body.classList.contains('menu-open')) {
+    if (!menuOpen) {
       if (y > lastY + 7 && y > 220) header.classList.add('hidden');
       else if (y < lastY - 7 || y < 130) header.classList.remove('hidden');
     }
   }
 
-  if (hero && !reduced) {
-    const rect = hero.getBoundingClientRect();
-    const travel = Math.max(1, hero.offsetHeight - viewport);
-    const p = clamp(0, -rect.top / travel, 1);
+  if (heroData) {
+    const travel = Math.max(1, heroData.height - viewport);
+    const p = clamp(0, -heroData.rect.top / travel, 1);
     root.style.setProperty('--hero-p', p.toFixed(4));
   }
 
-  if (capStage && capPanels.length && desktopMotion) {
-    const rect = capStage.getBoundingClientRect();
-    const travel = Math.max(1, rect.height - viewport);
-    const p = clamp(0, -rect.top / travel, 1);
+  if (capData) {
+    const travel = Math.max(1, capData.rect.height - viewport);
+    const p = clamp(0, -capData.rect.top / travel, 1);
     const index = Math.min(capPanels.length - 1, Math.floor(p * capPanels.length));
     activateCap(index);
     capStage.style.setProperty('--cap-progress', `${(p * 100).toFixed(2)}%`);
   }
 
-  workStories.forEach(story => {
-    const rect = story.getBoundingClientRect();
-    const travel = Math.max(1, story.offsetHeight - viewport);
+  storyData.forEach(({ story, rect, height }) => {
+    const travel = Math.max(1, height - viewport);
     const p = clamp(0, -rect.top / travel, 1);
     story.style.setProperty('--story-p', p.toFixed(4));
   });
 
-  if (statement && !reduced) {
-    const parent = statement.parentElement;
-    const rect = parent.getBoundingClientRect();
-    const centerProgress = clamp(0, (viewport - rect.top) / Math.max(1, viewport + rect.height), 1);
-    const maxShift = Math.max(0, statement.scrollWidth - innerWidth);
+  if (statementData) {
+    const centerProgress = clamp(0, (viewport - statementData.rect.top) / Math.max(1, viewport + statementData.rect.height), 1);
+    const maxShift = Math.max(0, statementData.width - statementData.viewportWidth);
     statement.style.setProperty('--statement-x', `${(-maxShift * centerProgress).toFixed(1)}px`);
   }
 
   lastY = y;
+}
+
+function updateFrame() {
+  writeFrame(readFrame());
   ticking = false;
 }
 
-addEventListener('scroll', () => {
-  if (!ticking) {
-    ticking = true;
-    requestAnimationFrame(updateFrame);
-  }
-}, { passive: true });
-addEventListener('resize', () => requestAnimationFrame(updateFrame), { passive: true });
-updateFrame();
+function scheduleFrame() {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(updateFrame);
+}
+
+addEventListener('scroll', scheduleFrame, { passive: true });
+addEventListener('resize', scheduleFrame, { passive: true });
 
 const revealObserver = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
   entries.forEach(entry => {
@@ -135,6 +175,10 @@ const revealObserver = 'IntersectionObserver' in window ? new IntersectionObserv
 }, { threshold: .1, rootMargin: '0px 0px -5% 0px' }) : null;
 
 document.querySelectorAll('[data-reveal]').forEach((el, index) => {
+  // Text remains fully opaque for the entire reveal so WCAG contrast is never
+  // temporarily reduced by an opacity tween. Motion comes from position + crop.
+  el.style.setProperty('opacity', '1', 'important');
+  el.style.transitionProperty = 'transform, clip-path';
   el.style.transitionDelay = `${Math.min((index % 3) * 45, 90)}ms`;
   if (revealObserver) revealObserver.observe(el);
   else el.classList.add('revealed');
@@ -199,17 +243,21 @@ document.addEventListener('click', event => {
   transition.classList.add('active');
   setTimeout(() => { location.href = anchor.href; }, 460);
 });
-addEventListener('pageshow', () => transition?.classList.remove('active'));
+
+addEventListener('pageshow', () => {
+  transition?.classList.remove('active');
+  if (scrollY > 0) scheduleFrame();
+});
 
 if (finePointer && !reduced) {
   const cursor = document.querySelector('.signal-cursor');
   addEventListener('pointermove', event => {
     root.style.setProperty('--pointer-x', `${event.clientX}px`);
     root.style.setProperty('--pointer-y', `${event.clientY}px`);
-    pointerNX = (event.clientX / innerWidth - .5) * 2;
-    pointerNY = (event.clientY / innerHeight - .5) * 2;
-    root.style.setProperty('--pointer-nx', pointerNX.toFixed(3));
-    root.style.setProperty('--pointer-ny', pointerNY.toFixed(3));
+    const nx = (event.clientX / innerWidth - .5) * 2;
+    const ny = (event.clientY / innerHeight - .5) * 2;
+    root.style.setProperty('--pointer-nx', nx.toFixed(3));
+    root.style.setProperty('--pointer-ny', ny.toFixed(3));
   }, { passive: true });
 
   document.querySelectorAll('.button,.archive-project,.lab-item,.text-route').forEach(el => {

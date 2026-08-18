@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 const root=process.cwd();
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const html=read('index.html'),plans=read('plans.html'),css=read('public/styles.css'),fixes=read('public/site-fixes.css'),polish=read('public/polish.css'),experienceCss=read('public/experience.css'),experienceFixes=read('public/experience-fixes.css'),commercialCss=read('public/commercial.css'),js=read('public/app.js'),enhancements=read('public/site-fixes.js'),experienceJs=read('public/experience.js'),commercialJs=read('public/commercial.js'),plansJs=read('public/plans.js');
+const html=read('index.html'),plans=read('plans.html'),caseStudy=read('case-studies/fakhrimart.html'),css=read('public/styles.css'),fixes=read('public/site-fixes.css'),polish=read('public/polish.css'),experienceCss=read('public/experience.css'),experienceFixes=read('public/experience-fixes.css'),commercialCss=read('public/commercial.css'),commercialFixes=read('public/commercial-fixes.css'),js=read('public/app.js'),enhancements=read('public/site-fixes.js'),experienceJs=read('public/experience.js'),commercialJs=read('public/commercial.js'),plansJs=read('public/plans.js');
 const errors=[]; const expect=(condition,message)=>{if(!condition) errors.push(message)};
 
 expect(html.includes('BRAYROAI — Design. Engineering. AI.'),'BRAYROAI title missing');
@@ -12,7 +12,7 @@ expect(!/YKG Digital|YKG DIGITAL|YKG \/|YKG\b/.test(html),'legacy YKG naming rem
 
 for(const id of ['main','top','intro','services','work','client-proof','lab','process','about','engage']) expect(html.includes(`id="${id}"`),`missing #${id}`);
 for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png']) expect(fs.existsSync(path.join(root,'public/assets',asset)),`missing ${asset}`);
-for(const asset of ['public/experience.css','public/experience-fixes.css','public/experience.js','public/commercial.css','public/commercial.js','public/plans.js','plans.html']) expect(fs.existsSync(path.join(root,asset)),`missing ${asset}`);
+for(const asset of ['public/experience.css','public/experience-fixes.css','public/experience.js','public/commercial.css','public/commercial-fixes.css','public/commercial.js','public/plans.js','plans.html','case-studies/fakhrimart.html']) expect(fs.existsSync(path.join(root,asset)),`missing ${asset}`);
 
 expect((html.match(/data-cap-step=/g)||[]).length===4,'BRAYROAI must expose exactly four capability chapters');
 for(const name of ['Web Experiences','Product Design','Frontend Engineering','AI Systems']) expect(html.includes(name),`missing capability ${name}`);
@@ -40,13 +40,21 @@ expect(commercialJs.includes("q('.project-grid',work)?.remove()"),'client-only W
 expect(commercialJs.includes('fakhrimart-case-desktop.png')&&commercialJs.includes('fakhrimart-case-mobile.png'),'real FakhriMart proof images are not wired');
 expect(commercialJs.includes("clients.id='clients'")&&commercialJs.includes('FakhriMart'),'real Clients section missing');
 expect(commercialJs.includes("snapshot.id='plans-snapshot'")&&commercialJs.includes('/plans.html'),'Plans second-destination snapshot missing');
+expect(commercialJs.includes('/case-studies/fakhrimart.html'),'homepage does not link the full FakhriMart case study');
 expect(commercialCss.includes('.case-study-story')&&commercialCss.includes('.clients-section')&&commercialCss.includes('.pricing-grid'),'commercial visual system incomplete');
+expect(commercialFixes.includes('.case-page')&&commercialFixes.includes('.case-mobile-proof'),'dedicated case-study visual system incomplete');
 
 for(const price of ['₹9,999','₹17,999','₹25K–35K+','₹2,499','₹3,999','₹5,999+']) expect(plans.includes(price),`plans page missing price ${price}`);
 for(const name of ['DIGITAL MAKEOVER','FULL WEBSITE','BESPOKE EXPERIENCE','LAUNCH','GROW','PRO']) expect(plans.includes(name),`plans page missing ${name}`);
 expect(plans.includes('BEST BALANCE')&&plans.includes('RECOMMENDED'),'pricing recommendation hierarchy missing');
 expect(!/data-countdown|class="[^"]*(old-price|strikethrough)[^"]*"|save\s+\d+%|ends\s+in\s+\d+/i.test(plans),'plans page contains a dark-pattern pricing mechanism');
 expect(plansJs.includes("data-price-tab")||plansJs.includes('dataset.priceTab'),'plans toggle logic missing');
+
+expect(caseStudy.includes('FAKHRI')&&caseStudy.includes('MART.'),'case-study title missing');
+expect(caseStudy.includes('/assets/fakhrimart-case-desktop.png')&&caseStudy.includes('/assets/fakhrimart-case-mobile.png'),'case study does not use real client captures');
+expect(caseStudy.includes('A REAL SITE.')&&caseStudy.includes('NOT A')&&caseStudy.includes('PORTFOLIO PROP.'),'case study real-work framing missing');
+expect(caseStudy.includes('https://fakhriyarns.vercel.app/'),'case study live destination missing');
+expect(!/\b(?:conversion rate|revenue|sales increased|traffic increased)\b/i.test(caseStudy),'case study contains unverified business-performance claims');
 
 const localRefs=[...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(m=>m[1]);
 for(const ref of localRefs){
@@ -58,6 +66,11 @@ for(const ref of planRefs){
   const candidates=[path.join(root,'public',ref),path.join(root,ref)];
   expect(candidates.some(fs.existsSync),`missing Plans local reference /${ref}`);
 }
+const caseRefs=[...caseStudy.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(m=>m[1]);
+for(const ref of caseRefs){
+  const candidates=[path.join(root,'public',ref),path.join(root,ref)];
+  expect(candidates.some(fs.existsSync),`missing case-study local reference /${ref}`);
+}
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Integrity OK: BRAYROAI brand + real FakhriMart proof + Clients + Plans checked`);
+console.log(`Integrity OK: BRAYROAI + real FakhriMart case study + Clients + Plans checked`);

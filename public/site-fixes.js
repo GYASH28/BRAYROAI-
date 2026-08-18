@@ -1,4 +1,9 @@
 (() => {
+  const polish=document.createElement('link');
+  polish.rel='stylesheet';
+  polish.href='/polish.css';
+  document.head.appendChild(polish);
+
   /* Accessibility finish: keep decorative background type out of the rendered text layer and lift footer microcopy above AA contrast. */
   const finish=document.createElement('style');
   finish.textContent='.engage-word{display:none!important}.footer,.footer .shell,.footer .shell>*{color:#A5AAB3!important}';

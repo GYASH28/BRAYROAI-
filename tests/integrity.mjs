@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 const root=process.cwd();
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const html=read('index.html'),css=read('public/styles.css'),fixes=read('public/site-fixes.css'),js=read('public/app.js'),enhancements=read('public/site-fixes.js');
+const html=read('index.html'),css=read('public/styles.css'),fixes=read('public/site-fixes.css'),polish=read('public/polish.css'),js=read('public/app.js'),enhancements=read('public/site-fixes.js');
 const errors=[]; const expect=(condition,message)=>{if(!condition) errors.push(message)};
 
 expect(html.includes('BRAYROAI — Design. Engineering. AI.'),'BRAYROAI title missing');
@@ -23,6 +23,8 @@ expect(js.includes('paintHero')&&js.includes('paintCapability'),'stable recovere
 expect(fixes.includes('--blue:#3E7BFF')&&fixes.includes('--orange:#FF6B2C'),'BRAYROAI brand tokens missing');
 expect(fixes.includes('content-visibility:visible'),'blank-chapter protection missing');
 expect(enhancements.includes('chapter-entered')&&enhancements.includes('revealFallback'),'enhanced interaction/fallback layer missing');
+expect(enhancements.includes('/polish.css'),'final polish stylesheet not wired');
+expect(polish.includes('.lab-card--large .lab-orb')&&polish.includes('.project-tile--sky{grid-column:auto'),'visual-completeness polish missing');
 
 const localRefs=[...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(m=>m[1]);
 for(const ref of localRefs){
@@ -31,4 +33,4 @@ for(const ref of localRefs){
 }
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Integrity OK: BRAYROAI brand + ${localRefs.length} local references checked`);
+console.log(`Integrity OK: BRAYROAI brand + ${localRefs.length} local references + visual polish checked`);

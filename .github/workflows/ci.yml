@@ -85,9 +85,9 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
-      - name: Capture complete QA reference screenshots
+      - name: Capture complete QA and current client proof screenshots
         run: |
-          mkdir -p artifacts/screenshots
+          mkdir -p artifacts/screenshots artifacts/client-proof
           node - <<'JS'
           const { chromium } = require('playwright');
           (async()=>{
@@ -105,6 +105,14 @@ jobs:
               await page.evaluate(()=>scrollTo(0,0));
               await page.waitForTimeout(360);
               await page.screenshot({path:`artifacts/screenshots/${name}.png`,fullPage:true});
+              await context.close();
+            }
+            for(const [name,width,height] of [['fakhrimart-desktop',1440,1000],['fakhrimart-mobile',390,844]]){
+              const context=await browser.newContext({viewport:{width,height}});
+              const page=await context.newPage();
+              await page.goto('https://fakhriyarns.vercel.app/',{waitUntil:'domcontentloaded',timeout:30000});
+              await page.waitForTimeout(3500);
+              await page.screenshot({path:`artifacts/client-proof/${name}.png`,fullPage:false});
               await context.close();
             }
             await browser.close();

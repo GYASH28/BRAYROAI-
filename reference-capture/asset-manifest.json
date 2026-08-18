@@ -1,0 +1,42 @@
+[
+  {
+    "tag": "link",
+    "attr": "href",
+    "url": "https://ykg-digital-agency-v3.vercel.app/styles.css",
+    "file": "reference-capture/assets/styles.css",
+    "bytes": 54286,
+    "content_type": "text/css; charset=utf-8"
+  },
+  {
+    "tag": "link",
+    "attr": "href",
+    "url": "https://ykg-digital-agency-v3.vercel.app/assets/hero-background.webp",
+    "file": "reference-capture/assets/hero-background.webp",
+    "bytes": 7634,
+    "content_type": "image/webp"
+  },
+  {
+    "tag": "link",
+    "attr": "href",
+    "url": "https://ykg-digital-agency-v3.vercel.app/assets/yash-cutout.webp",
+    "file": "reference-capture/assets/yash-cutout.webp",
+    "bytes": 70308,
+    "content_type": "image/webp"
+  },
+  {
+    "tag": "img",
+    "attr": "src",
+    "url": "https://ykg-digital-agency-v3.vercel.app/assets/about-yash.webp",
+    "file": "reference-capture/assets/about-yash.webp",
+    "bytes": 23718,
+    "content_type": "image/webp"
+  },
+  {
+    "tag": "script",
+    "attr": "src",
+    "url": "https://ykg-digital-agency-v3.vercel.app/app.js",
+    "file": "reference-capture/assets/app.js",
+    "bytes": 13110,
+    "content_type": "application/javascript; charset=utf-8"
+  }
+]

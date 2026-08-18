@@ -1,0 +1,149 @@
+Skip to content
+YKG
+01
+IDENTITY
+YKG
+DIGITAL
+Work
+Services
+Lab
+About
+Start a project
+↗
+YKG
+DIGITAL
+
+YASH GANESH / CREATIVE TECHNOLOGIST
+
+PUNE, INDIA
+AVAILABLE FOR SELECT BUILDS
+
+YKG DIGITAL / DESIGN + ENGINEERING
+
+Digital experiences
+built to be remembered.
+
+Web design, development and AI products with a strong point of view — minimal where it should be, expressive where it matters.
+
+Explore the work
+↘
+Start a project
+↗
+WEB / PRODUCT / AI
+SCROLL TO EXPLORE
+↓
+
+POINT OF VIEW
+
+DESIGN ISN’T
+DECORATION.
+IT’S THE FEELING.
+
+Good digital work makes complexity feel obvious. We shape positioning, interface, motion and implementation as one connected system.
+
+Y
+G
+STRATEGY — DESIGN — ENGINEERING — MOTION — AI — SYSTEMS — STRATEGY — DESIGN — ENGINEERING — MOTION — AI — SYSTEMS —
+
+CAPABILITIES
+
+ONE STUDIO.
+MULTIPLE LAYERS.
+
+Not six identical service cards. Each capability changes the visual environment as you move through it.
+
+BRAND / STORY / SYSTEM
+Websites worth choosing.
+YKG / BUILD
+● ONLINE
+const experience = {
+  fast: true,
+  responsive: true,
+  maintainable: true
+}
+AI
+MEMORY
+TOOLS
+VOICE
+MODELS
+IDEA
+→
+FLOW
+→
+BUILD
+→
+SHIP
+MAKE IT
+FEEL ALIVE.
+01
+Web Design
+
+Art direction, hierarchy, responsive systems and conversion-aware interfaces with a clear visual point of view.
+
+02
+Development
+
+Production-ready frontends and full-stack builds engineered to stay fast, responsive and maintainable.
+
+03
+AI Products
+
+Useful intelligence built around real workflows—memory, tools, voice, models and automation where they genuinely help.
+
+04
+Product Systems
+
+From concept and user flow through interface, implementation, deployment and iteration.
+
+05
+Interactive Experiences
+
+Motion, tactile microinteractions, scroll choreography and visual systems that make the interface memorable without slowing it down.
+
+SELECTED WORK
+
+REAL THINGS.
+BUILT TO SHIP.
+
+Client work and product experiments get room to breathe. No tiny-card graveyard.
+
+01 / CLIENT WORK
+WEB DESIGN + BUILD
+LIVE
+VIEW CASE ↗
+FakhriMart
+
+A digital catalogue and enquiry experience for a traditional yarn wholesaler, designed around discovery, trust and WhatsApp conversion.
+
+Explore client proof →
+CLIENT / WHOLESALE / 2026
+LEARNAI
+02 / PRODUCT
+Lernio AI
+
+A learning operating system combining tutoring, notes, revision, quizzes and planning.
+
+Open product ↗
+VOICEMEMORYTOOLS
+03 / AI SYSTEM
+B.R.A.C.E.
+
+A voice-first desktop AI companion with memory, tools and provider routing.
+
+Repository ↗
+
+REAL CLIENT PROOF
+
+BUILT FOR A BUSINESS.
+NOT A MOCK BRIEF.
+
+FakhriMart needed a clearer digital catalogue, stronger visual trust and an easier route from product discovery to enquiry. The website is live today.
+
+Wholesale catalogue
+Responsive
+WhatsApp enquiry
+Live deployment
+Experience FakhriMart
+↗
+LIVE CLIENT / 2026
+fakhriyarns.vercel.app

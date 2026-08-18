@@ -29,7 +29,8 @@ expect(enhancements.includes('/experience.css')&&enhancements.includes('/experie
 expect(polish.includes('.lab-card--large .lab-orb')&&polish.includes('.project-tile--sky{grid-column:auto'),'visual-completeness polish missing');
 expect(experienceCss.includes('.chapter-signal')&&experienceCss.includes('.studio-matrix')&&experienceCss.includes('.project-fit-rail'),'v5 authored visual system missing');
 expect(experienceCss.includes('@media(prefers-reduced-motion:reduce)'),'v5 reduced-motion CSS missing');
-expect(experienceFixes.includes('.chapter{overflow-x:clip}')&&experienceFixes.includes('#5A5F68'),'v5 overflow/contrast hardening missing');
+expect(experienceFixes.includes('.chapter{position:relative;overflow-x:clip}')&&experienceFixes.includes('#5A5F68'),'v5 overflow/contrast hardening missing');
+expect(experienceFixes.includes('.cap-step p{color:#A5AAB3!important}'),'capability contrast hardening missing');
 expect(experienceFixes.includes('.experience-word::before'),'decorative watermark hardening missing');
 expect(experienceJs.includes('--chapter-progress')&&experienceJs.includes('requestAnimationFrame(paint)'),'v5 scroll-scrub system missing');
 expect(experienceJs.includes('studio-matrix')&&experienceJs.includes('project-fit-rail'),'v5 density enhancements missing');

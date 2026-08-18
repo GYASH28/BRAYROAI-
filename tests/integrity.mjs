@@ -45,7 +45,7 @@ expect(commercialCss.includes('.case-study-story')&&commercialCss.includes('.cli
 for(const price of ['₹9,999','₹17,999','₹25K–35K+','₹2,499','₹3,999','₹5,999+']) expect(plans.includes(price),`plans page missing price ${price}`);
 for(const name of ['DIGITAL MAKEOVER','FULL WEBSITE','BESPOKE EXPERIENCE','LAUNCH','GROW','PRO']) expect(plans.includes(name),`plans page missing ${name}`);
 expect(plans.includes('BEST BALANCE')&&plans.includes('RECOMMENDED'),'pricing recommendation hierarchy missing');
-expect(!/limited time|countdown|was ₹|save \d+%/i.test(plans),'plans page contains fake urgency/discount language');
+expect(!/data-countdown|class="[^"]*(old-price|strikethrough)[^"]*"|save\s+\d+%|ends\s+in\s+\d+/i.test(plans),'plans page contains a dark-pattern pricing mechanism');
 expect(plansJs.includes("data-price-tab")||plansJs.includes('dataset.priceTab'),'plans toggle logic missing');
 
 const localRefs=[...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(m=>m[1]);

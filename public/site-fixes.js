@@ -4,6 +4,11 @@
   polish.href='/polish.css';
   document.head.appendChild(polish);
 
+  const experienceStyles=document.createElement('link');
+  experienceStyles.rel='stylesheet';
+  experienceStyles.href='/experience.css';
+  document.head.appendChild(experienceStyles);
+
   /* Accessibility finish: keep decorative background type out of the rendered text layer and lift footer microcopy above AA contrast. */
   const finish=document.createElement('style');
   finish.textContent='.engage-word{display:none!important}.footer,.footer .shell,.footer .shell>*{color:#A5AAB3!important}';
@@ -116,4 +121,9 @@
   addEventListener('resize',scheduleRevealFallback,{passive:true});
   addEventListener('load',revealFallback,{once:true});
   setTimeout(revealFallback,1400);
+
+  const experienceScript=document.createElement('script');
+  experienceScript.src='/experience.js';
+  experienceScript.defer=true;
+  document.body.appendChild(experienceScript);
 })();

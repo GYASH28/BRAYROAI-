@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: brayroai-qa-${{ github.ref }}
@@ -29,6 +29,7 @@ jobs:
       - name: Guard production bundle
         run: |
           test -f dist/index.html
+          test -f dist/plans.html
           test -f dist/styles.css
           test -f dist/app.js
           test -f dist/site-fixes.css
@@ -37,14 +38,20 @@ jobs:
           test -f dist/experience.css
           test -f dist/experience-fixes.css
           test -f dist/experience.js
+          test -f dist/commercial.css
+          test -f dist/commercial.js
+          test -f dist/plans.js
           test -f dist/assets/hero-background.webp
           test -f dist/assets/yash-cutout.webp
           test -f dist/assets/about-yash.webp
+          test -f dist/assets/fakhrimart-case-desktop.png
+          test -f dist/assets/fakhrimart-case-mobile.png
           grep -q 'BRAYROAI' dist/index.html
+          grep -q 'BRAYROAI' dist/plans.html
+          grep -q '₹17,999' dist/plans.html
           ! grep -qi 'YKG Digital' dist/index.html
-          grep -q '/experience.css' dist/site-fixes.js
-          grep -q '/experience-fixes.css' dist/site-fixes.js
-          grep -q '/experience.js' dist/site-fixes.js
+          grep -q '/commercial.css' dist/site-fixes.js
+          grep -q '/commercial.js' dist/site-fixes.js
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
           test "$TOTAL" -lt 2700
@@ -70,7 +77,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'BRAYROAI'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'BRAYROAI' && curl -fsS http://127.0.0.1:4173/plans.html | grep -q '₹17,999'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -85,37 +92,33 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
-      - name: Capture complete QA and current client proof screenshots
+      - name: Capture homepage and Plans visual references
         run: |
-          mkdir -p artifacts/screenshots artifacts/client-proof
+          mkdir -p artifacts/screenshots
           node - <<'JS'
           const { chromium } = require('playwright');
           (async()=>{
             const browser=await chromium.launch({headless:true});
-            for(const [name,width,height] of [['desktop',1440,1000],['mobile',390,844]]){
+            for(const [name,url,width,height] of [
+              ['home-desktop','http://127.0.0.1:4173/',1440,1000],
+              ['home-mobile','http://127.0.0.1:4173/',390,844],
+              ['plans-desktop','http://127.0.0.1:4173/plans.html',1440,1000],
+              ['plans-mobile','http://127.0.0.1:4173/plans.html',390,844]
+            ]){
               const context=await browser.newContext({viewport:{width,height}});
               const page=await context.newPage();
-              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
-              await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
-              await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
-              for(const id of ['intro','services','work','client-proof','lab','process','about','engage']){
-                await page.locator(`#${id}`).scrollIntoViewIfNeeded();
-                await page.waitForTimeout(180);
+              await page.goto(url,{waitUntil:'networkidle'});
+              if(url.endsWith('/')){
+                await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
+                await page.waitForFunction(()=>document.body.classList.contains('commercial-ready'));
+                for(const selector of ['#plans-snapshot','#work','#client-proof','#clients','#about','#engage']){
+                  await page.locator(selector).scrollIntoViewIfNeeded();
+                  await page.waitForTimeout(120);
+                }
+                await page.evaluate(()=>scrollTo(0,0));
+                await page.waitForTimeout(250);
               }
-              await page.evaluate(()=>scrollTo(0,0));
-              await page.waitForTimeout(360);
               await page.screenshot({path:`artifacts/screenshots/${name}.png`,fullPage:true});
-              await context.close();
-            }
-            for(const [name,width,height] of [['fakhrimart-desktop',1440,1000],['fakhrimart-mobile',390,844]]){
-              const context=await browser.newContext({viewport:{width,height}});
-              const page=await context.newPage();
-              await page.goto('https://fakhriyarns.vercel.app/',{waitUntil:'domcontentloaded',timeout:30000});
-              await page.waitForTimeout(700);
-              const skip=page.getByText(/Skip intro/i).first();
-              if(await skip.count() && await skip.isVisible().catch(()=>false)) await skip.click({force:true}).catch(()=>{});
-              await page.waitForTimeout(2200);
-              await page.screenshot({path:`artifacts/client-proof/${name}.png`,fullPage:false});
               await context.close();
             }
             await browser.close();
@@ -126,25 +129,8 @@ jobs:
           mkdir -p artifacts/lighthouse
           npx lighthouse http://127.0.0.1:4173/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/home.json
           node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json
-      - name: Persist real FakhriMart proof assets once
-        if: github.event_name == 'pull_request' && github.head_ref == 'brayroai-v5-experience'
-        env:
-          HEAD_BRANCH: ${{ github.head_ref }}
-        run: |
-          git fetch origin "$HEAD_BRANCH"
-          git checkout "$HEAD_BRANCH"
-          if [ -f public/assets/fakhrimart-case-desktop.png ] && [ -f public/assets/fakhrimart-case-mobile.png ]; then
-            echo "Client proof assets already committed; nothing to persist."
-            exit 0
-          fi
-          mkdir -p public/assets
-          cp artifacts/client-proof/fakhrimart-desktop.png public/assets/fakhrimart-case-desktop.png
-          cp artifacts/client-proof/fakhrimart-mobile.png public/assets/fakhrimart-case-mobile.png
-          git config user.name "BRAYROAI QA"
-          git config user.email "actions@users.noreply.github.com"
-          git add public/assets/fakhrimart-case-desktop.png public/assets/fakhrimart-case-mobile.png
-          git commit -m "assets: add real current FakhriMart proof captures"
-          git push origin HEAD:"$HEAD_BRANCH"
+          npx lighthouse http://127.0.0.1:4173/plans.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/plans.json
+          node tests/lighthouse-budget.mjs artifacts/lighthouse/plans.json
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4

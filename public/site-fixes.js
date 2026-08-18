@@ -65,6 +65,12 @@
   if(capSteps.length){
     const capMutation=new MutationObserver(paintCapabilityProgress);
     capSteps.forEach(step=>capMutation.observe(step,{attributes:true,attributeFilter:['class']}));
+    capSteps.forEach(step=>step.addEventListener('click',()=>{
+      if(innerWidth<=1050) return;
+      const r=step.getBoundingClientRect();
+      const target=Math.max(0,scrollY+r.top+r.height/2-innerHeight*.52);
+      scrollTo({top:target,behavior:reduced?'auto':'smooth'});
+    }));
     paintCapabilityProgress();
   }
 

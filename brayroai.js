@@ -175,6 +175,10 @@ const revealObserver = 'IntersectionObserver' in window ? new IntersectionObserv
 }, { threshold: .1, rootMargin: '0px 0px -5% 0px' }) : null;
 
 document.querySelectorAll('[data-reveal]').forEach((el, index) => {
+  // Text remains fully opaque for the entire reveal so WCAG contrast is never
+  // temporarily reduced by an opacity tween. Motion comes from position + crop.
+  el.style.setProperty('opacity', '1', 'important');
+  el.style.transitionProperty = 'transform, clip-path';
   el.style.transitionDelay = `${Math.min((index % 3) * 45, 90)}ms`;
   if (revealObserver) revealObserver.observe(el);
   else el.classList.add('revealed');

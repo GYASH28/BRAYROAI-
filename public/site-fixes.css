@@ -1,0 +1,12 @@
+/* Surgical QA fixes layered over the recovered canonical YKG Digital design. */
+.brand-dot{
+  width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--orange);
+  box-shadow:0 0 0 5px rgba(255,77,0,.08),0 0 16px rgba(255,77,0,.28)
+}
+.mobile-menu__bg{position:absolute;inset:0;background:var(--orange);clip-path:circle(0% at calc(100% - 48px) 48px);transition:clip-path .6s var(--ease)}
+.mobile-menu.open .mobile-menu__bg{clip-path:circle(150% at calc(100% - 48px) 48px)}
+.cap-step:not(.is-active){color:rgba(255,255,255,.62)}
+.cap-step:not(.is-active) p{color:rgba(255,255,255,.64);opacity:1}
+.client-proof :focus-visible,.engage :focus-visible{outline-color:#15110d}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.site-nav{background:rgba(10,10,8,.94)}}
+@media(max-width:760px){.mobile-menu a{min-height:44px}.mobile-contact{min-height:52px}}

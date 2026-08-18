@@ -39,3 +39,10 @@
 .capability-rail button.active{color:#09090B!important}
 .section-bone .cinematic-title em{color:#244FB3!important}
 .footer-bottom{color:#92959D}
+
+/* Startup and long-page performance: compositor-safe intro and deferred offscreen rendering. */
+.loader{transition:opacity .55s var(--ease)}
+.loader.done{opacity:0;visibility:visible;pointer-events:none}
+.loader[hidden]{display:none!important}
+@keyframes loaderMark{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:none}}
+.pov,.proof,.lab,.process,.founder,.final-cta,.archive-grid,.archive-close,.case-intro,.case-showcase,.case-decisions,.case-compare,.case-close{content-visibility:auto;contain-intrinsic-size:auto 900px}

@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: brayroai-qa-${{ github.ref }}
@@ -126,6 +126,25 @@ jobs:
           mkdir -p artifacts/lighthouse
           npx lighthouse http://127.0.0.1:4173/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/home.json
           node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json
+      - name: Persist real FakhriMart proof assets once
+        if: github.event_name == 'pull_request' && github.head_ref == 'brayroai-v5-experience'
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          git fetch origin "$HEAD_BRANCH"
+          git checkout "$HEAD_BRANCH"
+          if [ -f public/assets/fakhrimart-case-desktop.png ] && [ -f public/assets/fakhrimart-case-mobile.png ]; then
+            echo "Client proof assets already committed; nothing to persist."
+            exit 0
+          fi
+          mkdir -p public/assets
+          cp artifacts/client-proof/fakhrimart-desktop.png public/assets/fakhrimart-case-desktop.png
+          cp artifacts/client-proof/fakhrimart-mobile.png public/assets/fakhrimart-case-mobile.png
+          git config user.name "BRAYROAI QA"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/assets/fakhrimart-case-desktop.png public/assets/fakhrimart-case-mobile.png
+          git commit -m "assets: add real current FakhriMart proof captures"
+          git push origin HEAD:"$HEAD_BRANCH"
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4

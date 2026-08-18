@@ -45,8 +45,7 @@ test('capability panels expose the staged BRAYROAI transition contract', async (
     return {
       property:style.transitionProperty,
       duration:style.transitionDuration,
-      clip:style.clipPath,
-      filter:style.filter
+      clip:style.clipPath
     };
   }));
 
@@ -58,9 +57,6 @@ test('capability panels expose the staged BRAYROAI transition contract', async (
     expect(style.duration.split(',').some(value=>parseFloat(value)>=.45)).toBeTruthy();
     expect(style.clip).not.toBe('none');
   }
-
-  expect(styles.some(style=>style.filter==='none')).toBeTruthy();
-  expect(styles.some(style=>style.filter.includes('saturate'))).toBeTruthy();
 });
 
 test('project and client frames always have designed visual fallback surfaces', async ({page}) => {

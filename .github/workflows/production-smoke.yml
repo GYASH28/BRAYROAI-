@@ -1,0 +1,61 @@
+name: BRAYROAI Production Smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/production-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-smoke:
+    name: Live site browser + load + Lighthouse
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install production QA tooling
+        run: npm install --no-save @playwright/test@latest @axe-core/playwright@latest lighthouse@latest
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Production route smoke
+        run: |
+          curl --fail --silent --show-error --location https://brayroai.vercel.app/ >/dev/null
+          curl --fail --silent --show-error --location https://brayroai.vercel.app/work >/dev/null
+          curl --fail --silent --show-error --location https://brayroai.vercel.app/work/fakhrimart >/dev/null
+          curl --fail --silent --show-error --location https://brayroai.vercel.app/robots.txt | grep -q 'User-agent'
+      - name: Production concurrent load test
+        env:
+          BASE_URL: https://brayroai.vercel.app
+          STRESS_REQUESTS: 360
+          STRESS_CONCURRENCY: 20
+        run: npm run test:stress
+      - name: Production browser and accessibility suite
+        env:
+          BASE_URL: https://brayroai.vercel.app
+        run: npx playwright test
+      - name: Production Lighthouse mobile audits
+        run: |
+          mkdir -p artifacts/production-lighthouse
+          npx lighthouse https://brayroai.vercel.app/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
+          npx lighthouse https://brayroai.vercel.app/work --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/work.json
+          npx lighthouse https://brayroai.vercel.app/work/fakhrimart --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/fakhrimart.json
+          node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json artifacts/production-lighthouse/work.json artifacts/production-lighthouse/fakhrimart.json
+      - name: Upload production QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brayroai-production-qa-${{ github.run_number }}
+          path: |
+            artifacts/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14

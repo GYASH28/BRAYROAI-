@@ -11,6 +11,15 @@
 .clients-head h2 em{color:#A23D10!important}
 .client-row__meta span{color:#555D67!important}
 
+/* The final conversion chapter must never be paint-skipped. The older global
+   content-visibility optimization is useful for heavy middle chapters, but on the closing
+   section it can expose a blank canvas during fast jumps/full-page capture before the
+   browser decides to realize the skipped subtree. The CTA is too important for that trade. */
+.engage{
+  content-visibility:visible!important;
+  contain-intrinsic-size:none!important;
+}
+
 /* Plans: retain blue signal, use a deeper accessible blue behind small white badge text. */
 .price-card__badge{background:#2A5BC7!important;color:#fff!important;font-weight:700!important}
 

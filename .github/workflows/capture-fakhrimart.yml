@@ -1,0 +1,29 @@
+name: Capture FakhriMart Proof
+
+on:
+  push:
+    branches: [brayroai-v5-experience]
+    paths: ['.github/workflows/capture-fakhrimart.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Capture current live client homepage
+        run: |
+          mkdir -p proof
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --force-device-scale-factor=1 --window-size=1440,1000 --virtual-time-budget=6000 --screenshot=proof/fakhrimart-desktop.png https://fakhriyarns.vercel.app/
+          google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --force-device-scale-factor=1 --window-size=390,844 --virtual-time-budget=6000 --screenshot=proof/fakhrimart-mobile.png https://fakhriyarns.vercel.app/
+          file proof/*.png
+          test -s proof/fakhrimart-desktop.png
+          test -s proof/fakhrimart-mobile.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fakhrimart-live-proof
+          path: proof/
+          retention-days: 2

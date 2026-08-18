@@ -17,7 +17,9 @@ expect(a11y.startsWith("@import url('/refinement.css')"), 'shared refinement sty
 expect(loader.includes("refinementScript.src='/refinement.js'"), 'homepage refinement script is not wired');
 expect(css.includes('.process{color:var(--bone)!important}'), 'Process contrast/alignment fix missing');
 expect(css.includes('.about-portrait{width:100%;min-height:0!important;aspect-ratio:4/5'), 'mobile Studio continuity guard missing');
-expect(css.includes('.capability-steps{grid-template-columns:repeat(4,minmax(0,calc(100% - 18px)))!important'), 'mobile capability alignment fix missing');
+expect(css.includes('.capability-steps{display:flex!important;grid-template-columns:none!important'), 'mobile capability flex-snap rail missing');
+expect(css.includes('.cap-step{flex:0 0 calc(100% - 18px)!important;min-width:calc(100% - 18px)!important'), 'mobile capability reading-card width missing');
+expect(css.includes('.work-head.reveal,.lab-head.reveal,.process-head.reveal'), 'structural reveal alignment guard missing');
 expect(css.includes('@supports (animation-timeline:view())'), 'progressive CSS scroll choreography missing');
 expect(css.includes('@media(prefers-reduced-motion:reduce)'), 'refinement reduced-motion fallback missing');
 expect(js.includes("document.body.classList.add('refinement-ready')"), 'refinement readiness contract missing');

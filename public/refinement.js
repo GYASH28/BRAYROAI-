@@ -8,13 +8,14 @@
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
   const onHome = location.pathname === '/' || location.pathname.endsWith('/index.html');
 
-  /* This one layout rule must win before refinement-ready is announced. The original
-     responsive layer sizes capability cards in vw; the v6 story uses a container-relative
-     snap rail instead. Keeping this synchronous avoids a late stylesheet race on mobile. */
+  /* These rail rules must win before refinement-ready is announced. The original responsive
+     layer sizes capability cards in vw and adds centering padding around that old card width;
+     v6 uses a container-relative snap rail instead. Keeping this synchronous prevents a mobile
+     layout race and makes the interaction geometry deterministic. */
   if (onHome) {
     const railContract = document.createElement('style');
     railContract.dataset.refinementRail = '';
-    railContract.textContent = '@media(max-width:760px){.capability-steps>.cap-step{flex:0 0 94%!important;width:94%!important;min-width:94%!important;max-width:94%!important;box-sizing:border-box!important}}';
+    railContract.textContent = '@media(max-width:760px){.capability-steps{padding-inline:0!important;scroll-padding-inline:0!important}.capability-steps>.cap-step{flex:0 0 94%!important;width:94%!important;min-width:94%!important;max-width:94%!important;box-sizing:border-box!important}}';
     document.head.appendChild(railContract);
   }
 

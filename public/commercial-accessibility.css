@@ -3,6 +3,7 @@
 
 /* Homepage light commercial sections */
 .plan-path__meta{color:#555D67!important}
+.plan-path--ongoing .plan-path__meta{color:#A5AAB3!important}
 .case-study-story__intro span{color:#555D67!important}
 .case-study-step b{color:#A23D10!important}
 .clients-head h2 em{color:#A23D10!important}
@@ -25,5 +26,6 @@
 
 @media (prefers-contrast:more){
   .plan-path__meta,.case-study-story__intro span,.client-row__meta span,.case-meta span{color:#333A43!important}
+  .plan-path--ongoing .plan-path__meta{color:#D3D7DD!important}
   .case-study-step b,.clients-head h2 em,.case-decisions__head h2 em{color:#7D2E0B!important}
 }

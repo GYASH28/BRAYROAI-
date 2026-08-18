@@ -1,0 +1,29 @@
+/* WCAG contrast hardening for BRAYROAI commercial surfaces.
+   Brand blue/orange stay vivid on dark surfaces and shift darker only when used as text on bone/light surfaces. */
+
+/* Homepage light commercial sections */
+.plan-path__meta{color:#555D67!important}
+.case-study-story__intro span{color:#555D67!important}
+.case-study-step b{color:#A23D10!important}
+.clients-head h2 em{color:#A23D10!important}
+.client-row__meta span{color:#555D67!important}
+
+/* Plans: retain blue signal, use a deeper accessible blue behind small white badge text. */
+.price-card__badge{background:#2A5BC7!important;color:#fff!important;font-weight:700!important}
+
+/* FakhriMart case study light surfaces */
+.case-meta span{color:#555D67!important}
+.case-decisions__head h2 em{color:#A23D10!important}
+
+/* Visible keyboard focus is part of polish, not an afterthought. */
+.plan-path:focus-visible,.client-row>a:focus-visible,.hero-plan-link:focus-visible,
+.pricing-page a:focus-visible,.pricing-page button:focus-visible,
+.case-page a:focus-visible,.case-page button:focus-visible{
+  outline:3px solid #2A5BC7!important;
+  outline-offset:4px!important;
+}
+
+@media (prefers-contrast:more){
+  .plan-path__meta,.case-study-story__intro span,.client-row__meta span,.case-meta span{color:#333A43!important}
+  .case-study-step b,.clients-head h2 em,.case-decisions__head h2 em{color:#7D2E0B!important}
+}

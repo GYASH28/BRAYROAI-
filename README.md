@@ -6,7 +6,7 @@ BRAYROAI is a founder-led creative technology studio building premium websites, 
 
 ## Production
 
-**Live:** https://brayroai.vercel.app
+**Live:** https://brayroai-studio.vercel.app
 
 The production surface is validated independently from the build pipeline with route smoke tests, concurrent-load checks, cross-viewport browser tests, accessibility checks, reduced-motion coverage, and Lighthouse launch guardrails.
 

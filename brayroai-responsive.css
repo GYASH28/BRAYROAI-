@@ -23,3 +23,19 @@
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}.loader{display:none}.page-transition{display:none}[data-reveal]{opacity:1;transform:none;clip-path:none;transition:none}.hero-atmosphere,.hero-word,.hero-portrait-wrap,.hero-copy,.work-image-shell img,.work-content,.work-content h3,.studio-statement-track{transform:none!important}.signal-cursor{display:none}.cap-panel{transition:none}.magnetic{transform:none!important}.work-scan{display:none}.button::before{display:none}
 }
+
+/* Accessibility-safe signal colors. The luminous brand blue/orange stay available for fills,
+   lines and atmospheric effects; text on light surfaces uses deeper ink variants. */
+.section-bone .chapter span,
+.capability-rail button.active span,
+.process-line>div>span,
+.decision-grid article>span,
+.archive-meta span:first-child{color:#244FB3}
+.capability-rail button,
+.cap-eyebrow,
+.cap-orbit b,
+.capability-progress,
+.archive-meta{color:#555A62!important}
+.capability-rail button.active{color:#09090B!important}
+.section-bone .cinematic-title em{color:#244FB3!important}
+.footer-bottom{color:#92959D}

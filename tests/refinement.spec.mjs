@@ -109,18 +109,23 @@ test('mobile Studio hands off directly to Start a Project with no dead layout ta
   const geometry=await page.evaluate(()=>{
     const about=document.querySelector('#about');
     const engage=document.querySelector('#engage');
+    const style=getComputedStyle(engage);
     const tail=document.documentElement.scrollHeight-(engage.offsetTop+engage.offsetHeight);
     return {
       aboutHeight:about.offsetHeight,
       gap:engage.offsetTop-(about.offsetTop+about.offsetHeight),
       engageHeight:engage.offsetHeight,
-      tail
+      tail,
+      contentVisibility:style.contentVisibility,
+      background:style.backgroundColor
     };
   });
   expect(Math.abs(geometry.gap),JSON.stringify(geometry)).toBeLessThanOrEqual(2);
   expect(geometry.aboutHeight,JSON.stringify(geometry)).toBeLessThan(2200);
   expect(geometry.engageHeight,JSON.stringify(geometry)).toBeGreaterThan(900);
   expect(Math.abs(geometry.tail),JSON.stringify(geometry)).toBeLessThanOrEqual(2);
+  expect(geometry.contentVisibility,JSON.stringify(geometry)).toBe('visible');
+  expect(geometry.background,JSON.stringify(geometry)).not.toBe('rgba(0, 0, 0, 0)');
 
   await page.locator('#engage').scrollIntoViewIfNeeded();
   await expect(page.locator('.giant-contact')).toBeVisible();

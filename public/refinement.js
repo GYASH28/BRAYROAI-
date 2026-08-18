@@ -24,7 +24,7 @@
     const sections = [
       '#plans-snapshot', '#intro', '#work', '#client-proof', '#clients',
       '#lab', '#process', '#about', '#engage'
-    ].map(q).filter(Boolean);
+    ].map(selector => q(selector)).filter(Boolean);
 
     const processRows = qa('.process-row');
     const capabilityScroller = q('.capability-steps');
@@ -55,7 +55,10 @@
           section.style.setProperty('--ref-enter', '1');
           section.style.setProperty('--ref-center', '0');
         });
-        processRows.forEach(row => row.style.setProperty('--row-focus', '1'));
+        processRows.forEach(row => {
+          row.style.setProperty('--row-focus', '1');
+          row.removeAttribute('aria-current');
+        });
         return;
       }
 

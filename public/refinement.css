@@ -19,6 +19,11 @@ p{overflow-wrap:anywhere;text-wrap:pretty}
   body .shell{width:min(1280px,calc(100% - 56px))!important;margin-inline:auto!important}
 }
 
+/* Generic reveal uses a tiny scale for cards. Large structural headers should enter
+   vertically instead: scaling a 1280px shell moves its optical left edge by 3.2px. */
+.work-head.reveal,.lab-head.reveal,.process-head.reveal,.clients-head.reveal,.engage-title.reveal,.capabilities-intro.reveal{transform:translateY(22px)}
+.work-head.reveal.in-view,.lab-head.reveal.in-view,.process-head.reveal.in-view,.clients-head.reveal.in-view,.engage-title.reveal.in-view,.capabilities-intro.reveal.in-view{transform:none}
+
 /* Prevent absolute metadata and arrows from colliding with real copy. */
 .plan-path{padding-right:74px}
 .plan-path p{padding-right:18px}
@@ -135,9 +140,11 @@ body.refinement-ready .giant-contact::after{content:"";position:absolute;left:0;
   .plan-path p{padding-right:0!important;margin-bottom:4px!important}
   .plan-path__arrow{right:20px!important;bottom:22px!important}
 
+  /* Flex is intentional here. Percentage grid tracks are cyclic during intrinsic sizing and
+     Chromium can collapse four cards into ~20% columns. Each discipline gets one reading pane. */
   .capability-sticky{height:410px!important;min-height:0!important}
-  .capability-steps{grid-template-columns:repeat(4,minmax(0,calc(100% - 18px)))!important;gap:10px!important;scroll-padding-inline:0;padding-bottom:8px!important}
-  .cap-step{min-width:0!important;width:auto!important;min-height:300px!important;padding:22px!important}
+  .capability-steps{display:flex!important;grid-template-columns:none!important;gap:10px!important;overflow-x:auto!important;scroll-snap-type:x mandatory!important;scroll-padding-inline:0!important;padding-bottom:8px!important}
+  .cap-step{flex:0 0 calc(100% - 18px)!important;min-width:calc(100% - 18px)!important;width:auto!important;min-height:300px!important;padding:22px!important}
   .cap-step.is-active h3{translate:0 0!important;transform:none!important}
 
   .process{padding:88px 0 96px!important}

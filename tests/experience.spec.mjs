@@ -22,11 +22,13 @@ test('chapter progress actually scrubs with scroll instead of being decorative-o
   await ready(page);
   const section=page.locator('#lab');
   const before=Number(await section.evaluate(el=>getComputedStyle(el).getPropertyValue('--chapter-progress')||0));
-  await section.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(180);
+  await section.evaluate(el=>{
+    document.documentElement.style.scrollBehavior='auto';
+    window.scrollTo(0,el.offsetTop);
+  });
+  await expect.poll(async()=>Number(await section.evaluate(el=>getComputedStyle(el).getPropertyValue('--chapter-progress')||0)),{timeout:3000}).toBeGreaterThan(.05);
   const after=Number(await section.evaluate(el=>getComputedStyle(el).getPropertyValue('--chapter-progress')||0));
   expect(after).toBeGreaterThan(before);
-  expect(after).toBeGreaterThan(.05);
   expect(after).toBeLessThanOrEqual(1);
 });
 

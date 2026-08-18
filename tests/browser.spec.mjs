@@ -115,7 +115,9 @@ test('real FakhriMart captures replace fragile live iframe mockups', async ({ pa
   await expect(page.locator('.project-screen img[src="/assets/fakhrimart-case-desktop.png"]')).toHaveCount(1);
   await expect(page.locator('.project-phone img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(1);
   await expect(page.locator('.case-gallery img')).toHaveCount(2);
+  await page.locator('.case-gallery').scrollIntoViewIfNeeded();
   await expect.poll(async()=>page.locator('.case-gallery img').first().evaluate(img=>img.naturalWidth),{timeout:8000}).toBeGreaterThan(1000);
+  await expect.poll(async()=>page.locator('.case-gallery img').nth(1).evaluate(img=>img.naturalWidth),{timeout:8000}).toBeGreaterThan(300);
   const aboutImage=page.locator('.about-portrait img');
   await page.locator('#about').scrollIntoViewIfNeeded();
   await expect.poll(async()=>aboutImage.evaluate(img=>img.naturalWidth),{timeout:8000}).toBeGreaterThan(0);
@@ -178,4 +180,5 @@ test('contact and real project destinations remain intentional',async({page})=>{
   await expect(page.locator('a[href="https://github.com/GYASH28/B.R.A.C.E"]')).not.toHaveCount(0);
   await expect(page.locator('a[href="https://fakhriyarns.vercel.app/"]')).not.toHaveCount(0);
   await expect(page.locator('.desktop-nav a[href="/plans.html"]')).toHaveCount(1);
+  await expect(page.locator('a[href="/case-studies/fakhrimart.html"]')).not.toHaveCount(0);
 });

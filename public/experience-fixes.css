@@ -1,8 +1,10 @@
 /* BRAYROAI v5 hardening — fixes discovered by the full accessibility/responsive gate. */
 
-/* Decorative washes and oversized type must never enlarge the document canvas. `clip`
-   avoids creating a scroll container, so sticky storytelling remains intact. */
+/* Decorative layers stay inside the section's actual box. The atmosphere still moves
+   through transforms, but no child starts outside the document and widens scrollWidth. */
 .chapter{overflow-x:clip}
+.chapter-wash--blue{left:0!important;right:auto!important}
+.chapter-wash--orange{right:0!important;left:auto!important}
 
 /* The chapter rail is deliberately tiny metadata, so use true AA-safe signal colors
    instead of low-opacity decorative text. */

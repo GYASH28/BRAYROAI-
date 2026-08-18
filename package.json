@@ -1,18 +1,17 @@
 {
-  "name": "brayroai-site",
-  "private": true,
-  "version": "2.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0",
-    "test:syntax": "node --check brayroai.js && node --check vite.config.mjs && node --check tests/integrity.mjs && node --check tests/stress.mjs && node --check tests/lighthouse-budget.mjs",
-    "test:integrity": "node tests/integrity.mjs",
-    "test:stress": "node tests/stress.mjs",
-    "qa:static": "npm run test:syntax && npm run test:integrity && npm run build"
+  "name":"ykg-digital-agency",
+  "private":true,
+  "version":"3.1.0",
+  "type":"module",
+  "scripts":{
+    "dev":"vite --host 0.0.0.0",
+    "build":"vite build",
+    "preview":"vite preview --host 0.0.0.0",
+    "test:syntax":"node --check public/app.js && node --check public/site-fixes.js && node --check vite.config.mjs",
+    "test:integrity":"node tests/integrity.mjs",
+    "test:browser":"playwright test",
+    "test:stress":"node tests/stress.mjs",
+    "qa:static":"npm run test:syntax && npm run test:integrity && npm run build"
   },
-  "devDependencies": {
-    "vite": "latest"
-  }
+  "devDependencies":{"vite":"latest"}
 }

@@ -1,8 +1,8 @@
-name: BRAYROAI Launch Quality Gate
+name: YKG Digital Quality Gate
 
 on:
   push:
-    branches: [main, brayroai-v2-cinematic]
+    branches: [main, actual-site-recovery]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: brayroai-qa-${{ github.ref }}
+  group: ykg-qa-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -26,15 +26,22 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run qa:static
-      - name: Guard production bundle size
+      - name: Guard production bundle
         run: |
-          test $(find dist -type f | wc -l) -gt 5
+          test -f dist/index.html
+          test -f dist/styles.css
+          test -f dist/app.js
+          test -f dist/site-fixes.css
+          test -f dist/site-fixes.js
+          test -f dist/assets/hero-background.webp
+          test -f dist/assets/yash-cutout.webp
+          test -f dist/assets/about-yash.webp
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 18000
+          test "$TOTAL" -lt 2500
 
   browser-and-load:
-    name: Browser, a11y, load + Lighthouse
+    name: Browser + a11y + load + Lighthouse
     needs: static-quality
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -45,19 +52,19 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Install QA tooling without changing project dependencies
+      - name: Install QA tooling
         run: npm install --no-save @playwright/test@latest @axe-core/playwright@latest lighthouse@latest
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - run: npm run build
       - name: Start production preview
         run: |
-          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/ykg-preview.log 2>&1 &
           for i in {1..40}; do
             if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
             sleep 1
           done
-          cat /tmp/brayroai-preview.log
+          cat /tmp/ykg-preview.log
           exit 1
       - name: Concurrent stress test
         env:
@@ -65,25 +72,41 @@ jobs:
           STRESS_REQUESTS: 720
           STRESS_CONCURRENCY: 36
         run: npm run test:stress
-      - name: Cross-viewport interaction + accessibility tests
+      - name: Cross-viewport interaction and accessibility tests
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
-      - name: Lighthouse mobile audits
+      - name: Capture QA reference screenshots
+        run: |
+          mkdir -p artifacts/screenshots
+          node - <<'JS'
+          const { chromium } = require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            for(const [name,width,height] of [['desktop',1440,1000],['mobile',390,844]]){
+              const context=await browser.newContext({viewport:{width,height}});
+              const page=await context.newPage();
+              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              await page.waitForTimeout(1100);
+              await page.screenshot({path:`artifacts/screenshots/${name}.png`,fullPage:true});
+              await context.close();
+            }
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+      - name: Lighthouse mobile audit
         run: |
           mkdir -p artifacts/lighthouse
           npx lighthouse http://127.0.0.1:4173/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/home.json
-          npx lighthouse http://127.0.0.1:4173/work.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/work.json
-          npx lighthouse http://127.0.0.1:4173/work/fakhrimart.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/fakhrimart.json
-          node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json artifacts/lighthouse/work.json artifacts/lighthouse/fakhrimart.json
+          node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: brayroai-qa-${{ github.run_number }}
+          name: ykg-digital-qa-${{ github.run_number }}
           path: |
             artifacts/
             test-results/
-            /tmp/brayroai-preview.log
+            /tmp/ykg-preview.log
           if-no-files-found: ignore
           retention-days: 14

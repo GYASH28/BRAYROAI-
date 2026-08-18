@@ -1,4 +1,4 @@
-name: YKG Digital Production Smoke
+name: BRAYROAI Production Smoke
 
 on:
   push:
@@ -27,7 +27,6 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Build exact merged source
         run: npm run build
-
       - name: Resolve and verify this commit's Vercel Production deployment
         env:
           GH_TOKEN: ${{ github.token }}
@@ -35,97 +34,65 @@ jobs:
           set -euo pipefail
           DEPLOYMENT_ID=""
           for i in {1..36}; do
-            DEPLOYMENT_ID=$(curl -fsSL \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments?environment=Production&per_page=20" \
-              | jq -r --arg sha "$GITHUB_SHA" '[.[] | select(.sha==$sha and .environment=="Production")][0].id // empty')
+            DEPLOYMENT_ID=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments?environment=Production&per_page=20" | jq -r --arg sha "$GITHUB_SHA" '[.[] | select(.sha==$sha and .environment=="Production")][0].id // empty')
             if [ -n "$DEPLOYMENT_ID" ]; then break; fi
             sleep 10
           done
           test -n "$DEPLOYMENT_ID"
-          echo "Resolved production deployment: $DEPLOYMENT_ID"
-
-          STATE=""
-          PROD_URL=""
+          STATE=""; PROD_URL=""
           for i in {1..36}; do
-            STATUS=$(curl -fsSL \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments/${DEPLOYMENT_ID}/statuses?per_page=10")
+            STATUS=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments/${DEPLOYMENT_ID}/statuses?per_page=10")
             STATE=$(printf '%s' "$STATUS" | jq -r '.[0].state // empty')
             PROD_URL=$(printf '%s' "$STATUS" | jq -r '.[0].environment_url // empty')
             if [ "$STATE" = "success" ]; then break; fi
-            if [ "$STATE" = "failure" ] || [ "$STATE" = "error" ]; then
-              echo "Vercel production deployment failed with state: $STATE"
-              exit 1
-            fi
+            if [ "$STATE" = "failure" ] || [ "$STATE" = "error" ]; then exit 1; fi
             sleep 10
           done
-          test "$STATE" = "success"
-          test -n "$PROD_URL"
-          echo "Vercel reports Production success: $PROD_URL"
+          test "$STATE" = "success"; test -n "$PROD_URL"
           echo "PROD_URL=$PROD_URL" >> "$GITHUB_ENV"
-
-          HTTP_CODE=$(curl -L -sS --max-time 25 -o /tmp/ykg-prod-home.html -w '%{http_code}' "$PROD_URL/" || true)
-          if [ "$HTTP_CODE" = "200" ] && grep -q 'Digital experiences' /tmp/ykg-prod-home.html; then
-            echo "Production deployment is publicly reachable; QA will run against Vercel."
-            echo "QA_URL=$PROD_URL" >> "$GITHUB_ENV"
-            echo "QA_MODE=vercel-public" >> "$GITHUB_ENV"
+          HTTP_CODE=$(curl -L -sS --max-time 25 -o /tmp/brayroai-prod-home.html -w '%{http_code}' "$PROD_URL/" || true)
+          if [ "$HTTP_CODE" = "200" ] && grep -q 'BRAYROAI' /tmp/brayroai-prod-home.html && grep -q 'Digital, designed' /tmp/brayroai-prod-home.html; then
+            echo "QA_URL=$PROD_URL" >> "$GITHUB_ENV"; echo "QA_MODE=vercel-public" >> "$GITHUB_ENV"
           else
-            echo "Vercel deployment is protected from unauthenticated CI (HTTP $HTTP_CODE); deployment state is verified through GitHub/Vercel and browser QA will run against the exact merged production build locally."
-            echo "QA_URL=http://127.0.0.1:4173" >> "$GITHUB_ENV"
-            echo "QA_MODE=vercel-protected-local-build" >> "$GITHUB_ENV"
+            echo "QA_URL=http://127.0.0.1:4173" >> "$GITHUB_ENV"; echo "QA_MODE=vercel-protected-local-build" >> "$GITHUB_ENV"
           fi
-
       - name: Start exact production build when Vercel is protected
         if: env.QA_MODE == 'vercel-protected-local-build'
         run: |
-          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/ykg-production-preview.log 2>&1 &
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-production-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Digital experiences'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'BRAYROAI'; then exit 0; fi
             sleep 1
           done
-          cat /tmp/ykg-production-preview.log
-          exit 1
-
+          cat /tmp/brayroai-production-preview.log; exit 1
       - name: Production-equivalent concurrent load test
         env:
           BASE_URL: ${{ env.QA_URL }}
           STRESS_REQUESTS: 360
           STRESS_CONCURRENCY: 20
         run: npm run test:stress
-
       - name: Production-equivalent browser and accessibility suite
         env:
           BASE_URL: ${{ env.QA_URL }}
         run: npx playwright test
-
       - name: Production-equivalent Lighthouse mobile audit
         run: |
           mkdir -p artifacts/production-lighthouse
           npx lighthouse "$QA_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
           node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json
-
       - name: Record deployment verification
         if: always()
         run: |
           mkdir -p artifacts
-          {
-            echo "commit=$GITHUB_SHA"
-            echo "production_url=${PROD_URL:-unresolved}"
-            echo "qa_url=${QA_URL:-unresolved}"
-            echo "qa_mode=${QA_MODE:-unresolved}"
-          } > artifacts/deployment-verification.txt
-
+          printf 'commit=%s\nproduction_url=%s\nqa_url=%s\nqa_mode=%s\n' "$GITHUB_SHA" "${PROD_URL:-unresolved}" "${QA_URL:-unresolved}" "${QA_MODE:-unresolved}" > artifacts/deployment-verification.txt
       - name: Upload production QA evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ykg-production-qa-${{ github.run_number }}
+          name: brayroai-production-qa-${{ github.run_number }}
           path: |
             artifacts/
             test-results/
-            /tmp/ykg-production-preview.log
+            /tmp/brayroai-production-preview.log
           if-no-files-found: ignore
           retention-days: 14

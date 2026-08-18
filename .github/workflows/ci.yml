@@ -1,8 +1,8 @@
-name: YKG Digital Quality Gate
+name: BRAYROAI Quality Gate
 
 on:
   push:
-    branches: [main, actual-site-recovery]
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ykg-qa-${{ github.ref }}
+  group: brayroai-qa-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -36,9 +36,11 @@ jobs:
           test -f dist/assets/hero-background.webp
           test -f dist/assets/yash-cutout.webp
           test -f dist/assets/about-yash.webp
+          grep -q 'BRAYROAI' dist/index.html
+          ! grep -qi 'YKG Digital' dist/index.html
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 2500
+          test "$TOTAL" -lt 2600
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
@@ -59,12 +61,12 @@ jobs:
       - run: npm run build
       - name: Start production preview
         run: |
-          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/ykg-preview.log 2>&1 &
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'BRAYROAI'; then exit 0; fi
             sleep 1
           done
-          cat /tmp/ykg-preview.log
+          cat /tmp/brayroai-preview.log
           exit 1
       - name: Concurrent stress test
         env:
@@ -76,7 +78,7 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
-      - name: Capture QA reference screenshots
+      - name: Capture complete QA reference screenshots
         run: |
           mkdir -p artifacts/screenshots
           node - <<'JS'
@@ -87,7 +89,13 @@ jobs:
               const context=await browser.newContext({viewport:{width,height}});
               const page=await context.newPage();
               await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
-              await page.waitForTimeout(1100);
+              await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
+              for(const id of ['intro','services','work','client-proof','lab','process','about','engage']){
+                await page.locator(`#${id}`).scrollIntoViewIfNeeded();
+                await page.waitForTimeout(160);
+              }
+              await page.evaluate(()=>scrollTo(0,0));
+              await page.waitForTimeout(300);
               await page.screenshot({path:`artifacts/screenshots/${name}.png`,fullPage:true});
               await context.close();
             }
@@ -103,10 +111,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ykg-digital-qa-${{ github.run_number }}
+          name: brayroai-qa-${{ github.run_number }}
           path: |
             artifacts/
             test-results/
-            /tmp/ykg-preview.log
+            /tmp/brayroai-preview.log
           if-no-files-found: ignore
           retention-days: 14

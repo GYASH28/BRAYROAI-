@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="YKG Digital">
-  <rect width="64" height="64" rx="14" fill="#0a0a08"/>
-  <path d="M12 15h10l10 16 10-16h10L36.8 38.4V50h-9.6V38.4L12 15Z" fill="#f2ede4"/>
-  <circle cx="50" cy="49" r="5" fill="#ff4d00"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="BRAYROAI">
+  <rect width="64" height="64" rx="14" fill="#09090B"/>
+  <path d="M15 14h18c9 0 15 4 15 11 0 4-2 7-6 9 5 2 8 6 8 11 0 9-7 13-18 13H15V14Zm10 9v8h8c3 0 5-1 5-4s-2-4-5-4h-8Zm0 17v9h9c4 0 6-1 6-4.5S38 40 34 40h-9Z" fill="#F3F0EA"/>
+  <path d="M45 14h7v10h-7z" fill="#3E7BFF"/>
+  <path d="M45 28h7v7h-7z" fill="#FF6B2C"/>
 </svg>

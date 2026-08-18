@@ -1,12 +1,16 @@
 {
   "name": "brayroai-site",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "test:syntax": "node --check brayroai.js && node --check vite.config.mjs && node --check tests/integrity.mjs && node --check tests/stress.mjs && node --check tests/lighthouse-budget.mjs",
+    "test:integrity": "node tests/integrity.mjs",
+    "test:stress": "node tests/stress.mjs",
+    "qa:static": "npm run test:syntax && npm run test:integrity && npm run build"
   },
   "devDependencies": {
     "vite": "latest"

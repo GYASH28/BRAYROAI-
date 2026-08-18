@@ -8,6 +8,10 @@
   hardening.rel='stylesheet';hardening.href='/commercial-fixes.css';
   document.head.appendChild(hardening);
 
+  const accessibility=document.createElement('link');
+  accessibility.rel='stylesheet';accessibility.href='/commercial-accessibility.css';
+  document.head.appendChild(accessibility);
+
   const onHome=location.pathname==='/'||location.pathname.endsWith('/index.html');
   if(!onHome) return;
   document.body.classList.add('commercial-ready');

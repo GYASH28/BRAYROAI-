@@ -1,5 +1,0 @@
-https://ykg-digital-agency-v3.vercel.app/app.js
-https://ykg-digital-agency-v3.vercel.app/assets/about-yash.webp
-https://ykg-digital-agency-v3.vercel.app/assets/hero-background.webp
-https://ykg-digital-agency-v3.vercel.app/assets/yash-cutout.webp
-https://ykg-digital-agency-v3.vercel.app/styles.css

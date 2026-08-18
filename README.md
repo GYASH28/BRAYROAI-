@@ -1,33 +1,27 @@
-# BRAYROAI
+# YKG Digital — agency website
 
-**Design. Engineering. AI.**
-
-BRAYROAI is a founder-led creative technology studio building premium websites, digital experiences, frontend systems, and useful AI products.
+Production source for the current **YKG Digital** creative-technology agency website. This repository is intentionally separate from the personal Yash Ganesh portfolio.
 
 ## Stack
-- Vite
-- Semantic HTML
-- CSS
-- Vanilla JavaScript
+Vite · semantic HTML · CSS · vanilla JavaScript
 
-## Local development
+## Current source
+- `index.html` — canonical one-page agency experience
+- `public/styles.css` — canonical visual system
+- `public/app.js` — primary interaction and scroll-motion system
+- `public/site-fixes.css` / `public/site-fixes.js` — surgical QA/accessibility hardening
+- `public/assets/` — current hero/founder imagery
+- `tests/` — integrity, browser, accessibility, responsive, Lighthouse and load checks
+
+## Run locally
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-## Production build
+## Static production gate
 ```bash
-npm run build
+npm run qa:static
 ```
 
-## Structure
-- `index.html` — agency homepage
-- `work.html` — selected work archive
-- `work/fakhrimart.html` — FakhriMart case study
-- `brayroai-*.css` — visual system and responsive art direction
-- `brayroai.js` — motion and interaction layer
-- `DESIGN.md` — canonical BRAYROAI design source of truth
-- `assets/` — agency/project imagery actually used by the site
-
-This repository is intentionally separate from the personal Yash Ganesh portfolio.
+CI additionally runs Chromium interaction tests, axe checks, seven viewport overflow checks, a 720-request concurrency test and mobile Lighthouse.

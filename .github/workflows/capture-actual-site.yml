@@ -96,15 +96,23 @@ jobs:
           import fs from 'node:fs/promises';
 
           const base='https://ykg-digital-agency-v3.vercel.app';
+          const baseOrigin=new URL(base).origin;
           const browser=await chromium.launch({headless:true});
           const report={};
 
           async function inspect(name,path,viewport){
-            const page=await browser.newPage({viewportSize:viewport});
-            const consoleErrors=[]; const pageErrors=[]; const failed=[];
+            const context=await browser.newContext({viewport});
+            const page=await context.newPage();
+            const consoleErrors=[]; const pageErrors=[]; const failed=[]; const responses=[];
             page.on('console',m=>{ if(m.type()==='error') consoleErrors.push(m.text()); });
             page.on('pageerror',e=>pageErrors.push(String(e)));
             page.on('requestfailed',r=>failed.push({url:r.url(),error:r.failure()?.errorText||'failed'}));
+            page.on('response',r=>{
+              try {
+                const u=new URL(r.url());
+                if(u.origin===baseOrigin) responses.push({url:r.url(),status:r.status(),contentType:r.headers()['content-type']||''});
+              } catch {}
+            });
             const response=await page.goto(base+path,{waitUntil:'networkidle',timeout:60000});
             await page.screenshot({path:`reference-capture/screenshots/${name}.png`,fullPage:true});
             const data=await page.evaluate(()=>({
@@ -113,15 +121,19 @@ jobs:
               text:document.body.innerText,
               links:[...document.querySelectorAll('a')].map(a=>({text:a.innerText.trim(),href:a.href})),
               images:[...document.images].map(i=>({src:i.currentSrc||i.src,alt:i.alt,width:i.naturalWidth,height:i.naturalHeight})),
+              scripts:[...document.scripts].map(s=>s.src).filter(Boolean),
+              styles:[...document.querySelectorAll('link[rel="stylesheet"]')].map(l=>l.href),
               sections:[...document.querySelectorAll('section,main,header,footer')].map(el=>({tag:el.tagName,id:el.id,classes:el.className,heading:el.querySelector('h1,h2,h3')?.innerText||''})),
               dimensions:{scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,scrollHeight:document.documentElement.scrollHeight},
+              htmlClasses:document.documentElement.className,
+              bodyClasses:document.body.className,
               reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches
             }));
             const axe=await new AxeBuilder({page}).analyze();
-            report[name]={status:response?.status(),url:page.url(),title:data.title,links:data.links,images:data.images,sections:data.sections,dimensions:data.dimensions,consoleErrors,pageErrors,failedRequests:failed,axeViolations:axe.violations.map(v=>({id:v.id,impact:v.impact,description:v.description,nodes:v.nodes.length}))};
+            report[name]={status:response?.status(),url:page.url(),title:data.title,links:data.links,images:data.images,scripts:data.scripts,styles:data.styles,sections:data.sections,dimensions:data.dimensions,htmlClasses:data.htmlClasses,bodyClasses:data.bodyClasses,consoleErrors,pageErrors,failedRequests:failed,responses,axeViolations:axe.violations.map(v=>({id:v.id,impact:v.impact,description:v.description,nodes:v.nodes.map(n=>({target:n.target,html:n.html,failureSummary:n.failureSummary}))}))};
             await fs.writeFile(`reference-capture/raw/${name}-rendered.html`,data.html);
             await fs.writeFile(`reference-capture/raw/${name}-text.txt`,data.text);
-            await page.close();
+            await context.close();
           }
 
           await inspect('home-desktop','/',{width:1440,height:1100});

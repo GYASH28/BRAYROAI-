@@ -1,11 +1,15 @@
 (() => {
+  /* Accessibility finish: keep decorative background type out of the rendered text layer and lift footer microcopy above AA contrast. */
+  const finish=document.createElement('style');
+  finish.textContent='.engage-word{display:none!important}.footer,.footer .shell,.footer .shell>*{color:#A5AAB3!important}';
+  document.head.appendChild(finish);
+
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = matchMedia('(pointer:fine)').matches;
   const q = (selector, root=document) => root.querySelector(selector);
   const qa = (selector, root=document) => [...root.querySelectorAll(selector)];
   const clamp = (min,value,max) => Math.min(max,Math.max(min,value));
 
-  /* Mobile keyboard containment + desktop resize cleanup. */
   const button=q('[data-menu-button]');
   const menu=q('[data-mobile-menu]');
   if(button&&menu){
@@ -23,40 +27,29 @@
     },{passive:true});
   }
 
-  /* Active navigation + section arrival line. */
   const navLinks=qa('.desktop-nav a[href^="#"]');
   const chapters=qa('.chapter[id]');
   if('IntersectionObserver' in window){
     const sectionObserver=new IntersectionObserver(entries=>{
-      const visible=entries.filter(entry=>entry.isIntersecting)
-        .sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+      const visible=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
       if(!visible) return;
       const id=visible.target.id;
       navLinks.forEach(link=>link.classList.toggle('is-active',link.getAttribute('href')===`#${id}`));
       visible.target.classList.add('chapter-entered');
     },{threshold:[.18,.35,.55],rootMargin:'-14% 0px -42% 0px'});
     chapters.forEach(section=>sectionObserver.observe(section));
-  }else{
-    chapters.forEach(section=>section.classList.add('chapter-entered'));
-  }
+  }else chapters.forEach(section=>section.classList.add('chapter-entered'));
 
-  /* Stagger high-information blocks without adding another animation library. */
-  qa('[data-stagger]').forEach(group=>{
-    [...group.children].forEach((child,index)=>child.style.setProperty('--stagger-delay',`${index*70}ms`));
-  });
+  qa('[data-stagger]').forEach(group=>[...group.children].forEach((child,index)=>child.style.setProperty('--stagger-delay',`${index*70}ms`)));
 
-  /* Local pointer light for authored surfaces. */
   if(finePointer&&!reduced){
-    qa('.interactive-surface').forEach(surface=>{
-      surface.addEventListener('pointermove',event=>{
-        const r=surface.getBoundingClientRect();
-        surface.style.setProperty('--mx',`${event.clientX-r.left}px`);
-        surface.style.setProperty('--my',`${event.clientY-r.top}px`);
-      },{passive:true});
-    });
+    qa('.interactive-surface').forEach(surface=>surface.addEventListener('pointermove',event=>{
+      const r=surface.getBoundingClientRect();
+      surface.style.setProperty('--mx',`${event.clientX-r.left}px`);
+      surface.style.setProperty('--my',`${event.clientY-r.top}px`);
+    },{passive:true}));
   }
 
-  /* Capability progress mirrors the active narrative step. */
   const capSteps=qa('[data-cap-step]');
   const capProgress=q('[data-capability-progress]');
   const paintCapabilityProgress=()=>{
@@ -70,7 +63,6 @@
     paintCapabilityProgress();
   }
 
-  /* Process rows react to the scroll focal line instead of all feeling equally static. */
   const processRows=qa('.process-row');
   let processFrame=0;
   const paintProcess=()=>{
@@ -85,21 +77,10 @@
     });
     processRows.forEach(row=>row.classList.toggle('is-current',row===best));
   };
-  const scheduleProcess=()=>{
-    if(!processFrame) processFrame=requestAnimationFrame(paintProcess);
-  };
-  if(processRows.length){
-    addEventListener('scroll',scheduleProcess,{passive:true});
-    addEventListener('resize',scheduleProcess,{passive:true});
-    scheduleProcess();
-  }
+  const scheduleProcess=()=>{if(!processFrame) processFrame=requestAnimationFrame(paintProcess)};
+  if(processRows.length){addEventListener('scroll',scheduleProcess,{passive:true});addEventListener('resize',scheduleProcess,{passive:true});scheduleProcess()}
 
-  /* Subtle scroll drift on selected large visuals. Motion is clamped and viewport-scoped. */
-  const driftItems=[
-    {el:q('.feature-project__media'),factor:16},
-    {el:q('.about-portrait img'),factor:13},
-    {el:q('.studio-standard'),factor:7}
-  ].filter(item=>item.el);
+  const driftItems=[{el:q('.feature-project__media'),factor:16},{el:q('.about-portrait img'),factor:13},{el:q('.studio-standard'),factor:7}].filter(item=>item.el);
   let driftFrame=0;
   const paintDrift=()=>{
     driftFrame=0;
@@ -107,34 +88,19 @@
     driftItems.forEach(({el,factor})=>{
       const r=el.getBoundingClientRect();
       if(r.bottom<0||r.top>innerHeight) return;
-      const center=r.top+r.height/2;
-      const progress=clamp(-1,(innerHeight/2-center)/innerHeight,1);
-      if(el.matches('img')) el.style.translate=`0 ${progress*factor}px`;
-      else el.style.setProperty('--scroll-drift',`${progress*factor}px`);
+      const progress=clamp(-1,(innerHeight/2-(r.top+r.height/2))/innerHeight,1);
+      if(el.matches('img')) el.style.translate=`0 ${progress*factor}px`; else el.style.setProperty('--scroll-drift',`${progress*factor}px`);
     });
   };
-  const scheduleDrift=()=>{
-    if(!driftFrame) driftFrame=requestAnimationFrame(paintDrift);
-  };
-  if(driftItems.length&&!reduced){
-    addEventListener('scroll',scheduleDrift,{passive:true});
-    addEventListener('resize',scheduleDrift,{passive:true});
-    scheduleDrift();
-  }
+  const scheduleDrift=()=>{if(!driftFrame) driftFrame=requestAnimationFrame(paintDrift)};
+  if(driftItems.length&&!reduced){addEventListener('scroll',scheduleDrift,{passive:true});addEventListener('resize',scheduleDrift,{passive:true});scheduleDrift()}
 
-  /* Defensive reveal fallback: content must never remain blank because an observer was starved. */
-  const revealFallback=()=>{
-    qa('.reveal:not(.in-view)').forEach(el=>{
-      const r=el.getBoundingClientRect();
-      if(r.top<innerHeight*1.15&&r.bottom>-100) el.classList.add('in-view');
-    });
-  };
+  const revealFallback=()=>qa('.reveal:not(.in-view)').forEach(el=>{
+    const r=el.getBoundingClientRect();
+    if(r.top<innerHeight*1.15&&r.bottom>-100) el.classList.add('in-view');
+  });
   let revealFrame=0;
-  const scheduleRevealFallback=()=>{
-    if(!revealFrame) revealFrame=requestAnimationFrame(()=>{
-      revealFrame=0;revealFallback();
-    });
-  };
+  const scheduleRevealFallback=()=>{if(!revealFrame) revealFrame=requestAnimationFrame(()=>{revealFrame=0;revealFallback()})};
   addEventListener('scroll',scheduleRevealFallback,{passive:true});
   addEventListener('resize',scheduleRevealFallback,{passive:true});
   addEventListener('load',revealFallback,{once:true});

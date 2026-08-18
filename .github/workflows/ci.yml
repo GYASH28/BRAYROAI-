@@ -64,7 +64,7 @@ jobs:
       - name: Install QA tooling
         run: npm install --no-save @playwright/test@latest @axe-core/playwright@latest lighthouse@latest
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - run: npm run build
       - name: Start production preview
         run: |

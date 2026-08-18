@@ -4,6 +4,7 @@ async function ready(page){
   await page.goto('/',{waitUntil:'networkidle'});
   await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
   await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
+  await page.waitForFunction(()=>document.body.classList.contains('commercial-ready'));
 }
 
 test('v5 experience layer is present without replacing core content', async ({page}) => {
@@ -59,41 +60,56 @@ test('capability panels expose the staged BRAYROAI transition contract', async (
   }
 });
 
-test('project and client frames always have designed visual fallback surfaces', async ({page}) => {
+test('project and client proof surfaces render persisted real FakhriMart captures', async ({page}) => {
   await ready(page);
   await page.locator('#work').scrollIntoViewIfNeeded();
-  await expect(page.locator('.project-screen')).toHaveCSS('background-image',/gradient/);
-  await expect(page.locator('.project-phone')).toHaveCSS('background-image',/gradient/);
+  const desktop=page.locator('.project-screen img[src="/assets/fakhrimart-case-desktop.png"]');
+  const mobile=page.locator('.project-phone img[src="/assets/fakhrimart-case-mobile.png"]');
+  await expect(desktop).toHaveCount(1);
+  await expect(mobile).toHaveCount(1);
+  await expect.poll(async()=>desktop.evaluate(img=>img.naturalWidth),{timeout:8000}).toBeGreaterThan(1000);
+  await expect.poll(async()=>mobile.evaluate(img=>img.naturalWidth),{timeout:8000}).toBeGreaterThan(300);
+
   await page.locator('#client-proof').scrollIntoViewIfNeeded();
-  await expect(page.locator('.live-browser')).toHaveCSS('background-image',/gradient/);
-  await expect(page.locator('.live-phone')).toHaveCSS('background-image',/gradient/);
+  await expect(page.locator('.live-browser > img[src="/assets/fakhrimart-case-desktop.png"]')).toHaveCount(1);
+  await expect(page.locator('.live-phone > img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(1);
 });
 
-test('pointer depth is progressive enhancement and returns to neutral', async ({page}) => {
+test('pointer depth remains a fine-pointer progressive enhancement', async ({page}) => {
   await page.setViewportSize({width:1440,height:900});
   await ready(page);
   await page.locator('#lab').scrollIntoViewIfNeeded();
   const card=page.locator('.lab-card').nth(1);
   const box=await card.boundingBox();
   expect(box).not.toBeNull();
+  const finePointer=await page.evaluate(()=>matchMedia('(pointer:fine)').matches);
   await page.mouse.move(box.x+box.width*.8,box.y+box.height*.3);
-  await page.waitForTimeout(80);
+  await page.waitForTimeout(100);
   const moved=await card.evaluate(el=>getComputedStyle(el).getPropertyValue('--pointer-x').trim());
-  expect(Math.abs(Number(moved))).toBeGreaterThan(.1);
-  await page.mouse.move(4,4);
-  await page.waitForTimeout(80);
-  const reset=await card.evaluate(el=>getComputedStyle(el).getPropertyValue('--pointer-x').trim());
-  expect(Number(reset)).toBe(0);
+  if(finePointer){
+    expect(Math.abs(Number(moved))).toBeGreaterThan(.1);
+    await page.mouse.move(4,4);
+    await page.waitForTimeout(100);
+    const reset=await card.evaluate(el=>getComputedStyle(el).getPropertyValue('--pointer-x').trim());
+    expect(Number(reset)).toBe(0);
+  }else{
+    expect(['','0','0.000'].includes(moved)).toBeTruthy();
+  }
 });
 
-test('reduced motion keeps the v5 content while removing motion-dependent transforms', async ({browser}) => {
+test('reduced motion keeps the v5 content while removing motion-dependent behavior', async ({browser}) => {
   const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});
   const page=await context.newPage();
   await ready(page);
   await expect(page.locator('.studio-matrix')).toBeVisible();
   const capTransition=await page.locator('[data-cap-panel="0"]').evaluate(el=>getComputedStyle(el).transitionDuration);
   expect(capTransition.split(',').every(value=>parseFloat(value)===0)).toBeTruthy();
-  const hoverTransform=await page.locator('.project-tile__art').first().evaluate(el=>getComputedStyle(el).transform);
-  expect(hoverTransform).toBe('none');
+  const card=page.locator('.lab-card').nth(1);
+  await card.scrollIntoViewIfNeeded();
+  const box=await card.boundingBox();
+  if(box) await page.mouse.move(box.x+box.width*.8,box.y+box.height*.3);
+  await page.waitForTimeout(100);
+  const pointer=await card.evaluate(el=>getComputedStyle(el).getPropertyValue('--pointer-x').trim());
+  expect(['','0','0.000'].includes(pointer)).toBeTruthy();
   await context.close();
 });

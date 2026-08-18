@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { test, expect } from '@playwright/test';
 
 async function ready(page){
@@ -128,8 +129,11 @@ test('mobile Studio hands off directly to Start a Project with no dead layout ta
   expect(geometry.background,JSON.stringify(geometry)).not.toBe('rgba(0, 0, 0, 0)');
 
   await page.locator('#engage').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(180);
   await expect(page.locator('.giant-contact')).toBeVisible();
   await expect(page.locator('#engage .engage-card')).toHaveCount(2);
+  fs.mkdirSync('artifacts/refinement',{recursive:true});
+  await page.locator('#engage').screenshot({path:'artifacts/refinement/engage-mobile.png'});
 });
 
 test('v6 refinement fully settles in reduced-motion mode', async ({browser}) => {

@@ -14,6 +14,11 @@
   experienceFixes.href='/experience-fixes.css';
   document.head.appendChild(experienceFixes);
 
+  const commercialStyles=document.createElement('link');
+  commercialStyles.rel='stylesheet';
+  commercialStyles.href='/commercial.css';
+  document.head.appendChild(commercialStyles);
+
   /* Accessibility finish: keep decorative background type out of the rendered text layer and lift footer microcopy above AA contrast. */
   const finish=document.createElement('style');
   finish.textContent='.engage-word{display:none!important}.footer,.footer .shell,.footer .shell>*{color:#A5AAB3!important}';
@@ -131,4 +136,9 @@
   experienceScript.src='/experience.js';
   experienceScript.defer=true;
   document.body.appendChild(experienceScript);
+
+  const commercialScript=document.createElement('script');
+  commercialScript.src='/commercial.js';
+  commercialScript.defer=true;
+  document.body.appendChild(commercialScript);
 })();

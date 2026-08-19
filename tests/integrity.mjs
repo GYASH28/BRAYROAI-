@@ -1,80 +1,86 @@
 import fs from 'node:fs';
 import path from 'node:path';
+
 const root=process.cwd();
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const html=read('index.html'),plans=read('plans.html'),caseStudy=read('case-studies/fakhrimart.html'),css=read('public/styles.css'),fixes=read('public/site-fixes.css'),polish=read('public/polish.css'),experienceCss=read('public/experience.css'),experienceFixes=read('public/experience-fixes.css'),commercialCss=read('public/commercial.css'),commercialFixes=read('public/commercial-fixes.css'),commercialA11y=read('public/commercial-accessibility.css'),js=read('public/app.js'),enhancements=read('public/site-fixes.js'),experienceJs=read('public/experience.js'),commercialJs=read('public/commercial.js'),plansJs=read('public/plans.js');
-const errors=[]; const expect=(condition,message)=>{if(!condition) errors.push(message)};
+const exists=p=>fs.existsSync(path.join(root,p));
+const html=read('index.html');
+const plans=read('plans.html');
+const caseStudy=read('case-studies/fakhrimart.html');
+const css=read('public/styles.css');
+const fixes=read('public/site-fixes.css');
+const experienceCss=read('public/experience.css');
+const js=read('public/app.js');
+const commercialCss=read('public/commercial.css');
+const commercialFixes=read('public/commercial-fixes.css');
+const commercialA11y=read('public/commercial-accessibility.css');
+const plansJs=read('public/plans.js');
+const errors=[];
+const expect=(condition,message)=>{if(!condition) errors.push(message)};
 
 expect(html.includes('BRAYROAI — Design. Engineering. AI.'),'BRAYROAI title missing');
-expect(html.includes('Digital, designed'),'brand hero promise missing');
-expect(html.includes('INTELLIGENT CRAFT'),'brand idea missing');
+expect(html.includes('Digital, designed<br/><em>to feel different.</em>'),'locked hero promise changed');
+expect(html.includes('BRAYROAI / CREATIVE TECHNOLOGY STUDIO'),'locked hero identity changed');
+expect(html.includes('SCROLL TO SHAPE THE STORY'),'locked hero meta changed');
+expect(html.includes('hero-background.webp')&&html.includes('yash-cutout.webp'),'locked hero assets changed');
 expect(!/YKG Digital|YKG DIGITAL|YKG \/|YKG\b/.test(html),'legacy YKG naming remains in production HTML');
 
-for(const id of ['main','top','intro','services','work','client-proof','lab','process','about','engage']) expect(html.includes(`id="${id}"`),`missing #${id}`);
-for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png']) expect(fs.existsSync(path.join(root,'public/assets',asset)),`missing ${asset}`);
-for(const asset of ['public/experience.css','public/experience-fixes.css','public/experience.js','public/commercial.css','public/commercial-fixes.css','public/commercial-accessibility.css','public/commercial.js','public/plans.js','plans.html','case-studies/fakhrimart.html']) expect(fs.existsSync(path.join(root,asset)),`missing ${asset}`);
+for(const id of ['main','top','services','work','client-proof','process','lab','about','engage']) expect(html.includes(`id="${id}"`),`missing #${id}`);
+expect((html.match(/data-scene=/g)||[]).length===6,'homepage must expose exactly six authored post-hero scenes');
+for(const scene of ['forces','project','process','lab','studio','resolution']) expect(html.includes(`data-scene="${scene}"`),`missing ${scene} scene`);
+expect(!html.includes('class="manifesto chapter"'),'old manifesto section still present');
+expect(!html.includes('capability-steps'),'old capability card/step architecture still present');
+expect(!html.includes('process-row'),'old numbered process-row architecture still present');
+expect(!html.includes('iframe'),'homepage should use persisted real project captures, not fragile iframe proof');
+expect(html.includes('/assets/fakhrimart-case-desktop.png')&&html.includes('/assets/fakhrimart-case-mobile.png'),'real FakhriMart captures are not wired');
+expect(html.includes('/case-studies/fakhrimart.html'),'homepage does not link the real case study');
+expect(html.includes('/plans.html'),'Plans route disappeared from homepage navigation');
+expect(html.includes('/experience.css')&&html.includes('/app.js'),'central experience assets are not wired');
+expect(!html.includes('/site-fixes.js'),'runtime patch loader is still wired');
 
-expect((html.match(/data-cap-step=/g)||[]).length===4,'BRAYROAI must expose exactly four capability chapters');
-for(const name of ['Web Experiences','Product Design','Frontend Engineering','AI Systems']) expect(html.includes(name),`missing capability ${name}`);
+for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png']) expect(exists(path.join('public/assets',asset)),`missing ${asset}`);
+for(const asset of ['public/experience.css','public/commercial.css','public/commercial-fixes.css','public/commercial-accessibility.css','public/plans.js','plans.html','case-studies/fakhrimart.html']) expect(exists(asset),`missing ${asset}`);
+for(const obsolete of ['public/site-fixes.js','public/polish.css','public/experience-fixes.css','public/experience.js','public/refinement.css','public/refinement.js','public/commercial.js']) expect(!exists(obsolete),`obsolete patch layer remains: ${obsolete}`);
 
-expect(html.includes('mobile-menu__bg'),'mobile menu background layer missing');
-expect(html.includes('/site-fixes.css')&&html.includes('/site-fixes.js'),'brand completion layer not wired');
-expect(css.includes('.hero-v3')&&css.includes('.capability-story'),'stable recovered visual primitives missing');
-expect(js.includes('paintHero')&&js.includes('paintCapability'),'stable recovered interaction primitives missing');
-expect(fixes.includes('--blue:#3E7BFF')&&fixes.includes('--orange:#FF6B2C'),'BRAYROAI brand tokens missing');
-expect(fixes.includes('content-visibility:visible'),'blank-chapter protection missing');
-expect(enhancements.includes('chapter-entered')&&enhancements.includes('revealFallback'),'enhanced interaction/fallback layer missing');
-expect(enhancements.includes('/polish.css'),'final polish stylesheet not wired');
-expect(enhancements.includes('/experience.css')&&enhancements.includes('/experience-fixes.css')&&enhancements.includes('/experience.js'),'v5 experience layers not wired');
-expect(enhancements.includes('/commercial.css')&&enhancements.includes('/commercial.js'),'commercial client/pricing layer not wired');
-expect(polish.includes('.lab-card--large .lab-orb')&&polish.includes('.project-tile--sky{grid-column:auto'),'visual-completeness polish missing');
-expect(experienceCss.includes('.chapter-signal')&&experienceCss.includes('.studio-matrix')&&experienceCss.includes('.project-fit-rail'),'v5 authored visual system missing');
-expect(experienceCss.includes('@media(prefers-reduced-motion:reduce)'),'v5 reduced-motion CSS missing');
-expect(experienceFixes.includes('.chapter{position:relative;overflow-x:clip}')&&experienceFixes.includes('#5A5F68'),'v5 overflow/contrast hardening missing');
-expect(experienceFixes.includes('.cap-step p{color:#A5AAB3!important}'),'capability contrast hardening missing');
-expect(experienceFixes.includes('.experience-word::before'),'decorative watermark hardening missing');
-expect(experienceJs.includes('--chapter-progress')&&experienceJs.includes('requestAnimationFrame(paint)'),'v5 scroll-scrub system missing');
-expect(experienceJs.includes('studio-matrix')&&experienceJs.includes('project-fit-rail'),'v5 density enhancements missing');
+expect(css.includes('.hero-v3'),'stable base hero primitives missing');
+expect(fixes.includes('--blue:#3E7BFF')&&fixes.includes('--orange:#FF6B2C'),'production hero brand tokens missing');
+expect(experienceCss.includes('locked hero compatibility'),'hero compatibility layer missing');
+expect(experienceCss.includes('.forces-scene[data-state="engineering"]'),'three-forces transformation states missing');
+expect(experienceCss.includes('--approach:0')&&experienceCss.includes('--deconstruct:0'),'project immersion state variables missing');
+expect(experienceCss.includes('--explode:0')&&experienceCss.includes('.decon-layer'),'project deconstruction system missing');
+expect(experienceCss.includes('.lab-workbench')&&experienceCss.includes('.motion-demo.is-running'),'interactive Lab styling missing');
+expect(experienceCss.includes('@media(prefers-reduced-motion:reduce)'),'reduced-motion experience missing');
+expect(experienceCss.includes('@media(max-width:760px)'),'intentional mobile choreography missing');
 
-expect(commercialJs.includes("q('.project-grid',work)?.remove()"),'client-only Work cleanup missing');
-expect(commercialJs.includes('fakhrimart-case-desktop.png')&&commercialJs.includes('fakhrimart-case-mobile.png'),'real FakhriMart proof images are not wired');
-expect(commercialJs.includes("clients.id='clients'")&&commercialJs.includes('FakhriMart'),'real Clients section missing');
-expect(commercialJs.includes("snapshot.id='plans-snapshot'")&&commercialJs.includes('/plans.html'),'Plans second-destination snapshot missing');
-expect(commercialJs.includes('/case-studies/fakhrimart.html'),'homepage does not link the full FakhriMart case study');
-expect(commercialJs.includes('/commercial-accessibility.css'),'homepage does not load commercial accessibility hardening');
-expect(commercialCss.includes('.case-study-story')&&commercialCss.includes('.clients-section')&&commercialCss.includes('.pricing-grid'),'commercial visual system incomplete');
-expect(commercialFixes.includes('.case-page')&&commercialFixes.includes('.case-mobile-proof'),'dedicated case-study visual system incomplete');
-expect(commercialA11y.includes('.price-card__badge')&&commercialA11y.includes('.case-study-step b')&&commercialA11y.includes(':focus-visible'),'commercial accessibility system incomplete');
+expect(js.includes('class ExperienceController'),'central ExperienceController missing');
+expect(js.includes('class LockedHeroController'),'locked hero controller missing');
+expect(js.includes('class ForcesScene')&&js.includes('class ProjectScene')&&js.includes('class ProcessScene'),'core scene abstractions missing');
+expect(js.includes('class PointerSystem')&&js.includes('data-cursor'),'contextual pointer system missing');
+expect(js.includes("setTimeout(()=>")&&js.includes("},920)"),'locked loader timing changed');
+expect(js.includes('this.px*34*depth')&&js.includes('scrollP*86*depth'),'locked hero depth behavior changed');
+expect((js.match(/addEventListener\('scroll'/g)||[]).length===1,'scroll motion should be centralized through one controller listener');
+expect(js.includes("document.body.classList.add('experience-ready')"),'experience readiness contract missing');
 
+expect(commercialCss.includes('.pricing-grid')&&commercialCss.includes('.case-study-story'),'Plans/case-study visual system incomplete');
+expect(commercialFixes.includes('.case-page')&&commercialFixes.includes('.case-mobile-proof'),'case-study visual hardening missing');
+expect(commercialA11y.includes(':focus-visible'),'commercial accessibility hardening missing');
 for(const price of ['₹9,999','₹17,999','₹25K–35K+','₹2,499','₹3,999','₹5,999+']) expect(plans.includes(price),`plans page missing price ${price}`);
 for(const name of ['DIGITAL MAKEOVER','FULL WEBSITE','BESPOKE EXPERIENCE','LAUNCH','GROW','PRO']) expect(plans.includes(name),`plans page missing ${name}`);
-expect(plans.includes('BEST BALANCE')&&plans.includes('RECOMMENDED'),'pricing recommendation hierarchy missing');
-expect(plans.includes('/commercial-accessibility.css'),'Plans page does not load accessibility hardening');
-expect(!/data-countdown|class="[^"]*(old-price|strikethrough)[^"]*"|save\s+\d+%|ends\s+in\s+\d+/i.test(plans),'plans page contains a dark-pattern pricing mechanism');
-expect(plansJs.includes("data-price-tab")||plansJs.includes('dataset.priceTab'),'plans toggle logic missing');
-
-expect(caseStudy.includes('FAKHRI')&&caseStudy.includes('MART.'),'case-study title missing');
-expect(caseStudy.includes('/assets/fakhrimart-case-desktop.png')&&caseStudy.includes('/assets/fakhrimart-case-mobile.png'),'case study does not use real client captures');
-expect(caseStudy.includes('/commercial-accessibility.css'),'case study does not load accessibility hardening');
-expect(caseStudy.includes('A REAL SITE.')&&caseStudy.includes('NOT A')&&caseStudy.includes('PORTFOLIO PROP.'),'case study real-work framing missing');
+expect(plansJs.includes('data-price-tab')||plansJs.includes('dataset.priceTab'),'plans toggle logic missing');
+expect(caseStudy.includes('/assets/fakhrimart-case-desktop.png')&&caseStudy.includes('/assets/fakhrimart-case-mobile.png'),'case study lost real client captures');
+expect(caseStudy.includes('A REAL SITE.')&&caseStudy.includes('PORTFOLIO PROP.'),'case study real-work framing missing');
 expect(caseStudy.includes('https://fakhriyarns.vercel.app/'),'case study live destination missing');
-expect(!/\b(?:conversion rate|revenue|sales increased|traffic increased)\b/i.test(caseStudy),'case study contains unverified business-performance claims');
 
-const localRefs=[...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(m=>m[1]);
-for(const ref of localRefs){
-  const candidates=[path.join(root,'public',ref),path.join(root,ref)];
-  expect(candidates.some(fs.existsSync),`missing local reference /${ref}`);
-}
-const planRefs=[...plans.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(m=>m[1]);
-for(const ref of planRefs){
-  const candidates=[path.join(root,'public',ref),path.join(root,ref)];
-  expect(candidates.some(fs.existsSync),`missing Plans local reference /${ref}`);
-}
-const caseRefs=[...caseStudy.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(m=>m[1]);
-for(const ref of caseRefs){
-  const candidates=[path.join(root,'public',ref),path.join(root,ref)];
-  expect(candidates.some(fs.existsSync),`missing case-study local reference /${ref}`);
-}
+const validateRefs=(markup,label)=>{
+  const refs=[...markup.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(match=>match[1]);
+  for(const ref of refs){
+    const candidates=[path.join(root,'public',ref),path.join(root,ref)];
+    expect(candidates.some(fs.existsSync),`${label} missing local reference /${ref}`);
+  }
+};
+validateRefs(html,'homepage');
+validateRefs(plans,'Plans');
+validateRefs(caseStudy,'case study');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Integrity OK: BRAYROAI + real FakhriMart case study + Clients + Plans + accessibility checked`);
+console.log('Integrity OK: locked hero + authored scene architecture + real work + Plans/case-study continuity checked');

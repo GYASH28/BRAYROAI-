@@ -1,1 +1,31 @@
-(async()=>{const b=window.__BRAY_DATA,bin=Uint8Array.from(atob(b),c=>c.charCodeAt(0)),ds=new DecompressionStream('gzip'),txt=await new Response(new Blob([bin]).stream().pipeThrough(ds)).text(),pages=JSON.parse(txt),q=new URLSearchParams(location.search).get('site'),slug=q||location.pathname.split('/').filter(Boolean)[0],p=pages[slug];if(p){document.title=p.t;['--bg','--ink','--accent','--accent2'].forEach((k,i)=>document.documentElement.style.setProperty(k,p.p[i]));document.body.innerHTML=p.b;}else document.body.innerHTML="<div class=\"demo-notice\">BRAYROAI private outbound concept index · noindex</div><main style=\"padding:6vw\"><span class=\"eyebrow\">BRAYROAI / FRESH OUTBOUND</span><h1 style=\"font-size:8vw;line-height:.85;letter-spacing:-.07em\">25 concepts.<br>Built around the business.</h1><div style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px\"><a href=\"?site=mayur-enterprises-packaging\">Mayur Enterprises</a><a href=\"?site=thanusar-enterprises\">Thanusar Enterprises</a><a href=\"?site=abhinandan-enterprises\">Abhinandan Enterprises</a><a href=\"?site=chintamani-tooling-corporation\">Chintamani Tooling Corporation</a><a href=\"?site=ssic-packaging\">Shree Sairam Industrial Corporation</a><a href=\"?site=trans-swag-24\">Trans Swag 24</a><a href=\"?site=vikas-enterprise-bra-cups\">Vikas Enterprise</a><a href=\"?site=ramesh-real-estate\">Ramesh Real Estate Agencies & Earthmovers</a><a href=\"?site=white-lotus-visual-furniture\">White Lotus Visual and Furniture Studio</a><a href=\"?site=adm-plastics\">ADM Plastics</a><a href=\"?site=cleansetech-solutions\">Cleansetech Solutions</a><a href=\"?site=benzer-design-center\">Benzer Design Center</a><a href=\"?site=elastomer-india\">Elastomer India Mfg. Co.</a><a href=\"?site=chindhys-mobil-italia\">Chindhy's Mobil Italia</a><a href=\"?site=hindustan-hardware-auto\">Hindustan Hardware & Auto Stores</a><a href=\"?site=aithein-spa-equipments\">Aithein Spa Equipments</a><a href=\"?site=ekbotes-logs-lumbers\">Ekbotes Logs And Lumbers Pvt. Ltd.</a><a href=\"?site=abhijit-ashtekar-equipments\">Abhijit Ashtekar Equipments</a><a href=\"?site=capricorn-pv-inc\">Capricorn PV Inc</a><a href=\"?site=ad-impex-pune\">A D Impex</a><a href=\"?site=dymus-corporation\">Dymus Corporation</a><a href=\"?site=buneesha-pune\">Buneesha</a><a href=\"?site=fairdeal-infosolutions\">Fairdeal Infosolutions Pvt. Ltd.</a><a href=\"?site=niru-plastics\">Niru Plastics Pvt. Ltd.</a><a href=\"?site=shree-industries-pune\">Shree Industries</a></div></main>";document.querySelectorAll('.feature-option').forEach(x=>x.onclick=()=>{document.querySelectorAll('.feature-option').forEach(y=>y.classList.remove('active'));x.classList.add('active');const o=document.getElementById('selected-output');if(o)o.textContent=x.dataset.value+' → requirement path ready';});document.querySelectorAll('a[href="#prototype-contact"]').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById('wow-feature')?.scrollIntoView({behavior:'smooth'})});})();
+(async()=>{
+  const gunzip=async b=>{const bin=Uint8Array.from(atob(b),c=>c.charCodeAt(0));const ds=new DecompressionStream('gzip');return await new Response(new Blob([bin]).stream().pipeThrough(ds)).text()};
+  const q=new URLSearchParams(location.search).get('site');
+  const pathSlug=location.pathname.split('/').filter(Boolean).at(-1);
+  const slug=q||((pathSlug&&pathSlug!=='outbound-fresh')?pathSlug:null);
+  const replacement=slug&&window.__BRAY_REPLACEMENTS?.[slug];
+  if(replacement){
+    const html=await gunzip(replacement);
+    document.open();document.write(html);document.close();
+    setTimeout(()=>{
+      document.querySelectorAll('.options button,.choices button').forEach(b=>b.onclick=()=>{
+        const group=b.closest('.widget');group?.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+        const out=document.getElementById('out');if(out)out.textContent=b.dataset.v+(b.closest('.choices')?' → continue to size + application':' → ready for conditions + load details');
+      });
+    },0);
+    return;
+  }
+  const pages=JSON.parse(await gunzip(window.__BRAY_DATA));
+  const p=slug&&pages[slug];
+  if(p){
+    document.title=p.t;
+    ['--bg','--ink','--accent','--accent2'].forEach((k,i)=>document.documentElement.style.setProperty(k,p.p[i]));
+    document.body.innerHTML=p.b;
+  }else{
+    const excluded=new Set(['ekbotes-logs-lumbers','shree-industries-pune']);
+    const names={...Object.fromEntries(Object.entries(pages).filter(([k])=>!excluded.has(k)).map(([k,v])=>[k,(v.t||k).replace(/ — BRAYROAI.*$/,'')])),...(window.__BRAY_REPLACEMENT_NAMES||{})};
+    document.body.innerHTML=`<div class="demo-notice">BRAYROAI private outbound concept index · noindex</div><main style="padding:6vw"><span class="eyebrow">BRAYROAI / FRESH OUTBOUND</span><h1 style="font-size:8vw;line-height:.85;letter-spacing:-.07em">25 concepts.<br>Built around the business.</h1><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">${Object.entries(names).map(([k,n])=>`<a href="?site=${encodeURIComponent(k)}">${n}</a>`).join('')}</div></main>`;
+  }
+  document.querySelectorAll('.feature-option').forEach(x=>x.onclick=()=>{document.querySelectorAll('.feature-option').forEach(y=>y.classList.remove('active'));x.classList.add('active');const o=document.getElementById('selected-output');if(o)o.textContent=x.dataset.value+' → requirement path ready';});
+  document.querySelectorAll('a[href="#prototype-contact"]').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById('wow-feature')?.scrollIntoView({behavior:'smooth'})});
+})();

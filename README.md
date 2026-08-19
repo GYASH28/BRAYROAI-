@@ -42,4 +42,8 @@ The site is a single-page editorial narrative with:
 
 CI additionally runs browser interaction tests, accessibility checks, responsive overflow tests, stress/load checks and Lighthouse budgets.
 
+## Outbound concept system
+
+`public/outbound-fresh/` contains private, `noindex` BRAYROAI sales concepts used for researched prospect outreach. Every concept is explicitly marked as an independent BRAYROAI demonstration and must not be represented as the prospect's official website.
+
 The personal portfolio repository and `ykg.vercel.app` are separate projects and are not part of this codebase.

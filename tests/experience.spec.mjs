@@ -10,7 +10,8 @@ const scrollSceneTo=async(page,selector,ratio)=>{
   await page.locator(selector).evaluate((el,ratio)=>{
     document.documentElement.style.scrollBehavior='auto';
     const max=Math.max(1,el.offsetHeight-window.innerHeight);
-    window.scrollTo(0,el.offsetTop+max*ratio);
+    const top=el.getBoundingClientRect().top+window.scrollY;
+    window.scrollTo(0,top+max*ratio);
   },ratio);
   await page.waitForTimeout(100);
 };

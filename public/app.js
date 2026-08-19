@@ -1,306 +1,77 @@
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const coarse = matchMedia('(pointer: coarse)').matches;
-const $ = (s, root = document) => root.querySelector(s);
-const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarse=matchMedia('(pointer: coarse)').matches;
+const finePointer=matchMedia('(pointer: fine)').matches;
+const $=(selector,root=document)=>root.querySelector(selector);
+const $$=(selector,root=document)=>[...root.querySelectorAll(selector)];
+const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));
+const segment=(value,start,end)=>clamp(0,(value-start)/Math.max(.0001,end-start),1);
 
-// Opening sequence: short, non-blocking, and backed by a CSS fail-safe.
-const loader = $('[data-loader]');
-if (loader) {
-  if (reduced) {
-    loader.remove();
-    document.body.classList.add('hero-ready');
-  } else {
-    setTimeout(() => {
-      loader.classList.add('is-done');
-      document.body.classList.add('hero-ready');
-    }, 920);
+class LockedHeroController{
+  constructor(){
+    this.hero=$('#top');this.depthRoot=$('[data-depth-root]',this.hero||document);this.depthLayers=this.depthRoot?$$('[data-depth]',this.depthRoot):[];this.heroUI=this.hero?$('.hero-ui',this.hero):null;this.brandType=this.hero?$('.hero-brand-type',this.hero):null;this.px=0;this.py=0;this.visible=true;
+    this.setupLoader();this.ensureSignalDeck();this.setupPointerDepth();
+    if(this.hero&&'IntersectionObserver'in window){this.visibilityObserver=new IntersectionObserver(entries=>{this.visible=Boolean(entries[0]?.isIntersecting);window.__BRAYROAI__?.schedule()},{rootMargin:'25% 0px',threshold:0});this.visibilityObserver.observe(this.hero)}
   }
-} else {
-  document.body.classList.add('hero-ready');
+  setupLoader(){const loader=$('[data-loader]');if(!loader){document.body.classList.add('hero-ready');return}if(reduced){loader.remove();document.body.classList.add('hero-ready');return}setTimeout(()=>{loader.classList.add('is-done');document.body.classList.add('hero-ready')},920)}
+  ensureSignalDeck(){if(!this.hero||$('.hero-signal-deck',this.hero))return;const deck=document.createElement('div');deck.className='hero-signal-deck';deck.setAttribute('aria-hidden','true');deck.innerHTML='<p>BRAYROAI / SIGNAL SYSTEM</p><div>CRAFT <span>AUTHORED</span></div><div>TECH <span>USEFUL</span></div><div>MOTION <span>PURPOSEFUL</span></div>';this.hero.appendChild(deck)}
+  setupPointerDepth(){if(!this.hero||!this.depthRoot||reduced||coarse)return;this.depthRoot.addEventListener('pointermove',event=>{const rect=this.depthRoot.getBoundingClientRect();if(!rect.width||!rect.height)return;this.px=(event.clientX-rect.left)/rect.width-.5;this.py=(event.clientY-rect.top)/rect.height-.5;window.__BRAYROAI__?.schedule()},{passive:true});this.depthRoot.addEventListener('pointerleave',()=>{this.px=0;this.py=0;window.__BRAYROAI__?.schedule()})}
+  update(){if(!this.hero||!this.depthRoot||reduced||!this.visible)return;const rect=this.hero.getBoundingClientRect();const scrollP=clamp(0,-rect.top/Math.max(1,rect.height),1);const chapterP=clamp(0,(innerHeight-rect.top)/Math.max(1,rect.height+innerHeight),1);this.hero.style.setProperty('--hero-scroll',scrollP.toFixed(4));this.hero.style.setProperty('--chapter-progress',chapterP.toFixed(4));if(this.heroUI){this.heroUI.style.opacity=String(1-clamp(0,scrollP*1.45,1));this.heroUI.style.translate=`0 ${scrollP*-30}px`}if(this.brandType)this.brandType.style.filter=`blur(${scrollP*1.7}px)`;this.depthLayers.forEach(layer=>{const depth=Number(layer.dataset.depth||.3);const x=this.px*34*depth;const y=this.py*24*depth-scrollP*86*depth;const scale=1+scrollP*.035*depth;layer.style.transform=`translate3d(${x}px,${y}px,0) scale(${scale})`})}
 }
 
-// Native anchor navigation keeps the site dependency-free.
-$$('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
-  const id = link.getAttribute('href');
-  if (!id || id === '#') return;
-  const target = $(id);
-  if (!target) return;
-  event.preventDefault();
-  target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
-  history.replaceState(null, '', id);
-}));
-
-// Internal route transition fallback.
-const transitionLayer = $('[data-page-transition]');
-$$('.internal-transition').forEach(link => link.addEventListener('click', event => {
-  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
-  const href = link.getAttribute('href');
-  if (!href || href.startsWith('#')) return;
-  event.preventDefault();
-  if (reduced) { location.href = href; return; }
-  transitionLayer?.classList.add('is-covering');
-  setTimeout(() => { location.href = href; }, 480);
-}));
-
-// Defer expensive live embeds until they are close to view.
-const lazyFrames = $$('iframe[data-src]');
-if ('IntersectionObserver' in window) {
-  const frameObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const frame = entry.target;
-      if (!frame.src && frame.dataset.src) frame.src = frame.dataset.src;
-      frameObserver.unobserve(frame);
-    });
-  }, { rootMargin: '900px 0px', threshold: 0.01 });
-  lazyFrames.forEach(frame => frameObserver.observe(frame));
-} else {
-  lazyFrames.forEach(frame => { if (frame.dataset.src) frame.src = frame.dataset.src; });
+class NavigationManager{
+  constructor(){this.nav=$('[data-nav]');this.progress=$('[data-progress]');this.chapterNumber=$('[data-chapter-number]');this.chapterName=$('[data-chapter-name]');this.menuButton=$('[data-menu-button]');this.mobileMenu=$('[data-mobile-menu]');this.navLinks=$$('.desktop-nav a[href^="#"]');this.chapters=$$('.chapter[id]');this.lastY=scrollY;this.menuWasOpen=false;this.bindAnchors();this.bindInternalTransitions();this.bindMenu()}
+  bindAnchors(){$$('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const id=link.getAttribute('href');if(!id||id==='#')return;const target=$(id);if(!target)return;event.preventDefault();target.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});history.replaceState(null,'',id);if(this.mobileMenu?.classList.contains('open'))this.setMenu(false)}))}
+  bindInternalTransitions(){const transitionLayer=$('[data-page-transition]');$$('.internal-transition').forEach(link=>link.addEventListener('click',event=>{if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||link.target==='_blank')return;const href=link.getAttribute('href');if(!href||href.startsWith('#'))return;event.preventDefault();if(reduced||!transitionLayer){location.href=href;return}transitionLayer.classList.add('is-covering');setTimeout(()=>{location.href=href},480)}))}
+  setMenu(open){this.menuButton?.setAttribute('aria-expanded',String(open));this.mobileMenu?.classList.toggle('open',open);this.mobileMenu?.setAttribute('aria-hidden',String(!open));document.body.classList.toggle('menu-open',open);if(open){this.menuWasOpen=true;requestAnimationFrame(()=>this.mobileMenu?.querySelector('a')?.focus({preventScroll:true}))}else if(this.menuWasOpen){this.menuWasOpen=false;this.menuButton?.focus({preventScroll:true})}}
+  bindMenu(){if(!this.menuButton||!this.mobileMenu)return;this.menuButton.addEventListener('click',()=>this.setMenu(this.menuButton.getAttribute('aria-expanded')!=='true'));$$('a',this.mobileMenu).forEach(link=>link.addEventListener('click',()=>this.setMenu(false)));document.addEventListener('keydown',event=>{if(event.key==='Escape'&&this.mobileMenu.classList.contains('open'))this.setMenu(false);if(event.key!=='Tab'||this.menuButton.getAttribute('aria-expanded')!=='true')return;const items=$$('a[href],button:not([disabled])',this.mobileMenu).filter(el=>el.offsetParent!==null);if(!items.length)return;const first=items[0],last=items.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}});addEventListener('resize',()=>{if(innerWidth>760&&this.menuButton.getAttribute('aria-expanded')==='true')this.setMenu(false)},{passive:true})}
+  update(){const y=scrollY,max=Math.max(1,document.documentElement.scrollHeight-innerHeight);if(this.progress)this.progress.style.transform=`scaleX(${clamp(0,y/max,1)})`;this.nav?.classList.toggle('scrolled',y>70);this.nav?.classList.toggle('hidden',y>this.lastY&&y>280);this.lastY=y;const focal=innerHeight*.44;let active=this.chapters[0]||null,best=Infinity;this.chapters.forEach(chapter=>{const rect=chapter.getBoundingClientRect();if(rect.bottom<0||rect.top>innerHeight)return;const distance=Math.abs(rect.top+Math.min(rect.height,innerHeight)*.45-focal);if(distance<best){best=distance;active=chapter}});if(!active)return;if(this.chapterNumber)this.chapterNumber.textContent=active.dataset.chapter||'';if(this.chapterName)this.chapterName.textContent=active.dataset.chapterName||'';document.body.classList.toggle('theme-light',['paper','warm'].includes(active.dataset.themeSection));const id=active.id;this.navLinks.forEach(link=>link.classList.toggle('is-active',link.getAttribute('href')===`#${id}`))}
 }
 
-// Mobile navigation with focus return and Escape handling.
-const menuButton = $('[data-menu-button]');
-const mobileMenu = $('[data-mobile-menu]');
-let menuWasOpen = false;
-function setMenu(open) {
-  menuButton?.setAttribute('aria-expanded', String(open));
-  mobileMenu?.classList.toggle('open', open);
-  mobileMenu?.setAttribute('aria-hidden', String(!open));
-  document.body.classList.toggle('menu-open', open);
-  if (open) {
-    menuWasOpen = true;
-    requestAnimationFrame(() => mobileMenu?.querySelector('a')?.focus({ preventScroll: true }));
-  } else if (menuWasOpen) {
-    menuWasOpen = false;
-    menuButton?.focus({ preventScroll: true });
-  }
-}
-menuButton?.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true'));
-$$('[data-mobile-menu] a').forEach(a => a.addEventListener('click', () => setMenu(false)));
-addEventListener('keydown', e => { if (e.key === 'Escape' && mobileMenu?.classList.contains('open')) setMenu(false); });
-
-// Entrance reveals.
-const revealObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    entry.target.classList.add('in-view');
-    revealObserver.unobserve(entry.target);
-  });
-}, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
-$$('.reveal').forEach(el => reduced ? el.classList.add('in-view') : revealObserver.observe(el));
-
-// Chapter index and page mood.
-const chapterNumber = $('[data-chapter-number]');
-const chapterName = $('[data-chapter-name]');
-const chapterObserver = new IntersectionObserver(entries => {
-  const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-  if (!visible) return;
-  const el = visible.target;
-  if (chapterNumber) chapterNumber.textContent = el.dataset.chapter || '';
-  if (chapterName) chapterName.textContent = el.dataset.chapterName || '';
-  document.body.classList.toggle('theme-light', ['paper', 'warm'].includes(el.dataset.themeSection));
-}, { threshold: [0.15, 0.35, 0.55, 0.75] });
-$$('.chapter').forEach(el => chapterObserver.observe(el));
-
-// Sticky capability storytelling. The nearest step to the focal line wins,
-// which avoids observer races when tall steps overlap the same threshold.
-const capSteps = $$('[data-cap-step]');
-const capPanels = $$('[data-cap-panel]');
-const capabilityStory = $('.capability-story');
-const capabilityScroller = $('.capability-steps');
-let capabilityVisible = false;
-function activateCapability(index) {
-  capSteps.forEach((step, i) => step.classList.toggle('is-active', i === index));
-  capPanels.forEach((panel, i) => panel.classList.toggle('is-active', i === index));
-}
-const capObserver = new IntersectionObserver(entries => {
-  capabilityVisible = entries.some(entry => entry.isIntersecting);
-  scheduleMotion();
-}, { rootMargin: '15% 0px', threshold: 0 });
-if (capabilityStory) capObserver.observe(capabilityStory);
-function paintCapability() {
-  if (!capabilityStory || !capSteps.length) return;
-  const storyRect = capabilityStory.getBoundingClientRect();
-  if (storyRect.bottom < -80 || storyRect.top > innerHeight + 80) return;
-  let bestIndex = 0;
-  let bestDistance = Infinity;
-  if (innerWidth <= 1050 && capabilityScroller) {
-    const sr = capabilityScroller.getBoundingClientRect();
-    const focusX = sr.left + capabilityScroller.clientWidth / 2;
-    capSteps.forEach((step, index) => {
-      const r = step.getBoundingClientRect();
-      const distance = Math.abs((r.left + r.width / 2) - focusX);
-      if (distance < bestDistance) { bestDistance = distance; bestIndex = index; }
-    });
-  } else {
-    const focusY = innerHeight * 0.52;
-    capSteps.forEach((step, index) => {
-      const r = step.getBoundingClientRect();
-      const distance = Math.abs((r.top + r.height / 2) - focusY);
-      if (distance < bestDistance) { bestDistance = distance; bestIndex = index; }
-    });
-  }
-  activateCapability(bestIndex);
-}
-if (capabilityScroller) capabilityScroller.addEventListener('scroll', scheduleMotion, { passive: true });
-capSteps.forEach((step, index) => step.addEventListener('click', () => {
-  activateCapability(index);
-  if (innerWidth <= 1050) step.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
-}));
-
-// Fine-pointer cursor light, scheduled only while it is moving.
-if (!coarse && !reduced) {
-  const orb = $('[data-cursor-orb]');
-  let cx = -300, cy = -300, tx = -300, ty = -300, cursorFrame = 0;
-  const drawCursor = () => {
-    cx += (tx - cx) * 0.14;
-    cy += (ty - cy) * 0.14;
-    if (orb) orb.style.transform = `translate3d(${cx}px,${cy}px,0)`;
-    if (Math.abs(tx - cx) > 0.4 || Math.abs(ty - cy) > 0.4) cursorFrame = requestAnimationFrame(drawCursor);
-    else cursorFrame = 0;
-  };
-  addEventListener('pointermove', e => {
-    tx = e.clientX - 90; ty = e.clientY - 90;
-    if (!cursorFrame) cursorFrame = requestAnimationFrame(drawCursor);
-  }, { passive: true });
-
-  $$('.magnetic').forEach(el => {
-    el.addEventListener('pointermove', e => {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left - r.width / 2) * 0.12;
-      const y = (e.clientY - r.top - r.height / 2) * 0.12;
-      el.style.transform = `translate3d(${x}px,${y}px,0)`;
-    });
-    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
-  });
+class PointerSystem{
+  constructor(){this.orb=$('[data-cursor-orb]');this.context=$('[data-context-cursor]');this.contextLabel=this.context?$('span',this.context):null;this.cx=-300;this.cy=-300;this.tx=-300;this.ty=-300;this.frame=0;if(finePointer&&!reduced)this.bind();else{if(this.orb)this.orb.style.display='none';if(this.context)this.context.style.display='none'}}
+  bind(){addEventListener('pointermove',event=>{this.tx=event.clientX;this.ty=event.clientY;if(this.context){this.context.style.left=`${event.clientX}px`;this.context.style.top=`${event.clientY}px`}if(!this.frame)this.frame=requestAnimationFrame(()=>this.drawOrb())},{passive:true});$$('[data-cursor]').forEach(target=>{target.addEventListener('pointerenter',()=>{if(this.contextLabel)this.contextLabel.textContent=target.dataset.cursor||'OPEN';this.context?.classList.add('is-visible')});target.addEventListener('pointerleave',()=>this.context?.classList.remove('is-visible'))});$$('.magnetic').forEach(el=>{el.addEventListener('pointermove',event=>{const rect=el.getBoundingClientRect();const x=(event.clientX-rect.left-rect.width/2)*.12,y=(event.clientY-rect.top-rect.height/2)*.12;el.style.transform=`translate3d(${x}px,${y}px,0)`});el.addEventListener('pointerleave',()=>{el.style.transform=''})});$$('.interactive-surface').forEach(surface=>{surface.addEventListener('pointermove',event=>{const rect=surface.getBoundingClientRect();if(!rect.width||!rect.height)return;const x=clamp(-1,((event.clientX-rect.left)/rect.width-.5)*2,1),y=clamp(-1,((event.clientY-rect.top)/rect.height-.5)*2,1);surface.style.setProperty('--pointer-x',x.toFixed(3));surface.style.setProperty('--pointer-y',y.toFixed(3))},{passive:true});surface.addEventListener('pointerleave',()=>{surface.style.setProperty('--pointer-x','0');surface.style.setProperty('--pointer-y','0')})})}
+  drawOrb(){this.cx+=(this.tx-this.cx)*.14;this.cy+=(this.ty-this.cy)*.14;if(this.orb)this.orb.style.transform=`translate3d(${this.cx-110}px,${this.cy-110}px,0)`;if(Math.abs(this.tx-this.cx)>.4||Math.abs(this.ty-this.cy)>.4)this.frame=requestAnimationFrame(()=>this.drawOrb());else this.frame=0}
 }
 
-// Scroll-linked motion uses one shared RAF instead of multiple perpetual loops.
-const progress = $('[data-progress]');
-const nav = $('[data-nav]');
-const hero = $('.hero');
-const depthRoot = $('[data-depth-root]');
-const depthLayers = depthRoot ? $$('[data-depth]', depthRoot) : [];
-const heroUI = hero ? $('.hero-ui', hero) : null;
-const brandType = hero ? $('.hero-brand-type', hero) : null;
-const kinetic = $('[data-kinetic]');
-const floatObject = $('[data-float-object]');
-const liveStack = $('[data-live-stack]');
-const liveLayers = liveStack ? $$('[data-live-layer]', liveStack) : [];
-let px = 0, py = 0, lastY = scrollY, motionFrame = 0;
-let heroVisible = true, kineticVisible = false, liveVisible = false;
-
-const visibilityObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.target === hero) heroVisible = entry.isIntersecting;
-    if (entry.target === kinetic?.closest('.manifesto')) kineticVisible = entry.isIntersecting;
-    if (entry.target === liveStack) liveVisible = entry.isIntersecting;
-  });
-  // Repaint when a section re-enters so returning to the hero never leaves stale opacity/transforms.
-  scheduleMotion();
-}, { rootMargin: '25% 0px', threshold: 0 });
-if (hero) visibilityObserver.observe(hero);
-if (kinetic?.closest('.manifesto')) visibilityObserver.observe(kinetic.closest('.manifesto'));
-if (liveStack) visibilityObserver.observe(liveStack);
-
-if (hero && depthRoot && !reduced && !coarse) {
-  depthRoot.addEventListener('pointermove', e => {
-    const r = depthRoot.getBoundingClientRect();
-    px = (e.clientX - r.left) / r.width - 0.5;
-    py = (e.clientY - r.top) / r.height - 0.5;
-    scheduleMotion();
-  }, { passive: true });
-  depthRoot.addEventListener('pointerleave', () => { px = 0; py = 0; scheduleMotion(); });
+class Scene{
+  constructor(element){this.el=element;this.visible=true;this.active=false;this.progress=0;this.resize();if('IntersectionObserver'in window){this.observer=new IntersectionObserver(entries=>{this.visible=Boolean(entries[0]?.isIntersecting);window.__BRAYROAI__?.schedule()},{rootMargin:'35% 0px',threshold:0});this.observer.observe(this.el)}}
+  resize(){this.mobile=innerWidth<=760}
+  getProgress(){const rect=this.el.getBoundingClientRect(),scrollable=Math.max(1,rect.height-innerHeight);return clamp(0,-rect.top/scrollable,1)}
+  enter(){this.active=true}leave(){this.active=false}destroy(){this.observer?.disconnect()}
+  update(){if(!this.visible&&!this.active)return;const rect=this.el.getBoundingClientRect(),inViewport=rect.bottom>0&&rect.top<innerHeight;if(inViewport&&!this.active)this.enter();if(!inViewport&&this.active)this.leave();if(!inViewport&&!this.visible)return;this.progress=reduced?1:this.getProgress();this.el.style.setProperty('--scene-p',this.progress.toFixed(4))}
 }
 
-function paintHero() {
-  if (!hero || !depthRoot || reduced || !heroVisible) return;
-  const rect = hero.getBoundingClientRect();
-  const scrollP = clamp(0, -rect.top / Math.max(1, rect.height), 1);
-  hero.style.setProperty('--hero-scroll', String(scrollP));
-  if (heroUI) {
-    heroUI.style.opacity = String(1 - clamp(0, scrollP * 1.45, 1));
-    heroUI.style.translate = `0 ${scrollP * -30}px`;
-  }
-  if (brandType) brandType.style.filter = `blur(${scrollP * 1.7}px)`;
-  depthLayers.forEach(layer => {
-    const d = Number(layer.dataset.depth || 0.3);
-    const x = px * 34 * d;
-    const y = py * 24 * d - scrollP * 86 * d;
-    const s = 1 + scrollP * 0.035 * d;
-    layer.style.transform = `translate3d(${x}px,${y}px,0) scale(${s})`;
-  });
+class ForcesScene extends Scene{
+  constructor(element){super(element);this.number=$('[data-force-number]',element);this.title=$('[data-force-title]',element);this.copy=$('[data-force-copy]',element);this.label=$('[data-force-label]',element);this.meta=$('[data-force-meta]',element);this.response=$('[data-force-response]',element);this.states=[
+    {key:'design',number:'01',title:'DESIGN',copy:'Hierarchy, type, image and composition establish what the product should feel like.',label:'DESIGN',meta:'TYPE / GRID / COMPOSITION',response:'Shape the visual idea into a clear interface.'},
+    {key:'engineering',number:'02',title:'ENGINEERING',copy:'Structure turns the visual idea into components, states and reliable behavior.',label:'ENGINEERING',meta:'COMPONENTS / STATES / LOGIC',response:'Turn the visual system into reliable states and behavior.'},
+    {key:'intelligence',number:'03',title:'INTELLIGENCE',copy:'The same product begins adapting to context, tools and the task in front of the user.',label:'INTELLIGENCE',meta:'CONTEXT / TOOLS / RESPONSE',response:'Let the interface adapt when intelligence is genuinely useful.'},
+    {key:'converged',number:'04',title:'ONE SYSTEM',copy:'Design, engineering and intelligence converge into one product experience.',label:'ONE SYSTEM',meta:'DESIGN / BUILD / INTELLIGENCE',response:'One studio carries the idea through the full experience.'}];this.currentIndex=-1}
+  update(){super.update();if(!this.active&&!this.visible)return;const p=this.progress,index=p<.24?0:p<.50?1:p<.76?2:3;if(index===this.currentIndex)return;this.currentIndex=index;const state=this.states[index];this.el.dataset.state=state.key;if(this.number)this.number.textContent=state.number;if(this.title)this.title.textContent=state.title;if(this.copy)this.copy.textContent=state.copy;if(this.label)this.label.textContent=state.label;if(this.meta)this.meta.textContent=state.meta;if(this.response)this.response.textContent=state.response}
 }
 
-function paintKinetic() {
-  if (!kinetic || reduced || !kineticVisible) return;
-  const section = kinetic.closest('.manifesto');
-  if (!section) return;
-  const r = section.getBoundingClientRect();
-  const p = clamp(0, 1 - (r.bottom / (innerHeight + r.height)), 1);
-  kinetic.style.transform = `translate3d(${(p - 0.5) * -34}px,${(p - 0.5) * 18}px,0)`;
-  if (floatObject) floatObject.style.transform = `translate3d(0,${(p - 0.5) * -60}px,0) rotate(${(p - 0.5) * 5}deg)`;
+class ProjectScene extends Scene{
+  update(){super.update();if(!this.active&&!this.visible)return;const p=this.progress,approach=reduced?1:segment(p,.03,.28),immerse=reduced?1:segment(p,.20,.52),deconstruct=reduced?0:segment(p,.56,.82),handoff=reduced?1:segment(p,.80,.98);this.el.style.setProperty('--approach',approach.toFixed(4));this.el.style.setProperty('--immerse',immerse.toFixed(4));this.el.style.setProperty('--deconstruct',deconstruct.toFixed(4));this.el.style.setProperty('--handoff',handoff.toFixed(4));this.el.dataset.state=p<.2?'approach':p<.56?'immersive':p<.82?'deconstruct':'handoff'}
 }
 
-function paintLive() {
-  if (!liveStack || reduced || !liveVisible) return;
-  const r = liveStack.getBoundingClientRect();
-  const p = clamp(-1, (innerHeight / 2 - (r.top + r.height / 2)) / innerHeight, 1);
-  liveLayers.forEach(layer => {
-    const d = Number(layer.dataset.liveLayer || 0.2);
-    layer.style.translate = `0 ${p * 36 * d}px`;
-  });
+class ProcessScene extends Scene{
+  constructor(element){super(element);this.index=$('[data-process-index]',element);this.word=$('[data-process-word]',element);this.note=$('[data-process-note]',element);this.currentPhase=-1;this.phases=[['01 / 06','FINISHED PRODUCT','Start with what the visitor actually experiences.'],['02 / 06','STRATEGY','Clarify the audience, the business job and what deserves attention.'],['03 / 06','SYSTEM','Turn the direction into hierarchy, flows and responsive rules.'],['04 / 06','INTERACTION','Give state changes feedback, timing and deliberate motion.'],['05 / 06','ENGINEERING','Build the same system with fidelity, accessibility and performance.'],['06 / 06','SHIP','Test the rough edges, deploy it and leave it ready for real use.']]}
+  update(){super.update();if(!this.active&&!this.visible)return;const p=this.progress,explode=reduced?1:segment(p,.06,.40),focus=reduced?1:segment(p,.18,.42);this.el.style.setProperty('--explode',explode.toFixed(4));this.el.style.setProperty('--focus',focus.toFixed(4));const phase=reduced?5:Math.min(5,Math.floor(segment(p,.16,.94)*6));if(phase===this.currentPhase)return;this.currentPhase=phase;this.el.dataset.phase=String(phase);const[index,word,note]=this.phases[phase];if(this.index)this.index.textContent=index;if(this.word)this.word.textContent=word;if(this.note)this.note.textContent=note}
 }
 
-function onScrollFrame() {
-  const y = scrollY;
-  const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-  if (progress) progress.style.transform = `scaleX(${clamp(0, y / max, 1)})`;
-  nav?.classList.toggle('scrolled', y > 70);
-  nav?.classList.toggle('hidden', y > lastY && y > 280);
-  lastY = y;
-  paintHero();
-  paintKinetic();
-  paintLive();
-  paintCapability();
-  motionFrame = 0;
-}
-function scheduleMotion() {
-  if (!motionFrame) motionFrame = requestAnimationFrame(onScrollFrame);
-}
-addEventListener('scroll', scheduleMotion, { passive: true });
-addEventListener('resize', scheduleMotion, { passive: true });
-scheduleMotion();
-
-// Pointer-follow project label.
-if (!coarse && !reduced) {
-  const media = $('[data-project-hover]');
-  const label = media?.querySelector('.project-hover-label');
-  if (media && label) {
-    media.addEventListener('pointermove', e => {
-      const r = media.getBoundingClientRect();
-      label.style.left = `${e.clientX - r.left}px`;
-      label.style.top = `${e.clientY - r.top}px`;
-    });
-  }
-
-  // Restrained 3D tilt for cards; no permanent animation loop.
-  $$('[data-tilt-card]').forEach(card => {
-    card.classList.add('tilting');
-    card.addEventListener('pointermove', e => {
-      const r = card.getBoundingClientRect();
-      const nx = (e.clientX - r.left) / r.width - 0.5;
-      const ny = (e.clientY - r.top) / r.height - 0.5;
-      card.style.transform = `perspective(1000px) rotateX(${-ny * 2.4}deg) rotateY(${nx * 2.8}deg) translateZ(0)`;
-    });
-    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
-  });
+class LabScene extends Scene{
+  constructor(element){super(element);this.aiCard=$('[data-lab-object="ai"]',element);this.aiEyebrow=$('[data-ai-eyebrow]',element);this.aiOutput=$('[data-ai-output]',element);this.motionToggle=$('[data-motion-toggle]',element);this.bindInteractions()}
+  bindInteractions(){const modes={fast:['ROUTE / FAST','Answer the task directly with the lowest-latency path.'],deep:['ROUTE / DEEP','Spend more reasoning where the task actually benefits from it.'],automate:['ROUTE / AUTOMATE','Turn the repeated task into a reusable workflow instead of another manual step.']};$$('[data-ai-mode]',this.el).forEach(button=>button.addEventListener('click',()=>{const mode=button.dataset.aiMode;$$('[data-ai-mode]',this.el).forEach(item=>item.classList.toggle('is-active',item===button));if(this.aiCard)this.aiCard.dataset.mode=mode;if(this.aiEyebrow)this.aiEyebrow.textContent=modes[mode][0];if(this.aiOutput)this.aiOutput.textContent=modes[mode][1]}));this.motionToggle?.addEventListener('click',()=>{const running=this.motionToggle.classList.toggle('is-running'),status=$('span',this.motionToggle),action=$('b',this.motionToggle);if(status)status.textContent=running?'COMPLETE':'READY';if(action)action.textContent=running?'RESET ↗':'RUN TRANSITION ↗'})}
 }
 
-// Pause decorative infinite animations when their chapter is well outside the viewport.
-// This keeps the expressive motion while avoiding background CPU/GPU work.
-const ambientMotionObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => entry.target.classList.toggle('motion-active', entry.isIntersecting));
-}, { rootMargin: '35% 0px', threshold: 0 });
-$$('.chapter').forEach(section => ambientMotionObserver.observe(section));
+class ResolutionScene extends Scene{update(){super.update();if(!this.active&&!this.visible)return;this.el.style.setProperty('--resolve',(reduced?1:segment(this.progress,.18,.78)).toFixed(4))}}
+
+class ExperienceController{
+  constructor(){this.frame=0;this.navigation=new NavigationManager();this.hero=new LockedHeroController();this.pointer=new PointerSystem();this.scenes=$$('[data-scene]').map(element=>{switch(element.dataset.scene){case'forces':return new ForcesScene(element);case'project':return new ProjectScene(element);case'process':return new ProcessScene(element);case'lab':return new LabScene(element);case'resolution':return new ResolutionScene(element);default:return new Scene(element)}});this.bind();document.body.classList.add('experience-ready');this.schedule()}
+  bind(){addEventListener('scroll',()=>this.schedule(),{passive:true});addEventListener('resize',()=>{this.scenes.forEach(scene=>scene.resize());this.schedule()},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden)this.schedule()});addEventListener('pageshow',()=>this.schedule(),{passive:true})}
+  schedule(){if(!this.frame)this.frame=requestAnimationFrame(()=>this.paint())}
+  paint(){this.frame=0;this.navigation.update();this.hero.update();this.scenes.forEach(scene=>scene.update())}
+  destroy(){this.scenes.forEach(scene=>scene.destroy())}
+}
+
+window.__BRAYROAI__=new ExperienceController();

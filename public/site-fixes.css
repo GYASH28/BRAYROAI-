@@ -1,2 +1,17 @@
-/* Locked production completion layer. Keep the opening sequence + hero exactly on the existing base. */
+/* Locked production completion layer. Opening sequence + hero stay on the existing base. */
 @import url('/site-fixes-core.css');
+
+/* Post-hero contrast refinements only. These are scoped so the locked hero remains untouched. */
+.cinematic-main .rail-instruction,
+.cinematic-main .system-note,
+.cinematic-main .contact-shell>p,
+.cinematic-footer{color:#8A8C90}
+.cinematic-main .work-heading>p,
+.cinematic-main .pricing-heading>p,
+.cinematic-main .price-lines article>strong small,
+.cinematic-main .pricing-fineprint{color:#5A6068}
+.cinematic-main .work-heading h2 em,
+.cinematic-main .pricing-heading h2 em{color:#A43A0D}
+.cinematic-main .work-caption>span{color:#96320B}
+.cinematic-main .work-word{display:none}
+.cinematic-main .studio-tape span{color:#7A7D82}

@@ -35,6 +35,7 @@ class PlanPriorityController{
       this.entry.setAttribute('aria-label','Digital Makeover, highlighted entry plan, starting at ₹9,999');this.standard.setAttribute('aria-label','Full Website, starting at ₹17,999');
     }
     const care=$$('.care-plans article');if(care.length){care.forEach(item=>item.classList.remove('care-featured'));care[0].classList.add('care-featured');care[0].setAttribute('data-care-highlight','');const label=care[0].querySelector('div');if(label&&!$('.care-badge',label)){const chip=document.createElement('b');chip.className='care-badge';chip.textContent='ENTRY';label.appendChild(chip)}}
+    const contactPrimary=$('.contact-primary');if(contactPrimary){const contactText=$('span',contactPrimary);if(contactText)contactText.textContent='Start at ₹9,999';contactPrimary.href='mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Digital%20Makeover';contactPrimary.setAttribute('aria-label','Start with the ₹9,999 Digital Makeover plan')}
     this.setupRevealRhythm();document.body.classList.add('v10-polished');
   }
   setupRevealRhythm(){for(const selector of ['.plan-grid','.proof-steps','.service-list','.care-plans']){const group=$(selector);if(!group)continue;[...group.children].forEach((item,index)=>item.style.setProperty('--reveal-delay',`${Math.min(index*55,180)}ms`))}}

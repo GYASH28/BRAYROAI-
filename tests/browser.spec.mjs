@@ -104,6 +104,13 @@ test('visual polish runtime activates across post-hero experience',async({page})
   const ctaHeight=await page.locator('.contact-primary').evaluate(el=>el.getBoundingClientRect().height);expect(ctaHeight).toBeGreaterThanOrEqual(64);
 });
 
+test('final conversion CTA closes on the ₹9,999 entry offer',async({page})=>{
+  await waitReady(page);await scrollTo(page,'#contact');const cta=page.locator('.contact-primary');
+  await expect(cta).toContainText('Start at ₹9,999');
+  await expect(cta).toHaveAttribute('href',/BRAYROAI%20Digital%20Makeover/);
+  await expect(cta).toHaveAttribute('aria-label','Start with the ₹9,999 Digital Makeover plan');
+});
+
 test('post-hero styles activate without blocking hero paint',async({page})=>{
   await page.goto('/',{waitUntil:'domcontentloaded'});
   for(const id of ['post-fixes-styles','experience-styles'])expect(['print','all']).toContain(await page.locator(`#${id}`).getAttribute('media'));

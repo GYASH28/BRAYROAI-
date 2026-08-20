@@ -14,7 +14,7 @@ const vercel=read('vercel.json');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 
-// Opening sequence + hero contract is intentionally frozen.
+// Opening sequence + hero contract is intentionally frozen visually.
 expect(html.includes('<div aria-hidden="true" class="intro-loader" data-loader="">'),'locked opening loader missing');
 expect(html.includes('BRAYROAI / CREATIVE TECHNOLOGY STUDIO'),'locked hero identity changed');
 expect(html.includes('Digital, designed<br/><em>to feel different.</em>'),'locked hero headline changed');
@@ -24,9 +24,25 @@ expect(html.includes('/assets/hero-background.webp')&&html.includes('/assets/yas
 expect(js.includes('class LockedHeroController'),'locked hero controller missing');
 expect(js.includes('},920)'),'locked loader timing changed');
 expect(js.includes('this.px*34*depth')&&js.includes('scrollP*86*depth'),'locked hero depth behavior changed');
-expect(css.includes('.hero-v3'),'stable base hero primitives missing');
-expect(fixes.includes("@import url('/site-fixes-core.css');"),'locked production completion base missing');
-expect(!/(?:^|\n)(?!\.cinematic-main|\.cinematic-footer|\/\*|@import|\s*$)[^\n]*\{/.test(fixes.split("@import url('/site-fixes-core.css');")[1]||''),'site-fixes contains an unscoped post-hero rule that could touch the locked hero');
+expect(css.includes('/* HERO V3 — visual contract frozen. */'),'hero visual contract block missing');
+for(const locked of [
+  "font:800 clamp(72px,8.8vw,148px)/.78 'Space Grotesk'",
+  'filter:saturate(.86) contrast(1.06) brightness(.63)',
+  'width:clamp(860px,72vw,1200px)',
+  'left:59%;bottom:-5%',
+  'font-size:12.1vw',
+  'font-size:11.7vw',
+  'padding-top:30.5vh',
+  'font-size:clamp(36px,10.7vw,52px)'
+])expect(css.includes(locked),`locked hero visual token changed: ${locked}`);
+expect(css.includes('.sr-only{position:absolute!important'),'screen-reader-only utility missing');
+
+// Dead legacy homepage CSS must not return to the critical path.
+expect(!exists('public/site-fixes-core.css'),'obsolete site-fixes-core.css still exists');
+expect(!fixes.includes('@import'),'site-fixes must not import a second render-blocking stylesheet');
+for(const legacy of ['.manifesto{','.capabilities{','.client-proof{','.lab{','.process{','.about{','.engage{','.case-hero{'])expect(!css.includes(legacy),`dead legacy CSS returned to styles.css: ${legacy}`);
+expect(Buffer.byteLength(css,'utf8')<24000,'critical styles.css grew above 24KB');
+expect(!/(?:^|\n)(?!\.cinematic-main|\.cinematic-footer|\/\*|\s*$)[^\n]*\{/.test(fixes),'site-fixes contains an unscoped rule that could touch the locked hero');
 
 // One-page commercial architecture.
 for(const id of ['main','top','services','work','system','pricing','studio','contact'])expect(html.includes(`id="${id}"`),`missing #${id}`);
@@ -70,4 +86,4 @@ const validateRefs=markup=>{
 validateRefs(html);
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('Integrity OK: locked hero + single-page cinematic architecture + real work + integrated pricing checked');
+console.log('Integrity OK: locked hero + lean critical CSS + single-page cinematic architecture checked');

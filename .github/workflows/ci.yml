@@ -146,6 +146,7 @@ jobs:
         with:
           name: brayroai-qa-${{ github.run_number }}
           path: |
+            dist/
             artifacts/
             test-results/
             /tmp/brayroai-preview.log

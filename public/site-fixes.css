@@ -4,8 +4,7 @@
 /* Post-hero contrast refinements only. These are scoped so the locked hero remains untouched. */
 .cinematic-main .rail-instruction,
 .cinematic-main .system-note,
-.cinematic-main .contact-shell>p,
-.cinematic-footer{color:#8A8C90}
+.cinematic-main .contact-shell>p{color:#8A8C90}
 .cinematic-main .work-heading>p,
 .cinematic-main .pricing-heading>p,
 .cinematic-main .price-lines article>strong small,
@@ -15,3 +14,4 @@
 .cinematic-main .work-caption>span{color:#96320B}
 .cinematic-main .work-word{display:none}
 .cinematic-main .studio-tape span{color:#7A7D82}
+body .cinematic-footer{color:#8A8C90}

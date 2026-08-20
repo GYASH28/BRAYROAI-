@@ -25,7 +25,8 @@ expect(js.includes('class LockedHeroController'),'locked hero controller missing
 expect(js.includes('},920)'),'locked loader timing changed');
 expect(js.includes('this.px*34*depth')&&js.includes('scrollP*86*depth'),'locked hero depth behavior changed');
 expect(css.includes('.hero-v3'),'stable base hero primitives missing');
-expect(fixes.trim().endsWith("@import url('/site-fixes-core.css');"),'site-fixes must only preserve the locked production base');
+expect(fixes.includes("@import url('/site-fixes-core.css');"),'locked production completion base missing');
+expect(!/(?:^|\n)(?!\.cinematic-main|\.cinematic-footer|\/\*|@import|\s*$)[^\n]*\{/.test(fixes.split("@import url('/site-fixes-core.css');")[1]||''),'site-fixes contains an unscoped post-hero rule that could touch the locked hero');
 
 // One-page commercial architecture.
 for(const id of ['main','top','services','work','system','pricing','studio','contact'])expect(html.includes(`id="${id}"`),`missing #${id}`);

@@ -124,7 +124,7 @@ jobs:
                   },{target,p});
                 }
                 await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-                await page.waitForTimeout(120);
+                await page.waitForTimeout(name==='hero'?1350:120);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               await context.close();

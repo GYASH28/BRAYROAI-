@@ -1,11 +1,11 @@
-/* BRAYROAI locked production base + accessibility corrections.
-   The original hero/brand completion layer is preserved in site-fixes-core.css.
-   These high-specificity corrections only raise contrast in the new post-hero scenes. */
-@import url('/site-fixes-core.css');
-:root{--blue:#3E7BFF;--orange:#FF6B2C}
-.project-meta{color:#5B626B!important}
-.project-browser__bar span{color:#5B626B!important}
-.decon-heading h2 em,.studio-copy h2 em{color:#B54415!important}
-.ai-choice button.is-active{background:#2A5BC7!important;border-color:#2A5BC7!important;color:#fff!important}
-.studio-facts span{color:#5B626B!important}
-.resolution-fragments span{color:#5B626B!important}
+/* Post-hero refinements only. The opening and hero visual contract now lives directly in styles.css. */
+.cinematic-main .rail-instruction,.cinematic-main .system-note,.cinematic-main .contact-shell>p{color:#8A8C90}
+.cinematic-main .work-heading>p,.cinematic-main .pricing-heading>p,.cinematic-main .price-lines article>strong small,.cinematic-main .pricing-fineprint{color:#5A6068}
+.cinematic-main .work-heading h2 em,.cinematic-main .pricing-heading h2 em{color:#A43A0D}
+.cinematic-main .work-caption>span{color:#96320B}
+.cinematic-main .work-word{display:none}
+.cinematic-main .studio-tape span{color:#7A7D82}
+.cinematic-main .system-heading{z-index:7}
+.cinematic-main .pricing-toggle button,.cinematic-main .mode-switch button{min-height:44px}
+.cinematic-main section[id]{scroll-margin-top:90px}
+.cinematic-footer.cinematic-footer{color:#8A8C90}

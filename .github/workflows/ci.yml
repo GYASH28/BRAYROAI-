@@ -29,40 +29,34 @@ jobs:
       - name: Guard production bundle
         run: |
           test -f dist/index.html
-          test -f dist/plans.html
-          test -f dist/case-studies/fakhrimart.html
           test -f dist/styles.css
           test -f dist/site-fixes.css
           test -f dist/experience.css
           test -f dist/app.js
-          test -f dist/commercial.css
-          test -f dist/commercial-fixes.css
-          test -f dist/commercial-accessibility.css
-          test -f dist/plans.js
           test -f dist/assets/hero-background.webp
           test -f dist/assets/yash-cutout.webp
           test -f dist/assets/about-yash.webp
           test -f dist/assets/fakhrimart-case-desktop.png
           test -f dist/assets/fakhrimart-case-mobile.png
+          ! test -f dist/site-fixes-core.css
           grep -q 'Digital, designed' dist/index.html
-          grep -q 'data-scene="forces"' dist/index.html
-          grep -q 'data-scene="project"' dist/index.html
-          grep -q 'data-scene="process"' dist/index.html
-          grep -q 'class ExperienceController' dist/app.js
-          grep -q 'locked hero compatibility' dist/experience.css
-          grep -q '₹17,999' dist/plans.html
-          grep -q 'PORTFOLIO PROP' dist/case-studies/fakhrimart.html
-          ! grep -q '/site-fixes.js' dist/index.html
-          ! test -f dist/site-fixes.js
-          ! test -f dist/polish.css
-          ! test -f dist/experience-fixes.css
-          ! test -f dist/experience.js
-          ! test -f dist/refinement.css
-          ! test -f dist/refinement.js
-          ! test -f dist/commercial.js
+          grep -q 'data-scene="services"' dist/index.html
+          grep -q 'data-scene="work"' dist/index.html
+          grep -q 'data-scene="system"' dist/index.html
+          grep -q '₹17,999' dist/index.html
+          grep -q 'class CinematicExperience' dist/app.js
+          ! test -f dist/plans.html
+          ! test -f dist/case-studies/fakhrimart.html
+          ! test -f dist/plans.js
+          ! test -f dist/commercial.css
+          ! test -f dist/commercial-fixes.css
+          ! test -f dist/commercial-accessibility.css
+          CSS_BYTES=$(wc -c < dist/styles.css)
+          echo "critical CSS: ${CSS_BYTES} bytes"
+          test "$CSS_BYTES" -lt 24000
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 2750
+          test "$TOTAL" -lt 2350
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
@@ -85,7 +79,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'data-scene="forces"' && curl -fsS http://127.0.0.1:4173/plans.html | grep -q '₹17,999' && curl -fsS http://127.0.0.1:4173/case-studies/fakhrimart.html | grep -q 'PORTFOLIO PROP'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'data-scene="services"' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹17,999'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -93,42 +87,46 @@ jobs:
       - name: Concurrent stress test
         env:
           BASE_URL: http://127.0.0.1:4173
-          STRESS_REQUESTS: 720
-          STRESS_CONCURRENCY: 36
+          STRESS_REQUESTS: 900
+          STRESS_CONCURRENCY: 45
         run: npm run test:stress
       - name: Cross-viewport interaction and accessibility tests
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
-      - name: Capture homepage, Plans and case-study visual references
+      - name: Capture deterministic cinematic keyframes
         run: |
           mkdir -p artifacts/screenshots
           node - <<'JS'
           const { chromium } = require('playwright');
           (async()=>{
             const browser=await chromium.launch({headless:true});
-            for(const [name,url,width,height] of [
-              ['home-desktop','http://127.0.0.1:4173/',1440,1000],
-              ['home-mobile','http://127.0.0.1:4173/',390,844],
-              ['plans-desktop','http://127.0.0.1:4173/plans.html',1440,1000],
-              ['plans-mobile','http://127.0.0.1:4173/plans.html',390,844],
-              ['case-desktop','http://127.0.0.1:4173/case-studies/fakhrimart.html',1440,1000],
-              ['case-mobile','http://127.0.0.1:4173/case-studies/fakhrimart.html',390,844]
-            ]){
+            const frames=[
+              ['hero',0],['services','#services',.13],['work-hold','#work',.43],['work-split','#work',.78],['system','#system',.52],['pricing','#pricing',0],['studio','#studio',.35]
+            ];
+            for(const [device,width,height] of [['desktop',1440,1000],['mobile',390,844]]){
               const context=await browser.newContext({viewport:{width,height}});
               const page=await context.newPage();
-              await page.goto(url,{waitUntil:'networkidle'});
-              if(url.endsWith('/')){
-                await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
-                await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
-                for(const selector of ['#services','#work','#process','#lab','#about','#engage']){
-                  await page.locator(selector).scrollIntoViewIfNeeded();
-                  await page.waitForTimeout(100);
+              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
+              await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
+              await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto'});
+              for(const [name,target,p=0] of frames){
+                if(target===0){
+                  await page.evaluate(()=>window.scrollTo(0,0));
+                }else{
+                  await page.evaluate(({target,p})=>{
+                    const el=document.querySelector(target);
+                    const rect=el.getBoundingClientRect();
+                    const top=rect.top+window.scrollY;
+                    const d=Math.max(1,rect.height-innerHeight);
+                    window.scrollTo(0,top+d*p);
+                  },{target,p});
                 }
-                await page.evaluate(()=>scrollTo(0,0));
-                await page.waitForTimeout(250);
+                await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+                await page.waitForTimeout(name==='hero'?1350:120);
+                await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
-              await page.screenshot({path:`artifacts/screenshots/${name}.png`,fullPage:true});
               await context.close();
             }
             await browser.close();
@@ -139,10 +137,6 @@ jobs:
           mkdir -p artifacts/lighthouse
           npx lighthouse http://127.0.0.1:4173/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/home.json
           node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json
-          npx lighthouse http://127.0.0.1:4173/plans.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/plans.json
-          node tests/lighthouse-budget.mjs artifacts/lighthouse/plans.json
-          npx lighthouse http://127.0.0.1:4173/case-studies/fakhrimart.html --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/case.json
-          node tests/lighthouse-budget.mjs artifacts/lighthouse/case.json
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4

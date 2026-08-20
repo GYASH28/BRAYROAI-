@@ -1,100 +1,79 @@
 import { test, expect } from '@playwright/test';
 
-async function ready(page){
+const ready=async page=>{
   await page.goto('/',{waitUntil:'networkidle'});
-  await page.waitForFunction(()=>document.body.classList.contains('hero-ready'),null,{timeout:5000});
-  await page.waitForFunction(()=>document.body.classList.contains('experience-ready'),null,{timeout:5000});
-}
-
-const scrollSceneTo=async(page,selector,ratio)=>{
-  await page.locator(selector).evaluate((el,ratio)=>{
-    document.documentElement.style.scrollBehavior='auto';
-    const max=Math.max(1,el.offsetHeight-window.innerHeight);
-    const top=el.getBoundingClientRect().top+window.scrollY;
-    window.scrollTo(0,top+max*ratio);
-  },ratio);
-  await page.waitForTimeout(100);
+  await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
+  await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
 };
 
-test('one ExperienceController owns the six post-hero scenes', async ({page}) => {
-  await ready(page);
-  expect(await page.evaluate(()=>Boolean(window.__BRAYROAI__))).toBe(true);
-  expect(await page.evaluate(()=>window.__BRAYROAI__.constructor.name)).toBe('ExperienceController');
-  expect(await page.evaluate(()=>window.__BRAYROAI__.scenes.length)).toBe(6);
-  await expect(page.locator('[data-scene="forces"]')).toHaveCount(1);
-  await expect(page.locator('[data-scene="project"]')).toHaveCount(1);
-  await expect(page.locator('[data-scene="process"]')).toHaveCount(1);
-});
+const scrollScene=async(page,selector,p)=>{
+  await page.evaluate(({selector,p})=>{
+    document.documentElement.style.scrollBehavior='auto';
+    const el=document.querySelector(selector);
+    const rect=el.getBoundingClientRect();
+    const top=rect.top+window.scrollY;
+    const distance=Math.max(1,rect.height-innerHeight);
+    window.scrollTo(0,top+distance*p);
+  },{selector,p});
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+};
 
-test('three forces transform through design, engineering, intelligence and convergence', async ({page}) => {
+test('service moments enter, hold, then leave the camera',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await ready(page);
-  const scene=page.locator('#services');
-  for(const [ratio,state,title] of [[.08,'design','DESIGN'],[.34,'engineering','ENGINEERING'],[.62,'intelligence','INTELLIGENCE'],[.9,'converged','ONE SYSTEM']]){
-    await scrollSceneTo(page,'#services',ratio);
-    await expect(scene).toHaveAttribute('data-state',state);
-    await expect(scene.locator('[data-force-title]')).toHaveText(title);
-  }
+  await scrollScene(page,'#services',.125);
+  const held=page.locator('[data-service-moment]').first();
+  await expect.poll(async()=>Number(await held.evaluate(el=>getComputedStyle(el).opacity))).toBeGreaterThan(.9);
+  await expect(held).toHaveClass(/is-current/);
+  await scrollScene(page,'#services',.24);
+  await expect.poll(async()=>held.evaluate(el=>el.style.transform)).toContain('translate3d(-');
 });
 
-test('real work approaches, fills the camera, opens up and hands off', async ({page}) => {
+test('work transitions from real browser to split build layers',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await ready(page);
-  const scene=page.locator('#work');
-  await scrollSceneTo(page,'#work',.12);
-  await expect(scene).toHaveAttribute('data-state','approach');
-  await scrollSceneTo(page,'#work',.38);
-  await expect(scene).toHaveAttribute('data-state','immersive');
-  const immerse=Number(await scene.evaluate(el=>getComputedStyle(el).getPropertyValue('--immerse')));
-  expect(immerse).toBeGreaterThan(.4);
-  await scrollSceneTo(page,'#work',.68);
-  await expect(scene).toHaveAttribute('data-state','deconstruct');
-  const deconstruct=Number(await scene.evaluate(el=>getComputedStyle(el).getPropertyValue('--deconstruct')));
-  expect(deconstruct).toBeGreaterThan(.25);
-  await scrollSceneTo(page,'#work',.92);
-  await expect(scene).toHaveAttribute('data-state','handoff');
-  const handoff=Number(await scene.evaluate(el=>getComputedStyle(el).getPropertyValue('--handoff')));
-  expect(handoff).toBeGreaterThan(.5);
+  await scrollScene(page,'#work',.40);
+  await expect(page.locator('.work-stage')).toHaveAttribute('data-work-phase','hold');
+  await expect.poll(async()=>Number(await page.locator('.work-stage').evaluate(el=>getComputedStyle(el).getPropertyValue('--work-fill')))).toBeGreaterThan(.9);
+  await scrollScene(page,'#work',.78);
+  await expect(page.locator('.work-stage')).toHaveAttribute('data-work-phase','split');
+  await expect.poll(async()=>Number(await page.locator('.work-stage').evaluate(el=>getComputedStyle(el).getPropertyValue('--work-split')))).toBeGreaterThan(.4);
 });
 
-test('process is explained by deconstructing the same product rather than numbered rows', async ({page}) => {
+test('one system surface automatically changes discipline with scroll',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await ready(page);
-  await expect(page.locator('.process-row')).toHaveCount(0);
-  await expect(page.locator('#process .decon-layer')).toHaveCount(5);
-  await scrollSceneTo(page,'#process',.12);
-  await expect(page.locator('[data-process-word]')).toHaveText('FINISHED PRODUCT');
-  await scrollSceneTo(page,'#process',.58);
-  const middle=await page.locator('[data-process-word]').textContent();
-  expect(['SYSTEM','INTERACTION','ENGINEERING']).toContain(middle);
-  await scrollSceneTo(page,'#process',.96);
-  await expect(page.locator('[data-process-word]')).toHaveText('SHIP');
+  await scrollScene(page,'#system',.16);
+  await expect(page.locator('[data-craft-board]')).toHaveAttribute('data-mode','design');
+  await scrollScene(page,'#system',.52);
+  await expect(page.locator('[data-craft-board]')).toHaveAttribute('data-mode','build');
+  await scrollScene(page,'#system',.84);
+  await expect(page.locator('[data-craft-board]')).toHaveAttribute('data-mode','ai');
 });
 
-test('fine pointer gets contextual cursor state while touch does not depend on it', async ({page}) => {
+test('fine pointer gets contextual work inspection without replacing links',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await ready(page);
-  await page.locator('#work').scrollIntoViewIfNeeded();
-  const target=page.locator('[data-cursor="OPEN"]');
-  const fine=await page.evaluate(()=>matchMedia('(pointer:fine)').matches);
-  if(fine){
-    await target.hover();
-    await expect(page.locator('[data-context-cursor]')).toHaveClass(/is-visible/);
-    await expect(page.locator('[data-context-cursor] span')).toHaveText('OPEN');
-  }
+  await scrollScene(page,'#work',.42);
+  const frame=page.locator('[data-work-frame]');
+  await frame.hover({position:{x:400,y:260}});
+  await expect(page.locator('[data-context-cursor]')).toHaveClass(/is-visible/);
+  await expect(frame.locator('.work-open')).toHaveAttribute('href','https://fakhriyarns.vercel.app/');
 });
 
-test('navigation stays native-scroll based with no scroll hijacking library', async ({page}) => {
+test('experience uses native document scrolling and one RAF-driven controller',async({page})=>{
   await ready(page);
   const behavior=await page.evaluate(()=>({
+    htmlOverflow:getComputedStyle(document.documentElement).overflowY,
     bodyOverflow:getComputedStyle(document.body).overflowY,
-    htmlScrollBehavior:getComputedStyle(document.documentElement).scrollBehavior,
-    hasLenis:Boolean(window.lenis||window.Lenis),
-    hasGsap:Boolean(window.gsap)
+    scrollHeight:document.scrollingElement.scrollHeight,
+    viewport:innerHeight,
+    ready:document.body.classList.contains('experience-ready')
   }));
-  expect(behavior.hasLenis).toBe(false);
-  expect(behavior.hasGsap).toBe(false);
-  expect(['auto','visible','scroll'].includes(behavior.bodyOverflow)).toBeTruthy();
-  await page.locator('.desktop-nav a[href="#lab"]').click();
-  await expect(page).toHaveURL(/#lab$/);
+  expect(behavior.ready).toBeTruthy();
+  expect(behavior.htmlOverflow).not.toBe('hidden');
+  expect(behavior.bodyOverflow).not.toBe('hidden');
+  expect(behavior.scrollHeight).toBeGreaterThan(behavior.viewport*3);
+  await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,700)});
+  await expect.poll(()=>page.evaluate(()=>window.scrollY)).toBeGreaterThan(0);
 });

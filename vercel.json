@@ -5,8 +5,8 @@
   "outputDirectory":"dist",
   "cleanUrls":true,
   "redirects":[
-    {"source":"/plans","destination":"/#pricing","permanent":true},
-    {"source":"/plans.html","destination":"/#pricing","permanent":true},
+    {"source":"/plans","destination":"/#plans","permanent":true},
+    {"source":"/plans.html","destination":"/#plans","permanent":true},
     {"source":"/case-studies/fakhrimart","destination":"/#work","permanent":true},
     {"source":"/case-studies/fakhrimart.html","destination":"/#work","permanent":true}
   ],

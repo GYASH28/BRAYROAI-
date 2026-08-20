@@ -4,6 +4,12 @@
   "buildCommand":"npm run build",
   "outputDirectory":"dist",
   "cleanUrls":true,
+  "redirects":[
+    {"source":"/plans","destination":"/#pricing","permanent":true},
+    {"source":"/plans.html","destination":"/#pricing","permanent":true},
+    {"source":"/case-studies/fakhrimart","destination":"/#work","permanent":true},
+    {"source":"/case-studies/fakhrimart.html","destination":"/#work","permanent":true}
+  ],
   "headers":[
     {"source":"/(.*)","headers":[
       {"key":"X-Content-Type-Options","value":"nosniff"},
@@ -14,6 +20,6 @@
       {"key":"Content-Security-Policy","value":"default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:; upgrade-insecure-requests"}
     ]},
     {"source":"/assets/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"}]},
-    {"source":"/(app.js|plans.js|styles.css|site-fixes.css|experience.css|commercial.css|commercial-fixes.css|commercial-accessibility.css)","headers":[{"key":"Cache-Control","value":"public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600"}]}
+    {"source":"/(app.js|styles.css|site-fixes.css|site-fixes-core.css|experience.css)","headers":[{"key":"Cache-Control","value":"public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600"}]}
   ]
 }

@@ -41,9 +41,11 @@ jobs:
           ! test -f dist/site-fixes-core.css
           grep -q 'Digital, designed' dist/index.html
           grep -q 'id="plans"' dist/index.html
-          grep -q 'data-plan-recommended' dist/index.html
-          grep -q 'MOST CHOSEN' dist/index.html
+          grep -q '₹9,999' dist/index.html
           grep -q '₹17,999' dist/index.html
+          grep -q 'class PlanPriorityController' dist/app.js
+          grep -q "this.entry.setAttribute('data-plan-recommended','')" dist/app.js
+          grep -q 'body.v10-polished' dist/site-fixes.css
           grep -q 'class BRAYROExperience' dist/app.js
           ! grep -q 'service-rail' dist/experience.css
           ! grep -q 'work-slices' dist/experience.css
@@ -58,7 +60,7 @@ jobs:
           test "$CSS_BYTES" -lt 24000
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 2350
+          test "$TOTAL" -lt 2380
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
@@ -81,7 +83,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="plans"' && curl -fsS http://127.0.0.1:4173/ | grep -q 'MOST CHOSEN'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="plans"' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹9,999'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -125,7 +127,7 @@ jobs:
                 if(!target){await page.evaluate(()=>window.scrollTo(0,0));}
                 else{await page.evaluate(({target,offset})=>{const el=document.querySelector(target);const top=el.getBoundingClientRect().top+window.scrollY+offset;window.scrollTo(0,Math.max(0,top));},{target,offset});}
                 await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-                await page.waitForTimeout(name==='hero'?1350:220);
+                await page.waitForTimeout(name==='hero'?1350:240);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               await context.close();

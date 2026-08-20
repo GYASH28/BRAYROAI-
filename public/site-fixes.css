@@ -1,11 +1,8 @@
-/* Post-hero refinements only. The opening and hero visual contract now lives directly in styles.css. */
-.cinematic-main .rail-instruction,.cinematic-main .system-note,.cinematic-main .contact-shell>p{color:#8A8C90}
-.cinematic-main .work-heading>p,.cinematic-main .pricing-heading>p,.cinematic-main .price-lines article>strong small,.cinematic-main .pricing-fineprint{color:#5A6068}
-.cinematic-main .work-heading h2 em,.cinematic-main .pricing-heading h2 em{color:#A43A0D}
-.cinematic-main .work-caption>span{color:#96320B}
-.cinematic-main .work-word{display:none}
-.cinematic-main .studio-tape span{color:#7A7D82}
-.cinematic-main .system-heading{z-index:7}
-.cinematic-main .pricing-toggle button,.cinematic-main .mode-switch button{min-height:44px}
-.cinematic-main section[id]{scroll-margin-top:90px}
-.cinematic-footer.cinematic-footer{color:#8A8C90}
+/* Post-hero refinements only. Opening sequence + hero remain owned by styles.css. */
+.v9-main section[id]{scroll-margin-top:92px}
+.v9-main a,.v9-main button{touch-action:manipulation}
+.v9-main .plan-cta,.v9-main .care-plans a,.v9-main .system-tabs button,.v9-main .contact-primary,.v9-main .contact-secondary{min-height:44px}
+.v9-main .plans-header h2 em,.v9-main .proof-heading h2 em,.v9-main .services-heading h2 em,.v9-main .system-heading-v9 h2 em,.v9-main .studio-copy-v9 h2 em,.v9-main .contact-shell-v9 h2 em{color:#A43A0D}
+.v9-dark .proof-heading h2 em,.v9-dark .services-heading h2 em,.v9-dark .system-heading-v9 h2 em,.v9-dark .studio-copy-v9 h2 em{color:#FF6428}
+.v9-footer{color:#8A9099}
+@media(max-width:800px){.v9-main section[id]{scroll-margin-top:78px}}

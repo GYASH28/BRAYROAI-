@@ -5,4 +5,6 @@
 .cinematic-main .work-caption>span{color:#96320B}
 .cinematic-main .work-word{display:none}
 .cinematic-main .studio-tape span{color:#7A7D82}
+.cinematic-main .pricing-toggle button,.cinematic-main .mode-switch button{min-height:44px}
+.cinematic-main section[id]{scroll-margin-top:90px}
 .cinematic-footer.cinematic-footer{color:#8A8C90}

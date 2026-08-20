@@ -1,157 +1,24 @@
-/* Post-hero refinements only. Opening sequence + hero remain owned by styles.css. */
-.v9-main section[id]{scroll-margin-top:92px}
-.v9-main a,.v9-main button{touch-action:manipulation}
-.v9-main .plan-cta,.v9-main .contact-primary{min-height:56px}
-.v9-main .care-plans a,.v9-main .system-tabs button,.v9-main .contact-secondary{min-height:44px}
-.v9-main .plans-fineprint{color:#5F6670}
-.v9-main .contact-section{min-height:100svh;display:flex;align-items:center}
-.v9-main .plans-header h2 em,.v9-main .proof-heading h2 em,.v9-main .services-heading h2 em,.v9-main .system-heading-v9 h2 em,.v9-main .studio-copy-v9 h2 em,.v9-main .contact-shell-v9 h2 em{color:#A43A0D}
-.v9-dark .proof-heading h2 em,.v9-dark .services-heading h2 em,.v9-dark .system-heading-v9 h2 em,.v9-dark .studio-copy-v9 h2 em{color:#FF6428}
+/* Small cross-cutting safeguards. Opening hero styles remain untouched. */
+html{overflow-x:clip}
+.cinematic-main section[id]{scroll-margin-top:90px}
+.cinematic-main a,.cinematic-main button{touch-action:manipulation}
+.cinematic-main button,.cinematic-main a{outline-offset:4px}
+.cinematic-main :focus-visible{outline:2px solid #FF6428;outline-offset:4px}
+.cinematic-main .plan-cta,.cinematic-main .contact-primary{min-height:56px}
+.cinematic-main .care-plans a,.cinematic-main .contact-secondary,.cinematic-main .studio-links-v9 a{min-height:44px}
+.capability-list button{touch-action:manipulation}
 .v9-footer{color:#8A9099}
 
-/* V10 — entry-price-first visual hierarchy and full-site polish. */
-body.v10-polished .v9-main{--v10-blue:#3976FF;--v10-orange:#FF6428;--v10-ink:#08090B;--v10-bone:#F6F2EA;--v10-hair:rgba(244,241,234,.14);--v10-ease:cubic-bezier(.16,1,.3,1)}
-body.v10-polished .v9-main .reveal-item{transition-delay:var(--reveal-delay,0ms)}
-
-/* Plans: make the lowest build price the unmistakable entry point. */
-body.v10-polished .v9-main .plans-section{background:radial-gradient(900px 520px at 6% 16%,rgba(57,118,255,.11),transparent 62%),radial-gradient(900px 560px at 95% 70%,rgba(255,100,40,.075),transparent 62%),var(--v10-bone)}
-body.v10-polished .v9-main .plans-section::before{height:3px;background:linear-gradient(90deg,var(--v10-blue) 0 34%,rgba(9,9,11,.08) 34% 68%,var(--v10-orange) 68% 100%)}
-body.v10-polished .v9-main .plans-section::after{color:rgba(9,9,11,.032);filter:blur(.1px)}
-body.v10-polished .v9-main .plans-header{position:relative;border-bottom-color:rgba(9,9,11,.19)}
-body.v10-polished .v9-main .plans-header::after{content:"ENTRY-FIRST / SCALE WHEN READY";position:absolute;right:0;bottom:-10px;padding:3px 8px;background:var(--v10-bone);color:#4D5560;font:600 7px 'DM Mono';letter-spacing:.11em}
-body.v10-polished .v9-main .plans-header h2{max-width:1050px;text-wrap:balance}
-body.v10-polished .v9-main .plans-intro>a{font-weight:750;transition:gap .24s var(--v10-ease),border-color .24s}
-body.v10-polished .v9-main .plans-intro>a:hover{gap:12px;border-color:var(--v10-orange)}
-body.v10-polished .v9-main .plan-grid{gap:18px;align-items:stretch}
-body.v10-polished .v9-main .plan-card{--spot-x:50%;--spot-y:50%;overflow:hidden;isolation:isolate;border-color:rgba(9,9,11,.2);background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.20));box-shadow:0 12px 42px rgba(9,9,11,.045)}
-body.v10-polished .v9-main .plan-card::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(420px circle at var(--spot-x) var(--spot-y),rgba(57,118,255,.085),transparent 55%);opacity:0;transition:opacity .35s}
-body.v10-polished .v9-main .plan-card:hover::after{opacity:1}
-body.v10-polished .v9-main .plan-card[data-plan-recommended]{z-index:2;transform:translateY(-12px);border-color:var(--v10-ink);background:radial-gradient(560px 360px at var(--spot-x) var(--spot-y),rgba(57,118,255,.18),transparent 62%),linear-gradient(155deg,#0B0D12,#07080A 74%);box-shadow:0 32px 90px rgba(7,8,10,.28),0 0 0 1px rgba(57,118,255,.12)}
-body.v10-polished .v9-main .plan-card[data-plan-recommended]:hover{transform:translateY(-17px);box-shadow:0 42px 105px rgba(7,8,10,.34),0 0 0 1px rgba(57,118,255,.18)}
-body.v10-polished .v9-main .plan-card[data-plan-recommended]::before{height:5px;background:linear-gradient(90deg,var(--v10-blue),#74A2FF 62%,var(--v10-orange))}
-body.v10-polished .v9-main .plan-card[data-plan-recommended]::after{z-index:0;opacity:.5;background:radial-gradient(480px circle at var(--spot-x) var(--spot-y),rgba(57,118,255,.17),transparent 55%)}
-body.v10-polished .v9-main .plan-card[data-plan-recommended]>*{position:relative;z-index:1}
-body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-badge{top:24px;right:24px;padding:8px 10px;border:1px solid rgba(244,241,234,.15);background:rgba(244,241,234,.055);color:#F1F3F6;backdrop-filter:blur(12px)}
-body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-badge i{background:var(--v10-blue);box-shadow:0 0 0 5px rgba(57,118,255,.13)}
-body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-price strong{font-size:clamp(54px,4.65vw,78px);color:#fff}
-body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-price small{color:#B6C8F3}
-body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-summary{color:#CCD2DC}
-body.v10-polished .v9-main .plan-card[data-plan-recommended] li::before{background:var(--v10-blue);box-shadow:0 0 0 3px rgba(57,118,255,.12)}
-body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-cta{background:#F7F3EA;color:#08090B!important;border-color:#F7F3EA;box-shadow:0 12px 34px rgba(0,0,0,.18)}
-body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-cta:hover{background:#fff;translate:0 -2px}
-body.v10-polished .v9-main .plan-card[data-plan="website"]{background:linear-gradient(155deg,rgba(255,255,255,.58),rgba(57,118,255,.035));border-color:rgba(9,9,11,.23)}
-body.v10-polished .v9-main .plan-card[data-plan="bespoke"]{background:linear-gradient(155deg,rgba(255,255,255,.50),rgba(255,100,40,.035))}
-body.v10-polished .v9-main .plan-cta{position:relative;overflow:hidden;transition:background .25s,color .25s,border-color .25s,translate .25s var(--v10-ease)}
-body.v10-polished .v9-main .plan-cta:hover{translate:0 -2px}
-body.v10-polished .v9-main .care-block{position:relative;padding-top:44px}
-body.v10-polished .v9-main .care-block::before{content:"LOW COMMITMENT / EASY TO START";position:absolute;left:0;top:-12px;padding:4px 8px;background:var(--v10-ink);color:#F4F1EA;font:500 7px 'DM Mono';letter-spacing:.1em}
-body.v10-polished .v9-main .care-plans article{--spot-x:50%;--spot-y:50%;position:relative;overflow:hidden;padding-inline:18px;transition:background .28s,padding .28s var(--v10-ease)}
-body.v10-polished .v9-main .care-plans article::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(380px circle at var(--spot-x) var(--spot-y),rgba(57,118,255,.08),transparent 58%);opacity:0;transition:opacity .3s}
-body.v10-polished .v9-main .care-plans article:hover{background:rgba(57,118,255,.045);padding-inline:24px}
-body.v10-polished .v9-main .care-plans article:hover::after{opacity:1}
-body.v10-polished .v9-main .care-plans article>*{position:relative;z-index:1}
-body.v10-polished .v9-main .care-plans article[data-care-highlight]{background:linear-gradient(90deg,rgba(57,118,255,.10),rgba(57,118,255,.025) 55%,transparent);box-shadow:inset 4px 0 0 var(--v10-blue)}
-body.v10-polished .v9-main .care-badge{padding:4px 6px;border:1px solid rgba(57,118,255,.28);background:rgba(57,118,255,.07);color:#315FC5;font:600 7px 'DM Mono';letter-spacing:.09em}
-
-/* Work: more gallery-like, less like a screenshot dropped on a page. */
-body.v10-polished .v9-main .proof-section{background:radial-gradient(760px 540px at 89% 26%,rgba(57,118,255,.09),transparent 64%),radial-gradient(720px 520px at 7% 78%,rgba(255,100,40,.055),transparent 66%),#09090B}
-body.v10-polished .v9-main .proof-heading h2{text-wrap:balance}
-body.v10-polished .v9-main .proof-stage{perspective:1500px}
-body.v10-polished .v9-main .proof-browser{width:min(89%,1320px);border-color:rgba(244,241,234,.28);box-shadow:0 55px 130px rgba(0,0,0,.44),0 0 0 1px rgba(57,118,255,.06)}
-body.v10-polished .v9-main .proof-browser::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
-body.v10-polished .v9-main .proof-browser>a{min-height:52px;padding-inline:20px;box-shadow:0 12px 34px rgba(0,0,0,.25);transition:transform .28s var(--v10-ease),background .28s}
-body.v10-polished .v9-main .proof-browser>a:hover{transform:translateY(-3px);background:#11151C}
-body.v10-polished .v9-main .proof-phone{box-shadow:0 45px 95px rgba(0,0,0,.64),0 0 0 1px rgba(244,241,234,.14),0 0 80px rgba(57,118,255,.12)}
-body.v10-polished .v9-main .proof-steps article{position:relative;overflow:hidden;transition:background .3s,transform .3s var(--v10-ease)}
-body.v10-polished .v9-main .proof-steps article::before{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--v10-blue),var(--v10-orange));transform:scaleX(0);transform-origin:left;transition:transform .35s var(--v10-ease)}
-body.v10-polished .v9-main .proof-steps article:hover{background:rgba(244,241,234,.035);transform:translateY(-5px)}
-body.v10-polished .v9-main .proof-steps article:hover::before{transform:scaleX(1)}
-
-/* Services: richer interaction without turning them into generic cards. */
-body.v10-polished .v9-main .services-section{position:relative;background:linear-gradient(180deg,#09090B,#0B0D11 62%,#09090B)}
-body.v10-polished .v9-main .services-section::after{content:"SERVICES";position:absolute;right:-.02em;top:1.15em;color:rgba(244,241,234,.018);font:700 clamp(150px,23vw,360px)/.8 'Space Grotesk';letter-spacing:-.1em;pointer-events:none}
-body.v10-polished .v9-main .service-list{position:relative;z-index:1}
-body.v10-polished .v9-main .service-row{--spot-x:50%;--spot-y:50%;overflow:hidden;isolation:isolate;transition:background .32s,padding .32s var(--v10-ease),transform .32s var(--v10-ease)}
-body.v10-polished .v9-main .service-row::before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(620px circle at var(--spot-x) var(--spot-y),rgba(57,118,255,.105),transparent 56%);opacity:0;transition:opacity .34s}
-body.v10-polished .v9-main .service-row::after{content:"";position:absolute;left:0;top:18%;bottom:18%;width:3px;background:linear-gradient(var(--v10-blue),var(--v10-orange));transform:scaleY(0);transition:transform .3s var(--v10-ease)}
-body.v10-polished .v9-main .service-row:hover{background:rgba(244,241,234,.028);padding-inline:22px;transform:translateX(4px)}
-body.v10-polished .v9-main .service-row:hover::before{opacity:1}
-body.v10-polished .v9-main .service-row:hover::after{transform:scaleY(1)}
-body.v10-polished .v9-main .service-row h3{transition:letter-spacing .32s var(--v10-ease),color .32s}
-body.v10-polished .v9-main .service-row:hover h3{letter-spacing:-.045em;color:#fff}
-body.v10-polished .v9-main .service-row>small{padding:7px 9px;border:1px solid rgba(244,241,234,.10);background:rgba(244,241,234,.025)}
-
-/* System: make the discipline switcher feel like a product surface. */
-body.v10-polished .v9-main .system-section{background:radial-gradient(800px 600px at 84% 50%,rgba(57,118,255,.10),transparent 64%),#0D0F13}
-body.v10-polished .v9-main .system-tabs{padding:5px;border-color:rgba(244,241,234,.2);background:rgba(8,9,11,.78);box-shadow:0 16px 40px rgba(0,0,0,.2);backdrop-filter:blur(14px)}
-body.v10-polished .v9-main .system-tabs button{border-radius:1px;transition:background .25s,color .25s,transform .25s var(--v10-ease)}
-body.v10-polished .v9-main .system-tabs button:hover{color:#fff}
-body.v10-polished .v9-main .system-tabs button.is-active{box-shadow:0 8px 22px rgba(0,0,0,.22);transform:translateY(-1px)}
-body.v10-polished .v9-main .system-panel{border-color:rgba(244,241,234,.24);box-shadow:0 40px 110px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.035)}
-body.v10-polished .v9-main .system-panel::after{content:"";position:absolute;inset:42px 0 98px;pointer-events:none;background:radial-gradient(420px circle at calc(50% + var(--pointer-x)*15%) calc(50% + var(--pointer-y)*15%),rgba(57,118,255,.08),transparent 62%);mix-blend-mode:screen}
-body.v10-polished .v9-main .system-panel[data-mode="ai"]{box-shadow:0 40px 120px rgba(0,0,0,.36),0 0 75px rgba(57,118,255,.08)}
-body.v10-polished .v9-main .system-copy{background:linear-gradient(90deg,#0D0F13,#10141C)}
-
-/* Studio: stronger editorial portrait treatment. */
-body.v10-polished .v9-main .studio-section{background:radial-gradient(720px 520px at 87% 52%,rgba(255,100,40,.065),transparent 65%),#09090B}
-body.v10-polished .v9-main .studio-image-v9{--spot-x:50%;--spot-y:50%;box-shadow:0 42px 110px rgba(0,0,0,.42);outline:1px solid rgba(244,241,234,.16);outline-offset:-1px}
-body.v10-polished .v9-main .studio-image-v9::before{content:"FOUNDER / CREATIVE TECHNOLOGY";position:absolute;z-index:3;left:18px;top:18px;padding:7px 9px;background:rgba(8,9,11,.68);border:1px solid rgba(244,241,234,.15);color:#E2E5EA;font:500 7px 'DM Mono';letter-spacing:.09em;backdrop-filter:blur(12px)}
-body.v10-polished .v9-main .studio-image-v9::after{background:linear-gradient(0deg,rgba(9,9,11,.62),transparent 48%),radial-gradient(420px circle at var(--spot-x) var(--spot-y),rgba(57,118,255,.10),transparent 62%)}
-body.v10-polished .v9-main .studio-links-v9 a{display:inline-flex;align-items:center;min-height:42px;padding:0 14px;border:1px solid rgba(244,241,234,.16);text-decoration:none;transition:background .25s,border-color .25s,transform .25s var(--v10-ease)}
-body.v10-polished .v9-main .studio-links-v9 a:hover{background:rgba(244,241,234,.065);border-color:rgba(244,241,234,.34);transform:translateY(-2px)}
-
-/* Close: visually finish like a proposal, not a leftover footer. */
-body.v10-polished .v9-main .contact-section{background:radial-gradient(900px 580px at 92% 18%,rgba(57,118,255,.11),transparent 65%),radial-gradient(720px 480px at 4% 86%,rgba(255,100,40,.07),transparent 65%),var(--v10-bone)}
-body.v10-polished .v9-main .contact-section::before{height:4px}
-body.v10-polished .v9-main .contact-shell-v9 h2{text-wrap:balance}
-body.v10-polished .v9-main .contact-grid-v9{border-top-color:rgba(9,9,11,.19)}
-body.v10-polished .v9-main .contact-primary{min-height:70px;padding-inline:24px;background:linear-gradient(110deg,#09090B,#11151D);box-shadow:0 18px 44px rgba(9,9,11,.16);transition:transform .28s var(--v10-ease),box-shadow .28s}
-body.v10-polished .v9-main .contact-primary:hover{transform:translateY(-4px);box-shadow:0 26px 60px rgba(9,9,11,.22)}
-body.v10-polished .v9-main .contact-primary b{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--v10-orange);color:#fff}
-body.v10-polished .v9-main .contact-secondary{padding-top:4px;transition:color .22s}
-body.v10-polished .v9-main .contact-secondary:hover{color:#111!important}
-
-@media(max-width:1100px){
-  body.v10-polished .v9-main .plan-card[data-plan-recommended]{transform:none}
-  body.v10-polished .v9-main .plan-card[data-plan-recommended]:hover{transform:translateY(-6px)}
-  body.v10-polished .v9-main .services-section::after{opacity:.6}
+@supports not (overflow:clip){
+  html,.cinematic-main{overflow-x:hidden}
 }
 
 @media(max-width:800px){
-  .v9-main section[id]{scroll-margin-top:78px}
-  body.v10-polished .v9-main .plans-section,body.v10-polished .v9-main .proof-section,body.v10-polished .v9-main .services-section,body.v10-polished .v9-main .system-section,body.v10-polished .v9-main .studio-section{padding-top:88px;padding-bottom:88px}
-  body.v10-polished .v9-main .plans-header::after{display:none}
-  body.v10-polished .v9-main .plan-grid{gap:14px}
-  body.v10-polished .v9-main .plan-card{min-height:auto;box-shadow:none}
-  body.v10-polished .v9-main .plan-card[data-plan-recommended]{order:-1;transform:none;box-shadow:0 24px 64px rgba(7,8,10,.20)}
-  body.v10-polished .v9-main .plan-card[data-plan-recommended]:hover{transform:none}
-  body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-price strong{font-size:clamp(52px,15vw,72px)}
-  body.v10-polished .v9-main .care-block::before{position:static;display:inline-block;margin-bottom:20px}
-  body.v10-polished .v9-main .care-plans article:hover{padding-inline:14px}
-  body.v10-polished .v9-main .proof-browser{width:100%;transform:none!important}
-  body.v10-polished .v9-main .proof-phone{box-shadow:0 24px 60px rgba(0,0,0,.48)}
-  body.v10-polished .v9-main .proof-steps article:hover,body.v10-polished .v9-main .service-row:hover{transform:none}
-  body.v10-polished .v9-main .service-row:hover{padding-inline:0}
-  body.v10-polished .v9-main .service-row>small{justify-self:start;text-align:left}
-  body.v10-polished .v9-main .services-section::after{display:none}
-  body.v10-polished .v9-main .system-tabs{display:grid;grid-template-columns:repeat(3,1fr);width:100%}
-  body.v10-polished .v9-main .system-tabs button{min-width:0}
-  body.v10-polished .v9-main .system-panel{transform:none!important;box-shadow:0 24px 70px rgba(0,0,0,.24)}
-  body.v10-polished .v9-main .studio-image-v9{box-shadow:0 28px 70px rgba(0,0,0,.34)}
-  body.v10-polished .v9-main .studio-links-v9{gap:10px;flex-wrap:wrap}
-  body.v10-polished .v9-main .studio-links-v9 a{min-height:44px}
-  body.v10-polished .v9-main .contact-primary{min-height:64px}
-}
-
-@media(max-width:430px){
-  body.v10-polished .v9-main .plans-section,body.v10-polished .v9-main .proof-section,body.v10-polished .v9-main .services-section,body.v10-polished .v9-main .system-section,body.v10-polished .v9-main .studio-section{padding-top:76px;padding-bottom:76px}
-  body.v10-polished .v9-main .plan-card[data-plan-recommended] .plan-badge{right:18px;top:18px}
-  body.v10-polished .v9-main .care-badge{display:none}
-  body.v10-polished .v9-main .proof-browser>a{left:12px;right:12px;bottom:12px;justify-content:space-between}
-  body.v10-polished .v9-main .studio-image-v9::before{left:12px;top:12px;font-size:6px}
-  body.v10-polished .v9-main .contact-primary{padding-inline:18px}
+  .cinematic-main section[id]{scroll-margin-top:72px}
+  .cinematic-main img{max-width:100%}
 }
 
 @media(prefers-reduced-motion:reduce){
-  body.v10-polished .v9-main .plan-card,body.v10-polished .v9-main .proof-steps article,body.v10-polished .v9-main .service-row,body.v10-polished .v9-main .contact-primary{transform:none!important;transition:none!important}
+  html{scroll-behavior:auto!important}
+  .cinematic-main *,.cinematic-main *::before,.cinematic-main *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
 }

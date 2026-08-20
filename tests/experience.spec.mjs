@@ -1,33 +1,92 @@
 import { test, expect } from '@playwright/test';
 
-const ready=async page=>{await page.goto('/',{waitUntil:'networkidle'});await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));await page.waitForFunction(()=>document.body.classList.contains('experience-ready'))};
-const scrollTo=async(page,selector)=>{await page.evaluate(selector=>{document.documentElement.style.scrollBehavior='auto';const el=document.querySelector(selector);window.scrollTo(0,el.getBoundingClientRect().top+scrollY)},selector);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))};
+const ready=async page=>{
+  await page.goto('/',{waitUntil:'networkidle'});
+  await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
+  await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
+};
+const settle=page=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+const scrollProgress=async(page,selector,progress)=>{
+  await page.evaluate(({selector,progress})=>{document.documentElement.style.scrollBehavior='auto';const section=document.querySelector(selector);const top=section.getBoundingClientRect().top+scrollY;const range=Math.max(0,section.getBoundingClientRect().height-innerHeight);window.scrollTo(0,top+range*progress)},{selector,progress});
+  await settle(page);
+};
 
-test('plans appear before proof and services in real document order',async({page})=>{
-  await ready(page);const order=await page.evaluate(()=>[...document.querySelectorAll('.v9-main>section')].map(el=>el.id));expect(order.slice(0,3)).toEqual(['plans','work','services']);
+test('desktop chapters pin only their inner scene and report real progress',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});await ready(page);
+  const sticky=page.locator('#starting-point .chapter-sticky');
+  expect(await sticky.evaluate(element=>getComputedStyle(element).position)).toBe('sticky');
+  await scrollProgress(page,'#starting-point',.12);
+  const early=Number(await page.locator('#starting-point').getAttribute('data-chapter-progress'));
+  await scrollProgress(page,'#starting-point',.74);
+  const late=Number(await page.locator('#starting-point').getAttribute('data-chapter-progress'));
+  expect(early).toBeGreaterThanOrEqual(0);expect(late).toBeGreaterThan(early);expect(late).toBeLessThanOrEqual(1);
+  await expect(page.locator('body')).toHaveAttribute('data-active-chapter','starting');
 });
 
-test('desktop work scene adds subtle progress without hijacking scroll',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});await ready(page);await scrollTo(page,'#work');
-  await page.evaluate(()=>window.scrollBy(0,450));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-  const progress=Number(await page.locator('#work').evaluate(el=>getComputedStyle(el).getPropertyValue('--work-progress')||0));expect(progress).toBeGreaterThan(0);
-  const position=await page.locator('#work').evaluate(el=>getComputedStyle(el).position);expect(position).not.toBe('sticky');
+test('scroll progression selects capability meaning and a click pauses auto-selection',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});await ready(page);
+  await scrollProgress(page,'#services',.1);
+  await expect(page.locator('[data-capability="web"]')).toHaveAttribute('aria-pressed','true');
+  await scrollProgress(page,'#services',.88);
+  await expect(page.locator('[data-capability="ai"]')).toHaveAttribute('aria-pressed','true');
+  await page.locator('[data-capability="product"]').click();
+  await expect(page.locator('.capability-stage')).toHaveClass(/is-mode-product/);
+  await scrollProgress(page,'#services',.96);
+  await expect(page.locator('.capability-stage')).toHaveClass(/is-mode-product/);
+  await expect(page.locator('.capability-copy')).toContainText('next step');
 });
 
-test('system modes keep one stable surface and update its meaning',async({page})=>{
-  await ready(page);await scrollTo(page,'#system');const panel=page.locator('[data-system-panel]');
-  await page.locator('[data-system-mode="build"]').click();await expect(panel).toHaveAttribute('data-mode','build');await expect(page.locator('[data-system-meta]')).toHaveText('COMPONENTS / STATES / PERFORMANCE');
-  await page.locator('[data-system-mode="ai"]').click();await expect(panel).toHaveAttribute('data-mode','ai');await expect(page.locator('[data-system-copy]')).toContainText('workflow');
+test('FakhriMart scene advances from desktop emergence to settled proof',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});await ready(page);
+  await scrollProgress(page,'#work',.12);
+  const frame=page.locator('.proof-stage');
+  await expect(frame).toHaveClass(/is-desktop/);
+  const early=Number(await frame.evaluate(element=>getComputedStyle(element).getPropertyValue('--proof-progress')));
+  await scrollProgress(page,'#work',.82);
+  await expect(frame).toHaveClass(/is-settled/);
+  const late=Number(await frame.evaluate(element=>getComputedStyle(element).getPropertyValue('--proof-progress')));
+  expect(late).toBeGreaterThan(early);
 });
 
-test('fine pointer gets contextual labels while real links stay clickable',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});await ready(page);await scrollTo(page,'#work');const frame=page.locator('[data-work-frame]');await frame.hover({position:{x:400,y:260}});await expect(page.locator('[data-context-cursor]')).toHaveClass(/is-visible/);await expect(frame.locator('a[href="https://fakhriyarns.vercel.app/"]')).toBeVisible();
+test('particle field uses the shared scheduler and follows the active profile',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});await ready(page);
+  await scrollProgress(page,'#difference',.55);
+  await expect(page.locator('body')).toHaveAttribute('data-active-chapter','difference');
+  const state=await page.evaluate(()=>({
+    canvas:document.querySelector('[data-particle-field]').getContext('2d')!==null,
+    frameType:typeof window.__BRAYROAI__.frame,
+    pointCount:window.__BRAYROAI__.particles.points.length,
+    profile:window.__BRAYROAI__.narrative.activeKey
+  }));
+  expect(state.canvas).toBeTruthy();expect(state.frameType).toBe('number');expect(state.pointCount).toBeGreaterThan(40);expect(state.profile).toBe('difference');
 });
 
-test('reveal motion resolves content instead of leaving invisible sections',async({page})=>{
-  await ready(page);for(const selector of ['#plans','#work','#services','#system','#studio','#contact']){await scrollTo(page,selector);await expect.poll(async()=>Number(await page.locator(`${selector} .reveal-item`).first().evaluate(el=>getComputedStyle(el).opacity))).toBeGreaterThan(.9)}
+test('fine pointer labels the real proof while its link stays interactive',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});await ready(page);await scrollProgress(page,'#work',.5);
+  const frame=page.locator('.proof-stage');await frame.hover({position:{x:400,y:250}});
+  await expect(page.locator('[data-context-cursor]')).toHaveClass(/is-visible/);
+  await expect(frame.locator('a[href="https://fakhriyarns.vercel.app/"]')).toBeVisible();
 });
 
-test('experience uses native document scrolling and a single RAF scheduler',async({page})=>{
-  await ready(page);const behavior=await page.evaluate(()=>({htmlOverflow:getComputedStyle(document.documentElement).overflowY,bodyOverflow:getComputedStyle(document.body).overflowY,scrollHeight:document.scrollingElement.scrollHeight,viewport:innerHeight,ready:document.body.classList.contains('experience-ready')}));expect(behavior.ready).toBeTruthy();expect(behavior.htmlOverflow).not.toBe('hidden');expect(behavior.bodyOverflow).not.toBe('hidden');expect(behavior.scrollHeight).toBeGreaterThan(behavior.viewport*3);await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,700)});await expect.poll(()=>page.evaluate(()=>window.scrollY)).toBeGreaterThan(0);
+test('reveals resolve content rather than leaving chapters concealed',async({page})=>{
+  await ready(page);
+  for(const selector of ['#starting-point','#difference','#services','#work','#plans','#studio','#contact']){
+    await scrollProgress(page,selector,.4);
+    const item=page.locator(`${selector} .reveal-item`).first();
+    await expect.poll(async()=>Number(await item.evaluate(element=>getComputedStyle(element).opacity))).toBeGreaterThan(.9);
+  }
+});
+
+test('experience preserves native document scrolling',async({page})=>{
+  await ready(page);
+  const behavior=await page.evaluate(()=>({
+    htmlOverflow:getComputedStyle(document.documentElement).overflowY,
+    bodyOverflow:getComputedStyle(document.body).overflowY,
+    scrollHeight:document.scrollingElement.scrollHeight,
+    viewport:innerHeight,
+    ready:document.body.classList.contains('experience-ready')
+  }));
+  expect(behavior.ready).toBeTruthy();expect(behavior.htmlOverflow).not.toBe('hidden');expect(behavior.bodyOverflow).not.toBe('hidden');expect(behavior.scrollHeight).toBeGreaterThan(behavior.viewport*7);
+  await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,700)});
+  await expect.poll(()=>page.evaluate(()=>scrollY)).toBeGreaterThan(0);
 });

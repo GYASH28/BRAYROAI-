@@ -1,17 +1,23 @@
 {
-  "name":"brayroai-studio-site",
-  "private":true,
-  "version":"6.0.0",
-  "type":"module",
-  "scripts":{
-    "dev":"vite --host 0.0.0.0",
-    "build":"vite build",
-    "preview":"vite preview --host 0.0.0.0",
-    "test:syntax":"node --check public/app.js && node --check vite.config.mjs",
-    "test:integrity":"node tests/integrity.mjs",
-    "test:browser":"playwright test",
-    "test:stress":"node tests/stress.mjs",
-    "qa:static":"npm run test:syntax && npm run test:integrity && npm run build"
+  "name": "brayroai-studio-site",
+  "private": true,
+  "version": "6.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test:syntax": "node --check public/app.js && node --check vite.config.mjs",
+    "test:integrity": "node tests/integrity.mjs",
+    "test:browser": "playwright test",
+    "test:stress": "node tests/stress.mjs",
+    "test:lighthouse": "lighthouse http://127.0.0.1:4173 --quiet --chrome-flags=\"--headless --no-sandbox\" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=artifacts/lighthouse-local.json && node tests/lighthouse-budget.mjs artifacts/lighthouse-local.json",
+    "qa:static": "npm run test:syntax && npm run test:integrity && npm run build"
   },
-  "devDependencies":{"vite":"latest"}
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.62.1",
+    "lighthouse": "^13.4.1",
+    "vite": "latest"
+  }
 }

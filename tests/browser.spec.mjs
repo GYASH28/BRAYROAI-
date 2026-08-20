@@ -6,16 +6,17 @@ const waitReady=async page=>{
   await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
   await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
 };
-const seriousViolations=results=>results.violations.filter(v=>['serious','critical'].includes(v.impact));
-const scrollTo=async(page,selector)=>{
-  await page.evaluate(selector=>{document.documentElement.style.scrollBehavior='auto';const el=document.querySelector(selector);window.scrollTo(0,el.getBoundingClientRect().top+window.scrollY)},selector);
-  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+const seriousViolations=results=>results.violations.filter(violation=>['serious','critical'].includes(violation.impact));
+const settle=page=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+const scrollTo=async(page,selector,offset=0)=>{
+  await page.evaluate(({selector,offset})=>{document.documentElement.style.scrollBehavior='auto';const element=document.querySelector(selector);window.scrollTo(0,element.getBoundingClientRect().top+scrollY+offset)},{selector,offset});
+  await settle(page);
 };
-const expectInsideViewport=async(page,locator,padding=0)=>{
+const expectInsideViewport=async(page,locator,padding=1)=>{
   const box=await locator.boundingBox();expect(box).toBeTruthy();const width=await page.evaluate(()=>innerWidth);expect(box.x).toBeGreaterThanOrEqual(-padding);expect(box.x+box.width).toBeLessThanOrEqual(width+padding);
 };
 
-test('locked opening and hero remain intact',async({page})=>{
+test('frozen opening hero remains intact',async({page})=>{
   await waitReady(page);
   await expect(page.locator('#top')).toContainText('Digital, designed');
   await expect(page.locator('#top')).toContainText('SCROLL TO SHAPE THE STORY');
@@ -24,124 +25,146 @@ test('locked opening and hero remain intact',async({page})=>{
 });
 
 test('homepage has no serious or critical accessibility violations',async({page})=>{
-  await waitReady(page);const results=await new AxeBuilder({page}).analyze();expect(seriousViolations(results)).toEqual([]);
+  await waitReady(page);
+  const results=await new AxeBuilder({page}).analyze();
+  expect(seriousViolations(results)).toEqual([]);
 });
 
-test('navigation leads with Plans and stays one-page',async({page})=>{
+test('public navigation and chapter order stay coherent',async({page})=>{
   await waitReady(page);
+  const order=await page.evaluate(()=>[...document.querySelectorAll('.v9-main>section')].map(section=>section.id));
+  expect(order).toEqual(['starting-point','difference','services','work','plans','studio','contact']);
   const links=page.locator('.desktop-nav a');
   await expect(links.first()).toHaveAttribute('href','#plans');
-  await expect(links.first()).toHaveText('Plans');
   for(const href of ['#plans','#work','#services','#studio'])await expect(page.locator(`.desktop-nav a[href="${href}"]`)).toHaveCount(1);
+  await expect(page.locator('#system')).toHaveCount(1);
   await expect(page.locator('a[href="/plans.html"],a[href="/case-studies/fakhrimart.html"]')).toHaveCount(0);
 });
 
-test('Plans is first and the lowest build price is the highlighted starting point',async({page})=>{
-  await waitReady(page);
-  const firstPostHero=await page.locator('#top + .v9-main > section').first().getAttribute('id');expect(firstPostHero).toBe('plans');
-  const featured=page.locator('[data-plan-recommended]');
-  await expect(featured).toHaveAttribute('data-plan','makeover');
-  await expect(featured).toContainText('START HERE');
-  await expect(featured).toContainText('₹9,999');
-  await expect(featured).toContainText('Lowest entry / fastest upgrade');
-  await expect(featured.locator('.plan-cta')).toContainText('Start at ₹9,999');
-  await expect(page.locator('[data-plan="website"]')).not.toHaveClass(/plan-card--featured/);
-});
-
-test('lowest monthly support plan is highlighted too',async({page})=>{
+test('build offers and optional support are visible and honestly scoped',async({page})=>{
   await waitReady(page);await scrollTo(page,'#plans');
-  const care=page.locator('.care-plans article[data-care-highlight]');
-  await expect(care).toHaveCount(1);await expect(care).toContainText('₹2,499');await expect(care).toContainText('ENTRY');
-});
-
-test('all build and monthly plan prices are visible without tab hunting',async({page})=>{
-  await waitReady(page);await scrollTo(page,'#plans');const plans=page.locator('#plans');
-  for(const price of ['₹9,999','₹17,999','₹25K–35K+','₹2,499','₹3,999','₹5,999+'])await expect(plans).toContainText(price);
+  const plans=page.locator('#plans');
+  for(const text of ['Website Starter','₹2,599','Business Website','₹3,999','Custom Experience','₹5,999+'])await expect(plans).toContainText(text);
+  const featured=plans.locator('[data-plan-recommended]');
+  await expect(featured).toHaveAttribute('data-plan','business');
+  await expect(featured).toContainText('Most Chosen');
+  await expect(plans).toContainText('After launch, stay sharp.');
+  await expect(plans).toContainText('Monthly support is separate from the one-time website build');
+  for(const support of ['Launch','₹2,499','Grow','₹3,999','Pro','₹5,999+'])await expect(plans).toContainText(support);
+  await expect(plans).toContainText('Hosting, domains, paid tools, ecommerce, large content work and advanced integrations are quoted separately');
   await expect(plans.locator('[hidden]')).toHaveCount(0);
 });
 
-test('real FakhriMart proof uses one desktop and one mobile capture',async({page})=>{
-  await waitReady(page);const work=page.locator('#work');
+test('every plan CTA carries its direct mail intent',async({page})=>{
+  await waitReady(page);
+  const intents=[
+    ['[data-plan="starter"] .plan-cta',/Website%20Starter%20%E2%80%94%20%E2%82%B92%2C599/],
+    ['[data-plan="business"] .plan-cta',/Business%20Website%20%E2%80%94%20%E2%82%B93%2C999/],
+    ['[data-plan="custom"] .plan-cta',/Custom%20Experience%20enquiry/],
+    ['.care-plans article:nth-child(1) a',/Launch%20support/],
+    ['.care-plans article:nth-child(2) a',/Grow%20support/],
+    ['.care-plans article:nth-child(3) a',/Pro%20support/],
+    ['.contact-primary',/Help%20me%20choose%20a%20BRAYROAI%20plan/]
+  ];
+  for(const [selector,subject] of intents)await expect(page.locator(selector)).toHaveAttribute('href',subject);
+});
+
+test('real FakhriMart proof is factual and links to the live build',async({page})=>{
+  await waitReady(page);
+  const work=page.locator('#work');
   await expect(work.locator('img[src="/assets/fakhrimart-case-desktop.png"]')).toHaveCount(1);
   await expect(work.locator('img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(1);
   await expect(work.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(1);
+  for(const fact of ['Yarn wholesaler','Catalogue-led browsing','Desktop + mobile experience','Enquiry-led flow'])await expect(work).toContainText(fact);
   await expect(page.locator('iframe')).toHaveCount(0);
-  for(const image of await work.locator('img').all())await expect(image).toHaveAttribute('loading','lazy');
 });
 
-test('system surface changes state through visitor controls',async({page})=>{
-  await waitReady(page);await scrollTo(page,'#system');const panel=page.locator('[data-system-panel]');
-  await page.locator('[data-system-mode="ai"]').click();await expect(panel).toHaveAttribute('data-mode','ai');await expect(page.locator('[data-system-label]')).toHaveText('AI');
-  await page.locator('[data-system-mode="build"]').click();await expect(panel).toHaveAttribute('data-mode','build');await expect(page.locator('[data-system-label]')).toHaveText('BUILD');
-  await page.locator('[data-system-mode="design"]').click();await expect(panel).toHaveAttribute('data-mode','design');
+test('capability constellation supports pointer and keyboard selection',async({page})=>{
+  await waitReady(page);await scrollTo(page,'#services');
+  const stage=page.locator('.capability-stage');
+  const ai=page.locator('[data-capability="ai"]');
+  await ai.click();
+  await expect(ai).toHaveAttribute('aria-pressed','true');
+  await expect(stage).toHaveClass(/is-mode-ai/);
+  await expect(page.locator('.capability-copy')).toContainText('workflow friction');
+  const engineering=page.locator('[data-capability="engineering"]');
+  await engineering.focus();await page.keyboard.press('Enter');
+  await expect(engineering).toHaveAttribute('aria-pressed','true');
+  await expect(stage).toHaveClass(/is-mode-engineering/);
+  await expect(page.locator('.capability-index')).toHaveText('03 / ENGINEERING');
 });
 
 test('mobile menu remains keyboard usable',async({page})=>{
-  await page.setViewportSize({width:390,height:844});await waitReady(page);const button=page.locator('[data-menu-button]');
-  const box=await button.boundingBox();expect(box.width).toBeGreaterThanOrEqual(44);expect(box.height).toBeGreaterThanOrEqual(44);
-  await button.click();await expect(button).toHaveAttribute('aria-expanded','true');await expect(page.locator('[data-mobile-menu]')).toHaveClass(/open/);await expect(page.locator('[data-mobile-menu] a[href="#plans"]')).toBeVisible();
+  await page.setViewportSize({width:390,height:844});await waitReady(page);
+  const button=page.locator('[data-menu-button]');const box=await button.boundingBox();
+  expect(box.width).toBeGreaterThanOrEqual(44);expect(box.height).toBeGreaterThanOrEqual(44);
+  await button.click();await expect(button).toHaveAttribute('aria-expanded','true');
+  await expect(page.locator('[data-mobile-menu]')).toHaveClass(/open/);
+  await expect(page.locator('[data-mobile-menu] a[href="#plans"]')).toBeVisible();
   await page.keyboard.press('Escape');await expect(button).toHaveAttribute('aria-expanded','false');
 });
 
-test('mobile starts with the ₹9,999 highlighted plan and uses full-size actions',async({page})=>{
-  await page.setViewportSize({width:390,height:844});await waitReady(page);await scrollTo(page,'#plans');
-  const featured=await page.locator('[data-plan-recommended]').boundingBox();const standard=await page.locator('[data-plan="website"]').boundingBox();expect(featured.y).toBeLessThan(standard.y);
-  await expect(page.locator('[data-plan-recommended]')).toContainText('₹9,999');
+test('mobile uses flowing chapters, full-width actions, and touch controls',async({page})=>{
+  await page.setViewportSize({width:390,height:844});await waitReady(page);
+  for(const selector of ['#starting-point .chapter-sticky','#difference .chapter-sticky','#services .chapter-sticky','#work .chapter-sticky']){
+    expect(await page.locator(selector).evaluate(element=>getComputedStyle(element).position)).not.toBe('sticky');
+  }
+  await scrollTo(page,'#plans');
+  const featured=await page.locator('[data-plan-recommended]').boundingBox();
+  const starter=await page.locator('[data-plan="starter"]').boundingBox();
+  expect(featured.y).toBeLessThan(starter.y);
   for(const action of await page.locator('#plans .plan-cta').all()){const box=await action.boundingBox();expect(box.height).toBeGreaterThanOrEqual(52);expect(box.width).toBeGreaterThan(300)}
+  await scrollTo(page,'#services');
+  for(const button of await page.locator('[data-capability]').all()){const box=await button.boundingBox();expect(box.height).toBeGreaterThanOrEqual(44)}
 });
 
-test('desktop entry plan has the strongest visual treatment',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});await waitReady(page);await scrollTo(page,'#plans');
-  const cards=page.locator('.plan-grid .plan-card');await expect(cards).toHaveCount(3);
-  const featured=page.locator('[data-plan-recommended]');const box=await featured.boundingBox();expect(box.width).toBeGreaterThan(360);expect(box.height).toBeGreaterThan(520);await expect(featured).toContainText('₹9,999');
-  const background=await featured.evaluate(el=>getComputedStyle(el).backgroundImage);expect(background).not.toBe('none');
-  const standardClass=await page.locator('[data-plan="website"]').getAttribute('class');expect(standardClass).not.toContain('plan-card--featured');
+test('no-JavaScript experience keeps all plan content readable',async({browser})=>{
+  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+  const page=await context.newPage();await page.goto('/',{waitUntil:'domcontentloaded'});
+  const plans=page.locator('#plans');
+  for(const text of ['Website Starter','₹2,599','Business Website','₹3,999','Custom Experience','₹5,999+','After launch'])await expect(plans).toContainText(text);
+  await expect(plans).toBeVisible();
+  await context.close();
 });
 
-test('visual polish runtime activates across post-hero experience',async({page})=>{
-  await waitReady(page);await expect(page.locator('body')).toHaveClass(/v10-polished/);
-  await expect(page.locator('#plans .plan-card')).toHaveCount(3);await expect(page.locator('#services .service-row')).toHaveCount(4);
-  const ctaHeight=await page.locator('.contact-primary').evaluate(el=>el.getBoundingClientRect().height);expect(ctaHeight).toBeGreaterThanOrEqual(64);
+test('canvas failure exposes the static decorative fallback',async({browser})=>{
+  const context=await browser.newContext();
+  await context.addInitScript(()=>{HTMLCanvasElement.prototype.getContext=()=>null});
+  const page=await context.newPage();await waitReady(page);
+  await expect(page.locator('body')).toHaveClass(/canvas-unavailable/);
+  const opacity=Number(await page.locator('.particle-fallback').evaluate(element=>getComputedStyle(element).opacity));
+  expect(opacity).toBeGreaterThan(0);
+  await context.close();
 });
 
-test('final conversion CTA closes on the ₹9,999 entry offer',async({page})=>{
-  await waitReady(page);await scrollTo(page,'#contact');const cta=page.locator('.contact-primary');
-  await expect(cta).toContainText('Start at ₹9,999');
-  await expect(cta).toHaveAttribute('href',/BRAYROAI%20Digital%20Makeover/);
-  await expect(cta).toHaveAttribute('aria-label','Start with the ₹9,999 Digital Makeover plan');
-});
-
-test('post-hero styles activate without blocking hero paint',async({page})=>{
-  await page.goto('/',{waitUntil:'domcontentloaded'});
-  for(const id of ['post-fixes-styles','experience-styles'])expect(['print','all']).toContain(await page.locator(`#${id}`).getAttribute('media'));
-  await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
-  await expect(page.locator('#experience-styles')).toHaveAttribute('media','all');await expect(page.locator('#post-fixes-styles')).toHaveAttribute('media','all');
+test('reduced motion disables pinning and continuous canvas motion without concealing content',async({browser})=>{
+  const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});
+  const page=await context.newPage();await waitReady(page);
+  expect(await page.locator('#starting-point .chapter-sticky').evaluate(element=>getComputedStyle(element).position)).not.toBe('sticky');
+  expect(await page.locator('[data-particle-field]').evaluate(element=>getComputedStyle(element).display)).toBe('none');
+  for(const item of await page.locator('.reveal-item').all())expect(Number(await item.evaluate(element=>getComputedStyle(element).opacity))).toBeGreaterThan(.9);
+  for(const selector of ['#starting-point','#difference','#services','#work','#plans','#studio','#contact'])await expect(page.locator(selector)).toBeVisible();
+  await page.waitForTimeout(150);
+  expect(await page.evaluate(()=>window.__BRAYROAI__.frame)).toBe(0);
+  await context.close();
 });
 
 for(const [width,height] of [[1920,1080],[1440,900],[1366,768],[1280,720],[1024,768],[768,1024],[430,932],[390,844],[375,812],[360,800]]){
-  test(`no horizontal overflow anywhere at ${width}x${height}`,async({page})=>{
+  test(`no horizontal overflow at ${width}x${height}`,async({page})=>{
     await page.setViewportSize({width,height});await waitReady(page);
-    for(const selector of ['#plans','#work','#services','#system','#studio','#contact']){await scrollTo(page,selector);const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);expect(overflow).toBeLessThanOrEqual(1)}
+    for(const selector of ['#starting-point','#difference','#services','#work','#plans','#studio','#contact']){
+      await scrollTo(page,selector);
+      const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(1);
+    }
   });
 }
 
 for(const width of [430,390,375,360]){
-  test(`mobile typography stays inside the viewport at ${width}px`,async({page})=>{
+  test(`mobile chapter headings stay inside ${width}px viewport`,async({page})=>{
     await page.setViewportSize({width,height:844});await waitReady(page);
-    for(const [section,heading] of [['#plans','#plans-title'],['#work','#work-title'],['#services','#services-title'],['#system','#system-title'],['#studio','#studio-title'],['#contact','#contact-title']]){await scrollTo(page,section);await expectInsideViewport(page,page.locator(heading),1)}
-    for(const row of await page.locator('.service-row h3').all())await expectInsideViewport(page,row,1);
+    for(const selector of ['#starting-title','#difference-title','#services-title','#work-title','#plans-title','#studio-title','#contact-title']){
+      await scrollTo(page,selector);await expectInsideViewport(page,page.locator(selector));
+    }
   });
 }
-
-test('mobile sections use normal document flow instead of sticky desktop choreography',async({page})=>{
-  await page.setViewportSize({width:390,height:844});await waitReady(page);
-  for(const selector of ['#plans','#work','#services','#system','#studio']){const position=await page.locator(selector).evaluate(el=>getComputedStyle(el).position);expect(position).not.toBe('sticky')}
-  const planHeight=await page.locator('#plans').evaluate(el=>el.getBoundingClientRect().height);expect(planHeight).toBeLessThan(5000);
-});
-
-test('reduced motion keeps every sales section visible',async({browser})=>{
-  const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});const page=await context.newPage();await waitReady(page);
-  for(const selector of ['#plans','#work','#services','#system','#studio','#contact'])await expect(page.locator(selector)).toBeVisible();
-  for(const item of await page.locator('.reveal-item').all())expect(Number(await item.evaluate(el=>getComputedStyle(el).opacity))).toBeGreaterThan(.9);
-  await context.close();
-});

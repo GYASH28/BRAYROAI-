@@ -8,6 +8,13 @@ const waitReady=async page=>{
 };
 
 const seriousViolations=results=>results.violations.filter(v=>['serious','critical'].includes(v.impact));
+const scrollScene=async(page,selector,p=0)=>{
+  await page.evaluate(({selector,p})=>{
+    document.documentElement.style.scrollBehavior='auto';
+    const el=document.querySelector(selector);const rect=el.getBoundingClientRect();const top=rect.top+scrollY;const d=Math.max(1,rect.height-innerHeight);scrollTo(0,top+d*p);
+  },{selector,p});
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+};
 
 test('locked opening and hero remain intact',async({page})=>{
   await waitReady(page);
@@ -49,6 +56,10 @@ test('real FakhriMart work owns the project sequence',async({page})=>{
   await expect(work.locator('img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(1);
   await expect(work.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(1);
   await expect(page.locator('iframe')).toHaveCount(0);
+  for(const image of await work.locator('.work-slices img').all()){
+    await expect(image).toHaveAttribute('loading','lazy');
+    await expect(image).toHaveAttribute('fetchpriority','low');
+  }
 });
 
 test('integrated pricing switches without leaving the page',async({page})=>{
@@ -70,6 +81,60 @@ test('system surface can be interrupted by the visitor',async({page})=>{
   await expect(page.locator('[data-system-label]')).toHaveText('AI');
   await page.locator('[data-system-mode="build"]').click();
   await expect(page.locator('[data-craft-board]')).toHaveAttribute('data-mode','build');
+});
+
+test('desktop cinematic scenes actually own the viewport',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await waitReady(page);
+  await scrollScene(page,'#services',.13);
+  const heroBottom=await page.locator('#top').evaluate(el=>el.getBoundingClientRect().bottom);
+  expect(heroBottom).toBeLessThanOrEqual(2);
+  const active=page.locator('[data-service-moment].is-current h3');
+  const box=await active.boundingBox();
+  expect(box).toBeTruthy();
+  expect(box.y).toBeGreaterThan(90);
+  expect(box.y+box.height).toBeLessThan(850);
+  const hiddenHeading=page.locator('#services-title');
+  const hiddenBox=await hiddenHeading.boundingBox();
+  expect(hiddenBox?.width??0).toBeLessThanOrEqual(1);
+  expect(hiddenBox?.height??0).toBeLessThanOrEqual(1);
+});
+
+test('desktop client work fills the camera without losing its action',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await waitReady(page);
+  await scrollScene(page,'#work',.43);
+  const frame=page.locator('[data-work-frame]');
+  const box=await frame.boundingBox();
+  expect(box).toBeTruthy();
+  expect(box.width).toBeGreaterThan(950);
+  expect(box.height).toBeGreaterThan(500);
+  await expect(frame.locator('.work-open')).toBeVisible();
+});
+
+test('mobile controls have comfortable touch targets and pricing does not collide',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await waitReady(page);
+  const menu=await page.locator('[data-menu-button]').boundingBox();
+  expect(menu.width).toBeGreaterThanOrEqual(44);expect(menu.height).toBeGreaterThanOrEqual(44);
+  await page.locator('#pricing').scrollIntoViewIfNeeded();
+  for(const button of await page.locator('.pricing-toggle button').all()){
+    const b=await button.boundingBox();expect(b.height).toBeGreaterThanOrEqual(44);
+  }
+  const first=page.locator('[data-pricing-panel="build"] article').first();
+  const price=await first.locator('strong').boundingBox();const action=await first.locator('a').boundingBox();
+  expect(price.x+price.width).toBeLessThanOrEqual(action.x+2);
+});
+
+test('post-hero styles are activated without being render blocking',async({page})=>{
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  for(const id of ['post-fixes-styles','experience-styles']){
+    const media=await page.locator(`#${id}`).getAttribute('media');
+    expect(['print','all']).toContain(media);
+  }
+  await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
+  await expect(page.locator('#experience-styles')).toHaveAttribute('media','all');
+  await expect(page.locator('#post-fixes-styles')).toHaveAttribute('media','all');
 });
 
 for(const [width,height] of [[1920,1080],[1440,900],[1366,768],[1280,720],[1024,768],[768,1024],[430,932],[390,844],[375,812],[360,800]]){

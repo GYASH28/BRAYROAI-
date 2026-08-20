@@ -51,18 +51,22 @@ const plansIndex=html.indexOf('id="plans"');
 const workIndex=html.indexOf('id="work"');
 const servicesIndex=html.indexOf('id="services"');
 expect(plansIndex>html.indexOf('</section>')&&plansIndex<workIndex&&workIndex<servicesIndex,'plans must be the first post-hero commercial section');
-expect(html.includes('data-plan-recommended'),'recommended plan marker missing');
-expect(html.includes('MOST CHOSEN'),'recommended plan badge missing');
-expect(html.includes('Best for most brands'),'recommended plan positioning missing');
-expect(html.includes('Start with Full Website'),'primary Full Website sales CTA missing');
 for(const price of ['₹9,999','₹17,999','₹25K–35K+','₹2,499','₹3,999','₹5,999+'])expect(html.includes(price),`plan pricing missing ${price}`);
+expect(html.indexOf('₹9,999')<html.indexOf('₹17,999')&&html.indexOf('₹17,999')<html.indexOf('₹25K–35K+'),'build plans must remain ordered from lowest entry price upward');
+expect(js.includes('class PlanPriorityController'),'entry-plan priority controller missing');
+expect(js.includes("this.entry.setAttribute('data-plan-recommended','')"),'₹9,999 entry plan is not promoted at runtime');
+expect(js.includes("this.standard.removeAttribute('data-plan-recommended')"),'₹17,999 plan still owns the recommended marker');
+expect(js.includes("chip.textContent='ENTRY'"),'lowest monthly support plan is not highlighted');
+expect(js.includes("contactText.textContent='Start at ₹9,999'"),'final conversion CTA does not close on the ₹9,999 entry offer');
+expect(js.includes("BRAYROAI%20Digital%20Makeover"),'entry-plan mailto destination missing from conversion runtime');
+expect(fixes.includes('.plan-card[data-plan-recommended]')&&fixes.includes('[data-care-highlight]'),'entry-plan visual highlight rules missing');
 expect(html.includes('AFTER LAUNCH')&&html.includes('Keep it improving.'),'ongoing support plans are not visible');
 expect(html.includes('WHAT YOU\'RE ACTUALLY BUYING'),'services sales framing missing');
 expect(!html.includes('/plans.html')&&!html.includes('/case-studies/fakhrimart.html'),'homepage still routes into removed subpages');
 expect(!exists('plans.html')&&!exists('case-studies/fakhrimart.html')&&!exists('public/plans.js'),'removed pages/scripts still exist');
 for(const dead of ['public/commercial.css','public/commercial-fixes.css','public/commercial-accessibility.css'])expect(!exists(dead),`unused commercial layer remains: ${dead}`);
 expect(vite.includes("input:{home:resolve(process.cwd(),'index.html')}")&&!vite.includes('plans:')&&!vite.includes('fakhrimart:'),'Vite still builds removed pages');
-expect(vercel.includes('"/plans"')&&vercel.includes('"/#plans"')&&vercel.includes('"/#work"'),'legacy URLs should redirect into v9 sections');
+expect(vercel.includes('"/plans"')&&vercel.includes('"/#plans"')&&vercel.includes('"/#work"'),'legacy URLs should redirect into v10 sections');
 
 // Real proof and honest assets.
 expect(html.includes('/assets/fakhrimart-case-desktop.png')&&html.includes('/assets/fakhrimart-case-mobile.png'),'real FakhriMart captures are not wired');
@@ -77,7 +81,8 @@ expect(exists('public/outbound-fresh'),'outbound workflow assets were accidental
 expect(experience.includes('@media(max-width:800px)')&&experience.includes('@media(max-width:430px)'),'dedicated mobile layouts missing');
 expect(experience.includes('@media(prefers-reduced-motion:reduce)'),'reduced-motion treatment missing');
 expect(experience.includes('.plan-card--featured')&&experience.includes('.service-row')&&experience.includes('.system-panel'),'v9 core visual systems missing');
-expect(js.includes('class BRAYROExperience')&&js.includes('class WorkScene')&&js.includes('class SystemTabs')&&js.includes('class RevealController'),'v9 runtime controllers missing');
+expect(fixes.includes('body.v10-polished')&&fixes.includes('@media(max-width:430px)'),'v10 visual-polish layer or mobile tuning missing');
+expect(js.includes('class BRAYROExperience')&&js.includes('class WorkScene')&&js.includes('class SystemTabs')&&js.includes('class RevealController'),'runtime controllers missing');
 expect((js.match(/addEventListener\('scroll'/g)||[]).length===1,'scroll work must stay centralized through one passive listener');
 expect(js.includes('requestAnimationFrame'),'shared RAF scheduler missing');
 expect(js.includes("document.body.classList.add('experience-ready')"),'experience readiness contract missing');
@@ -90,4 +95,4 @@ const validateRefs=markup=>{
 validateRefs(html);
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('Integrity OK: locked hero + sales-first plans + responsive v9 architecture checked');
+console.log('Integrity OK: locked hero + entry-price-first plans + full-funnel ₹9,999 CTA + responsive v10 visual system checked');

@@ -1,3 +1,9 @@
+const deferredStyleLinks=['post-fixes-styles','experience-styles'].map(id=>document.getElementById(id)).filter(Boolean);
+const deferredStylesReady=Promise.all(deferredStyleLinks.map(link=>{
+  link.media='all';
+  if(link.sheet)return Promise.resolve();
+  return new Promise(resolve=>{link.addEventListener('load',resolve,{once:true});link.addEventListener('error',resolve,{once:true})});
+}));
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const coarse=matchMedia('(pointer: coarse)').matches;
 const finePointer=matchMedia('(pointer: fine)').matches;
@@ -67,9 +73,10 @@ class StudioFilm extends ScrollScene{
 }
 
 class CinematicExperience{
-  constructor(){window.__BRAYROAI__=this;this.frame=0;this.hero=new LockedHeroController();this.navigation=new NavigationManager();this.pointer=new PointerSystem();this.services=new ServiceRail($('[data-scene="services"]'));this.work=new WorkFilm($('[data-scene="work"]'));this.system=new SystemFilm($('[data-scene="system"]'));this.studio=new StudioFilm($('[data-scene="studio"]'));this.pricing=new PricingController();this.update=this.update.bind(this);this.schedule=this.schedule.bind(this);addEventListener('scroll',this.schedule,{passive:true});addEventListener('resize',this.schedule,{passive:true});addEventListener('load',this.schedule,{once:true});document.body.classList.add('experience-ready');this.schedule()}
+  constructor(){window.__BRAYROAI__=this;this.frame=0;this.hero=new LockedHeroController();this.navigation=new NavigationManager();this.pointer=new PointerSystem();this.services=new ServiceRail($('[data-scene="services"]'));this.work=new WorkFilm($('[data-scene="work"]'));this.system=new SystemFilm($('[data-scene="system"]'));this.studio=new StudioFilm($('[data-scene="studio"]'));this.pricing=new PricingController();this.update=this.update.bind(this);this.schedule=this.schedule.bind(this);addEventListener('scroll',this.schedule,{passive:true});addEventListener('resize',this.schedule,{passive:true});addEventListener('load',this.schedule,{once:true});this.schedule()}
   schedule(){if(!this.frame)this.frame=requestAnimationFrame(this.update)}
   update(){this.frame=0;this.hero.update();this.navigation.update();if(!reduced){this.services.update();this.work.update();this.system.update();this.studio.update()}else{this.system.update()} }
 }
 
-new CinematicExperience();
+const experience=new CinematicExperience();
+deferredStylesReady.finally(()=>{document.body.classList.add('experience-ready');experience.schedule()});

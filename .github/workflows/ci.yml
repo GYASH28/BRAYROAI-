@@ -31,7 +31,6 @@ jobs:
           test -f dist/index.html
           test -f dist/styles.css
           test -f dist/site-fixes.css
-          test -f dist/site-fixes-core.css
           test -f dist/experience.css
           test -f dist/app.js
           test -f dist/assets/hero-background.webp
@@ -39,6 +38,7 @@ jobs:
           test -f dist/assets/about-yash.webp
           test -f dist/assets/fakhrimart-case-desktop.png
           test -f dist/assets/fakhrimart-case-mobile.png
+          ! test -f dist/site-fixes-core.css
           grep -q 'Digital, designed' dist/index.html
           grep -q 'data-scene="services"' dist/index.html
           grep -q 'data-scene="work"' dist/index.html
@@ -51,6 +51,9 @@ jobs:
           ! test -f dist/commercial.css
           ! test -f dist/commercial-fixes.css
           ! test -f dist/commercial-accessibility.css
+          CSS_BYTES=$(wc -c < dist/styles.css)
+          echo "critical CSS: ${CSS_BYTES} bytes"
+          test "$CSS_BYTES" -lt 24000
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
           test "$TOTAL" -lt 2350
@@ -91,7 +94,7 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
-      - name: Capture cinematic keyframes
+      - name: Capture deterministic cinematic keyframes
         run: |
           mkdir -p artifacts/screenshots
           node - <<'JS'
@@ -107,13 +110,21 @@ jobs:
               await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
               await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
               await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
-              for(const frame of frames){
-                const [name,target,p]=frame;
-                if(target===0){await page.evaluate(()=>scrollTo(0,0));}
-                else if(typeof target==='string'){
-                  await page.evaluate(({target,p})=>{const el=document.querySelector(target);const d=Math.max(1,el.offsetHeight-innerHeight);scrollTo(0,el.offsetTop+d*p)},{target,p:p||0});
+              await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto'});
+              for(const [name,target,p=0] of frames){
+                if(target===0){
+                  await page.evaluate(()=>window.scrollTo(0,0));
+                }else{
+                  await page.evaluate(({target,p})=>{
+                    const el=document.querySelector(target);
+                    const rect=el.getBoundingClientRect();
+                    const top=rect.top+window.scrollY;
+                    const d=Math.max(1,rect.height-innerHeight);
+                    window.scrollTo(0,top+d*p);
+                  },{target,p});
                 }
-                await page.waitForTimeout(180);
+                await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+                await page.waitForTimeout(120);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               await context.close();

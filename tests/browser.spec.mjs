@@ -36,21 +36,26 @@ test('navigation leads with Plans and stays one-page',async({page})=>{
   await expect(page.locator('a[href="/plans.html"],a[href="/case-studies/fakhrimart.html"]')).toHaveCount(0);
 });
 
-test('Plans is the first commercial section and Full Website is unmistakably recommended',async({page})=>{
+test('Plans is first and the lowest build price is the highlighted starting point',async({page})=>{
   await waitReady(page);
-  const firstPostHero=await page.locator('#top + .v9-main > section').first().getAttribute('id');
-  expect(firstPostHero).toBe('plans');
+  const firstPostHero=await page.locator('#top + .v9-main > section').first().getAttribute('id');expect(firstPostHero).toBe('plans');
   const featured=page.locator('[data-plan-recommended]');
-  await expect(featured).toBeVisible();
-  await expect(featured).toContainText('MOST CHOSEN');
-  await expect(featured).toContainText('₹17,999');
-  await expect(featured).toContainText('Best for most brands');
-  await expect(featured.locator('.plan-cta')).toContainText('Start with Full Website');
+  await expect(featured).toHaveAttribute('data-plan','makeover');
+  await expect(featured).toContainText('START HERE');
+  await expect(featured).toContainText('₹9,999');
+  await expect(featured).toContainText('Lowest entry / fastest upgrade');
+  await expect(featured.locator('.plan-cta')).toContainText('Start at ₹9,999');
+  await expect(page.locator('[data-plan="website"]')).not.toHaveClass(/plan-card--featured/);
+});
+
+test('lowest monthly support plan is highlighted too',async({page})=>{
+  await waitReady(page);await scrollTo(page,'#plans');
+  const care=page.locator('.care-plans article[data-care-highlight]');
+  await expect(care).toHaveCount(1);await expect(care).toContainText('₹2,499');await expect(care).toContainText('ENTRY');
 });
 
 test('all build and monthly plan prices are visible without tab hunting',async({page})=>{
-  await waitReady(page);await scrollTo(page,'#plans');
-  const plans=page.locator('#plans');
+  await waitReady(page);await scrollTo(page,'#plans');const plans=page.locator('#plans');
   for(const price of ['₹9,999','₹17,999','₹25K–35K+','₹2,499','₹3,999','₹5,999+'])await expect(plans).toContainText(price);
   await expect(plans.locator('[hidden]')).toHaveCount(0);
 });
@@ -65,8 +70,7 @@ test('real FakhriMart proof uses one desktop and one mobile capture',async({page
 });
 
 test('system surface changes state through visitor controls',async({page})=>{
-  await waitReady(page);await scrollTo(page,'#system');
-  const panel=page.locator('[data-system-panel]');
+  await waitReady(page);await scrollTo(page,'#system');const panel=page.locator('[data-system-panel]');
   await page.locator('[data-system-mode="ai"]').click();await expect(panel).toHaveAttribute('data-mode','ai');await expect(page.locator('[data-system-label]')).toHaveText('AI');
   await page.locator('[data-system-mode="build"]').click();await expect(panel).toHaveAttribute('data-mode','build');await expect(page.locator('[data-system-label]')).toHaveText('BUILD');
   await page.locator('[data-system-mode="design"]').click();await expect(panel).toHaveAttribute('data-mode','design');
@@ -79,17 +83,25 @@ test('mobile menu remains keyboard usable',async({page})=>{
   await page.keyboard.press('Escape');await expect(button).toHaveAttribute('aria-expanded','false');
 });
 
-test('mobile puts the recommended plan before the alternatives and uses full-size actions',async({page})=>{
+test('mobile starts with the ₹9,999 highlighted plan and uses full-size actions',async({page})=>{
   await page.setViewportSize({width:390,height:844});await waitReady(page);await scrollTo(page,'#plans');
-  const featured=await page.locator('[data-plan-recommended]').boundingBox();const makeover=await page.locator('[data-plan="makeover"]').boundingBox();expect(featured.y).toBeLessThan(makeover.y);
+  const featured=await page.locator('[data-plan-recommended]').boundingBox();const standard=await page.locator('[data-plan="website"]').boundingBox();expect(featured.y).toBeLessThan(standard.y);
+  await expect(page.locator('[data-plan-recommended]')).toContainText('₹9,999');
   for(const action of await page.locator('#plans .plan-cta').all()){const box=await action.boundingBox();expect(box.height).toBeGreaterThanOrEqual(52);expect(box.width).toBeGreaterThan(300)}
 });
 
-test('desktop plans read like products, not spreadsheet rows',async({page})=>{
+test('desktop entry plan has the strongest visual treatment',async({page})=>{
   await page.setViewportSize({width:1440,height:900});await waitReady(page);await scrollTo(page,'#plans');
   const cards=page.locator('.plan-grid .plan-card');await expect(cards).toHaveCount(3);
-  const featured=await page.locator('[data-plan-recommended]').boundingBox();expect(featured.width).toBeGreaterThan(360);expect(featured.height).toBeGreaterThan(520);
-  const background=await page.locator('[data-plan-recommended]').evaluate(el=>getComputedStyle(el).backgroundColor);expect(background).not.toBe('rgba(0, 0, 0, 0)');
+  const featured=page.locator('[data-plan-recommended]');const box=await featured.boundingBox();expect(box.width).toBeGreaterThan(360);expect(box.height).toBeGreaterThan(520);await expect(featured).toContainText('₹9,999');
+  const background=await featured.evaluate(el=>getComputedStyle(el).backgroundImage);expect(background).not.toBe('none');
+  const standardClass=await page.locator('[data-plan="website"]').getAttribute('class');expect(standardClass).not.toContain('plan-card--featured');
+});
+
+test('visual polish runtime activates across post-hero experience',async({page})=>{
+  await waitReady(page);await expect(page.locator('body')).toHaveClass(/v10-polished/);
+  await expect(page.locator('#plans .plan-card')).toHaveCount(3);await expect(page.locator('#services .service-row')).toHaveCount(4);
+  const ctaHeight=await page.locator('.contact-primary').evaluate(el=>el.getBoundingClientRect().height);expect(ctaHeight).toBeGreaterThanOrEqual(64);
 });
 
 test('post-hero styles activate without blocking hero paint',async({page})=>{

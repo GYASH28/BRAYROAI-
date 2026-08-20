@@ -57,6 +57,8 @@ expect(js.includes('class PlanPriorityController'),'entry-plan priority controll
 expect(js.includes("this.entry.setAttribute('data-plan-recommended','')"),'₹9,999 entry plan is not promoted at runtime');
 expect(js.includes("this.standard.removeAttribute('data-plan-recommended')"),'₹17,999 plan still owns the recommended marker');
 expect(js.includes("chip.textContent='ENTRY'"),'lowest monthly support plan is not highlighted');
+expect(js.includes("contactText.textContent='Start at ₹9,999'"),'final conversion CTA does not close on the ₹9,999 entry offer');
+expect(js.includes("BRAYROAI%20Digital%20Makeover"),'entry-plan mailto destination missing from conversion runtime');
 expect(fixes.includes('.plan-card[data-plan-recommended]')&&fixes.includes('[data-care-highlight]'),'entry-plan visual highlight rules missing');
 expect(html.includes('AFTER LAUNCH')&&html.includes('Keep it improving.'),'ongoing support plans are not visible');
 expect(html.includes('WHAT YOU\'RE ACTUALLY BUYING'),'services sales framing missing');
@@ -93,4 +95,4 @@ const validateRefs=markup=>{
 validateRefs(html);
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('Integrity OK: locked hero + entry-price-first plans + responsive v10 visual system checked');
+console.log('Integrity OK: locked hero + entry-price-first plans + full-funnel ₹9,999 CTA + responsive v10 visual system checked');

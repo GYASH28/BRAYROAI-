@@ -18,7 +18,7 @@ The opening animation and hero are a frozen visual contract. Everything after th
 
 - semantic HTML and a complete no-JavaScript baseline
 - CSS editorial layout with separate desktop, tablet, and mobile cuts
-- one custom WebGL particle renderer with precomputed deterministic target shapes
+- one custom two-pass WebGL particle renderer with deterministic semantic shapes, scroll-scrubbed morphing, depth glow, pointer pressure, and interaction pulses
 - one shared `requestAnimationFrame` scheduler
 - native scrolling; no smooth-scroll or animation-framework dependency
 - adaptive high, standard, and mobile particle profiles

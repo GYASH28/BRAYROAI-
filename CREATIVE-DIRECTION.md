@@ -18,6 +18,10 @@ DFII: **13/15**
 
 The missing two points are deliberate restraint: real business proof and price comprehension must remain more important than experimentation.
 
+## Particle direction
+
+The signal is a cinematic material, not background confetti. It continuously interpolates between chapter centres and carries the page's meaning: a dimensional possibility grid, the word `SEEN`, four connected discipline nodes, browser and phone proof frames, three scope gates, a human contour and halo, and the resolved BRAYROAI wordmark. A two-pass WebGL treatment separates soft atmospheric glow from crisp signal cores. Pointer pressure, press ripples, service choices, proof-view choices, and plan focus all affect the same field without taking control away from native scrolling.
+
 ## Belief map
 
 | Chapter | Visitor belief change | Handoff |

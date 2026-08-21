@@ -25,6 +25,7 @@ The opening animation and hero are a frozen visual contract. Everything after th
 - explicit WebGL fallback, reduced-motion mode, hidden-tab pause, and ambient-motion pause
 - persisted light/dark theme
 - keyboard-operable capability and proof controls
+- dedicated `/plans` decision page with exact pricing, direct pre-filled WhatsApp handoffs, a two-step plan finder, optional support scopes, and its own mobile conversion dock
 
 ## Verified public facts
 
@@ -47,7 +48,8 @@ npm run test:stress
 
 ## Commercial routes
 
-- `/plans` and `/plans.html` → `/#plans`
+- `/plans` → dedicated website plan and WhatsApp decision experience
+- `/pricing` → `/plans`
 - `/case-studies/fakhrimart` and `/case-studies/fakhrimart.html` → `/#work`
 
 `public/outbound-fresh/` remains a separate private, noindex concept system and is not part of the homepage film.

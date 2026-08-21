@@ -76,6 +76,7 @@ expect((html.match(/data-capability=/g)||[]).length===4&&(html.match(/aria-press
 expect(experience.includes('@media(prefers-reduced-motion:reduce)')&&js.includes("document.body.dataset.particleMode='static'"),'reduced-motion art direction missing');
 expect(cinematic.includes('[data-scene-phase="approach"]')&&cinematic.includes('[data-scene-phase="reveal"]')&&cinematic.includes('[data-scene-phase="hold"]')&&cinematic.includes('[data-scene-phase="release"]'),'scene anticipation and release styles missing');
 expect(cinematic.includes('.formation-director')&&cinematic.includes('.context-cursor'),'cinematic formation or interaction feedback layer missing');
+expect(cinematic.includes('particleTypeDrift')&&cinematic.includes('background-clip:text')&&cinematic.includes('data-particle-mode="fallback"][data-particle-transition="holding"'),'fallback particles do not visibly assemble and disperse');
 expect(cinematic.includes('--scene-in:1;--scene-out:0;--scene-presence:1'),'no-JavaScript cinematic baseline would hide chapter content');
 expect(experience.includes('@media(forced-colors:active)'),'forced-colors fallback missing');
 expect(experience.includes('@media(max-width:700px)')&&experience.includes('@media(max-width:380px)'),'mobile direction missing');

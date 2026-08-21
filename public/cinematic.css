@@ -19,6 +19,14 @@ body[data-particle-transition="reforming"] .formation-director>strong{opacity:.2
 body[data-particle-transition="holding"] .formation-director>strong{animation:formationBreathe 4.8s ease-in-out infinite}
 @keyframes formationBreathe{50%{opacity:.44;transform:scale(1.018)}}
 
+/* The fallback is still a formation system, not a decorative star field. */
+body[data-particle-mode="fallback"] .formation-director>strong,body[data-particle-mode="pending"] .formation-director>strong{background-image:radial-gradient(circle,var(--film-blue) 0 1.2px,transparent 1.8px),radial-gradient(circle,var(--film-orange) 0 1px,transparent 1.6px);background-size:7px 7px,11px 11px;background-position:0 0,3px 4px;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:0;opacity:.82;filter:drop-shadow(0 0 18px rgba(57,118,255,.22));animation:particleTypeDrift 6s linear infinite}
+body[data-particle-mode="fallback"][data-particle-transition="holding"] .particle-fallback{opacity:.18}
+body[data-particle-mode="fallback"][data-particle-transition="deforming"] .particle-fallback,body[data-particle-mode="fallback"][data-particle-transition="reforming"] .particle-fallback{opacity:.72}
+body[data-particle-mode="fallback"][data-particle-transition="deforming"] .formation-director>strong{opacity:.24;filter:blur(7px) drop-shadow(0 0 30px rgba(255,100,40,.24))}
+body[data-particle-mode="fallback"][data-particle-transition="reforming"] .formation-director>strong{opacity:.58;filter:blur(2px) drop-shadow(0 0 24px rgba(57,118,255,.3))}
+@keyframes particleTypeDrift{to{background-position:21px -14px,-19px 26px}}
+
 .film-chapter{--scene-in:1;--scene-out:0;--scene-presence:1;isolation:isolate;overflow:clip}
 .film-chapter::after{content:attr(data-scene-word);z-index:1;inset:8% 0;border:0;display:flex;align-items:center;justify-content:center;color:transparent;-webkit-text-stroke:1px color-mix(in srgb,var(--film-fg) 8%,transparent);background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--scene-accent) 12%,transparent),transparent 42%);font:700 clamp(120px,22vw,410px)/.72 var(--film-display);letter-spacing:-.1em;white-space:nowrap;opacity:calc(.03 + var(--scene-presence)*.22);transform:translate3d(0,calc(90px - var(--scene-in)*90px - var(--scene-out)*70px),0) scale(calc(.84 + var(--scene-presence)*.16));filter:blur(calc(9px - var(--scene-presence)*9px));transition:none}
 .film-chapter[data-active="true"]::after{opacity:calc(.06 + var(--scene-presence)*.24)}

@@ -41,14 +41,16 @@ jobs:
           ! test -f dist/site-fixes-core.css
           grep -q 'Digital, designed' dist/index.html
           grep -q 'id="plans"' dist/index.html
-          grep -q '₹9,999' dist/index.html
-          grep -q '₹17,999' dist/index.html
-          grep -q 'class PlanPriorityController' dist/app.js
-          grep -q "this.entry.setAttribute('data-plan-recommended','')" dist/app.js
-          grep -q 'body.v10-polished' dist/site-fixes.css
+          grep -q '₹2,599' dist/index.html
+          grep -q '₹3,999' dist/index.html
+          grep -q '₹5,999+' dist/index.html
+          grep -q 'class ParticleMorphField' dist/app.js
+          grep -q 'class ScrollFilmController' dist/app.js
+          grep -q 'site-nav.is-compact' dist/site-fixes.css
           grep -q 'class BRAYROExperience' dist/app.js
-          ! grep -q 'service-rail' dist/experience.css
-          ! grep -q 'work-slices' dist/experience.css
+          grep -q 'SIGNAL BECOMING FORM' dist/experience.css
+          ! grep -q '₹9,999' dist/index.html
+          ! grep -q '₹17,999' dist/index.html
           ! test -f dist/plans.html
           ! test -f dist/case-studies/fakhrimart.html
           ! test -f dist/plans.js
@@ -83,7 +85,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="plans"' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹9,999'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="plans"' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹2,599'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -107,12 +109,13 @@ jobs:
             const browser=await chromium.launch({headless:true});
             const frames=[
               ['hero',null,0],
-              ['plans','#plans',0],
-              ['plan-cards','.plan-grid',-92],
+              ['starting-point','#starting-point',0],
+              ['difference','#difference',0],
+              ['disciplines','#services',0],
               ['work','#work',0],
-              ['work-proof','.proof-stage',-90],
-              ['services','#services',0],
-              ['system','#system',0],
+              ['work-proof','.proof-gallery',-90],
+              ['plans','#plans',0],
+              ['scope-runway','.scope-runway',-92],
               ['studio','#studio',0],
               ['contact','#contact',0]
             ];

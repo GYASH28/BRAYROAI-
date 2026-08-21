@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -5,7 +6,7 @@ const root=process.cwd();
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const exists=p=>fs.existsSync(path.join(root,p));
 const html=read('index.html');
-const css=read('public/styles.css');
+const critical=read('public/styles.css');
 const fixes=read('public/site-fixes.css');
 const experience=read('public/experience.css');
 const js=read('public/app.js');
@@ -14,85 +15,60 @@ const vercel=read('vercel.json');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 
-// Opening sequence + hero visual contract stays frozen.
+const heroStart=html.indexOf('<section class="hero hero-v3');
+const heroEnd=html.indexOf('\n</section>',heroStart)+11;
+const heroHash=crypto.createHash('sha256').update(html.slice(heroStart,heroEnd)).digest('hex');
+expect(heroHash==='4adaa5b58fd6373a1d7fa467299a71d667d96a8a8a6d068c2ceed1fa45df9528','frozen hero markup changed');
 expect(html.includes('<div aria-hidden="true" class="intro-loader" data-loader="">'),'locked opening loader missing');
-expect(html.includes('BRAYROAI / CREATIVE TECHNOLOGY STUDIO'),'locked hero identity changed');
-expect(html.includes('Digital, designed<br/><em>to feel different.</em>'),'locked hero headline changed');
-expect(html.includes('BRAYROAI builds premium websites, digital experiences, and AI-powered systems for modern brands.'),'locked hero description changed');
-expect(html.includes('SCROLL TO SHAPE THE STORY'),'locked hero scroll cue changed');
-expect(html.includes('/assets/hero-background.webp')&&html.includes('/assets/yash-cutout.webp'),'locked hero assets changed');
-expect(js.includes('class LockedHeroController'),'locked hero controller missing');
-expect(js.includes('},920)'),'locked loader timing changed');
-expect(js.includes('this.px*34*depth')&&js.includes('scrollP*86*depth'),'locked hero depth behavior changed');
-expect(css.includes('/* HERO V3 — visual contract frozen. */'),'hero visual contract block missing');
-for(const locked of [
-  "font:800 clamp(72px,8.8vw,148px)/.78 'Space Grotesk'",
-  'filter:saturate(.86) contrast(1.06) brightness(.63)',
-  'width:clamp(860px,72vw,1200px)',
-  'left:59%;bottom:-5%',
-  'font-size:12.1vw',
-  'font-size:11.7vw',
-  'padding-top:30.5vh',
-  'font-size:clamp(36px,10.7vw,52px)'
-])expect(css.includes(locked),`locked hero visual token changed: ${locked}`);
-expect(css.includes('.sr-only{position:absolute!important'),'screen-reader-only utility missing');
+expect(js.includes('class LockedHeroController')&&js.includes('},920)'),'locked hero controller or loader timing changed');
+expect(js.includes('this.px*34*depth')&&js.includes('scrollP*86*depth'),'locked hero parallax behavior changed');
+expect(critical.includes('/* HERO V3 — visual contract frozen. */'),'frozen hero CSS marker missing');
+for(const token of ["font:800 clamp(72px,8.8vw,148px)/.78 'Space Grotesk'",'left:59%;bottom:-5%','font-size:12.1vw','padding-top:30.5vh'])expect(critical.includes(token),`locked hero visual token changed: ${token}`);
 
-// Lean critical path and no resurrected old architecture.
-expect(!exists('public/site-fixes-core.css'),'obsolete site-fixes-core.css still exists');
-expect(!fixes.includes('@import'),'site-fixes must not import another stylesheet');
-for(const legacy of ['.manifesto{','.capabilities{','.client-proof{','.lab{','.process{','.about{','.engage{','.case-hero{'])expect(!css.includes(legacy),`dead legacy CSS returned to styles.css: ${legacy}`);
-expect(Buffer.byteLength(css,'utf8')<24000,'critical styles.css grew above 24KB');
-expect(!experience.includes('.service-rail')&&!experience.includes('.work-slices')&&!experience.includes('.pricing-film'),'fragile v8 long-scroll architecture returned');
-expect(!/Lenis|ScrollTrigger|locomotive/i.test(js+experience),'scroll-hijacking dependency slipped into production');
+for(const id of ['main','top','starting-point','difference','services','system','work','plans','pricing','studio','contact'])expect(html.includes(`id="${id}"`),`missing #${id}`);
+const chapterOrder=[...html.matchAll(/data-scroll-chapter id="([^"]+)"/g)].map(match=>match[1]);
+expect(JSON.stringify(chapterOrder)===JSON.stringify(['starting-point','difference','services','work','plans','studio','contact']),`wrong chapter order: ${chapterOrder.join(', ')}`);
+expect(html.includes('<canvas aria-hidden="true" data-particle-field></canvas>'),'persistent decorative particle canvas missing or not aria-hidden');
+for(const state of ['presence','attention','disciplines','proof','scope','human','identity'])expect(html.includes(`data-particle-state="${state}"`),`missing particle state ${state}`);
+expect(js.includes('class ParticleMorphField')&&js.includes("getContext('webgl'")&&js.includes("document.body.dataset.particleMode='fallback'"),'adaptive WebGL particle engine or fallback missing');
+expect(js.includes('class ScrollFilmController')&&js.includes('class CapabilityController'),'scroll-film or capability controller missing');
+expect((js.match(/addEventListener\('scroll'/g)||[]).length===1,'scroll work must remain centralized behind one passive listener');
+expect(!/Lenis|locomotive|ScrollTrigger/i.test(js+experience),'scroll hijacking or overlapping motion runtime slipped in');
 
-// Sales-first single-page architecture.
-for(const id of ['main','top','plans','pricing','work','services','system','studio','contact'])expect(html.includes(`id="${id}"`),`missing #${id}`);
-const plansIndex=html.indexOf('id="plans"');
-const workIndex=html.indexOf('id="work"');
-const servicesIndex=html.indexOf('id="services"');
-expect(plansIndex>html.indexOf('</section>')&&plansIndex<workIndex&&workIndex<servicesIndex,'plans must be the first post-hero commercial section');
-for(const price of ['₹9,999','₹17,999','₹25K–35K+','₹2,499','₹3,999','₹5,999+'])expect(html.includes(price),`plan pricing missing ${price}`);
-expect(html.indexOf('₹9,999')<html.indexOf('₹17,999')&&html.indexOf('₹17,999')<html.indexOf('₹25K–35K+'),'build plans must remain ordered from lowest entry price upward');
-expect(js.includes('class PlanPriorityController'),'entry-plan priority controller missing');
-expect(js.includes("this.entry.setAttribute('data-plan-recommended','')"),'₹9,999 entry plan is not promoted at runtime');
-expect(js.includes("this.standard.removeAttribute('data-plan-recommended')"),'₹17,999 plan still owns the recommended marker');
-expect(js.includes("chip.textContent='ENTRY'"),'lowest monthly support plan is not highlighted');
-expect(js.includes("contactText.textContent='Start at ₹9,999'"),'final conversion CTA does not close on the ₹9,999 entry offer');
-expect(js.includes("BRAYROAI%20Digital%20Makeover"),'entry-plan mailto destination missing from conversion runtime');
-expect(fixes.includes('.plan-card[data-plan-recommended]')&&fixes.includes('[data-care-highlight]'),'entry-plan visual highlight rules missing');
-expect(html.includes('AFTER LAUNCH')&&html.includes('Keep it improving.'),'ongoing support plans are not visible');
-expect(html.includes('WHAT YOU\'RE ACTUALLY BUYING'),'services sales framing missing');
-expect(!html.includes('/plans.html')&&!html.includes('/case-studies/fakhrimart.html'),'homepage still routes into removed subpages');
-expect(!exists('plans.html')&&!exists('case-studies/fakhrimart.html')&&!exists('public/plans.js'),'removed pages/scripts still exist');
-for(const dead of ['public/commercial.css','public/commercial-fixes.css','public/commercial-accessibility.css'])expect(!exists(dead),`unused commercial layer remains: ${dead}`);
-expect(vite.includes("input:{home:resolve(process.cwd(),'index.html')}")&&!vite.includes('plans:')&&!vite.includes('fakhrimart:'),'Vite still builds removed pages');
-expect(vercel.includes('"/plans"')&&vercel.includes('"/#plans"')&&vercel.includes('"/#work"'),'legacy URLs should redirect into v10 sections');
+for(const price of ['₹2,599','₹3,999','₹5,999+','₹2,499'])expect(html.includes(price),`pricing missing ${price}`);
+for(const oldPrice of ['₹9,999','₹17,999','₹25K–35K+'])expect(!html.includes(oldPrice),`obsolete price returned: ${oldPrice}`);
+for(const name of ['Website Starter','Business Website','Custom Experience','Launch','Grow','Pro'])expect(html.includes(name),`offer missing ${name}`);
+expect(html.includes('Hosting, domains, paid tools, ecommerce, large content work, and advanced integrations are scoped separately.'),'scope exclusions are not visible beside plan decisions');
+for(const subject of ['BRAYROAI%20Website%20Starter%20%E2%80%94%20%E2%82%B92%2C599','BRAYROAI%20Business%20Website%20%E2%80%94%20%E2%82%B93%2C999','BRAYROAI%20Custom%20Experience%20enquiry','Help%20me%20choose%20a%20BRAYROAI%20plan','BRAYROAI%20Launch%20support','BRAYROAI%20Grow%20support','BRAYROAI%20Pro%20support'])expect(html.includes(`subject=${subject}`),`exact mail subject missing: ${subject}`);
 
-// Real proof and honest assets.
-expect(html.includes('/assets/fakhrimart-case-desktop.png')&&html.includes('/assets/fakhrimart-case-mobile.png'),'real FakhriMart captures are not wired');
-expect((html.match(/fakhrimart-case-desktop\.png/g)||[]).length===1,'desktop case image should not be duplicated for animation');
-expect((html.match(/fakhrimart-case-mobile\.png/g)||[]).length===1,'mobile case image should appear once');
+for(const fact of ['Yarn wholesaler','Catalogue-led browsing','Desktop + mobile experience','Enquiry-led flow'])expect(html.includes(fact),`verified proof fact missing: ${fact}`);
 expect(html.includes('https://fakhriyarns.vercel.app/'),'live FakhriMart destination missing');
-expect(!html.includes('<iframe'),'homepage must not depend on a live iframe');
+expect((html.match(/fakhrimart-case-desktop\.png/g)||[]).length===1,'desktop proof must appear exactly once');
+expect((html.match(/fakhrimart-case-mobile\.png/g)||[]).length===1,'mobile proof must appear exactly once');
+expect(html.includes('/assets/about-yash.webp'),'real founder image missing');
 for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png'])expect(exists(path.join('public/assets',asset)),`missing ${asset}`);
-expect(exists('public/outbound-fresh'),'outbound workflow assets were accidentally removed');
+for(const invented of ['testimonial','award-winning','guaranteed results','clients served','conversion increase'])expect(!html.toLowerCase().includes(invented),`unverified claim pattern returned: ${invented}`);
 
-// Responsive architecture and runtime.
-expect(experience.includes('@media(max-width:800px)')&&experience.includes('@media(max-width:430px)'),'dedicated mobile layouts missing');
-expect(experience.includes('@media(prefers-reduced-motion:reduce)'),'reduced-motion treatment missing');
-expect(experience.includes('.plan-card--featured')&&experience.includes('.service-row')&&experience.includes('.system-panel'),'v9 core visual systems missing');
-expect(fixes.includes('body.v10-polished')&&fixes.includes('@media(max-width:430px)'),'v10 visual-polish layer or mobile tuning missing');
-expect(js.includes('class BRAYROExperience')&&js.includes('class WorkScene')&&js.includes('class SystemTabs')&&js.includes('class RevealController'),'runtime controllers missing');
-expect((js.match(/addEventListener\('scroll'/g)||[]).length===1,'scroll work must stay centralized through one passive listener');
-expect(js.includes('requestAnimationFrame'),'shared RAF scheduler missing');
-expect(js.includes("document.body.classList.add('experience-ready')"),'experience readiness contract missing');
-expect(html.includes('id="experience-styles" media="print"')&&html.includes('id="post-fixes-styles" media="print"'),'post-hero CSS must remain deferred');
+expect(html.includes('data-theme-toggle')&&html.includes('aria-label="Switch to light mode"'),'accessible theme control missing');
+expect(html.includes('data-motion-toggle')&&html.includes('aria-label="Pause ambient motion"'),'ambient motion pause control missing');
+expect((html.match(/data-capability=/g)||[]).length===4&&(html.match(/aria-pressed="false" data-capability/g)||[]).length===3,'four accessible capability controls missing');
+expect(experience.includes('@media(prefers-reduced-motion:reduce)')&&js.includes("document.body.dataset.particleMode='static'"),'reduced-motion art direction missing');
+expect(experience.includes('@media(forced-colors:active)'),'forced-colors fallback missing');
+expect(experience.includes('@media(max-width:700px)')&&experience.includes('@media(max-width:380px)'),'mobile direction missing');
+expect(html.includes('id="experience-styles" media="print"')&&html.includes('id="post-fixes-styles" media="print"'),'post-hero styles must remain deferred');
+expect(js.includes("document.documentElement.dataset.experience='enhanced'"),'progressive enhancement state missing');
+expect(!html.includes(' hidden')&&!html.includes('style="display:none'),'semantic document hides required content without JavaScript');
 
-const validateRefs=markup=>{
-  const refs=[...markup.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(match=>match[1]).filter(Boolean);
-  for(const ref of refs){const candidates=[path.join(root,'public',ref),path.join(root,ref)];expect(candidates.some(fs.existsSync),`homepage missing local reference /${ref}`)}
-};
-validateRefs(html);
+expect(Buffer.byteLength(critical,'utf8')<24000,'critical styles.css grew above 24KB');
+expect(Buffer.byteLength(experience,'utf8')<50000,'experience.css grew above 50KB');
+expect(Buffer.byteLength(js,'utf8')<35000,'app.js grew above the authored runtime budget');
+expect(fixes.includes('.site-nav.is-compact'),'post-hero header integration missing');
+expect(vite.includes("input:{home:resolve(process.cwd(),'index.html')}"),'single-page Vite build contract changed');
+expect(vercel.includes('"/plans"')&&vercel.includes('"/#plans"')&&vercel.includes('"/#work"'),'legacy routes do not redirect to canonical anchors');
+expect(exists('public/outbound-fresh'),'private outbound concepts were accidentally removed');
+
+const refs=[...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(match=>match[1]).filter(Boolean);
+for(const ref of refs){const candidates=[path.join(root,'public',ref),path.join(root,ref)];expect(candidates.some(fs.existsSync),`homepage missing local reference /${ref}`)}
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('Integrity OK: locked hero + entry-price-first plans + full-funnel ₹9,999 CTA + responsive v10 visual system checked');
+console.log('Integrity OK: frozen hero + seven-chapter signal film + exact lower pricing + proof + adaptive interaction contracts checked');

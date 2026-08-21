@@ -1,33 +1,14 @@
 import { test, expect } from '@playwright/test';
 
-const ready=async page=>{await page.goto('/',{waitUntil:'networkidle'});await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));await page.waitForFunction(()=>document.body.classList.contains('experience-ready'))};
-const scrollTo=async(page,selector)=>{await page.evaluate(selector=>{document.documentElement.style.scrollBehavior='auto';const el=document.querySelector(selector);window.scrollTo(0,el.getBoundingClientRect().top+scrollY)},selector);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))};
+const ready=async page=>{await page.goto('/',{waitUntil:'networkidle'});await page.waitForFunction(()=>document.body.classList.contains('experience-ready'))};
+const scrollTo=async(page,selector)=>{await page.evaluate(selector=>{document.documentElement.style.scrollBehavior='auto';document.querySelector(selector).scrollIntoView({block:'start'})},selector);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))};
 
-test('plans appear before proof and services in real document order',async({page})=>{
-  await ready(page);const order=await page.evaluate(()=>[...document.querySelectorAll('.v9-main>section')].map(el=>el.id));expect(order.slice(0,3)).toEqual(['plans','work','services']);
-});
+test('native scrolling drives chapter progress without hijacking the document',async({page})=>{await ready(page);const before=await page.evaluate(()=>({overflow:getComputedStyle(document.documentElement).overflowY,height:document.scrollingElement.scrollHeight,viewport:innerHeight}));expect(before.overflow).not.toBe('hidden');expect(before.height).toBeGreaterThan(before.viewport*6);await scrollTo(page,'#difference');const progress=Number(await page.locator('#difference').evaluate(el=>getComputedStyle(el).getPropertyValue('--chapter-progress')));expect(progress).toBeGreaterThan(0)});
 
-test('desktop work scene adds subtle progress without hijacking scroll',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});await ready(page);await scrollTo(page,'#work');
-  await page.evaluate(()=>window.scrollBy(0,450));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-  const progress=Number(await page.locator('#work').evaluate(el=>getComputedStyle(el).getPropertyValue('--work-progress')||0));expect(progress).toBeGreaterThan(0);
-  const position=await page.locator('#work').evaluate(el=>getComputedStyle(el).position);expect(position).not.toBe('sticky');
-});
+test('the rail and particle state follow the active chapter',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);for(const [section,state] of [['#starting-point','presence'],['#services','disciplines'],['#work','proof'],['#plans','scope'],['#contact','identity']]){await scrollTo(page,section);await expect(page.locator(`.chapter-rail a[href="${section}"]`)).toHaveClass(/is-active/);await expect(page.locator(section)).toHaveAttribute('data-particle-state',state)}});
 
-test('system modes keep one stable surface and update its meaning',async({page})=>{
-  await ready(page);await scrollTo(page,'#system');const panel=page.locator('[data-system-panel]');
-  await page.locator('[data-system-mode="build"]').click();await expect(panel).toHaveAttribute('data-mode','build');await expect(page.locator('[data-system-meta]')).toHaveText('COMPONENTS / STATES / PERFORMANCE');
-  await page.locator('[data-system-mode="ai"]').click();await expect(panel).toHaveAttribute('data-mode','ai');await expect(page.locator('[data-system-copy]')).toContainText('workflow');
-});
+test('all interactive state changes use real buttons and visible pressed states',async({page})=>{await ready(page);await scrollTo(page,'#services');await page.locator('[data-capability="product"]').focus();await page.keyboard.press('Enter');await expect(page.locator('[data-capability="product"]')).toHaveAttribute('aria-pressed','true');await scrollTo(page,'#work');await page.getByRole('button',{name:'Mobile',exact:true}).focus();await page.keyboard.press('Space');await expect(page.getByRole('button',{name:'Mobile',exact:true})).toHaveAttribute('aria-pressed','true')});
 
-test('fine pointer gets contextual labels while real links stay clickable',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});await ready(page);await scrollTo(page,'#work');const frame=page.locator('[data-work-frame]');await frame.hover({position:{x:400,y:260}});await expect(page.locator('[data-context-cursor]')).toHaveClass(/is-visible/);await expect(frame.locator('a[href="https://fakhriyarns.vercel.app/"]')).toBeVisible();
-});
+test('post-hero styles activate after the non-blocking load path',async({page})=>{await page.goto('/',{waitUntil:'domcontentloaded'});for(const id of ['post-fixes-styles','experience-styles'])expect(['print','all']).toContain(await page.locator(`#${id}`).getAttribute('media'));await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));await expect(page.locator('#experience-styles')).toHaveAttribute('media','all');await expect(page.locator('#post-fixes-styles')).toHaveAttribute('media','all');await expect(page.locator('html')).toHaveAttribute('data-experience','enhanced')});
 
-test('reveal motion resolves content instead of leaving invisible sections',async({page})=>{
-  await ready(page);for(const selector of ['#plans','#work','#services','#system','#studio','#contact']){await scrollTo(page,selector);await expect.poll(async()=>Number(await page.locator(`${selector} .reveal-item`).first().evaluate(el=>getComputedStyle(el).opacity))).toBeGreaterThan(.9)}
-});
-
-test('experience uses native document scrolling and a single RAF scheduler',async({page})=>{
-  await ready(page);const behavior=await page.evaluate(()=>({htmlOverflow:getComputedStyle(document.documentElement).overflowY,bodyOverflow:getComputedStyle(document.body).overflowY,scrollHeight:document.scrollingElement.scrollHeight,viewport:innerHeight,ready:document.body.classList.contains('experience-ready')}));expect(behavior.ready).toBeTruthy();expect(behavior.htmlOverflow).not.toBe('hidden');expect(behavior.bodyOverflow).not.toBe('hidden');expect(behavior.scrollHeight).toBeGreaterThan(behavior.viewport*3);await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,700)});await expect.poll(()=>page.evaluate(()=>window.scrollY)).toBeGreaterThan(0);
-});
+test('final contact resolves the story into a selectable direct email',async({page})=>{await ready(page);await scrollTo(page,'#contact');await expect(page.locator('#contact')).toContainText('Let’s make that first impression count.');await expect(page.locator('.final-wordmark')).toContainText('BRAYROAI');await expect(page.locator('.contact-email a')).toHaveText('yashganesh.work@gmail.com');await expect(page.locator('.contact-primary')).toHaveAttribute('href',/subject=Start%20a%20BRAYROAI%20project/)});

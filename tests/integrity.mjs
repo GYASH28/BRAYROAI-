@@ -32,6 +32,7 @@ expect(html.includes('<canvas aria-hidden="true" data-particle-field></canvas>')
 for(const state of ['presence','attention','disciplines','proof','scope','human','identity'])expect(html.includes(`data-particle-state="${state}"`),`missing particle state ${state}`);
 expect(js.includes('class ParticleMorphField')&&js.includes("getContext('webgl'")&&js.includes("document.body.dataset.particleMode='fallback'"),'adaptive WebGL particle engine or fallback missing');
 expect(js.includes('setNarrative(index,morph')&&js.includes('uPulseAge')&&js.includes('gl.drawArrays(gl.POINTS,0,this.profile.count)'),'continuous two-pass particle narrative missing');
+expect(js.includes("document.body.dataset.particleMode='pending'")&&js.includes('activate(){if(this.gl'),'post-hero particle initialization is not deferred away from hero LCP');
 expect(js.includes("this.textShape('SEEN'")&&js.includes("this.textShape('BRAYROAI'"),'meaningful attention and identity particle typography missing');
 expect(html.includes('data-signal-label')&&html.includes('MOVE / PRESS / SCROLL'),'particle state HUD missing');
 expect(js.includes('class ScrollFilmController')&&js.includes('class CapabilityController'),'scroll-film or capability controller missing');

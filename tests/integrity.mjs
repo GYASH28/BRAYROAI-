@@ -6,10 +6,13 @@ const root=process.cwd();
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const exists=p=>fs.existsSync(path.join(root,p));
 const html=read('index.html');
+const plansHtml=read('plans.html');
 const critical=read('public/styles.css');
 const fixes=read('public/site-fixes.css');
 const experience=read('public/experience.css');
 const js=read('public/app.js');
+const plansCss=read('public/plans.css');
+const plansJs=read('public/plans.js');
 const vite=read('vite.config.mjs');
 const vercel=read('vercel.json');
 const errors=[];
@@ -33,6 +36,8 @@ for(const state of ['presence','attention','disciplines','proof','scope','human'
 expect(js.includes('class ParticleMorphField')&&js.includes("getContext('webgl'")&&js.includes("document.body.dataset.particleMode='fallback'"),'adaptive WebGL particle engine or fallback missing');
 expect(js.includes('setNarrative(index,morph')&&js.includes('uPulseAge')&&js.includes('gl.drawArrays(gl.POINTS,0,this.profile.count)'),'continuous two-pass particle narrative missing');
 expect(js.includes("document.body.dataset.particleMode='pending'")&&js.includes('activate(){if(this.gl'),'post-hero particle initialization is not deferred away from hero LCP');
+expect(js.includes("addEventListener('wheel',begin")&&js.includes("addEventListener('touchstart',begin")&&js.includes('innerHeight*.96'),'particle field is not armed for the first scroll into the hero handoff');
+expect(experience.includes('body[data-particle-mode="pending"].post-hero-active .particle-fallback')&&experience.includes('@keyframes fallbackField'),'visible animated particle warmup or resilient fallback missing');
 expect(js.includes("this.textShape('SEEN'")&&js.includes("this.textShape('BRAYROAI'"),'meaningful attention and identity particle typography missing');
 expect(html.includes('data-signal-label')&&html.includes('MOVE / PRESS / SCROLL'),'particle state HUD missing');
 expect(js.includes('class ScrollFilmController')&&js.includes('class CapabilityController'),'scroll-film or capability controller missing');
@@ -43,7 +48,15 @@ for(const price of ['₹2,599','₹3,999','₹5,999+','₹2,499'])expect(html.in
 for(const oldPrice of ['₹9,999','₹17,999','₹25K–35K+'])expect(!html.includes(oldPrice),`obsolete price returned: ${oldPrice}`);
 for(const name of ['Website Starter','Business Website','Custom Experience','Launch','Grow','Pro'])expect(html.includes(name),`offer missing ${name}`);
 expect(html.includes('Hosting, domains, paid tools, ecommerce, large content work, and advanced integrations are scoped separately.'),'scope exclusions are not visible beside plan decisions');
-for(const subject of ['BRAYROAI%20Website%20Starter%20%E2%80%94%20%E2%82%B92%2C599','BRAYROAI%20Business%20Website%20%E2%80%94%20%E2%82%B93%2C999','BRAYROAI%20Custom%20Experience%20enquiry','Help%20me%20choose%20a%20BRAYROAI%20plan','BRAYROAI%20Launch%20support','BRAYROAI%20Grow%20support','BRAYROAI%20Pro%20support'])expect(html.includes(`subject=${subject}`),`exact mail subject missing: ${subject}`);
+for(const route of ['/plans?plan=starter','/plans?plan=business','/plans?plan=custom','/plans#plan-finder'])expect(html.includes(`href="${route}`),`homepage plan route missing: ${route}`);
+expect((html.match(/https:\/\/wa\.me\/919175524637/g)||[]).length>=3,'homepage direct WhatsApp conversion paths missing');
+
+for(const price of ['₹2,599','₹3,999','₹5,999+','₹2,499'])expect(plansHtml.includes(price),`dedicated plans page missing ${price}`);
+for(const name of ['Website Starter','Business Website','Custom Experience','Launch support','Grow support','Pro support'])expect(plansHtml.includes(name)||plansJs.includes(name),`dedicated plans page offer missing ${name}`);
+expect((plansHtml.match(/https:\/\/wa\.me\/919175524637/g)||[]).length>=10,'dedicated plan and support WhatsApp paths missing');
+expect(plansHtml.includes('data-plan-finder')&&plansJs.includes('class PlanFinder'),'interactive plan finder missing');
+expect(plansHtml.includes('data-theme-toggle')&&plansJs.includes("localStorage.getItem('brayroai-theme')"),'plans theme persistence missing');
+expect(plansCss.includes('@media(max-width:620px)')&&plansCss.includes('.plans-mobile-dock'),'dedicated plans mobile experience missing');
 
 for(const fact of ['Yarn wholesaler','Catalogue-led browsing','Desktop + mobile experience','Enquiry-led flow'])expect(html.includes(fact),`verified proof fact missing: ${fact}`);
 expect(html.includes('https://fakhriyarns.vercel.app/'),'live FakhriMart destination missing');
@@ -66,13 +79,17 @@ expect(!html.includes(' hidden')&&!html.includes('style="display:none'),'semanti
 expect(Buffer.byteLength(critical,'utf8')<24000,'critical styles.css grew above 24KB');
 expect(Buffer.byteLength(experience,'utf8')<50000,'experience.css grew above 50KB');
 expect(Buffer.byteLength(js,'utf8')<35000,'app.js grew above the authored runtime budget');
+expect(Buffer.byteLength(plansCss,'utf8')<42000,'plans.css grew above 42KB');
+expect(Buffer.byteLength(plansJs,'utf8')<12000,'plans.js grew above 12KB');
 expect(fixes.includes('.site-nav.is-compact'),'post-hero header integration missing');
-expect(vite.includes("input:{home:resolve(process.cwd(),'index.html')}"),'single-page Vite build contract changed');
-expect(vercel.includes('"/plans"')&&vercel.includes('"/#plans"')&&vercel.includes('"/#work"'),'legacy routes do not redirect to canonical anchors');
+expect(vite.includes("plans:resolve(process.cwd(),'plans.html')"),'dedicated plans page is missing from the Vite build');
+expect(vercel.includes('"/pricing"')&&vercel.includes('"/plans"')&&vercel.includes('"/#work"'),'legacy routes do not redirect to canonical destinations');
 expect(exists('public/outbound-fresh'),'private outbound concepts were accidentally removed');
 
 const refs=[...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(match=>match[1]).filter(Boolean);
-for(const ref of refs){const candidates=[path.join(root,'public',ref),path.join(root,ref)];expect(candidates.some(fs.existsSync),`homepage missing local reference /${ref}`)}
+for(const ref of refs){const candidates=[path.join(root,'public',ref),path.join(root,ref),path.join(root,`${ref}.html`)];expect(candidates.some(fs.existsSync),`homepage missing local reference /${ref}`)}
+const planRefs=[...plansHtml.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(match=>match[1]).filter(Boolean).filter(ref=>ref!=='plans');
+for(const ref of planRefs){const candidates=[path.join(root,'public',ref),path.join(root,ref),path.join(root,`${ref}.html`)];expect(candidates.some(fs.existsSync),`plans page missing local reference /${ref}`)}
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
 console.log('Integrity OK: frozen hero + seven-chapter signal film + exact lower pricing + proof + adaptive interaction contracts checked');

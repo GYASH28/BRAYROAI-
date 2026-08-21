@@ -5,12 +5,14 @@ const routes=[
   '/',
   '/styles.css',
   '/site-fixes.css',
+  '/experience.css',
   '/app.js',
-  '/site-fixes.js',
   '/robots.txt',
   '/assets/hero-background.webp',
   '/assets/yash-cutout.webp',
-  '/assets/about-yash.webp'
+  '/assets/about-yash.webp',
+  '/assets/fakhrimart-case-desktop.png',
+  '/assets/fakhrimart-case-mobile.png'
 ];
 
 let cursor=0,failures=0;

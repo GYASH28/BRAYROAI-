@@ -20,7 +20,8 @@
 <link href="/styles.css" rel="stylesheet"/>
 <link href="/site-fixes.css" id="post-fixes-styles" media="print" rel="stylesheet"/>
 <link href="/experience.css" id="experience-styles" media="print" rel="stylesheet"/>
-<noscript><link href="/site-fixes.css" rel="stylesheet"/><link href="/experience.css" rel="stylesheet"/></noscript>
+<link href="/cinematic.css" id="cinematic-styles" media="print" rel="stylesheet"/>
+<noscript><link href="/site-fixes.css" rel="stylesheet"/><link href="/experience.css" rel="stylesheet"/><link href="/cinematic.css" rel="stylesheet"/></noscript>
 <link as="image" fetchpriority="high" href="/assets/hero-background.webp" rel="preload"/>
 <link as="image" fetchpriority="high" href="/assets/yash-cutout.webp" rel="preload"/>
 </head>
@@ -55,6 +56,12 @@
     <span data-signal-index>01</span><i></i><b data-signal-label>POTENTIAL / FORMING</b>
     <small data-signal-quality>LIVE / ADAPTIVE FIELD</small><em>MOVE / PRESS / SCROLL</em>
   </div>
+  <div aria-hidden="true" class="formation-director" data-formation-director>
+    <span><i></i><b data-formation-index>01 / 07</b></span>
+    <strong data-formation-word>IDEA</strong>
+    <small data-formation-phase>HOLDING / FORM 01</small>
+    <em>SCROLL CONTROLS THE FORM</em>
+  </div>
 
   <aside aria-label="Post-hero chapter progress" class="chapter-rail" data-chapter-progress>
     <span aria-hidden="true" class="chapter-rail__line"><i></i></span>
@@ -73,7 +80,7 @@
     <div class="handoff-grid"></div><span>RESIDUAL SIGNAL / 001</span><i></i>
   </div>
 
-  <section aria-labelledby="starting-title" class="film-chapter chapter-start" data-particle-state="presence" data-scroll-chapter id="starting-point">
+  <section aria-labelledby="starting-title" class="film-chapter chapter-start" data-particle-state="presence" data-scene-word="IDEA" data-scroll-chapter id="starting-point">
     <div class="film-shell start-layout">
       <header class="chapter-header reveal-item">
         <p class="chapter-code"><span>01</span> POTENTIAL → PRESENCE</p>
@@ -97,7 +104,7 @@
     </div>
   </section>
 
-  <section aria-labelledby="difference-title" class="film-chapter chapter-difference" data-particle-state="attention" data-scroll-chapter id="difference">
+  <section aria-labelledby="difference-title" class="film-chapter chapter-difference" data-particle-state="attention" data-scene-word="SEEN" data-scroll-chapter id="difference">
     <div class="film-shell difference-layout">
       <p class="chapter-code"><span>02</span> EXISTENCE → ATTENTION</p>
       <h2 id="difference-title">A website can <span>exist.</span><br/>Or it can make people <em>stop.</em></h2>
@@ -107,7 +114,7 @@
     </div>
   </section>
 
-  <section aria-labelledby="services-title" class="film-chapter chapter-services" data-particle-state="disciplines" data-scroll-chapter id="services">
+  <section aria-labelledby="services-title" class="film-chapter chapter-services" data-particle-state="disciplines" data-scene-word="SYSTEM" data-scroll-chapter id="services">
     <span class="anchor-alias" id="system" aria-hidden="true"></span>
     <div class="film-shell services-layout">
       <header class="chapter-header reveal-item">
@@ -132,7 +139,7 @@
     </div>
   </section>
 
-  <section aria-labelledby="work-title" class="film-chapter chapter-work" data-particle-state="proof" data-scroll-chapter id="work">
+  <section aria-labelledby="work-title" class="film-chapter chapter-work" data-particle-state="proof" data-scene-word="PROOF" data-scroll-chapter id="work">
     <div class="film-shell work-layout">
       <header class="chapter-header reveal-item">
         <p class="chapter-code"><span>04</span> REAL WORK / FAKHRIMART</p>
@@ -156,7 +163,7 @@
     </div>
   </section>
 
-  <section aria-labelledby="plans-title" class="film-chapter chapter-plans" data-particle-state="scope" data-scroll-chapter id="plans">
+  <section aria-labelledby="plans-title" class="film-chapter chapter-plans" data-particle-state="scope" data-scene-word="SCOPE" data-scroll-chapter id="plans">
     <span class="anchor-alias" id="pricing" aria-hidden="true"></span>
     <div class="film-shell plans-layout">
       <header class="chapter-header reveal-item">
@@ -197,14 +204,14 @@
     </div>
   </section>
 
-  <section aria-labelledby="studio-title" class="film-chapter chapter-studio" data-particle-state="human" data-scroll-chapter id="studio">
+  <section aria-labelledby="studio-title" class="film-chapter chapter-studio" data-particle-state="human" data-scene-word="YASH" data-scroll-chapter id="studio">
     <div class="film-shell studio-layout">
       <div class="studio-portrait reveal-item"><img alt="Yash Ganesh, founder of BRAYROAI" decoding="async" height="675" loading="lazy" src="/assets/about-yash.webp" width="1200"/><span aria-hidden="true">FOUNDER / DIRECTION + IMPLEMENTATION</span><i aria-hidden="true"></i></div>
       <div class="studio-copy reveal-item"><p class="chapter-code"><span>06</span> THE SYSTEM BECOMES HUMAN</p><h2 id="studio-title">Small studio. <em>Close to the work.</em></h2><p>Direction and implementation stay close, so the work does not lose itself between an idea and a browser.</p><div><a href="https://github.com/GYASH28" rel="noreferrer" target="_blank">See the work on GitHub ↗</a><a href="mailto:yashganesh.work@gmail.com">Email Yash ↗</a></div></div>
     </div>
   </section>
 
-  <section aria-labelledby="contact-title" class="film-chapter chapter-contact" data-particle-state="identity" data-scroll-chapter id="contact">
+  <section aria-labelledby="contact-title" class="film-chapter chapter-contact" data-particle-state="identity" data-scene-word="BRAYROAI" data-scroll-chapter id="contact">
     <div class="film-shell contact-layout">
       <p class="chapter-code"><span>07</span> FORM → IDENTITY</p>
       <h2 id="contact-title">Your business is judged online before you get the chance to <em>explain it.</em></h2>

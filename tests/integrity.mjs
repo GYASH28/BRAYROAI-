@@ -10,6 +10,7 @@ const plansHtml=read('plans.html');
 const critical=read('public/styles.css');
 const fixes=read('public/site-fixes.css');
 const experience=read('public/experience.css');
+const cinematic=read('public/cinematic.css');
 const js=read('public/app.js');
 const plansCss=read('public/plans.css');
 const plansJs=read('public/plans.js');
@@ -35,12 +36,15 @@ expect(html.includes('<canvas aria-hidden="true" data-particle-field></canvas>')
 for(const state of ['presence','attention','disciplines','proof','scope','human','identity'])expect(html.includes(`data-particle-state="${state}"`),`missing particle state ${state}`);
 expect(js.includes('class ParticleMorphField')&&js.includes("getContext('webgl'")&&js.includes("document.body.dataset.particleMode='fallback'"),'adaptive WebGL particle engine or fallback missing');
 expect(js.includes('setNarrative(index,morph')&&js.includes('uPulseAge')&&js.includes('gl.drawArrays(gl.POINTS,0,this.profile.count)'),'continuous two-pass particle narrative missing');
+expect(js.includes('transitionBurst')&&js.includes("dataset.particleTransition")&&js.includes("presence:['IDEA'")&&js.includes("human:['YASH'"),'recognizable staged particle formation and deformation missing');
 expect(js.includes("document.body.dataset.particleMode='pending'")&&js.includes('activate(){if(this.gl'),'post-hero particle initialization is not deferred away from hero LCP');
 expect(js.includes("addEventListener('wheel',begin")&&js.includes("addEventListener('touchmove',begin")&&js.includes('innerHeight*.96'),'particle field is not armed for the first scroll into the hero handoff');
 expect(experience.includes('body[data-particle-mode="pending"].post-hero-active .particle-fallback')&&experience.includes('@keyframes fallbackField'),'visible animated particle warmup or resilient fallback missing');
-expect(js.includes("this.textShape('SEEN'")&&js.includes("this.textShape('BRAYROAI'"),'meaningful attention and identity particle typography missing');
+expect(js.includes("attention:['SEEN'")&&js.includes("identity:['BRAYROAI'"),'meaningful attention and identity particle typography missing');
 expect(html.includes('data-signal-label')&&html.includes('MOVE / PRESS / SCROLL'),'particle state HUD missing');
+expect(html.includes('data-formation-director')&&html.includes('data-formation-word')&&html.includes('data-formation-phase'),'cinematic formation director missing');
 expect(js.includes('class ScrollFilmController')&&js.includes('class CapabilityController'),'scroll-film or capability controller missing');
+expect(js.includes("dataset.scenePhase")&&js.includes("--scene-in")&&js.includes("--scene-out"),'four-phase chapter choreography missing');
 expect((js.match(/addEventListener\('scroll'/g)||[]).length===1,'scroll work must remain centralized behind one passive listener');
 expect(!/Lenis|locomotive|ScrollTrigger/i.test(js+experience),'scroll hijacking or overlapping motion runtime slipped in');
 
@@ -70,14 +74,18 @@ expect(html.includes('data-theme-toggle')&&html.includes('aria-label="Switch to 
 expect(html.includes('data-motion-toggle')&&html.includes('aria-label="Pause ambient motion"'),'ambient motion pause control missing');
 expect((html.match(/data-capability=/g)||[]).length===4&&(html.match(/aria-pressed="false" data-capability/g)||[]).length===3,'four accessible capability controls missing');
 expect(experience.includes('@media(prefers-reduced-motion:reduce)')&&js.includes("document.body.dataset.particleMode='static'"),'reduced-motion art direction missing');
+expect(cinematic.includes('[data-scene-phase="approach"]')&&cinematic.includes('[data-scene-phase="reveal"]')&&cinematic.includes('[data-scene-phase="hold"]')&&cinematic.includes('[data-scene-phase="release"]'),'scene anticipation and release styles missing');
+expect(cinematic.includes('.formation-director')&&cinematic.includes('.context-cursor'),'cinematic formation or interaction feedback layer missing');
+expect(cinematic.includes('--scene-in:1;--scene-out:0;--scene-presence:1'),'no-JavaScript cinematic baseline would hide chapter content');
 expect(experience.includes('@media(forced-colors:active)'),'forced-colors fallback missing');
 expect(experience.includes('@media(max-width:700px)')&&experience.includes('@media(max-width:380px)'),'mobile direction missing');
-expect(html.includes('id="experience-styles" media="print"')&&html.includes('id="post-fixes-styles" media="print"'),'post-hero styles must remain deferred');
+expect(html.includes('id="experience-styles" media="print"')&&html.includes('id="post-fixes-styles" media="print"')&&html.includes('id="cinematic-styles" media="print"'),'post-hero styles must remain deferred');
 expect(js.includes("document.documentElement.dataset.experience='enhanced'"),'progressive enhancement state missing');
 expect(!html.includes(' hidden')&&!html.includes('style="display:none'),'semantic document hides required content without JavaScript');
 
 expect(Buffer.byteLength(critical,'utf8')<24000,'critical styles.css grew above 24KB');
 expect(Buffer.byteLength(experience,'utf8')<50000,'experience.css grew above 50KB');
+expect(Buffer.byteLength(cinematic,'utf8')<24000,'cinematic.css grew above 24KB');
 expect(Buffer.byteLength(js,'utf8')<35000,'app.js grew above the authored runtime budget');
 expect(Buffer.byteLength(plansCss,'utf8')<42000,'plans.css grew above 42KB');
 expect(Buffer.byteLength(plansJs,'utf8')<12000,'plans.js grew above 12KB');

@@ -11,6 +11,7 @@ const critical=read('public/styles.css');
 const fixes=read('public/site-fixes.css');
 const experience=read('public/experience.css');
 const cinematic=read('public/cinematic.css');
+const commercial=read('public/commercial.css');
 const js=read('public/app.js');
 const plansCss=read('public/plans.css');
 const plansJs=read('public/plans.js');
@@ -80,13 +81,16 @@ expect(cinematic.includes('particleTypeDrift')&&cinematic.includes('background-c
 expect(cinematic.includes('--scene-in:1;--scene-out:0;--scene-presence:1'),'no-JavaScript cinematic baseline would hide chapter content');
 expect(experience.includes('@media(forced-colors:active)'),'forced-colors fallback missing');
 expect(experience.includes('@media(max-width:700px)')&&experience.includes('@media(max-width:380px)'),'mobile direction missing');
-expect(html.includes('id="experience-styles" media="print"')&&html.includes('id="post-fixes-styles" media="print"')&&html.includes('id="cinematic-styles" media="print"'),'post-hero styles must remain deferred');
+expect(html.includes('id="experience-styles" media="print"')&&html.includes('id="post-fixes-styles" media="print"')&&html.includes('id="cinematic-styles" media="print"')&&html.includes('id="commercial-styles" media="print"'),'post-hero styles must remain deferred');
+expect(js.includes("'commercial-styles'"),'commercial film layer is not activated with the progressive experience');
+expect(commercial.includes('commercial cut')&&commercial.includes('heroCamera')&&commercial.includes('proof-gallery'),'premium commercial direction layer missing');
 expect(js.includes("document.documentElement.dataset.experience='enhanced'"),'progressive enhancement state missing');
 expect(!html.includes(' hidden')&&!html.includes('style="display:none'),'semantic document hides required content without JavaScript');
 
 expect(Buffer.byteLength(critical,'utf8')<24000,'critical styles.css grew above 24KB');
 expect(Buffer.byteLength(experience,'utf8')<50000,'experience.css grew above 50KB');
 expect(Buffer.byteLength(cinematic,'utf8')<24000,'cinematic.css grew above 24KB');
+expect(Buffer.byteLength(commercial,'utf8')<22000,'commercial.css grew above 22KB');
 expect(Buffer.byteLength(js,'utf8')<35000,'app.js grew above the authored runtime budget');
 expect(Buffer.byteLength(plansCss,'utf8')<42000,'plans.css grew above 42KB');
 expect(Buffer.byteLength(plansJs,'utf8')<12000,'plans.js grew above 12KB');

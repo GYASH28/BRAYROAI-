@@ -1,4 +1,4 @@
-const deferredStyleLinks=['post-fixes-styles','experience-styles','cinematic-styles','commercial-styles'].map(id=>document.getElementById(id)).filter(Boolean);
+const deferredStyleLinks=['post-fixes-styles','experience-styles','cinematic-styles','commercial-styles','clarity-styles'].map(id=>document.getElementById(id)).filter(Boolean);
 const deferredStylesReady=Promise.all(deferredStyleLinks.map(link=>{link.media='all';if(link.sheet)return Promise.resolve();return new Promise(resolve=>{link.addEventListener('load',resolve,{once:true});link.addEventListener('error',resolve,{once:true})})}));
 const motionQuery=matchMedia('(prefers-reduced-motion: reduce)');
 const reduced=motionQuery.matches;

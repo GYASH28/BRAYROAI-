@@ -20,7 +20,8 @@
 <link href="/styles.css" rel="stylesheet"/>
 <link href="/site-fixes.css" id="post-fixes-styles" media="print" rel="stylesheet"/>
 <link href="/experience.css" id="experience-styles" media="print" rel="stylesheet"/>
-<noscript><link href="/site-fixes.css" rel="stylesheet"/><link href="/experience.css" rel="stylesheet"/></noscript>
+<link href="/cinematic.css" id="cinematic-styles" media="print" rel="stylesheet"/>
+<noscript><link href="/site-fixes.css" rel="stylesheet"/><link href="/experience.css" rel="stylesheet"/><link href="/cinematic.css" rel="stylesheet"/></noscript>
 <link as="image" fetchpriority="high" href="/assets/hero-background.webp" rel="preload"/>
 <link as="image" fetchpriority="high" href="/assets/yash-cutout.webp" rel="preload"/>
 </head>
@@ -55,6 +56,12 @@
     <span data-signal-index>01</span><i></i><b data-signal-label>POTENTIAL / FORMING</b>
     <small data-signal-quality>LIVE / ADAPTIVE FIELD</small><em>MOVE / PRESS / SCROLL</em>
   </div>
+  <div aria-hidden="true" class="formation-director" data-formation-director>
+    <span><i></i><b data-formation-index>01 / 07</b></span>
+    <strong data-formation-word>IDEA</strong>
+    <small data-formation-phase>HOLDING / FORM 01</small>
+    <em>SCROLL CONTROLS THE FORM</em>
+  </div>
 
   <aside aria-label="Post-hero chapter progress" class="chapter-rail" data-chapter-progress>
     <span aria-hidden="true" class="chapter-rail__line"><i></i></span>
@@ -73,23 +80,23 @@
     <div class="handoff-grid"></div><span>RESIDUAL SIGNAL / 001</span><i></i>
   </div>
 
-  <section aria-labelledby="starting-title" class="film-chapter chapter-start" data-particle-state="presence" data-scroll-chapter id="starting-point">
+  <section aria-labelledby="starting-title" class="film-chapter chapter-start" data-particle-state="presence" data-scene-word="IDEA" data-scroll-chapter id="starting-point">
     <div class="film-shell start-layout">
-      <header class="chapter-header reveal-item">
+      <header class="chapter-header reveal-item" data-scroll-reveal="headline">
         <p class="chapter-code"><span>01</span> POTENTIAL → PRESENCE</p>
         <h2 id="starting-title">A great website should not feel <em>out of reach.</em></h2>
         <p class="chapter-lede">A small starting budget does not have to produce a careless first impression.</p>
       </header>
-      <div aria-hidden="true" class="interface-transformation" data-interface-stage>
+      <div aria-hidden="true" class="interface-transformation" data-interface-stage data-scroll-reveal="stage">
         <div class="interface-frame"><span></span><span></span><span></span><strong>YOUR BUSINESS</strong><p>A clear message becomes a designed first impression.</p><i></i></div>
         <div class="interface-axis"><span>FLAT</span><i></i><span>FORM</span></div>
       </div>
-      <div class="transformation-copy" aria-label="A website can start small, still look unforgettable, and grow from there.">
+      <div class="transformation-copy" aria-label="A website can start small, still look unforgettable, and grow from there." data-scroll-reveal="detail">
         <p><b>Start small.</b><span>Begin with the page your business needs now.</span></p>
         <p><b>Still look unforgettable.</b><span>Use hierarchy, motion, and detail with intention.</span></p>
         <p><b>Build from there.</b><span>Add scope when the business is ready for it.</span></p>
       </div>
-      <ol class="price-milestones" aria-label="Website starting prices">
+      <ol class="price-milestones" aria-label="Website starting prices" data-scroll-reveal="list">
         <li><span>01 / LAUNCH</span><strong>₹2,599</strong><small>One-page foundation</small></li>
         <li><span>02 / ESTABLISH</span><strong>₹3,999</strong><small>Brand + enquiry flow</small></li>
         <li><span>03 / EXTEND</span><strong>₹5,999+</strong><small>Custom interaction scope</small></li>
@@ -97,25 +104,25 @@
     </div>
   </section>
 
-  <section aria-labelledby="difference-title" class="film-chapter chapter-difference" data-particle-state="attention" data-scroll-chapter id="difference">
+  <section aria-labelledby="difference-title" class="film-chapter chapter-difference" data-particle-state="attention" data-scene-word="SEEN" data-scroll-chapter id="difference">
     <div class="film-shell difference-layout">
-      <p class="chapter-code"><span>02</span> EXISTENCE → ATTENTION</p>
-      <h2 id="difference-title">A website can <span>exist.</span><br/>Or it can make people <em>stop.</em></h2>
-      <div class="attention-break" aria-hidden="true"><span>OVERLOOKED</span><i></i><strong>SEEN</strong></div>
-      <div class="difference-copy"><p>Flat is easy to forget.</p><p>Clarity is where attention starts.</p></div>
-      <p class="difference-note">Design is not decoration around the message. It decides which message lands first.</p>
+      <p class="chapter-code" data-scroll-reveal="kicker"><span>02</span> EXISTENCE → ATTENTION</p>
+      <h2 data-scroll-reveal="headline" id="difference-title">A website can <span>exist.</span><br/>Or it can make people <em>stop.</em></h2>
+      <div class="attention-break" aria-hidden="true" data-scroll-reveal="stage"><span>OVERLOOKED</span><i></i><strong>SEEN</strong></div>
+      <div class="difference-copy" data-scroll-reveal="detail"><p>Flat is easy to forget.</p><p>Clarity is where attention starts.</p></div>
+      <p class="difference-note" data-scroll-reveal="detail">Design is not decoration around the message. It decides which message lands first.</p>
     </div>
   </section>
 
-  <section aria-labelledby="services-title" class="film-chapter chapter-services" data-particle-state="disciplines" data-scroll-chapter id="services">
+  <section aria-labelledby="services-title" class="film-chapter chapter-services" data-particle-state="disciplines" data-scene-word="SYSTEM" data-scroll-chapter id="services">
     <span class="anchor-alias" id="system" aria-hidden="true"></span>
     <div class="film-shell services-layout">
-      <header class="chapter-header reveal-item">
+      <header class="chapter-header reveal-item" data-scroll-reveal="headline">
         <p class="chapter-code"><span>03</span> ONE CENTRE / FOUR DISCIPLINES</p>
         <h2 id="services-title">One idea. Four disciplines. <em>No handoff gap.</em></h2>
         <p class="chapter-lede">Direction stays connected from the first decision to the working browser.</p>
       </header>
-      <div class="capability-orbit" data-capability-controller>
+      <div class="capability-orbit" data-capability-controller data-scroll-reveal="stage">
         <div aria-label="Choose a BRAYROAI discipline" class="capability-controls">
           <button aria-pressed="true" data-capability="web" type="button"><span>01</span><b>Web Experiences</b><small>Give people a reason to stay.</small></button>
           <button aria-pressed="false" data-capability="product" type="button"><span>02</span><b>Product Design</b><small>Make every next step obvious.</small></button>
@@ -132,39 +139,39 @@
     </div>
   </section>
 
-  <section aria-labelledby="work-title" class="film-chapter chapter-work" data-particle-state="proof" data-scroll-chapter id="work">
+  <section aria-labelledby="work-title" class="film-chapter chapter-work" data-particle-state="proof" data-scene-word="PROOF" data-scroll-chapter id="work">
     <div class="film-shell work-layout">
-      <header class="chapter-header reveal-item">
+      <header class="chapter-header reveal-item" data-scroll-reveal="headline">
         <p class="chapter-code"><span>04</span> REAL WORK / FAKHRIMART</p>
         <h2 id="work-title">Proof, <em>before promises.</em></h2>
         <p class="chapter-lede">A real client website you can open, inspect, and use.</p>
       </header>
-      <div class="proof-controls" aria-label="Change case study view">
+      <div class="proof-controls" aria-label="Change case study view" data-scroll-reveal="detail">
         <button aria-pressed="true" data-proof-view="together" type="button">Together</button>
         <button aria-pressed="false" data-proof-view="desktop" type="button">Desktop</button>
         <button aria-pressed="false" data-proof-view="mobile" type="button">Mobile</button>
       </div>
-      <div class="proof-gallery" data-proof-gallery data-view="together">
+      <div class="proof-gallery" data-proof-gallery data-scroll-reveal="stage" data-view="together">
         <figure class="proof-desktop">
           <div class="proof-chrome"><i></i><i></i><i></i><span>fakhriyarns.vercel.app</span><b>LIVE / CLIENT</b></div>
           <img alt="FakhriMart desktop website, a real BRAYROAI client build" decoding="async" height="900" loading="lazy" src="/assets/fakhrimart-case-desktop.png" width="1440"/>
         </figure>
         <figure class="proof-mobile"><span aria-hidden="true"></span><img alt="FakhriMart mobile website interface" decoding="async" height="844" loading="lazy" src="/assets/fakhrimart-case-mobile.png" width="390"/></figure>
       </div>
-      <div class="proof-facts" aria-label="Verified FakhriMart project facts"><span>Yarn wholesaler</span><span>Catalogue-led browsing</span><span>Desktop + mobile experience</span><span>Enquiry-led flow</span></div>
-      <a class="proof-link magnetic" href="https://fakhriyarns.vercel.app/" rel="noreferrer" target="_blank"><span>Inspect the live FakhriMart website</span><b>↗</b></a>
+      <div class="proof-facts" aria-label="Verified FakhriMart project facts" data-scroll-reveal="list"><span>Yarn wholesaler</span><span>Catalogue-led browsing</span><span>Desktop + mobile experience</span><span>Enquiry-led flow</span></div>
+      <a class="proof-link magnetic" data-scroll-reveal="detail" href="https://fakhriyarns.vercel.app/" rel="noreferrer" target="_blank"><span>Inspect the live FakhriMart website</span><b>↗</b></a>
     </div>
   </section>
 
-  <section aria-labelledby="plans-title" class="film-chapter chapter-plans" data-particle-state="scope" data-scroll-chapter id="plans">
+  <section aria-labelledby="plans-title" class="film-chapter chapter-plans" data-particle-state="scope" data-scene-word="SCOPE" data-scroll-chapter id="plans">
     <span class="anchor-alias" id="pricing" aria-hidden="true"></span>
     <div class="film-shell plans-layout">
-      <header class="chapter-header reveal-item">
+      <header class="chapter-header reveal-item" data-scroll-reveal="headline">
         <p class="chapter-code"><span>05</span> CLEAR SCOPE / ONE-TIME BUILDS</p>
         <h2 id="plans-title">Clear scope. <em>Serious first impression.</em></h2>
         <p class="chapter-lede">Choose the closest starting point. You will confirm the brief and exact boundary before anything is built.</p>
       </header>
-      <div class="scope-runway" data-plan-runway>
+      <div class="scope-runway" data-plan-runway data-scroll-reveal="list">
         <article class="scope-step" data-plan="starter">
           <div class="scope-index"><span>01</span><i></i><small>FOUNDATION</small></div>
           <div class="scope-main"><p>Website Starter</p><strong>₹2,599</strong><span>One-time build</span></div>
@@ -185,7 +192,7 @@
         </article>
       </div>
       <p class="scope-exclusions"><span>Scope note</span> Hosting, domains, paid tools, ecommerce, large content work, and advanced integrations are scoped separately.</p>
-      <div class="care-index" aria-labelledby="care-title">
+      <div class="care-index" aria-labelledby="care-title" data-scroll-reveal="stage">
         <header><p class="chapter-code">OPTIONAL / AFTER LAUNCH</p><h3 id="care-title">After launch, <em>stay sharp.</em></h3><span>Ongoing support is optional and is not included in the one-time build price.</span></header>
         <div class="care-list">
           <article><span>Launch</span><strong>₹2,499<small>/mo</small></strong><p>Dependable updates and essential upkeep.</p><a href="/plans?plan=launch#support">Explore Launch support ↗</a></article>
@@ -197,21 +204,21 @@
     </div>
   </section>
 
-  <section aria-labelledby="studio-title" class="film-chapter chapter-studio" data-particle-state="human" data-scroll-chapter id="studio">
+  <section aria-labelledby="studio-title" class="film-chapter chapter-studio" data-particle-state="human" data-scene-word="YASH" data-scroll-chapter id="studio">
     <div class="film-shell studio-layout">
-      <div class="studio-portrait reveal-item"><img alt="Yash Ganesh, founder of BRAYROAI" decoding="async" height="675" loading="lazy" src="/assets/about-yash.webp" width="1200"/><span aria-hidden="true">FOUNDER / DIRECTION + IMPLEMENTATION</span><i aria-hidden="true"></i></div>
-      <div class="studio-copy reveal-item"><p class="chapter-code"><span>06</span> THE SYSTEM BECOMES HUMAN</p><h2 id="studio-title">Small studio. <em>Close to the work.</em></h2><p>Direction and implementation stay close, so the work does not lose itself between an idea and a browser.</p><div><a href="https://github.com/GYASH28" rel="noreferrer" target="_blank">See the work on GitHub ↗</a><a href="mailto:yashganesh.work@gmail.com">Email Yash ↗</a></div></div>
+      <div class="studio-portrait reveal-item" data-scroll-reveal="stage"><img alt="Yash Ganesh, founder of BRAYROAI" decoding="async" height="675" loading="lazy" src="/assets/about-yash.webp" width="1200"/><span aria-hidden="true">FOUNDER / DIRECTION + IMPLEMENTATION</span><i aria-hidden="true"></i></div>
+      <div class="studio-copy reveal-item" data-scroll-reveal="headline"><p class="chapter-code"><span>06</span> THE SYSTEM BECOMES HUMAN</p><h2 id="studio-title">Small studio. <em>Close to the work.</em></h2><p>Direction and implementation stay close, so the work does not lose itself between an idea and a browser.</p><div><a href="https://github.com/GYASH28" rel="noreferrer" target="_blank">See the work on GitHub ↗</a><a href="mailto:yashganesh.work@gmail.com">Email Yash ↗</a></div></div>
     </div>
   </section>
 
-  <section aria-labelledby="contact-title" class="film-chapter chapter-contact" data-particle-state="identity" data-scroll-chapter id="contact">
+  <section aria-labelledby="contact-title" class="film-chapter chapter-contact" data-particle-state="identity" data-scene-word="BRAYROAI" data-scroll-chapter id="contact">
     <div class="film-shell contact-layout">
-      <p class="chapter-code"><span>07</span> FORM → IDENTITY</p>
-      <h2 id="contact-title">Your business is judged online before you get the chance to <em>explain it.</em></h2>
-      <p class="contact-close">Let’s make that first impression count.</p>
-      <div class="contact-actions"><a class="contact-primary magnetic" href="https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20start%20a%20project%20with%20BRAYROAI." rel="noreferrer" target="_blank"><span>Tell us what you need</span><b>↗</b></a><a class="contact-secondary" href="/plans">Help me choose a plan →</a></div>
-      <div class="contact-email"><span>DIRECT EMAIL</span><a href="mailto:yashganesh.work@gmail.com">yashganesh.work@gmail.com</a><button aria-label="Copy BRAYROAI email address" data-copy-email type="button">Copy</button></div>
-      <div aria-hidden="true" class="final-wordmark">BRAYRO<span>AI</span></div>
+      <p class="chapter-code" data-scroll-reveal="kicker"><span>07</span> FORM → IDENTITY</p>
+      <h2 data-scroll-reveal="headline" id="contact-title">Your business is judged online before you get the chance to <em>explain it.</em></h2>
+      <p class="contact-close" data-scroll-reveal="detail">Let’s make that first impression count.</p>
+      <div class="contact-actions" data-scroll-reveal="stage"><a class="contact-primary magnetic" href="https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20start%20a%20project%20with%20BRAYROAI." rel="noreferrer" target="_blank"><span>Tell us what you need</span><b>↗</b></a><a class="contact-secondary" href="/plans">Help me choose a plan →</a></div>
+      <div class="contact-email" data-scroll-reveal="detail"><span>DIRECT EMAIL</span><a href="mailto:yashganesh.work@gmail.com">yashganesh.work@gmail.com</a><button aria-label="Copy BRAYROAI email address" data-copy-email type="button">Copy</button></div>
+      <div aria-hidden="true" class="final-wordmark" data-scroll-reveal="headline">BRAYRO<span>AI</span></div>
     </div>
   </section>
 </div>

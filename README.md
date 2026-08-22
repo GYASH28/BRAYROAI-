@@ -2,30 +2,39 @@
 
 Production website for **BRAYROAI**, a founder-led creative technology studio combining design, frontend engineering, digital product work, and useful AI systems.
 
-## Experience
+## Five-scene experience
 
-The opening animation and hero are a frozen visual contract. Everything after the hero follows one authored scroll narrative: **SIGNAL BECOMING FORM**.
+The homepage is intentionally reduced to one continuous minimalist scroll film. The opening animation and hero remain a frozen visual contract; everything after the hero uses one visual language and one motion system.
 
-1. **Potential → presence** — an ordinary page gains hierarchy while ₹2,599, ₹3,999, and ₹5,999+ appear as spatial milestones.
-2. **Existence → attention** — typography makes the difference between merely existing and being noticed.
-3. **One centre → four disciplines** — Web Experiences, Product Design, Frontend Engineering, and AI Systems remain connected.
-4. **Proof before promises** — the real FakhriMart desktop and mobile experience becomes the visual centre.
-5. **Clear scope** — one-time builds and optional monthly support are separated in an architectural runway.
-6. **The system becomes human** — the founder stays visibly close to direction and implementation.
-7. **Form → identity** — the signal resolves into BRAYROAI and a clear contact action.
+1. **Home / Identity** — the frozen BRAYROAI hero establishes the studio.
+2. **Services / System** — Web Experiences, Product Design, Frontend Engineering, and AI Systems live inside one focused interactive player.
+3. **Work / Proof** — the real FakhriMart desktop and mobile experience becomes the dominant visual scene.
+4. **Plans / Scope** — three clear starting prices are shown without turning the homepage into a pricing dashboard.
+5. **Contact / Human** — founder presence, one clear proposition, and direct WhatsApp/email actions close the film.
+
+The previous duplicate narrative chapters and standalone founder section were removed or merged. The homepage no longer loads the former stacked post-hero visual layers; it uses `styles.css` for the frozen/base system and `minimal-film.css` for the authored five-scene experience.
 
 ## Runtime
 
 - semantic HTML and a complete no-JavaScript baseline
-- CSS editorial layout with separate desktop, tablet, and mobile cuts
-- one custom two-pass WebGL particle renderer with deterministic semantic shapes, scroll-scrubbed morphing, depth glow, pointer pressure, and interaction pulses
+- native scrolling; no scroll hijacking or smooth-scroll dependency
+- sticky viewport-sized scenes that progress like a SaaS product film
+- one existing custom WebGL particle renderer used as a restrained connective layer
 - one shared `requestAnimationFrame` scheduler
-- native scrolling; no smooth-scroll or animation-framework dependency
-- adaptive high, standard, and mobile particle profiles
-- explicit WebGL fallback, reduced-motion mode, hidden-tab pause, and ambient-motion pause
+- scroll-directed service state changes with manual controls still available
+- real FakhriMart desktop and mobile proof
+- adaptive desktop, tablet, and mobile direction
+- explicit WebGL fallback, reduced-motion mode, hidden-tab pause, and manual ambient-motion pause
 - persisted light/dark theme
-- keyboard-operable capability and proof controls
-- dedicated `/plans` decision page with exact pricing, direct pre-filled WhatsApp handoffs, a two-step plan finder, optional support scopes, and its own mobile conversion dock
+- keyboard-operable navigation and capability controls
+
+## Commercial routes
+
+The public scroll experience has five primary destinations: `#top`, `#services`, `#work`, `#plans`, and `#contact`.
+
+`/plans` remains a detail utility route for visitors who deliberately want exact plan boundaries, support scopes, the plan finder, and pre-filled WhatsApp handoffs. It is not an additional homepage chapter.
+
+Legacy pricing routes continue to resolve toward the current plan experience, while `public/outbound-fresh/` remains a separate private, noindex concept system and is not part of the public homepage film.
 
 ## Verified public facts
 
@@ -44,12 +53,4 @@ npm run test:browser
 npm run test:stress
 ```
 
-`npm run qa:static` runs syntax, integrity, and the production build. CI additionally installs Playwright, axe, Chromium, and Lighthouse for full browser, accessibility, responsive, stress, and performance checks.
-
-## Commercial routes
-
-- `/plans` → dedicated website plan and WhatsApp decision experience
-- `/pricing` → `/plans`
-- `/case-studies/fakhrimart` and `/case-studies/fakhrimart.html` → `/#work`
-
-`public/outbound-fresh/` remains a separate private, noindex concept system and is not part of the homepage film.
+`npm run qa:static` runs syntax, five-scene integrity, and the production build. CI additionally installs Chromium and runs browser interaction tests, responsive captures, concurrent-load checks, and a Lighthouse mobile audit.

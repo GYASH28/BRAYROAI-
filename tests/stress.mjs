@@ -3,12 +3,10 @@ const concurrency=Number(process.env.STRESS_CONCURRENCY||36);
 const total=Number(process.env.STRESS_REQUESTS||720);
 const routes=[
   '/',
-  '/plans',
   '/styles.css',
-  '/minimal-film.css',
+  '/site-fixes.css',
+  '/experience.css',
   '/app.js',
-  '/plans.css',
-  '/plans.js',
   '/robots.txt',
   '/assets/hero-background.webp',
   '/assets/yash-cutout.webp',
@@ -26,7 +24,7 @@ async function worker(id){
     const route=routes[current%routes.length];
     const started=performance.now();
     try{
-      const response=await fetch(`${base}${route}`,{headers:{'x-brayroai-stress':String(id)}});
+      const response=await fetch(`${base}${route}`,{headers:{'x-ykg-stress':String(id)}});
       await response.arrayBuffer();
       durations.push(performance.now()-started);
       if(!response.ok){failures++;console.error(`HTTP ${response.status}: ${route}`)}

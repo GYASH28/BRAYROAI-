@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://brayroai.vercel.app/sitemap.xml

@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   static-quality:
-    name: Build + five-scene integrity
+    name: Build + frozen-contract + architecture integrity
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,50 +28,35 @@ jobs:
       - run: npm run qa:static
       - name: Guard production bundle
         run: |
-          test -f dist/index.html
-          test -f dist/plans.html
-          test -f dist/styles.css
-          test -f dist/minimal-film.css
-          test -f dist/app.js
-          test -f dist/plans.css
-          test -f dist/plans.js
-          test -f dist/assets/hero-background.webp
-          test -f dist/assets/yash-cutout.webp
-          test -f dist/assets/about-yash.webp
-          test -f dist/assets/fakhrimart-case-desktop.png
-          test -f dist/assets/fakhrimart-case-mobile.png
+          set -euo pipefail
+          for file in index.html services.html work.html plans.html contact.html styles.css film.css pages.css app.js pages.js; do test -f "dist/$file"; done
+          for asset in hero-background.webp yash-cutout.webp about-yash.webp fakhrimart-case-desktop.png fakhrimart-case-mobile.png; do test -f "dist/assets/$asset"; done
+          for stale in site-fixes.css experience.css cinematic.css commercial.css clarity.css plans.css plans.js; do ! test -f "dist/$stale"; done
           grep -q 'Digital, designed' dist/index.html
+          grep -q 'id="thesis"' dist/index.html
           grep -q 'id="services"' dist/index.html
           grep -q 'id="work"' dist/index.html
           grep -q 'id="plans"' dist/index.html
           grep -q 'id="contact"' dist/index.html
-          ! grep -q 'id="difference"' dist/index.html
-          ! grep -q 'id="studio"' dist/index.html
           grep -q '₹2,599' dist/index.html
           grep -q '₹3,999' dist/index.html
           grep -q '₹5,999+' dist/index.html
-          grep -q 'minimal-film.css' dist/index.html
-          ! grep -q 'experience-styles' dist/index.html
-          ! grep -q 'commercial-styles' dist/index.html
-          grep -q 'class ParticleMorphField' dist/app.js
-          grep -q 'class ScrollFilmController' dist/app.js
+          grep -q "potential','structure','interface','system','proof','scope','human','identity" dist/app.js
           ! grep -q '₹9,999' dist/index.html
           ! grep -q '₹17,999' dist/index.html
-          CSS_BYTES=$(wc -c < dist/styles.css)
-          FILM_BYTES=$(wc -c < dist/minimal-film.css)
-          echo "critical CSS: ${CSS_BYTES} bytes"
-          echo "film CSS: ${FILM_BYTES} bytes"
-          test "$CSS_BYTES" -lt 24000
-          test "$FILM_BYTES" -lt 26000
-          TOTAL=$(du -sk dist | cut -f1)
-          echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 2450
+          CRITICAL=$(wc -c < dist/styles.css); FILM=$(wc -c < dist/film.css); PAGES=$(wc -c < dist/pages.css); APP=$(wc -c < dist/app.js)
+          echo "styles.css=$CRITICAL film.css=$FILM pages.css=$PAGES app.js=$APP"
+          test "$CRITICAL" -lt 24000
+          test "$FILM" -lt 30000
+          test "$PAGES" -lt 16000
+          test "$APP" -lt 30000
+          TOTAL=$(du -sk dist | cut -f1); echo "dist size=${TOTAL}KB"; test "$TOTAL" -lt 2600
 
   browser-and-load:
-    name: Browser + a11y + interaction + load + Lighthouse
+    name: Browser + a11y + load + visual evidence + Lighthouse
     needs: static-quality
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -88,67 +73,80 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="services"' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹2,599'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="thesis"' && curl -fsS http://127.0.0.1:4173/plans | grep -q '₹2,599'; then exit 0; fi
             sleep 1
           done
-          cat /tmp/brayroai-preview.log
-          exit 1
+          cat /tmp/brayroai-preview.log; exit 1
       - name: Concurrent stress test
         env:
           BASE_URL: http://127.0.0.1:4173
-          STRESS_REQUESTS: 900
+          STRESS_REQUESTS: 1000
           STRESS_CONCURRENCY: 45
         run: npm run test:stress
       - name: Cross-viewport interaction and accessibility tests
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
-      - name: Capture five-scene keyframes
+      - name: Capture homepage director cuts and deep pages
         run: |
           mkdir -p artifacts/screenshots
           node - <<'JS'
           const { chromium } = require('playwright');
+          const warmLazyMedia=async page=>{
+            await page.evaluate(async()=>{
+              const step=Math.max(320,Math.floor(innerHeight*.72));
+              for(let y=0;y<document.documentElement.scrollHeight;y+=step){
+                window.scrollTo(0,y);
+                await new Promise(resolve=>setTimeout(resolve,55));
+              }
+              window.scrollTo(0,document.documentElement.scrollHeight);
+              await new Promise(resolve=>setTimeout(resolve,160));
+              await Promise.all([...document.images].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})})));
+              window.scrollTo(0,0);
+              await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+            });
+          };
           (async()=>{
             const browser=await chromium.launch({headless:true});
-            const frames=[
-              ['hero',null,0],
-              ['services','#services',0],
-              ['work','#work',0],
-              ['plans','#plans',0],
-              ['contact','#contact',0]
-            ];
-            for(const [device,width,height] of [['desktop',1440,1000],['mobile',390,844]]){
-              const context=await browser.newContext({viewport:{width,height}});
-              const page=await context.newPage();
+            const homeFrames=[['hero','#top'],['thesis','#thesis'],['services','#services'],['work','#work'],['plans','#plans'],['contact','#contact']];
+            const viewports=[['desktop-1440',1440,900],['desktop-1280',1280,800],['tablet',768,1024],['mobile-430',430,932],['mobile-390',390,844],['mobile-360',360,800],['mobile-320',320,720]];
+            for(const [device,width,height] of viewports){
+              const context=await browser.newContext({viewport:{width,height}}); const page=await context.newPage();
               await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
               await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
-              await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto'});
-              for(const [name,target,offset] of frames){
-                if(!target) await page.evaluate(()=>window.scrollTo(0,0));
-                else await page.evaluate(({target,offset})=>{
-                  const el=document.querySelector(target);
-                  const top=el.getBoundingClientRect().top+window.scrollY+offset;
-                  window.scrollTo(0,Math.max(0,top));
-                },{target,offset});
-                await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-                await page.waitForTimeout(name==='hero'?1250:220);
+              await page.evaluate(()=>document.documentElement.style.scrollBehavior='auto');
+              for(const [name,target] of homeFrames){
+                await page.evaluate(target=>document.querySelector(target)?.scrollIntoView({block:'start',behavior:'auto'}),target);
+                await page.waitForTimeout(name==='hero'?1100:240);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
+              }
+              await context.close();
+            }
+            for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
+              const context=await browser.newContext({viewport:{width,height}}); const page=await context.newPage();
+              for(const route of ['services','work','plans','contact']){
+                await page.goto(`http://127.0.0.1:4173/${route}`,{waitUntil:'networkidle'});
+                await warmLazyMedia(page);
+                await page.screenshot({path:`artifacts/screenshots/${device}-page-${route}.png`,fullPage:true});
               }
               await context.close();
             }
             await browser.close();
           })().catch(error=>{console.error(error);process.exit(1)});
           JS
-      - name: Lighthouse mobile audit
+      - name: Lighthouse mobile audits
         run: |
           mkdir -p artifacts/lighthouse
-          npx lighthouse http://127.0.0.1:4173/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/lighthouse/home.json
-          node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json
+          for route in home services work plans contact; do
+            URL="http://127.0.0.1:4173/"; [ "$route" != home ] && URL="http://127.0.0.1:4173/$route"
+            npx lighthouse "$URL" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path="artifacts/lighthouse/$route.json"
+          done
+          node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json artifacts/lighthouse/services.json artifacts/lighthouse/work.json artifacts/lighthouse/plans.json artifacts/lighthouse/contact.json
       - name: Upload QA evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: brayroai-qa-${{ github.run_number }}
+          name: brayroai-rebuild-qa-${{ github.run_number }}
           path: |
             dist/
             artifacts/

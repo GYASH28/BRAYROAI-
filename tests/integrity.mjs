@@ -1,84 +1,11 @@
-import crypto from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
-
-const root=process.cwd();
-const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const exists=p=>fs.existsSync(path.join(root,p));
-const html=read('index.html');
-const plansHtml=read('plans.html');
-const critical=read('public/styles.css');
-const film=read('public/minimal-film.css');
-const js=read('public/app.js');
-const plansCss=read('public/plans.css');
-const plansJs=read('public/plans.js');
-const vite=read('vite.config.mjs');
-const errors=[];
-const expect=(condition,message)=>{if(!condition)errors.push(message)};
-
-const heroStart=html.indexOf('<section class="hero hero-v3');
-const heroEnd=html.indexOf('\n</section>',heroStart)+11;
-const heroHash=crypto.createHash('sha256').update(html.slice(heroStart,heroEnd)).digest('hex');
-expect(heroHash==='4adaa5b58fd6373a1d7fa467299a71d667d96a8a8a6d068c2ceed1fa45df9528','frozen hero markup changed');
-expect(html.includes('<div aria-hidden="true" class="intro-loader" data-loader="">'),'locked opening loader missing');
-expect(js.includes('class LockedHeroController')&&js.includes('},920)'),'locked hero controller or loader timing changed');
-expect(js.includes('this.px*34*depth')&&js.includes('scrollP*86*depth'),'locked hero parallax behavior changed');
-expect(critical.includes('/* HERO V3 — visual contract frozen. */'),'frozen hero CSS marker missing');
-
-for(const id of ['main','top','services','work','plans','contact'])expect(html.includes(`id="${id}"`),`missing #${id}`);
-const chapterOrder=[...html.matchAll(/data-scroll-chapter id="([^"]+)"/g)].map(match=>match[1]);
-expect(JSON.stringify(chapterOrder)===JSON.stringify(['services','work','plans','contact']),`wrong post-hero chapter order: ${chapterOrder.join(', ')}`);
-expect(chapterOrder.length===4,'homepage must contain exactly four post-hero scenes');
-for(const removed of ['starting-point','difference','studio'])expect(!html.includes(`id="${removed}"`),`removed scene returned: #${removed}`);
-for(const nav of ['Home','Services','Work','Plans','Contact'])expect(html.includes(`>${nav}</a>`),`primary five-item navigation missing ${nav}`);
-
-expect(html.includes('aria-hidden="true" data-particle-field'),'persistent particle canvas missing');
-for(const state of ['disciplines','proof','scope','identity'])expect(html.includes(`data-particle-state="${state}"`),`missing particle state ${state}`);
-expect(js.includes('class ParticleMorphField')&&js.includes("getContext('webgl'"),'WebGL particle engine missing');
-expect(js.includes('class ScrollFilmController')&&js.includes('class CapabilityController'),'scroll-film runtime missing');
-expect((js.match(/addEventListener\('scroll'/g)||[]).length===1,'scroll work must stay centralized');
-expect(!/Lenis|locomotive|ScrollTrigger/i.test(js+film),'scroll hijacking dependency returned');
-
-for(const price of ['₹2,599','₹3,999','₹5,999+','₹2,499'])expect(html.includes(price),`homepage pricing missing ${price}`);
-for(const name of ['Website Starter','Business Website','Custom Experience'])expect(html.includes(name),`homepage offer missing ${name}`);
-expect((html.match(/data-plan=/g)||[]).length===3,'homepage must show exactly three primary plan decisions');
-expect(html.includes('Hosting, domains, paid tools, ecommerce, large content work, and advanced integrations are scoped separately.'),'scope boundary missing');
-for(const route of ['/plans?plan=starter','/plans?plan=business','/plans?plan=custom','/plans#plan-finder'])expect(html.includes(`href="${route}`),`homepage plan route missing: ${route}`);
-
-for(const fact of ['Yarn wholesaler','Catalogue-led browsing','Desktop + mobile experience','Enquiry-led flow'])expect(html.includes(fact),`verified proof fact missing: ${fact}`);
-expect(html.includes('https://fakhriyarns.vercel.app/'),'live FakhriMart destination missing');
-expect((html.match(/fakhrimart-case-desktop\.png/g)||[]).length===1,'desktop proof must appear exactly once');
-expect((html.match(/fakhrimart-case-mobile\.png/g)||[]).length===1,'mobile proof must appear exactly once');
-expect(html.includes('/assets/about-yash.webp'),'founder image missing from final scene');
-
-expect(html.includes('data-theme-toggle')&&html.includes('aria-label="Switch to light mode"'),'theme control missing');
-expect(html.includes('data-motion-toggle')&&html.includes('aria-label="Pause ambient motion"'),'motion pause control missing');
-expect((html.match(/data-capability=/g)||[]).length===4,'four capability controls missing');
-expect(film.includes('@media(prefers-reduced-motion:reduce)'),'reduced-motion direction missing');
-expect(film.includes('@media(forced-colors:active)'),'forced-colors direction missing');
-expect(film.includes('.minimal-scene .scene-stick')&&film.includes('position:sticky'),'scroll-film sticky composition missing');
-expect(film.includes('.particle-hud,.formation-director{display:none!important}'),'clutter HUD is not suppressed');
-expect(film.includes('.scene-word')&&film.includes('.minimal-proof')&&film.includes('.minimal-plans'),'five-scene visual system incomplete');
-expect(html.includes('<link href="/minimal-film.css" rel="stylesheet"/>'),'minimal film stylesheet not loaded');
-for(const legacy of ['experience-styles','cinematic-styles','commercial-styles','clarity-styles','post-fixes-styles'])expect(!html.includes(legacy),`legacy visual layer still loaded: ${legacy}`);
-
-for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png'])expect(exists(path.join('public/assets',asset)),`missing ${asset}`);
-for(const invented of ['testimonial','award-winning','guaranteed results','clients served','conversion increase'])expect(!html.toLowerCase().includes(invented),`unverified claim pattern returned: ${invented}`);
-
-for(const price of ['₹2,599','₹3,999','₹5,999+','₹2,499'])expect(plansHtml.includes(price),`dedicated plans page missing ${price}`);
-expect(plansHtml.includes('data-plan-finder')&&plansJs.includes('class PlanFinder'),'dedicated plan finder missing');
-expect(plansCss.includes('@media(max-width:620px)'),'plans mobile direction missing');
-expect(vite.includes("plans:resolve(process.cwd(),'plans.html')"),'plans page missing from Vite build');
-
-expect(Buffer.byteLength(critical,'utf8')<24000,'critical styles.css grew above 24KB');
-expect(Buffer.byteLength(film,'utf8')<26000,'minimal-film.css grew above 26KB');
-expect(Buffer.byteLength(js,'utf8')<35000,'app.js grew above authored runtime budget');
-
-const refs=[...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(match=>match[1]).filter(Boolean).filter(ref=>ref!=='plans');
-for(const ref of refs){
-  const candidates=[path.join(root,'public',ref),path.join(root,ref),path.join(root,`${ref}.html`)];
-  expect(candidates.some(fs.existsSync),`homepage missing local reference /${ref}`);
-}
-
-if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('Integrity OK: frozen hero + five-scene minimalist SaaS film + proof + pricing + accessibility contracts checked');
+import crypto from 'node:crypto';import fs from 'node:fs';import path from 'node:path';
+const root=process.cwd(),read=p=>fs.readFileSync(path.join(root,p),'utf8'),exists=p=>fs.existsSync(path.join(root,p));const html=read('index.html'),services=read('services.html'),work=read('work.html'),plans=read('plans.html'),contact=read('contact.html'),critical=read('public/styles.css'),film=read('public/film.css'),pages=read('public/pages.css'),js=read('public/app.js'),pageJs=read('public/pages.js'),vite=read('vite.config.mjs'),vercel=read('vercel.json'),robots=read('public/robots.txt'),sitemap=read('public/sitemap.xml');const errors=[],expect=(c,m)=>{if(!c)errors.push(m)};
+const heroStart=html.indexOf('<section class="hero hero-v3'),heroEnd=html.indexOf('\n</section>',heroStart)+11,heroHash=crypto.createHash('sha256').update(html.slice(heroStart,heroEnd)).digest('hex');expect(heroHash==='4adaa5b58fd6373a1d7fa467299a71d667d96a8a8a6d068c2ceed1fa45df9528','frozen hero markup changed');expect(html.includes('<div aria-hidden="true" class="intro-loader" data-loader="">'),'frozen loader missing');expect(js.includes('class LockedHeroController')&&js.includes('},920)'),'locked hero controller/timing changed');expect(js.includes('this.px*34*depth')&&js.includes('scrollP*86*depth'),'locked hero parallax changed');expect(critical.includes('/* HERO V3 — visual contract frozen. */'),'frozen hero CSS marker missing');for(const token of ["font:800 clamp(72px,8.8vw,148px)/.78 'Space Grotesk'",'left:59%;bottom:-5%','font-size:12.1vw','padding-top:30.5vh'])expect(critical.includes(token),`locked hero visual token changed: ${token}`);
+for(const id of ['main','top','thesis','services','work','plans','contact'])expect(html.includes(`id="${id}"`),`missing #${id}`);const order=[...html.matchAll(/data-scroll-chapter[^>]*id="([^"]+)"/g)].map(m=>m[1]);expect(JSON.stringify(order)===JSON.stringify(['thesis','services','work','plans','contact']),`wrong film order: ${order.join(',')}`);expect((html.match(/class="desktop-nav"/g)||[]).length===1,'homepage primary nav duplicated');for(const label of ['Home','Services','Work','Plans','Contact'])expect(html.includes(`>${label}</a>`)||html.includes(`>${label}<`),`nav missing ${label}`);expect(!html.includes('Story</a>')&&!html.includes('Studio</a>'),'old primary destinations returned');
+expect(html.includes('href="/film.css"')&&!/experience-styles|commercial-styles|cinematic-styles|clarity-styles|post-fixes-styles/.test(html),'stacked legacy homepage CSS returned');expect(html.includes('<canvas aria-hidden="true" data-particle-field></canvas>'),'persistent decorative canvas missing');expect(js.includes("this.states=['potential','structure','interface','system','proof','scope','human','identity']"),'semantic signal timeline missing');expect(js.includes("getContext('webgl'")&&js.includes("dataset.particleMode='fallback'"),'WebGL/fallback runtime missing');expect((js.match(/addEventListener\('scroll'/g)||[]).length===1,'scroll runtime must stay centralized');expect(!/Lenis|locomotive|ScrollTrigger/i.test(js+film),'scroll hijacking/framework slipped in');
+for(const price of ['₹2,599','₹3,999','₹5,999+']){expect(html.includes(price),`homepage price missing ${price}`);expect(plans.includes(price),`plans price missing ${price}`)}for(const old of ['₹9,999','₹17,999','₹25K–35K+'])expect(!(html+plans).includes(old),`obsolete price returned: ${old}`);expect((html.match(/fakhrimart-case-desktop\.png/g)||[]).length===1,'homepage desktop Fakhri proof must appear once');expect((html.match(/fakhrimart-case-mobile\.png/g)||[]).length===1,'homepage mobile Fakhri proof must appear once');expect(html.includes('https://fakhriyarns.vercel.app/'),'live Fakhri destination missing');expect(html.includes('https://github.com/GYASH28/LERNIOAI')&&html.includes('https://github.com/GYASH28/B.R.A.C.E'),'truthful product repo links missing');for(const invented of ['award-winning','guaranteed results','clients served','conversion increase','trusted by 100','10x conversion'])expect(!html.toLowerCase().includes(invented),`unverified claim pattern: ${invented}`);
+for(const page of [['services.html',services,'Services'],['work.html',work,'Work'],['plans.html',plans,'Plans'],['contact.html',contact,'Contact']]){expect(page[1].includes('<link rel="canonical"'),`${page[0]} canonical missing`);expect(page[1].includes('href="/pages.css"'),`${page[0]} shared page CSS missing`);expect(page[1].includes('src="/pages.js"'),`${page[0]} shared page JS missing`);for(const dest of ['/','/services','/work','/plans','/contact'])expect(page[1].includes(`href="${dest}"`),`${page[0]} missing destination ${dest}`)}expect(services.includes('Web Experiences')&&services.includes('Product Design')&&services.includes('Frontend Engineering')&&services.includes('AI Systems'),'service disciplines incomplete');expect(work.includes('No invented client logos')&&work.includes('No unverified performance metric'),'truthful work framing missing');expect(plans.includes('Usually separate')&&plans.includes('Domain purchase')&&plans.includes('advanced integrations'),'scope boundaries missing');expect(contact.includes('Start on WhatsApp')&&contact.includes('mailto:yashganesh.work@gmail.com'),'contact routes incomplete');
+expect(film.includes('@media(max-width:820px)')&&film.includes('@media(max-width:480px)')&&film.includes('@media(max-width:340px)'),'homepage responsive cuts missing');expect(film.includes('@media(prefers-reduced-motion:reduce)')&&film.includes('@media(forced-colors:active)'),'homepage accessibility cuts missing');expect(pages.includes('@media(max-width:800px)')&&pages.includes('@media(max-width:430px)')&&pages.includes('@media(prefers-reduced-motion:reduce)'),'deep-page responsive/a11y cuts missing');expect(html.includes('aria-label="Pause ambient motion"')&&js.includes("classList.contains('motion-paused')"),'motion pause missing');expect(html.includes('aria-live="polite"')&&html.includes('aria-pressed="true" data-service="web"'),'services keyboard/state semantics missing');
+for(const input of ['services.html','work.html','plans.html','contact.html'])expect(vite.includes(input),`Vite input missing ${input}`);expect(vercel.includes('"/pricing"')&&vercel.includes('"/work"'),'legacy routes not canonicalized');expect(robots.includes('Sitemap: https://brayroai.vercel.app/sitemap.xml'),'robots sitemap missing');for(const route of ['/services','/work','/plans','/contact'])expect(sitemap.includes(`brayroai.vercel.app${route}`),`sitemap missing ${route}`);for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png'])expect(exists(path.join('public/assets',asset)),`missing ${asset}`);
+for(const stale of ['public/site-fixes.css','public/experience.css','public/cinematic.css','public/commercial.css','public/clarity.css','public/plans.css','public/plans.js'])expect(!exists(stale),`obsolete production layer remains: ${stale}`);expect(Buffer.byteLength(critical)<24000,'critical styles.css exceeds frozen budget');expect(Buffer.byteLength(film)<30000,'film.css exceeds 30KB');expect(Buffer.byteLength(pages)<16000,'pages.css exceeds 16KB');expect(Buffer.byteLength(js)<30000,'app.js exceeds 30KB');expect(Buffer.byteLength(pageJs)<3000,'pages.js exceeds 3KB');
+const refs=[...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)].map(m=>m[1]).filter(Boolean);for(const ref of refs){const candidates=[path.join(root,'public',ref),path.join(root,ref),path.join(root,`${ref}.html`)];expect(candidates.some(fs.existsSync),`homepage missing local ref /${ref}`)}if(errors.length){console.error(errors.join('\n'));process.exit(1)}console.log('Integrity OK: frozen hero + five-destination signal film + truthful proof + exact pricing + responsive/accessibility + cleaned architecture checked');

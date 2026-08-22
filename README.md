@@ -4,37 +4,64 @@ Production website for **BRAYROAI**, a founder-led creative technology studio co
 
 ## Experience
 
-The opening animation and hero are a frozen visual contract. Everything after the hero follows one authored scroll narrative: **SIGNAL BECOMING FORM**.
+The public website is built as a restrained SaaS launch film rather than a stack of agency sections.
 
-1. **Potential → presence** — an ordinary page gains hierarchy while ₹2,599, ₹3,999, and ₹5,999+ appear as spatial milestones.
-2. **Existence → attention** — typography makes the difference between merely existing and being noticed.
-3. **One centre → four disciplines** — Web Experiences, Product Design, Frontend Engineering, and AI Systems remain connected.
-4. **Proof before promises** — the real FakhriMart desktop and mobile experience becomes the visual centre.
-5. **Clear scope** — one-time builds and optional monthly support are separated in an architectural runway.
-6. **The system becomes human** — the founder stays visibly close to direction and implementation.
-7. **Form → identity** — the signal resolves into BRAYROAI and a clear contact action.
+The opening animation and hero are a frozen visual contract. After the hero, one persistent **SIGNAL BECOMING FORM** system moves through:
+
+1. **Thesis / potential → structure** — the studio point of view arrives one statement at a time.
+2. **Services / interface → system** — Web Experiences, Product Design, Frontend Engineering, and AI Systems share one persistent stage.
+3. **Work / proof** — the real FakhriMart client interface becomes the dominant visual proof; Lernio AI and B.R.A.C.E. are linked truthfully as product/system work.
+4. **Plans / scope** — ₹2,599, ₹3,999, and ₹5,999+ become three decision thresholds rather than pricing cards.
+5. **Contact / human → identity** — founder presence, WhatsApp, email, and the BRAYROAI wordmark close the film.
+
+The reference quality study of ZEXVRO is used only for pacing, hierarchy, negative space, continuity, and responsive restraint. No ZEXVRO source, assets, wording, section structure, graphics, or brand styling are copied.
+
+## Five public destinations
+
+- `/` — cinematic homepage
+- `/services` — detailed capabilities and fit
+- `/work` — real proof and public product work
+- `/plans` — exact starting prices, scope, and exclusions
+- `/contact` — low-friction WhatsApp/email handoff
+
+Legacy `/pricing` resolves to `/plans`. Old FakhriMart case-study routes resolve to `/work`.
+
+`public/outbound-fresh/` remains separate from the public navigation because it contains independent prospect concepts used by outbound workflows; it is not part of the five-destination agency site.
 
 ## Runtime
 
-- semantic HTML and a complete no-JavaScript baseline
-- CSS editorial layout with separate desktop, tablet, and mobile cuts
-- one custom two-pass WebGL particle renderer with deterministic semantic shapes, scroll-scrubbed morphing, depth glow, pointer pressure, and interaction pulses
-- one shared `requestAnimationFrame` scheduler
-- native scrolling; no smooth-scroll or animation-framework dependency
-- adaptive high, standard, and mobile particle profiles
-- explicit WebGL fallback, reduced-motion mode, hidden-tab pause, and ambient-motion pause
-- persisted light/dark theme
-- keyboard-operable capability and proof controls
-- dedicated `/plans` decision page with exact pricing, direct pre-filled WhatsApp handoffs, a two-step plan finder, optional support scopes, and its own mobile conversion dock
+- semantic multi-page Vite build
+- native scrolling; no scroll hijacking
+- frozen hero runtime protected by integrity hash/tokens
+- one post-hero WebGL signal canvas with adaptive high/standard/mobile profiles
+- deterministic semantic signal states: potential → structure → interface → system → proof → scope → human → identity
+- static particle fallback when WebGL is unavailable
+- reduced-motion editorial cut with no sticky cinematic scenes
+- mobile/tablet direction that removes desktop pinning rather than shrinking it
+- manual service controls and ambient-motion pause
+- persisted theme preference
+- shared editorial deep-page system
 
-## Verified public facts
+## Visual architecture
 
-- FakhriMart is the only public client proof.
-- Live project: <https://fakhriyarns.vercel.app/>
-- Labels: Yarn wholesaler; Catalogue-led browsing; Desktop + mobile experience; Enquiry-led flow.
-- Founder image: `/assets/about-yash.webp`.
+- `public/styles.css` — frozen/base system, including the protected hero contract
+- `public/film.css` — the entire post-hero homepage film
+- `public/pages.css` — Services, Work, Plans, and Contact
+- `public/app.js` — hero contract + one signal/film runtime
+- `public/pages.js` — deep-page navigation behavior
 
-## Commands
+The former `site-fixes.css`, `experience.css`, `cinematic.css`, `commercial.css`, `clarity.css`, `plans.css`, and `plans.js` production layers have been removed.
+
+## Verified public proof
+
+- FakhriMart live client website: <https://fakhriyarns.vercel.app/>
+- FakhriMart desktop/mobile captures live in `/public/assets/`
+- Lernio AI public repository: <https://github.com/GYASH28/LERNIOAI>
+- B.R.A.C.E. public repository: <https://github.com/GYASH28/B.R.A.C.E>
+
+No fabricated testimonials, awards, client counts, or performance statistics are used.
+
+## QA
 
 ```bash
 npm run test:syntax
@@ -44,12 +71,17 @@ npm run test:browser
 npm run test:stress
 ```
 
-`npm run qa:static` runs syntax, integrity, and the production build. CI additionally installs Playwright, axe, Chromium, and Lighthouse for full browser, accessibility, responsive, stress, and performance checks.
+`npm run qa:static` protects the frozen hero, five-route architecture, pricing, truthful proof, responsive/accessibility cuts, bundle budgets, and removal of obsolete layers.
 
-## Commercial routes
+CI additionally runs:
 
-- `/plans` → dedicated website plan and WhatsApp decision experience
-- `/pricing` → `/plans`
-- `/case-studies/fakhrimart` and `/case-studies/fakhrimart.html` → `/#work`
+- 320–1440px overflow/reflow checks
+- forward + reverse scroll-state tests
+- keyboard and automated WCAG checks
+- forced WebGL fallback
+- concurrent load testing
+- desktop/tablet/mobile director-cut screenshots
+- full-page deep-route screenshots
+- mobile Lighthouse audits for all five destinations
 
-`public/outbound-fresh/` remains a separate private, noindex concept system and is not part of the homepage film.
+A separate browser reference audit captures ZEXVRO at deterministic viewports/scroll states so comparison is evidence-based rather than impressionistic.

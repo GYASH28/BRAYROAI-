@@ -65,6 +65,7 @@ body[data-signal-state="proof"] .formation-director,body[data-signal-state="huma
 .contact-close{line-height:1.06}
 .contact-email span{font-size:9px;color:var(--clarity-copy)}
 .contact-email a{line-height:1.2}
+.film-chapter{scroll-margin-top:86px}
 
 @media(min-width:1181px){
   .signal-film{--commercial-shell:min(1420px,calc(100vw - 150px))}
@@ -94,6 +95,7 @@ body[data-signal-state="proof"] .formation-director,body[data-signal-state="huma
   [data-particle-field]{opacity:.2!important}
   .formation-director,.chapter-rail{display:none!important}
   .film-chapter{padding-top:76px!important;padding-bottom:128px!important}
+  .film-chapter{scroll-margin-top:72px}
   .chapter-header h2,.difference-layout h2,.studio-copy h2,.contact-layout h2{font-size:clamp(39px,11vw,54px)!important;line-height:.98!important;letter-spacing:-.05em!important}
   .chapter-lede{margin-top:24px;font-size:16px;line-height:1.65}
   .chapter-header::before,.studio-copy::before{inset:-16px;background:linear-gradient(90deg,var(--clarity-panel),transparent 105%)}

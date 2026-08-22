@@ -93,7 +93,7 @@ body[data-signal-state="proof"] .formation-director,body[data-signal-state="huma
   html[data-theme="light"] .signal-film{--clarity-panel:rgba(246,242,234,.97);--clarity-panel-soft:rgba(246,242,234,.93)}
   [data-particle-field]{opacity:.2!important}
   .formation-director,.chapter-rail{display:none!important}
-  .film-chapter{padding-block:76px!important}
+  .film-chapter{padding-top:76px!important;padding-bottom:128px!important}
   .chapter-header h2,.difference-layout h2,.studio-copy h2,.contact-layout h2{font-size:clamp(39px,11vw,54px)!important;line-height:.98!important;letter-spacing:-.05em!important}
   .chapter-lede{margin-top:24px;font-size:16px;line-height:1.65}
   .chapter-header::before,.studio-copy::before{inset:-16px;background:linear-gradient(90deg,var(--clarity-panel),transparent 105%)}
@@ -112,12 +112,25 @@ body[data-signal-state="proof"] .formation-director,body[data-signal-state="huma
   .scope-detail>p{font-size:16px;line-height:1.55}
   .scope-detail dd,.scope-exclusions,.care-index header>span,.care-list p{font-size:14px}
   .studio-copy>p:not(.chapter-code){font-size:16px}
+  .studio-copy>p:not(.chapter-code){max-width:32ch;overflow-wrap:anywhere}
   .contact-layout{padding:18px 4px}
   .contact-close{font-size:clamp(30px,9vw,40px)}
   .contact-email{margin-top:58px}
   .contact-email a{font-size:15px}
   .final-wordmark{margin-top:58px;font-size:21vw}
 }
+
+@supports(animation-timeline:view()){
+  @media(max-width:700px){
+    html[data-experience="enhanced"] [data-scroll-reveal="stage"]{animation-name:clarityMobileStage;animation-range:entry 0% cover 34%;filter:none!important}
+    html[data-experience="enhanced"] [data-scroll-reveal="list"]>*{animation-name:clarityMobileChild;animation-range:entry 0% cover 38%;filter:none!important}
+    html[data-experience="enhanced"] [data-scroll-reveal="list"]>*:nth-child(2){animation-range:entry 5% cover 43%}
+    html[data-experience="enhanced"] [data-scroll-reveal="list"]>*:nth-child(3){animation-range:entry 10% cover 48%}
+    html[data-experience="enhanced"] [data-scroll-reveal="list"]>*:nth-child(4){animation-range:entry 15% cover 53%}
+  }
+}
+@keyframes clarityMobileStage{0%{opacity:.28;clip-path:inset(6% 3%);transform:translate3d(0,72px,0) scale(.94)}58%{opacity:1;clip-path:inset(0);transform:translate3d(0,-4px,0) scale(1.004)}100%{opacity:1;clip-path:none;transform:none}}
+@keyframes clarityMobileChild{0%{opacity:.38;transform:translate3d(0,28px,0)}70%{opacity:1;transform:translate3d(0,-2px,0)}100%{opacity:1;transform:none}}
 
 @media(prefers-reduced-motion:reduce){
   .film-chapter :is(.chapter-code,.chapter-header h2,.chapter-lede,.difference-layout>h2,.difference-copy,.difference-note,.proof-controls,.proof-facts,.proof-link,.scope-runway,.scope-exclusions,.care-index,.studio-copy,.contact-close,.contact-actions,.contact-email,.final-wordmark){opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}

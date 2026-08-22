@@ -1,34 +1,77 @@
 import { test, expect } from '@playwright/test';
 
-const ready=async page=>{await page.goto('/',{waitUntil:'networkidle'});await page.waitForFunction(()=>document.body.classList.contains('experience-ready'))};
-const scrollTo=async(page,selector)=>{await page.evaluate(selector=>{document.documentElement.style.scrollBehavior='auto';document.querySelector(selector).scrollIntoView({block:'start'})},selector);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))};
+const ready=async page=>{await page.goto('/',{waitUntil:'networkidle'});await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));await page.evaluate(()=>document.documentElement.style.scrollBehavior='auto')};
+const go=async(page,id)=>{await page.evaluate(id=>document.querySelector(`#${id}`)?.scrollIntoView({block:'start',behavior:'auto'}),id);await page.waitForTimeout(140)};
 
-test('native scrolling drives chapter progress without hijacking the document',async({page})=>{await ready(page);const before=await page.evaluate(()=>({overflow:getComputedStyle(document.documentElement).overflowY,height:document.scrollingElement.scrollHeight,viewport:innerHeight}));expect(before.overflow).not.toBe('hidden');expect(before.height).toBeGreaterThan(before.viewport*6);await scrollTo(page,'#difference');const progress=Number(await page.locator('#difference').evaluate(el=>getComputedStyle(el).getPropertyValue('--chapter-progress')));expect(progress).toBeGreaterThan(0)});
+test.describe('BRAYROAI authored scroll film',()=>{
+  test('activates the five narrative scenes in both directions',async({page})=>{
+    await ready(page);
+    for(const id of ['thesis','services','work','plans','contact']){
+      await go(page,id);
+      await expect(page.locator(`#${id}`)).toHaveAttribute('data-active','');
+    }
+    for(const id of ['plans','work','services','thesis']){
+      await go(page,id);
+      await expect(page.locator(`#${id}`)).toHaveAttribute('data-active','');
+    }
+  });
 
-test('the rail and particle state follow the active chapter',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);for(const [section,state] of [['#starting-point','presence'],['#services','disciplines'],['#work','proof'],['#plans','scope'],['#contact','identity']]){await scrollTo(page,section);await expect(page.locator(`.chapter-rail a[href="${section}"]`)).toHaveClass(/is-active/);await expect(page.locator(section)).toHaveAttribute('data-particle-state',state)}});
+  test('services stay directly interactive while scroll can also direct the system',async({page})=>{
+    await ready(page);await go(page,'services');
+    await page.locator('[data-service="ai"]').click();
+    await expect(page.locator('[data-service-title]')).toHaveText('AI Systems');
+    await expect(page.locator('[data-service-stage]')).toHaveAttribute('data-active','ai');
+    await expect(page.locator('[data-service="ai"]')).toHaveAttribute('aria-pressed','true');
+    await page.locator('[data-service="product"]').click();
+    await expect(page.locator('[data-service-title]')).toHaveText('Product Design');
+  });
 
-test('the live particle HUD resolves with the scroll narrative',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);await scrollTo(page,'#difference');await expect(page.locator('body')).toHaveAttribute('data-signal-state','attention');await expect(page.locator('[data-signal-label]')).toContainText(/ATTENTION|DISCIPLINES/);await scrollTo(page,'#contact');await expect(page.locator('body')).toHaveAttribute('data-signal-state','identity');await expect(page.locator('[data-signal-label]')).toContainText('IDENTITY / RESOLVED')});
+  test('ambient motion can be paused without disabling navigation or content',async({page})=>{
+    await ready(page);await go(page,'services');
+    const button=page.locator('[data-motion-toggle]');
+    await button.click();
+    await expect(page.locator('body')).toHaveClass(/motion-paused/);
+    await expect(button).toHaveAttribute('aria-pressed','true');
+    await go(page,'work');
+    await expect(page.locator('#work')).toHaveAttribute('data-active','');
+    await button.click();
+    await expect(button).toHaveAttribute('aria-pressed','false');
+  });
 
-test('particle field visibly activates on the first move into the post-hero story',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);await page.mouse.wheel(0,120);await scrollTo(page,'#starting-point');await expect(page.locator('body')).toHaveClass(/post-hero-active/);await expect(page.locator('body')).toHaveAttribute('data-particle-mode',/webgl|fallback/);const mode=await page.locator('body').getAttribute('data-particle-mode');if(mode==='webgl'){await expect(page.locator('[data-particle-field]')).toHaveCSS('opacity','1');const state=await page.evaluate(()=>({width:window.__BRAYROAI__?.particle?.canvas?.width||0,count:window.__BRAYROAI__?.particle?.profile?.count||0,pair:window.__BRAYROAI__?.particle?.pair||''}));expect(state.width).toBeGreaterThan(0);expect(state.count).toBeGreaterThanOrEqual(4200);expect(state.pair).not.toBe('')}else{await expect(page.locator('[data-formation-word]')).toHaveCSS('background-image',/radial-gradient/);expect(Number(await page.locator('[data-particle-fallback]').evaluate(el=>getComputedStyle(el).opacity))).toBeGreaterThanOrEqual(.17)}});
+  test('theme preference persists after a reload',async({page})=>{
+    await ready(page);
+    const button=page.locator('[data-theme-toggle]');
+    await button.click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+  });
 
-test('chapters anticipate, reveal, hold and release instead of simply appearing',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);const phases=await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';const chapter=document.querySelector('#difference'),top=scrollY+chapter.getBoundingClientRect().top;const sample=[];for(const y of [top-innerHeight*.82,top-innerHeight*.45,top+80,top+chapter.offsetHeight-innerHeight*.08]){scrollTo(0,y);window.__BRAYROAI__?.film?.update();sample.push(chapter.dataset.scenePhase)}return sample});expect(phases).toContain('approach');expect(phases).toContain('reveal');expect(phases).toContain('hold');expect(phases).toContain('release')});
+  test('reduced motion resolves the homepage into readable non-sticky document flow',async({page})=>{
+    await page.emulateMedia({reducedMotion:'reduce'});
+    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('[data-particle-field]')).toHaveCSS('display','none');
+    await expect(page.locator('#services .scene-pin')).not.toHaveCSS('position','sticky');
+    await expect(page.locator('#work h2')).toBeVisible();
+    await expect(page.locator('[data-motion-toggle]')).toHaveCSS('display','none');
+  });
 
-test('headlines are genuinely scrub-revealed when their own edge enters the viewport',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);const headline=page.locator('#difference h2');await expect(headline).toHaveAttribute('data-scroll-reveal','headline');const supported=await page.evaluate(()=>CSS.supports('animation-timeline:view()'));if(!supported)return;const before=await headline.evaluate(el=>({opacity:Number(getComputedStyle(el).opacity),clip:getComputedStyle(el).clipPath}));expect(before.opacity).toBeLessThan(.15);expect(before.clip).toContain('100%');await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';document.querySelector('#difference h2').scrollIntoView({block:'center'})});await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));const after=await headline.evaluate(el=>({opacity:Number(getComputedStyle(el).opacity),clip:getComputedStyle(el).clipPath}));expect(after.opacity).toBeGreaterThan(.9);expect(after.clip).not.toContain('100%')});
+  test('fast full-pass scrolling produces no uncaught page errors',async({page})=>{
+    const errors=[];page.on('pageerror',error=>errors.push(String(error)));
+    await ready(page);
+    for(const id of ['thesis','services','work','plans','contact','plans','services','thesis']){await go(page,id)}
+    expect(errors).toEqual([]);
+  });
 
-test('particle story holds forms and visibly deforms between them',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);await page.mouse.wheel(0,120);await scrollTo(page,'#starting-point');const states=await page.evaluate(()=>{const particle=window.__BRAYROAI__.particle;if(!particle.gl)return{mode:particle.mode,word:document.querySelector('[data-formation-word]')?.textContent};const first=particle.getShape('presence'),second=particle.getShape('attention');particle.setNarrative(0,.08,true);const held={raw:particle.rawMorph,morph:particle.morph,phase:document.body.dataset.particleTransition};particle.setNarrative(0,.5,true);const transition={raw:particle.rawMorph,morph:particle.morph,phase:document.body.dataset.particleTransition};return{mode:particle.mode,held,transition,different:first[0]!==second[0]||first[1]!==second[1],word:document.querySelector('[data-formation-word]')?.textContent}});expect(states.word).toMatch(/IDEA|SEEN/);if(states.mode==='fallback')return;expect(states.held.morph).toBe(0);expect(states.held.phase).toBe('holding');expect(states.transition.raw).toBeCloseTo(.5,2);expect(states.transition.phase).toMatch(/deforming|reforming/);expect(states.different).toBe(true)});
-
-test('all interactive state changes use real buttons and visible pressed states',async({page})=>{await ready(page);await scrollTo(page,'#services');await page.locator('[data-capability="product"]').focus();await page.keyboard.press('Enter');await expect(page.locator('[data-capability="product"]')).toHaveAttribute('aria-pressed','true');await scrollTo(page,'#work');await page.getByRole('button',{name:'Mobile',exact:true}).focus();await page.keyboard.press('Space');await expect(page.getByRole('button',{name:'Mobile',exact:true})).toHaveAttribute('aria-pressed','true')});
-
-test('primary chapter navigation resolves to the intended scroll position',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);await page.locator('.desktop-nav a[href="#work"]').click();await page.waitForFunction(()=>location.hash==='#work'&&scrollY>innerHeight*3);await expect(page.locator('body')).toHaveAttribute('data-signal-state','proof')});
-
-test('experience, commercial and clarity styles activate after the non-blocking load path',async({page})=>{await page.goto('/',{waitUntil:'domcontentloaded'});for(const id of ['post-fixes-styles','experience-styles','cinematic-styles','commercial-styles','clarity-styles'])expect(['print','all']).toContain(await page.locator(`#${id}`).getAttribute('media'));await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));for(const id of ['experience-styles','post-fixes-styles','cinematic-styles','commercial-styles','clarity-styles'])await expect(page.locator(`#${id}`)).toHaveAttribute('media','all');await expect(page.locator('html')).toHaveAttribute('data-experience','enhanced')});
-
-test('the opening plays as a four-beat commercial sequence',async({page})=>{await page.goto('/',{waitUntil:'domcontentloaded'});await expect(page.locator('.intro-loader__topline')).toContainText('LAUNCH FILM');await expect(page.locator('.intro-loader__sequence span')).toHaveText(['01 SIGNAL','02 STORY','03 SYSTEM','04 LAUNCH']);await expect(page.locator('.intro-loader__sequence span')).toHaveCount(4)});
-
-test('desktop commercial scenes keep copy and product UI in the same frame',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);for(const [section,heading,stage] of [['#services','#services h2','.capability-orbit'],['#work','#work h2','.proof-gallery']]){await scrollTo(page,section);const frame=await page.evaluate(([headingSelector,stageSelector])=>{const visible=selector=>{const rect=document.querySelector(selector).getBoundingClientRect();return rect.bottom>96&&rect.top<innerHeight*.92};const stageRect=document.querySelector(stageSelector).getBoundingClientRect();return{heading:visible(headingSelector),stage:visible(stageSelector),stageTop:stageRect.top}},[heading,stage]);expect(frame.heading,`${section} copy left the launch frame`).toBe(true);expect(frame.stage,`${section} product UI left the launch frame`).toBe(true);expect(frame.stageTop,`${section} product UI enters too late`).toBeLessThan(520)}});
-
-test('dense chapters protect readable content from particle chrome',async({page})=>{await page.setViewportSize({width:1440,height:900});await ready(page);await expect(page.locator('.particle-hud')).toHaveCSS('display','none');for(const [section,state] of [['#services','disciplines'],['#work','proof'],['#studio','human'],['#contact','identity']]){await scrollTo(page,section);const result=await page.evaluate(([section])=>{const copy=document.querySelector(`${section} .chapter-lede,${section} .studio-copy>p:not(.chapter-code)`),copyStyle=copy?getComputedStyle(copy):null,directorStyle=getComputedStyle(document.querySelector('.formation-director'));return{state:document.body.dataset.signalState,copy:copyStyle?{size:parseFloat(copyStyle.fontSize),opacity:Number(copyStyle.opacity),filter:copyStyle.filter}:null,directorOpacity:Number(directorStyle.opacity)}},[section]);expect(result.state).toBe(state);if(result.copy){expect(result.copy.size).toBeGreaterThanOrEqual(16);expect(result.copy.opacity).toBeGreaterThanOrEqual(.78);expect(result.copy.filter).toBe('none')}expect(result.directorOpacity).toBeLessThanOrEqual(state==='disciplines'?.12:.08)}});
-
-test('mobile clarity keeps copy legible while the particle field remains present',async({page})=>{await page.setViewportSize({width:390,height:844});await ready(page);await scrollTo(page,'#work');await expect(page.locator('[data-particle-field]')).toBeAttached();await expect(page.locator('.formation-director')).toHaveCSS('display','none');const metrics=await page.locator('#work .chapter-lede').evaluate(el=>{const style=getComputedStyle(el),rect=el.getBoundingClientRect();return{size:parseFloat(style.fontSize),line:parseFloat(style.lineHeight),width:rect.width,viewport:innerWidth}});expect(metrics.size).toBeGreaterThanOrEqual(16);expect(metrics.line).toBeGreaterThanOrEqual(25);expect(metrics.width).toBeLessThanOrEqual(metrics.viewport-32);await scrollTo(page,'#services');const stage=await page.locator('.capability-orbit').evaluate(el=>{const style=getComputedStyle(el);return{filter:style.filter,opacity:Number(style.opacity)}});expect(stage.filter).toBe('none');expect(stage.opacity).toBeGreaterThanOrEqual(.28);await scrollTo(page,'#studio');const founder=await page.locator('.studio-copy>p:not(.chapter-code)').evaluate(el=>{const rect=el.getBoundingClientRect();return{right:rect.right,viewport:innerWidth}});expect(founder.right).toBeLessThanOrEqual(founder.viewport-16)});
-
-test('final contact resolves the story into direct WhatsApp and email paths',async({page})=>{await ready(page);await scrollTo(page,'#contact');await expect(page.locator('#contact')).toContainText('Let’s make that first impression count.');await expect(page.locator('.final-wordmark')).toContainText('BRAYROAI');await expect(page.locator('.contact-email a')).toHaveText('yashganesh.work@gmail.com');await expect(page.locator('.contact-primary')).toHaveAttribute('href',/wa\.me\/919175524637/);await expect(page.locator('.contact-secondary')).toHaveAttribute('href','/plans')});
+  test('WebGL has a resilient non-WebGL fallback path',async({browser})=>{
+    const context=await browser.newContext({viewport:{width:1280,height:800}});
+    const page=await context.newPage();
+    await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){if(type==='webgl')return null;return original.call(this,type,...args)}});
+    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await page.mouse.wheel(0,800);
+    await page.waitForTimeout(120);
+    await expect(page.locator('body')).toHaveAttribute('data-particle-mode','fallback');
+    await expect(page.locator('#thesis h2')).toBeVisible();
+    await context.close();
+  });
+});

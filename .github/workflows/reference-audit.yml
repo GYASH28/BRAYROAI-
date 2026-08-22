@@ -3,6 +3,8 @@ name: ZEXVRO Reference Audit
 on:
   push:
     branches: [zexvro-beyond-rebuild]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:

@@ -21,6 +21,7 @@ body[data-particle-transition="holding"] .formation-director>strong{animation:fo
 
 /* The fallback is still a formation system, not a decorative star field. */
 body[data-particle-mode="fallback"] .formation-director>strong,body[data-particle-mode="pending"] .formation-director>strong{background-image:radial-gradient(circle,var(--film-blue) 0 1.2px,transparent 1.8px),radial-gradient(circle,var(--film-orange) 0 1px,transparent 1.6px);background-size:7px 7px,11px 11px;background-position:0 0,3px 4px;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:0;opacity:.82;filter:drop-shadow(0 0 18px rgba(57,118,255,.22));animation:particleTypeDrift 6s linear infinite}
+body[data-particle-mode="fallback"].post-hero-active .particle-fallback{transition:none}
 body[data-particle-mode="fallback"][data-particle-transition="holding"] .particle-fallback{opacity:.18}
 body[data-particle-mode="fallback"][data-particle-transition="deforming"] .particle-fallback,body[data-particle-mode="fallback"][data-particle-transition="reforming"] .particle-fallback{opacity:.72}
 body[data-particle-mode="fallback"][data-particle-transition="deforming"] .formation-director>strong{opacity:.24;filter:blur(7px) drop-shadow(0 0 30px rgba(255,100,40,.24))}

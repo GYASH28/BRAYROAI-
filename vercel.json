@@ -6,8 +6,8 @@
   "cleanUrls":true,
   "redirects":[
     {"source":"/pricing","destination":"/plans","permanent":true},
-    {"source":"/case-studies/fakhrimart","destination":"/#work","permanent":true},
-    {"source":"/case-studies/fakhrimart.html","destination":"/#work","permanent":true}
+    {"source":"/case-studies/fakhrimart","destination":"/work","permanent":true},
+    {"source":"/case-studies/fakhrimart.html","destination":"/work","permanent":true}
   ],
   "headers":[
     {"source":"/(.*)","headers":[
@@ -16,9 +16,9 @@
       {"key":"Referrer-Policy","value":"strict-origin-when-cross-origin"},
       {"key":"Permissions-Policy","value":"camera=(), microphone=(), geolocation=(), payment=(), usb=()"},
       {"key":"Cross-Origin-Opener-Policy","value":"same-origin"},
-      {"key":"Content-Security-Policy","value":"default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:; upgrade-insecure-requests"}
+      {"key":"Content-Security-Policy","value":"default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:; upgrade-insecure-requests"}
     ]},
     {"source":"/assets/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"}]},
-    {"source":"/(app.js|styles.css|site-fixes.css|experience.css)","headers":[{"key":"Cache-Control","value":"public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600"}]}
+    {"source":"/(app.js|pages.js|styles.css|film.css|pages.css)","headers":[{"key":"Cache-Control","value":"public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600"}]}
   ]
 }

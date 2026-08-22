@@ -31,6 +31,7 @@ body[data-signal-state="proof"] .formation-director,body[data-signal-state="huma
 .chapter-lede{max-width:44ch;color:var(--clarity-copy);font-size:clamp(16px,1.15vw,19px);line-height:1.65}
 .chapter-header h2,.difference-layout h2,.studio-copy h2,.contact-layout h2{line-height:.95!important;letter-spacing:-.058em!important}
 .film-chapter :is(.chapter-code,.chapter-header h2,.chapter-lede,.difference-layout>h2,.difference-copy,.difference-note,.proof-controls,.proof-facts,.proof-link,.scope-runway,.scope-exclusions,.care-index,.studio-copy,.contact-close,.contact-actions,.contact-email,.final-wordmark){filter:none!important;opacity:calc(.34 + var(--scene-presence)*.66)}
+.film-chapter :is(.chapter-lede,.studio-copy>p:not(.chapter-code)){opacity:calc(.78 + var(--scene-presence)*.22)!important}
 .film-chapter :is(.chapter-header h2,.difference-layout>h2,.studio-copy h2,.contact-layout h2){transform:translate3d(0,calc(56px - var(--scene-in)*56px - var(--scene-out)*28px),0) skewY(calc(.55deg - var(--scene-in)*.55deg))}
 
 /* Protect text and real product UI from decorative particle formations. */

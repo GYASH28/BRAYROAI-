@@ -32,6 +32,7 @@ jobs:
           test -f dist/styles.css
           test -f dist/site-fixes.css
           test -f dist/experience.css
+          test -f dist/commercial.css
           test -f dist/app.js
           test -f dist/assets/hero-background.webp
           test -f dist/assets/yash-cutout.webp
@@ -54,7 +55,6 @@ jobs:
           ! test -f dist/plans.html
           ! test -f dist/case-studies/fakhrimart.html
           ! test -f dist/plans.js
-          ! test -f dist/commercial.css
           ! test -f dist/commercial-fixes.css
           ! test -f dist/commercial-accessibility.css
           CSS_BYTES=$(wc -c < dist/styles.css)

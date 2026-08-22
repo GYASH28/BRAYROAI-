@@ -2,64 +2,70 @@
 
 Production website for **BRAYROAI**, a founder-led creative technology studio combining design, frontend engineering, digital product work, and useful AI systems.
 
-## Experience
+## Public architecture
 
-The public website is built as a restrained SaaS launch film rather than a stack of agency sections.
+The public experience has exactly five primary destinations:
 
-The opening animation and hero are a frozen visual contract. After the hero, one persistent **SIGNAL BECOMING FORM** system moves through:
+1. **Home** — one authored scroll film: **SIGNAL BECOMING FORM**.
+2. **Services** — the four connected studio disciplines and how they move from intent to implementation.
+3. **Work** — real proof only: FakhriMart as the public client build, with Lernio AI and B.R.A.C.E. clearly identified as product/system work.
+4. **Plans** — transparent one-time starting scopes at ₹2,599, ₹3,999, and ₹5,999+, plus explicit exclusions.
+5. **Contact** — a low-friction founder-led handoff to WhatsApp or email.
 
-1. **Thesis / potential → structure** — the studio point of view arrives one statement at a time.
-2. **Services / interface → system** — Web Experiences, Product Design, Frontend Engineering, and AI Systems share one persistent stage.
-3. **Work / proof** — the real FakhriMart client interface becomes the dominant visual proof; Lernio AI and B.R.A.C.E. are linked truthfully as product/system work.
-4. **Plans / scope** — ₹2,599, ₹3,999, and ₹5,999+ become three decision thresholds rather than pricing cards.
-5. **Contact / human → identity** — founder presence, WhatsApp, email, and the BRAYROAI wordmark close the film.
+The homepage does not behave like five stacked marketing sections. After the frozen hero, one persistent signal changes state as the visitor scrolls: potential → structure → interface → system → proof → scope → human → identity. Native scrolling remains authoritative; there is no smooth-scroll hijacking.
 
-The reference quality study of ZEXVRO is used only for pacing, hierarchy, negative space, continuity, and responsive restraint. No ZEXVRO source, assets, wording, section structure, graphics, or brand styling are copied.
+## Frozen opening contract
 
-## Five public destinations
+The intro loader and `#top` hero are intentionally protected. See `FROZEN-HERO.md`.
 
-- `/` — cinematic homepage
-- `/services` — detailed capabilities and fit
-- `/work` — real proof and public product work
-- `/plans` — exact starting prices, scope, and exclusions
-- `/contact` — low-friction WhatsApp/email handoff
+The exact hero markup SHA-256 remains:
 
-Legacy `/pricing` resolves to `/plans`. Old FakhriMart case-study routes resolve to `/work`.
+`4adaa5b58fd6373a1d7fa467299a71d667d96a8a8a6d068c2ceed1fa45df9528`
 
-`public/outbound-fresh/` remains separate from the public navigation because it contains independent prospect concepts used by outbound workflows; it is not part of the five-destination agency site.
+The post-hero rebuild begins after that boundary. CI fails if the protected hero markup or controller contract changes unexpectedly.
 
-## Runtime
+## Production styling and runtime
 
-- semantic multi-page Vite build
-- native scrolling; no scroll hijacking
-- frozen hero runtime protected by integrity hash/tokens
-- one post-hero WebGL signal canvas with adaptive high/standard/mobile profiles
-- deterministic semantic signal states: potential → structure → interface → system → proof → scope → human → identity
-- static particle fallback when WebGL is unavailable
-- reduced-motion editorial cut with no sticky cinematic scenes
-- mobile/tablet direction that removes desktop pinning rather than shrinking it
-- manual service controls and ambient-motion pause
-- persisted theme preference
-- shared editorial deep-page system
+The previous stack of overlapping production layers has been removed. The current public site uses:
 
-## Visual architecture
+- `public/styles.css` — critical base plus frozen hero contract
+- `public/film.css` — the complete homepage film system
+- `public/app.js` — hero, navigation, scroll-film, interaction, theme, and adaptive WebGL signal runtime
+- `public/pages.css` — shared editorial system for Services, Work, Plans, and Contact
+- `public/pages.js` — lightweight deep-page navigation behavior
 
-- `public/styles.css` — frozen/base system, including the protected hero contract
-- `public/film.css` — the entire post-hero homepage film
-- `public/pages.css` — Services, Work, Plans, and Contact
-- `public/app.js` — hero contract + one signal/film runtime
-- `public/pages.js` — deep-page navigation behavior
+Old `site-fixes.css`, `experience.css`, `cinematic.css`, `commercial.css`, `clarity.css`, `plans.css`, and `plans.js` are forbidden from the production bundle by the integrity gate.
 
-The former `site-fixes.css`, `experience.css`, `cinematic.css`, `commercial.css`, `clarity.css`, `plans.css`, and `plans.js` production layers have been removed.
+## Motion and resilience
 
-## Verified public proof
+- native scrolling drives every narrative state
+- desktop uses bounded sticky scenes and one persistent WebGL signal field
+- mobile/tablet resolve into ordinary readable document flow where spatial pinning would hurt comprehension
+- reduced motion removes sticky choreography and WebGL while preserving the final art direction
+- explicit non-WebGL fallback is browser-tested
+- ambient motion can be paused without disabling navigation or content
+- theme preference persists
+- no content or action depends on hover
 
-- FakhriMart live client website: <https://fakhriyarns.vercel.app/>
-- FakhriMart desktop/mobile captures live in `/public/assets/`
-- Lernio AI public repository: <https://github.com/GYASH28/LERNIOAI>
-- B.R.A.C.E. public repository: <https://github.com/GYASH28/B.R.A.C.E>
+## Verified public facts
 
-No fabricated testimonials, awards, client counts, or performance statistics are used.
+- FakhriMart is the only public client proof.
+- Live project: <https://fakhriyarns.vercel.app/>
+- Product/system repositories used truthfully in Work:
+  - <https://github.com/GYASH28/LERNIOAI>
+  - <https://github.com/GYASH28/B.R.A.C.E>
+- Founder image: `/assets/about-yash.webp`.
+- No invented testimonials, awards, conversion metrics, client logos, or scarcity claims are used.
+
+## Commercial boundaries
+
+Homepage and Plans preserve the current starting scopes:
+
+- Website Starter — `₹2,599`
+- Business Website — `₹3,999`
+- Custom Experience — `₹5,999+`
+
+Hosting, domains, paid tools, ecommerce, large content work, and advanced integrations are scoped separately.
 
 ## QA
 
@@ -71,17 +77,23 @@ npm run test:browser
 npm run test:stress
 ```
 
-`npm run qa:static` protects the frozen hero, five-route architecture, pricing, truthful proof, responsive/accessibility cuts, bundle budgets, and removal of obsolete layers.
+`npm run qa:static` runs syntax, frozen-contract/architecture integrity, and the five-entry production build.
 
-CI additionally runs:
+Pull-request CI additionally runs:
 
-- 320–1440px overflow/reflow checks
-- forward + reverse scroll-state tests
-- keyboard and automated WCAG checks
-- forced WebGL fallback
-- concurrent load testing
-- desktop/tablet/mobile director-cut screenshots
-- full-page deep-route screenshots
-- mobile Lighthouse audits for all five destinations
+- 1,000-request concurrent stress testing at concurrency 45
+- 16 Playwright browser/interaction tests
+- automated serious/critical accessibility checks on Home and all deep destinations
+- exact mobile reflow checks down to 320px
+- bidirectional scroll-state, reduced-motion, motion-pause, theme-persistence, and WebGL-fallback tests
+- responsive visual captures at 1440, 1280, 768, 430, 390, 360, and 320 widths
+- desktop/mobile deep-page visual evidence that deliberately scrolls through lazy proof media before capture
+- mobile Lighthouse audits for all five routes
 
-A separate browser reference audit captures ZEXVRO at deterministic viewports/scroll states so comparison is evidence-based rather than impressionistic.
+The accepted rebuild gate reached 90+ homepage performance and 99–100 performance on the four deep destinations, with 98–100 accessibility and 100 Best Practices / SEO in the final pre-merge audit.
+
+## Reference discipline
+
+ZEXVRO was browser-audited as a reference for pacing, hierarchy, negative space, fixed/sticky behavior, and responsive simplification. BRAYROAI deliberately does **not** copy its branding, layouts, assets, Web3 styling, wording, or card catalogue. The transferable lesson is restraint and spatial consistency, expressed through BRAYROAI's own signal system.
+
+`public/outbound-fresh/` remains a separate private/noindex concept system and is not part of the five-destination public experience.

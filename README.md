@@ -90,7 +90,7 @@ Pull-request CI additionally runs:
 - desktop/mobile deep-page visual evidence that deliberately scrolls through lazy proof media before capture
 - mobile Lighthouse audits for all five routes
 
-The accepted rebuild gate reached 90+ homepage performance and 99–100 performance on the four deep destinations, with 98–100 accessibility and 100 Best Practices / SEO in the final pre-merge audit.
+The verified pre-merge implementation run reached 90+ homepage performance and 99–100 performance on the four deep destinations, with 98–100 accessibility and 100 Best Practices / SEO. Documentation-only commits still pass through the same required quality gate before merge.
 
 ## Reference discipline
 

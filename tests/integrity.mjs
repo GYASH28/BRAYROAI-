@@ -84,6 +84,7 @@ expect(experience.includes('@media(max-width:700px)')&&experience.includes('@med
 expect(html.includes('id="experience-styles" media="print"')&&html.includes('id="post-fixes-styles" media="print"')&&html.includes('id="cinematic-styles" media="print"')&&html.includes('id="commercial-styles" media="print"'),'post-hero styles must remain deferred');
 expect(js.includes("'commercial-styles'"),'commercial film layer is not activated with the progressive experience');
 expect(commercial.includes('commercial cut')&&commercial.includes('heroCamera')&&commercial.includes('proof-gallery'),'premium commercial direction layer missing');
+expect(html.includes('intro-loader__topline')&&html.includes('intro-loader__sequence')&&commercial.includes("Director's cut"),'launch-film opening or scene composition layer missing');
 expect(js.includes("document.documentElement.dataset.experience='enhanced'"),'progressive enhancement state missing');
 expect(!html.includes(' hidden')&&!html.includes('style="display:none'),'semantic document hides required content without JavaScript');
 

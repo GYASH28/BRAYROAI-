@@ -92,6 +92,20 @@ jobs:
           mkdir -p artifacts/screenshots
           node - <<'JS'
           const { chromium } = require('playwright');
+          const warmLazyMedia=async page=>{
+            await page.evaluate(async()=>{
+              const step=Math.max(320,Math.floor(innerHeight*.72));
+              for(let y=0;y<document.documentElement.scrollHeight;y+=step){
+                window.scrollTo(0,y);
+                await new Promise(resolve=>setTimeout(resolve,55));
+              }
+              window.scrollTo(0,document.documentElement.scrollHeight);
+              await new Promise(resolve=>setTimeout(resolve,160));
+              await Promise.all([...document.images].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})})));
+              window.scrollTo(0,0);
+              await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+            });
+          };
           (async()=>{
             const browser=await chromium.launch({headless:true});
             const homeFrames=[['hero','#top'],['thesis','#thesis'],['services','#services'],['work','#work'],['plans','#plans'],['contact','#contact']];
@@ -112,6 +126,7 @@ jobs:
               const context=await browser.newContext({viewport:{width,height}}); const page=await context.newPage();
               for(const route of ['services','work','plans','contact']){
                 await page.goto(`http://127.0.0.1:4173/${route}`,{waitUntil:'networkidle'});
+                await warmLazyMedia(page);
                 await page.screenshot({path:`artifacts/screenshots/${device}-page-${route}.png`,fullPage:true});
               }
               await context.close();

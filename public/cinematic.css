@@ -109,6 +109,46 @@ body[data-particle-mode="fallback"][data-particle-transition="reforming"] .forma
 .context-cursor span{font:500 6px/1 var(--film-mono);letter-spacing:.12em}
 .context-cursor.is-active{opacity:1;scale:1}
 
+/* A real scroll-scrubbed edit: each beat arrives only as its own edge crosses the frame.
+   The chapter state still supplies a robust fallback for browsers without view timelines. */
+.film-shell::before{content:"";position:absolute;z-index:-1;left:-3vw;right:-3vw;top:0;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent 0,var(--scene-accent) 24%,var(--film-orange) 50%,transparent 76%);transform:scaleX(0);transform-origin:left;opacity:0;transition:transform .85s var(--film-ease),opacity .45s ease}
+.film-chapter[data-scene-phase="approach"] .film-shell::before{opacity:.22;transform:scaleX(.18)}
+.film-chapter[data-scene-phase="reveal"] .film-shell::before,.film-chapter[data-scene-phase="hold"] .film-shell::before{opacity:.72;transform:scaleX(1)}
+.film-chapter[data-scene-phase="release"] .film-shell::before{opacity:.14;transform:scaleX(.58);transform-origin:right}
+.film-chapter[data-scene-phase="reveal"]::before{opacity:.7;background-size:102% 100%;animation:gridDrift 2.8s linear infinite}
+@keyframes gridDrift{to{background-position:24px 0}}
+
+@supports (animation-timeline:view()){
+  html[data-experience="enhanced"] [data-scroll-reveal]{will-change:transform,opacity,clip-path,filter;animation-fill-mode:both;animation-timing-function:linear;animation-timeline:view(block)}
+  html[data-experience="enhanced"] [data-scroll-reveal="kicker"]{animation-name:cinematicKicker;animation-range:entry 5% cover 26%}
+  html[data-experience="enhanced"] [data-scroll-reveal="headline"]{animation-name:cinematicHeadline;animation-range:entry 3% cover 44%}
+  html[data-experience="enhanced"] [data-scroll-reveal="stage"]{animation-name:cinematicStage;animation-range:entry 0% cover 48%}
+  html[data-experience="enhanced"] [data-scroll-reveal="detail"]{animation-name:cinematicDetail;animation-range:entry 4% cover 42%}
+  html[data-experience="enhanced"] [data-scroll-reveal="list"]{animation-name:cinematicList;animation-range:entry 0% cover 45%}
+  html[data-experience="enhanced"] [data-scroll-reveal="list"]>*{animation:cinematicChild linear both;animation-timeline:view(block);animation-range:entry 0% cover 48%}
+  html[data-experience="enhanced"] [data-scroll-reveal="list"]>*:nth-child(2){animation-range:entry 7% cover 54%}
+  html[data-experience="enhanced"] [data-scroll-reveal="list"]>*:nth-child(3){animation-range:entry 14% cover 60%}
+  html[data-experience="enhanced"] [data-scroll-reveal="list"]>*:nth-child(4){animation-range:entry 21% cover 66%}
+}
+@keyframes cinematicKicker{0%{opacity:0;transform:translate3d(-56px,0,0) scaleX(.45);filter:blur(5px)}62%{opacity:1;transform:translate3d(5px,0,0) scaleX(1.03);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+@keyframes cinematicHeadline{0%{opacity:0;clip-path:inset(0 0 100% 0);transform:translate3d(0,128px,0) skewY(5deg) scaleY(1.16);filter:blur(18px)}52%{opacity:1;clip-path:inset(0 0 7% 0);transform:translate3d(0,-8px,0) skewY(-.55deg) scaleY(.995);filter:blur(.3px)}100%{opacity:1;clip-path:inset(0);transform:none;filter:none}}
+@keyframes cinematicStage{0%{opacity:0;clip-path:inset(12% 8% 10% 8%);transform:perspective(1100px) translate3d(0,160px,-180px) rotateX(18deg) rotateY(-7deg) scale(.78);filter:blur(18px)}58%{opacity:1;clip-path:inset(0);transform:perspective(1100px) translate3d(0,-12px,0) rotateX(-1.5deg) rotateY(1deg) scale(1.015);filter:blur(.2px)}100%{opacity:1;clip-path:inset(0);transform:none;filter:none}}
+@keyframes cinematicDetail{0%{opacity:0;transform:translate3d(0,74px,0);filter:blur(10px)}68%{opacity:1;transform:translate3d(0,-5px,0);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+@keyframes cinematicList{0%{opacity:0;transform:translate3d(0,110px,0);clip-path:inset(0 0 100% 0);filter:blur(12px)}56%{opacity:1;transform:translate3d(0,-4px,0);clip-path:inset(0 0 0 0);filter:blur(0)}100%{opacity:1;transform:none;clip-path:none;filter:none}}
+@keyframes cinematicChild{0%{opacity:0;transform:translate3d(-36px,40px,0) scale(.96);filter:blur(7px)}72%{opacity:1;transform:translate3d(4px,-2px,0) scale(1.006);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+
+/* The following micro-interactions reward inspection without moving the page itself. */
+.proof-gallery{transition:box-shadow .55s var(--film-ease),filter .3s ease}
+.proof-gallery:hover{box-shadow:0 46px 120px rgba(57,118,255,.16);filter:saturate(1.12)}
+.proof-gallery:hover .proof-desktop{filter:drop-shadow(0 30px 38px rgba(0,0,0,.34))}
+.proof-gallery:hover .proof-mobile{filter:drop-shadow(0 24px 32px rgba(255,100,40,.2))}
+.scope-step:has(a:focus-visible),.scope-step:has(a:hover){z-index:2}
+.care-list article{overflow:hidden}
+.care-list article::after{content:"↗";position:absolute;right:18px;bottom:18px;color:var(--film-orange);font-size:20px;opacity:0;transform:translate3d(-14px,14px,0) rotate(-20deg);transition:opacity .28s ease,transform .38s var(--film-ease)}
+.care-list article:hover::after,.care-list article:focus-within::after{opacity:1;transform:none}
+.contact-primary{box-shadow:0 0 0 0 rgba(255,100,40,.25)}
+.contact-primary:hover{box-shadow:0 18px 50px rgba(255,100,40,.26)}
+
 @media(max-width:900px){
   .formation-director{width:88vw;height:42vh;top:46%}
   .formation-director>strong{font-size:clamp(62px,16vw,150px);opacity:.2}
@@ -128,6 +168,10 @@ body[data-particle-mode="fallback"][data-particle-transition="reforming"] .forma
   .film-chapter :is(.chapter-header h2,.difference-layout>h2,.studio-copy h2,.contact-layout h2){transform:translate3d(0,calc(58px - var(--scene-in)*58px),0)}
   .interface-transformation,.attention-break,.proof-gallery,.studio-portrait{filter:blur(calc(6px - var(--scene-in)*6px))}
   .context-cursor{display:none}
+  @supports (animation-timeline:view()){
+    html[data-experience="enhanced"] [data-scroll-reveal="headline"]{animation-range:entry 4% cover 50%}
+    html[data-experience="enhanced"] [data-scroll-reveal="stage"]{animation-range:entry 0% cover 54%}
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -136,4 +180,6 @@ body[data-particle-mode="fallback"][data-particle-transition="reforming"] .forma
   .film-chapter :is(.chapter-code,.chapter-header h2,.chapter-lede,.difference-layout>h2,.difference-copy,.difference-note,.proof-controls,.proof-facts,.proof-link,.scope-runway,.scope-exclusions,.care-index,.studio-copy,.contact-close,.contact-actions,.contact-email,.final-wordmark),.interface-transformation,.attention-break,.proof-gallery,.studio-portrait,.scope-step{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important;animation:none!important;transition:none!important}
   .capability-signal i,.capability-signal b{animation:none!important}
   .context-cursor{display:none!important}
+  .film-shell::before{display:none!important}
+  [data-scroll-reveal],[data-scroll-reveal]>*{animation:none!important}
 }

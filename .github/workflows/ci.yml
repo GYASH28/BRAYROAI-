@@ -33,6 +33,7 @@ jobs:
           test -f dist/site-fixes.css
           test -f dist/experience.css
           test -f dist/commercial.css
+          test -f dist/clarity.css
           test -f dist/app.js
           test -f dist/assets/hero-background.webp
           test -f dist/assets/yash-cutout.webp

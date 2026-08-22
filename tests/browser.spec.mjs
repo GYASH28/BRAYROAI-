@@ -1,50 +1,95 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const waitReady=async page=>{await page.goto('/',{waitUntil:'networkidle'});await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));await page.waitForFunction(()=>document.body.classList.contains('experience-ready'))};
-const waitPlans=async(page,path='/plans.html')=>{await page.goto(path,{waitUntil:'networkidle'});await page.waitForFunction(()=>document.documentElement.classList.contains('plans-enhanced'))};
-const scrollTo=async(page,selector)=>{await page.evaluate(selector=>{document.documentElement.style.scrollBehavior='auto';document.querySelector(selector)?.scrollIntoView({block:'start'})},selector);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))};
-const serious=results=>results.violations.filter(item=>['serious','critical'].includes(item.impact));
-const expectNoOverflow=async page=>expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+const waitHome=async page=>{await page.goto('/',{waitUntil:'networkidle'});await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));await page.waitForFunction(()=>document.body.classList.contains('experience-ready'))};
+const routes=[['/services','One direction.'],['/work','Fewer claims.'],['/plans','Accessible entry.'],['/contact','Bring the rough brief.']];
 
-test('opening and frozen hero remain intact',async({page})=>{await waitReady(page);await expect(page.locator('#top')).toContainText('Digital, designed');await expect(page.locator('#top')).toContainText('SCROLL TO SHAPE THE STORY');await expect(page.locator('#top img[src="/assets/hero-background.webp"]')).toHaveCount(1);await expect(page.locator('#top img[src="/assets/yash-cutout.webp"]')).toHaveCount(1)});
+test.describe('BRAYROAI rebuilt public experience',()=>{
+  test('keeps the frozen hero and exposes only the five primary destinations',async({page})=>{
+    await waitHome(page);
+    await expect(page.locator('#top h1')).toContainText('Digital, designed');
+    const labels=await page.locator('.desktop-nav a').allTextContents();
+    expect(labels.map(v=>v.trim())).toEqual(['Home','Services','Work','Plans','Contact']);
+    await expect(page.locator('[data-scroll-chapter]')).toHaveCount(5);
+    const ids=await page.locator('[data-scroll-chapter]').evaluateAll(nodes=>nodes.map(n=>n.id));
+    expect(ids).toEqual(['thesis','services','work','plans','contact']);
+  });
 
-test('post-hero chapters tell the requested story in exact order',async({page})=>{await waitReady(page);const order=await page.locator('[data-scroll-chapter]').evaluateAll(nodes=>nodes.map(node=>node.id));expect(order).toEqual(['starting-point','difference','services','work','plans','studio','contact']);await expect(page.locator('#system')).toHaveCount(1);await expect(page.locator('[data-particle-field]')).toHaveAttribute('aria-hidden','true')});
+  test('keeps commercial facts clear without turning the homepage into a pricing dashboard',async({page})=>{
+    await waitHome(page);
+    const text=await page.locator('body').innerText();
+    for(const price of ['₹2,599','₹3,999','₹5,999+'])expect(text).toContain(price);
+    expect(text).not.toContain('₹9,999');
+    expect(text).not.toContain('₹17,999');
+    await expect(page.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(1);
+    await expect(page.locator('a[href="https://github.com/GYASH28/LERNIOAI"]')).toHaveCount(1);
+    await expect(page.locator('a[href="https://github.com/GYASH28/B.R.A.C.E"]')).toHaveCount(1);
+  });
 
-test('homepage has no serious or critical accessibility violations',async({page})=>{await waitReady(page);const results=await new AxeBuilder({page}).analyze();expect(serious(results)).toEqual([])});
+  test('all four deep destinations build as real pages',async({page})=>{
+    for(const [route,copy] of routes){
+      const response=await page.goto(route,{waitUntil:'domcontentloaded'});
+      expect(response?.ok(),route).toBeTruthy();
+      await expect(page.locator('main')).toContainText(copy);
+      const canonical=await page.locator('link[rel="canonical"]').getAttribute('href');
+      expect(canonical).toContain(route);
+    }
+  });
 
-test('exact one-time and optional support prices are all visible',async({page})=>{await waitReady(page);await scrollTo(page,'#plans');const plans=page.locator('#plans');for(const text of ['Website Starter','₹2,599','Business Website','₹3,999','Custom Experience','₹5,999+','Launch','₹2,499/mo','Grow','Pro'])await expect(plans).toContainText(text);for(const oldPrice of ['₹9,999','₹17,999','₹25K–35K+'])await expect(plans).not.toContainText(oldPrice);await expect(plans).toContainText('Hosting, domains, paid tools, ecommerce, large content work, and advanced integrations are scoped separately.')});
+  test('does not horizontally overflow at master-prompt breakpoints',async({page})=>{
+    const sizes=[[320,568],[360,800],[375,812],[390,844],[412,915],[430,932],[768,1024],[1280,800],[1440,900]];
+    for(const [width,height] of sizes){
+      await page.setViewportSize({width,height});
+      await page.goto('/',{waitUntil:'domcontentloaded'});
+      const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+      expect(overflow,`${width}x${height}`).toBeLessThanOrEqual(1);
+    }
+  });
 
-test('homepage plan actions route into the dedicated decision page',async({page})=>{await waitReady(page);const expected=['/plans?plan=starter','/plans?plan=business','/plans?plan=custom','/plans#plan-finder'];for(const href of expected)await expect(page.locator(`#plans a[href="${href}"]`).first()).toBeVisible();await expect(page.locator('.desktop-nav a[href="/plans"]')).toHaveCount(1);await expect(page.locator('.mobile-menu a[href="/plans"]')).toHaveCount(1)});
+  test('deep pages reflow without horizontal overflow on small mobile',async({page})=>{
+    await page.setViewportSize({width:320,height:720});
+    for(const [route] of routes){
+      await page.goto(route,{waitUntil:'domcontentloaded'});
+      const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+      expect(overflow,route).toBeLessThanOrEqual(1);
+    }
+  });
 
-test('dedicated plans page preserves exact prices and opens direct WhatsApp briefs',async({page})=>{await waitPlans(page);for(const text of ['Website Starter','₹2,599','Business Website','₹3,999','Custom Experience','₹5,999+','Launch','₹2,499/mo','Grow','Pro'])await expect(page.locator('main')).toContainText(text);for(const oldPrice of ['₹9,999','₹17,999','₹25K–35K+'])await expect(page.locator('main')).not.toContainText(oldPrice);for(const key of ['starter','business','custom','launch','grow','pro','help']){const link=page.locator(`[data-whatsapp="${key}"]`).first();await expect(link).toHaveAttribute('target','_blank');const href=await link.getAttribute('href');const url=new URL(href);expect(url.hostname).toBe('wa.me');expect(url.pathname).toBe('/919175524637');expect(url.searchParams.get('text')).toMatch(/BRAYROAI|Yash/)}});
+  test('mobile navigation exposes the same five destinations',async({page})=>{
+    await page.setViewportSize({width:390,height:844});
+    await waitHome(page);
+    const button=page.locator('[data-menu-button]');
+    await button.click();
+    await expect(button).toHaveAttribute('aria-expanded','true');
+    const labels=await page.locator('.mobile-menu-inner>a:not(.mobile-contact)').allTextContents();
+    expect(labels.map(v=>v.replace(/^\d+\s*/,'').trim())).toEqual(['Home','Services','Work','Plans','Contact']);
+    await page.keyboard.press('Escape');
+    await expect(button).toHaveAttribute('aria-expanded','false');
+  });
 
-test('plan query selection and finder recommendation stay in sync',async({page})=>{await waitPlans(page,'/plans.html?plan=business');await expect(page.locator('[data-plan-card="business"]')).toHaveAttribute('data-active','true');await expect(page.locator('[data-plan-select="business"]')).toHaveAttribute('aria-pressed','true');await page.locator('[data-finder-group="stage"][data-finder-value="starter"]').click();await page.locator('[data-finder-group="scope"][data-finder-value="business"]').click();await expect(page.locator('[data-finder-name]')).toContainText('Business Website');await expect(page.locator('[data-finder-whatsapp]')).not.toHaveAttribute('aria-disabled','true');await expect(page.locator('[data-mobile-plan]')).toContainText('Business Website')});
+  test('homepage has no serious or critical automated accessibility violations',async({page})=>{
+    await waitHome(page);
+    const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
+    const blocking=results.violations.filter(v=>['serious','critical'].includes(v.impact));
+    expect(blocking).toEqual([]);
+  });
 
-test('plans page has no serious accessibility violations and keeps a no-JavaScript sales path',async({page,browser})=>{await waitPlans(page);const results=await new AxeBuilder({page}).analyze();expect(serious(results)).toEqual([]);const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const noJs=await context.newPage();await noJs.goto('/plans.html',{waitUntil:'networkidle'});await expect(noJs.locator('[data-plan-card]')).toHaveCount(3);await expect(noJs.locator('[data-whatsapp="business"]')).toHaveAttribute('href',/wa\.me\/919175524637/);await expectNoOverflow(noJs);await context.close()});
+  test('deep pages have no serious or critical automated accessibility violations',async({page})=>{
+    for(const [route] of routes){
+      await page.goto(route,{waitUntil:'networkidle'});
+      const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
+      const blocking=results.violations.filter(v=>['serious','critical'].includes(v.impact));
+      expect(blocking,route).toEqual([]);
+    }
+  });
 
-for(const [width,height] of [[1440,900],[768,1024],[430,932],[390,844],[320,568]])test(`dedicated plans page has no horizontal overflow at ${width}x${height}`,async({page})=>{await page.setViewportSize({width,height});await waitPlans(page);for(const selector of ['.plans-hero','#plan-selector','#plan-finder','#support','.plans-final']){await scrollTo(page,selector);await expectNoOverflow(page)}if(width<=430){const dock=page.locator('.plans-mobile-dock>a');const box=await dock.boundingBox();expect(box.height).toBeGreaterThanOrEqual(44)}});
-
-test('capability selection is semantic and manual choice pauses auto-selection',async({page})=>{await waitReady(page);await scrollTo(page,'#services');const ai=page.locator('[data-capability="ai"]');await ai.click();await expect(ai).toHaveAttribute('aria-pressed','true');await expect(page.locator('[data-capability-title]')).toHaveText('AI Systems');await expect(page.locator('[data-capability-outcome]')).toHaveText('Remove friction where it counts.');await page.evaluate(()=>window.scrollBy(0,360));await page.waitForTimeout(250);await expect(ai).toHaveAttribute('aria-pressed','true')});
-
-test('FakhriMart proof stays inspectable in desktop, mobile, and together views',async({page})=>{await waitReady(page);await scrollTo(page,'#work');const gallery=page.locator('[data-proof-gallery]');for(const [view,label] of [['desktop','Desktop'],['mobile','Mobile'],['together','Together']]){await page.getByRole('button',{name:label,exact:true}).click();await expect(gallery).toHaveAttribute('data-view',view)}await expect(page.locator('#work img[src="/assets/fakhrimart-case-desktop.png"]')).toHaveCount(1);await expect(page.locator('#work img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(1);for(const fact of ['Yarn wholesaler','Catalogue-led browsing','Desktop + mobile experience','Enquiry-led flow'])await expect(page.locator('#work')).toContainText(fact);await expect(page.locator('#work a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(1)});
-
-test('theme choice is explicit and persists across reloads',async({page})=>{await waitReady(page);const toggle=page.locator('[data-theme-toggle]');await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await toggle.click();await expect(page.locator('html')).toHaveAttribute('data-theme','light');await expect(toggle).toHaveAttribute('aria-pressed','false');await page.reload({waitUntil:'networkidle'});await expect(page.locator('html')).toHaveAttribute('data-theme','light')});
-
-test('ambient animation can be paused without hiding the story',async({page})=>{await page.setViewportSize({width:1440,height:900});await waitReady(page);await scrollTo(page,'#starting-point');const toggle=page.locator('.chapter-rail [data-motion-toggle]');await toggle.click();await expect(toggle).toHaveAttribute('aria-pressed','true');await expect(page.locator('body')).toHaveClass(/motion-paused/);for(const section of ['#starting-point','#difference','#services','#work','#plans','#studio','#contact'])await expect(page.locator(section)).toBeVisible()});
-
-test('mobile menu is keyboard usable and exposes canonical chapters',async({page})=>{await page.setViewportSize({width:390,height:844});await waitReady(page);const button=page.locator('[data-menu-button]');const box=await button.boundingBox();expect(box.width).toBeGreaterThanOrEqual(44);expect(box.height).toBeGreaterThanOrEqual(44);await button.click();await expect(button).toHaveAttribute('aria-expanded','true');await expect(page.locator('[data-mobile-menu] a[href="#starting-point"]')).toBeVisible();await page.keyboard.press('Escape');await expect(button).toHaveAttribute('aria-expanded','false')});
-
-test('direct chapter hashes remain usable after enhancement',async({page})=>{await page.goto('/#plans',{waitUntil:'networkidle'});await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));await expect.poll(()=>page.evaluate(()=>location.hash)).toBe('#plans');await expect.poll(()=>page.evaluate(()=>Math.abs(document.querySelector('#plans').getBoundingClientRect().top))).toBeLessThan(110)});
-
-test('no-JavaScript mode keeps all facts, prices, proof, and contact actions',async({browser})=>{const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const page=await context.newPage();await page.goto('/',{waitUntil:'networkidle'});for(const section of ['#starting-point','#difference','#services','#work','#plans','#studio','#contact'])await expect(page.locator(section)).toBeVisible();await expect(page.locator('#plans')).toContainText('₹2,599');await expect(page.locator('#work')).toContainText('Yarn wholesaler');await expect(page.locator('#contact a[href^="mailto:"]').first()).toBeVisible();await expectNoOverflow(page);await context.close()});
-
-test('WebGL initialization failure exposes the readable fallback',async({browser})=>{const context=await browser.newContext();await context.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(kind,...args){if(kind==='webgl')return null;return original.call(this,kind,...args)}});const page=await context.newPage();await waitReady(page);await scrollTo(page,'#starting-point');await expect(page.locator('body')).toHaveAttribute('data-particle-mode','fallback');await expect(page.locator('#starting-point')).toBeVisible();await context.close()});
-
-test('reduced motion renders stable chapters and disables the canvas',async({browser})=>{const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});const page=await context.newPage();await waitReady(page);await expect(page.locator('body')).toHaveAttribute('data-particle-mode','static');await expect(page.locator('[data-particle-field]')).toHaveCSS('display','none');for(const section of ['#starting-point','#difference','#services','#work','#plans','#studio','#contact'])await expect(page.locator(section)).toBeVisible();for(const item of await page.locator('.reveal-item').all())expect(Number(await item.evaluate(el=>getComputedStyle(el).opacity))).toBeGreaterThan(.9);await context.close()});
-
-for(const [width,height] of [[1920,1080],[1440,900],[1366,768],[1024,768],[768,1024],[430,932],[390,844],[375,812],[360,800],[320,568]])test(`no horizontal overflow across the full film at ${width}x${height}`,async({page})=>{await page.setViewportSize({width,height});await waitReady(page);for(const section of ['#starting-point','#difference','#services','#work','#plans','#studio','#contact']){await scrollTo(page,section);await expectNoOverflow(page)}});
-
-test('mobile uses normal flow with full-size controls',async({page})=>{await page.setViewportSize({width:390,height:844});await waitReady(page);await scrollTo(page,'#services');for(const selector of ['#starting-point .chapter-header','.capability-focus','.care-index header'])expect(await page.locator(selector).evaluate(el=>getComputedStyle(el).position)).not.toBe('sticky');for(const button of await page.locator('[data-capability]').all()){const box=await button.boundingBox();expect(box.height).toBeGreaterThanOrEqual(44)}await scrollTo(page,'#plans');for(const link of await page.locator('.scope-step>a').all()){const box=await link.boundingBox();expect(box.height).toBeGreaterThanOrEqual(44)}});
-
-test('runtime produces no page errors during the complete scroll',async({page})=>{const errors=[];page.on('pageerror',error=>errors.push(error.message));await waitReady(page);for(const section of ['#starting-point','#difference','#services','#work','#plans','#studio','#contact']){await scrollTo(page,section);await page.waitForTimeout(80)}expect(errors).toEqual([])});
+  test('keyboard can reach the primary project action',async({page})=>{
+    await page.goto('/contact',{waitUntil:'domcontentloaded'});
+    for(let i=0;i<14;i++){
+      await page.keyboard.press('Tab');
+      const text=await page.evaluate(()=>document.activeElement?.textContent?.replace(/\s+/g,' ').trim()||'');
+      if(text.includes('Start on WhatsApp'))return;
+    }
+    throw new Error('Primary WhatsApp action was not reachable in keyboard order');
+  });
+});

@@ -1,0 +1,44 @@
+name: ZEXVRO Reference Audit
+
+on:
+  push:
+    branches: [zexvro-beyond-rebuild]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zexvro-reference-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install browser audit tooling
+        run: npm install --no-save playwright@latest
+      - name: Install Chromium
+        run: npx playwright install chromium
+      - name: Capture ZEXVRO reference states
+        run: node scripts/reference-audit.mjs
+      - name: Require useful evidence
+        run: |
+          test -s artifacts/reference-zexvro/report.json
+          test -s artifacts/reference-zexvro/SUMMARY.md
+          COUNT=$(find artifacts/reference-zexvro -name '*.png' | wc -l)
+          echo "Reference screenshots: $COUNT"
+          test "$COUNT" -ge 70
+      - name: Upload reference evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: zexvro-reference-${{ github.run_number }}
+          path: artifacts/reference-zexvro/
+          retention-days: 14

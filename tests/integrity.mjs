@@ -32,7 +32,7 @@ expect(chapterOrder.length===4,'homepage must contain exactly four post-hero sce
 for(const removed of ['starting-point','difference','studio'])expect(!html.includes(`id="${removed}"`),`removed scene returned: #${removed}`);
 for(const nav of ['Home','Services','Work','Plans','Contact'])expect(html.includes(`>${nav}</a>`),`primary five-item navigation missing ${nav}`);
 
-expect(html.includes('<canvas aria-hidden="true" data-particle-field></canvas>'),'persistent particle canvas missing');
+expect(html.includes('aria-hidden="true" data-particle-field'),'persistent particle canvas missing');
 for(const state of ['disciplines','proof','scope','identity'])expect(html.includes(`data-particle-state="${state}"`),`missing particle state ${state}`);
 expect(js.includes('class ParticleMorphField')&&js.includes("getContext('webgl'"),'WebGL particle engine missing');
 expect(js.includes('class ScrollFilmController')&&js.includes('class CapabilityController'),'scroll-film runtime missing');

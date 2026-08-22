@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 test.describe('BRAYROAI five-scene site',()=>{
   test('loads a focused five-item navigation and frozen hero',async({page})=>{
@@ -50,6 +51,14 @@ test.describe('BRAYROAI five-scene site',()=>{
     await expect(page.locator('.mobile-menu-inner>a[href^="#"]')).toHaveCount(5);
     await page.keyboard.press('Escape');
     await expect(page.locator('[data-menu-button]')).toHaveAttribute('aria-expanded','false');
+  });
+
+  test('has no serious or critical automated accessibility violations',async({page})=>{
+    await page.goto('/');
+    await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
+    const results=await new AxeBuilder({page}).disableRules(['color-contrast']).analyze();
+    const blocking=results.violations.filter(item=>item.impact==='serious'||item.impact==='critical');
+    expect(blocking,blocking.map(item=>`${item.id}: ${item.help}`).join('\n')).toEqual([]);
   });
 
   test('dedicated plans route stays available for detail',async({page})=>{

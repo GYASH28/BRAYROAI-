@@ -175,14 +175,14 @@ html[data-experience="enhanced"] .hero-v3 .hero-cta-stack .button{box-shadow:0 1
 
   .chapter-work{min-height:132svh;padding:12svh 0}
   .work-layout{align-items:start}
-  .work-layout .chapter-header{grid-column:1/5;position:sticky;top:15svh}
+  .work-layout .chapter-header{grid-column:1/5;grid-row:1/5;position:sticky;top:15svh}
   .work-layout .chapter-header h2{font-size:clamp(58px,6.2vw,100px)}
-  .proof-controls{grid-column:5/13;margin:0 0 18px;align-self:end}
-  .proof-gallery{grid-column:5/13;min-height:min(43vw,610px);margin-top:0}
+  .proof-controls{grid-column:5/13;grid-row:1;margin:0 0 18px;align-self:end}
+  .proof-gallery{grid-column:5/13;grid-row:2;min-height:min(43vw,610px);margin-top:0}
   .proof-desktop{width:90%}.proof-mobile{width:min(23%,250px)}
-  .proof-facts{grid-column:5/13;margin-top:26px}
+  .proof-facts{grid-column:5/13;grid-row:3;margin-top:26px}
   .proof-facts span{min-height:70px;padding:14px;font-size:8px}
-  .proof-link{grid-column:8/13;margin-top:20px;min-height:62px}
+  .proof-link{grid-column:8/13;grid-row:4;margin-top:20px;min-height:62px}
 
   .chapter-plans{min-height:168svh;padding:13svh 0 12svh}
   .plans-layout .chapter-header{margin-left:0;display:grid;grid-template-columns:5fr 3fr;gap:7%;align-items:end;max-width:none}

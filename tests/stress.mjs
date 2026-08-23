@@ -3,7 +3,7 @@ import { chromium } from '@playwright/test';
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
 const concurrency = Number(process.env.STRESS_CONCURRENCY || 24);
 const total = Number(process.env.STRESS_REQUESTS || 600);
-const routes = ['/', '/plans', '/founder', '/commercial-cut.css', '/commercial-cut.js', '/premium-polish.css', '/premium-polish.js', '/experience-v2.css', '/experience-v2-compat.css', '/experience-v2.js', '/plans-page.css', '/plans-page.js', '/founder-page.css', '/founder-page.js', '/scrollcraft.css', '/scrollcraft.js', '/assets/hero-background.webp', '/assets/yash-cutout.webp', '/assets/about-yash.webp', '/assets/brayroai-installation-hero.webp', '/assets/brayroai-process-table.webp', '/assets/fakhrimart-case-desktop.png', '/assets/fakhrimart-case-mobile.png'];
+const routes = ['/', '/plans', '/founder', '/commercial-cut.css', '/commercial-cut.js', '/premium-polish.css', '/premium-polish.js', '/direction-pass.css', '/direction-pass.js', '/plans-page.css', '/plans-page.js', '/founder-page.css', '/founder-page.js', '/scrollcraft.css', '/scrollcraft.js', '/assets/hero-background.webp', '/assets/yash-cutout.webp', '/assets/about-yash.webp', '/assets/brayroai-installation-hero.webp', '/assets/brayroai-process-table.webp', '/assets/fakhrimart-case-desktop.png', '/assets/fakhrimart-case-mobile.png'];
 const failures = [];
 const timings = [];
 const assert = (condition, message) => { if (!condition) failures.push(message); };
@@ -82,31 +82,33 @@ async function browserLoad() {
   assert(await page.locator('[data-project-intent]').getAttribute('data-sc-verify-state') === 'project:ai', 'project intent lost final state');
 
   assert(await page.locator('video').count() === 0, 'removed background video returned');
-  const chamber = page.locator('[data-signal-chamber]');
-  await chamber.scrollIntoViewIfNeeded();
+  assert(await page.locator('[data-signal-chamber],.signal-chamber__core,.signal-chamber__orbit').count() === 0, 'obsolete AI-dashboard chamber returned');
+  const sequence = page.locator('[data-editorial-sequence]');
+  await sequence.scrollIntoViewIfNeeded();
   await page.evaluate(async () => {
-    const node = document.querySelector('[data-signal-chamber]');
+    const node = document.querySelector('[data-editorial-sequence]');
     const top = node.getBoundingClientRect().top + scrollY;
     const range = Math.max(1,node.offsetHeight-innerHeight);
-    for (let i = 0; i <= 36; i += 1) {
-      scrollTo(0, top + range * (i / 36));
+    for (let i = 0; i <= 40; i += 1) {
+      scrollTo(0, top + range * (i / 40));
       if (i % 3 === 0) await new Promise(requestAnimationFrame);
     }
   });
-  const signal = await page.evaluate(() => {
-    const node = document.querySelector('[data-signal-chamber]');
+  await page.waitForTimeout(120);
+  const editorial = await page.evaluate(() => {
+    const node = document.querySelector('[data-editorial-sequence]');
     return {
-      status: document.querySelector('[data-signal-status]')?.textContent,
-      index: document.querySelector('[data-signal-index]')?.textContent,
-      scale: getComputedStyle(node).getPropertyValue('--signal-scale').trim(),
-      orbits: node.querySelectorAll('.signal-chamber__orbit').length,
-      core: node.querySelectorAll('.signal-chamber__core').length
+      state: node?.getAttribute('data-sc-verify-state'),
+      index: document.querySelector('[data-editorial-index]')?.textContent,
+      status: document.querySelector('[data-editorial-status]')?.textContent,
+      words: node?.querySelectorAll('.editorial-sequence__word').length,
+      join: Number(getComputedStyle(node.querySelector('.editorial-sequence__join')).opacity)
     };
   });
-  assert(signal.status === 'SHIPPING THE EXPERIENCE', 'signal chamber did not reach final narrative state');
-  assert(signal.index === '03 / 03', 'signal chamber index did not progress');
-  assert(Number(signal.scale) >= .99, 'signal chamber core did not converge');
-  assert(signal.orbits === 2 && signal.core === 1, 'signal chamber geometry incomplete');
+  assert(editorial.state === 'editorial:join', 'editorial sequence did not reach final narrative state');
+  assert(editorial.index === '04 / 04', 'editorial sequence index did not progress');
+  assert(editorial.status === 'ONE STUDIO / NO HANDOFF', 'editorial sequence payoff did not resolve');
+  assert(editorial.words === 3 && editorial.join >= .8, 'editorial sequence composition incomplete');
 
   for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
     await inspectPage(page, '/plans', '[data-plan-scene]', 5, viewport);
@@ -134,8 +136,8 @@ await httpLoad();
 await browserLoad();
 timings.sort((a, b) => a - b);
 const quantile = (q) => timings[Math.min(timings.length - 1, Math.floor(timings.length * q))] || Infinity;
-const summary = { httpRequests: total, concurrency, routes: routes.length, pages: 3, viewports: 4, scrollWrites: 392, interactionWrites: 470, failures: failures.length, medianMs: Math.round(quantile(.5)), p95Ms: Math.round(quantile(.95)), p99Ms: Math.round(quantile(.99)), elapsedMs: Math.round(performance.now() - started) };
+const summary = { httpRequests: total, concurrency, routes: routes.length, pages: 3, viewports: 4, scrollWrites: 396, interactionWrites: 470, failures: failures.length, medianMs: Math.round(quantile(.5)), p95Ms: Math.round(quantile(.95)), p99Ms: Math.round(quantile(.99)), elapsedMs: Math.round(performance.now() - started) };
 console.log(JSON.stringify(summary, null, 2));
 if (summary.p95Ms > 2000) failures.push(`HTTP p95 ${summary.p95Ms}ms exceeds 2000ms`);
 if (failures.length) { console.error(failures.slice(0,30).join('\n')); process.exit(1); }
-console.log('Stress test passed: load, resize, native signal chamber, scroll and interaction pressure stayed coherent across all three pages.');
+console.log('Stress test passed: load, resize, editorial handoff, scroll and interaction pressure stayed coherent across all three pages.');

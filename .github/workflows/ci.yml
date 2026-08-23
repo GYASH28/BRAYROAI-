@@ -36,9 +36,8 @@ jobs:
           test -f dist/latest-refinements.css
           test -f dist/premium-polish.css
           test -f dist/premium-polish.js
-          test -f dist/experience-v2.css
-          test -f dist/experience-v2-compat.css
-          test -f dist/experience-v2.js
+          test -f dist/direction-pass.css
+          test -f dist/direction-pass.js
           test -f dist/plans-page.css
           test -f dist/plans-page.js
           test -f dist/founder-page.css
@@ -52,17 +51,24 @@ jobs:
           test -f dist/assets/brayroai-process-table.webp
           test -f dist/assets/fakhrimart-case-desktop.png
           test -f dist/assets/fakhrimart-case-mobile.png
+          test ! -f dist/experience-v2.css
+          test ! -f dist/experience-v2-compat.css
+          test ! -f dist/experience-v2.js
           grep -q 'Digital, designed' dist/index.html
           grep -q 'id="plans"' dist/index.html
           grep -q 'premium-polish.css' dist/index.html
-          grep -q 'experience-v2.css' dist/index.html
-          grep -q 'experience-v2.js' dist/index.html
-          grep -q 'data-signal-chamber' dist/index.html
-          grep -q 'BRAYROAI / SIGNAL CHAMBER' dist/index.html
-          grep -q 'ONE CONNECTED PRODUCTION' dist/index.html
+          grep -q 'direction-pass.css' dist/index.html
+          grep -q 'direction-pass.js' dist/index.html
+          grep -q 'data-editorial-sequence' dist/index.html
+          grep -q 'ONE STUDIO.<br>NO <span>HANDOFF.</span>' dist/index.html
+          grep -q 'DESI<em>GN</em>' dist/index.html
+          grep -q 'BU<em>ILD</em>' dist/index.html
+          grep -q 'SH<em>IP</em>' dist/index.html
           ! grep -q '<video' dist/index.html
           ! grep -q 'data-commercial-film' dist/index.html
-          ! grep -q 'data-film-controls' dist/index.html
+          ! grep -q 'data-signal-chamber' dist/index.html
+          ! grep -q 'SIGNAL CHAMBER' dist/index.html
+          ! grep -q 'LIVE SYSTEM' dist/index.html
           grep -q '₹2,599' dist/index.html
           grep -q '₹3,999' dist/index.html
           grep -q '₹5,999+' dist/index.html
@@ -100,7 +106,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'data-signal-chamber' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹2,599'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'data-editorial-sequence' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹2,599'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -125,7 +131,7 @@ jobs:
             const frames=[
               ['hero',null,0],
               ['services','#services',0],
-              ['signal','[data-signal-chamber]',0],
+              ['editorial','[data-editorial-sequence]',0],
               ['work','#work',0],
               ['plans','#plans',0],
               ['studio','#studio',0],
@@ -141,7 +147,7 @@ jobs:
                 if(!target){await page.evaluate(()=>window.scrollTo(0,0));}
                 else{await page.evaluate(({target,offset})=>{const el=document.querySelector(target);const top=el.getBoundingClientRect().top+window.scrollY+offset;window.scrollTo(0,Math.max(0,top));},{target,offset});}
                 await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-                await page.waitForTimeout(name==='hero'?4550:320);
+                await page.waitForTimeout(name==='hero'?4550:360);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               for(const [route,name] of [['/plans','plans-page'],['/founder','founder-page']]){

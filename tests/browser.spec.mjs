@@ -25,6 +25,18 @@ test('locked opening and hero remain intact',async({page})=>{
   await expect(page.locator('[data-service-moment]')).toHaveCount(4);
 });
 
+test('opening sequence stays visible long enough to read before handing off to the hero',async({page})=>{
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  const loader=page.locator('[data-loader]');
+  await expect(loader).toBeVisible();
+  await expect(page.locator('[data-intro-status]')).toContainText('INITIALISING CRAFT');
+  await page.waitForTimeout(1100);
+  await expect(loader).toBeVisible();
+  await expect(page.locator('[data-intro-status]')).toContainText('ALIGNING SYSTEM');
+  await page.waitForFunction(()=>document.body.classList.contains('hero-ready'));
+  await expect(page.locator('#top')).toContainText('Digital, designed');
+});
+
 test('homepage has no serious or critical accessibility violations',async({page})=>{
   await waitReady(page);
   const results=await new AxeBuilder({page}).analyze();
@@ -62,15 +74,18 @@ test('real FakhriMart work owns the project sequence',async({page})=>{
   }
 });
 
-test('integrated pricing switches without leaving the page',async({page})=>{
+test('pricing presents complete one-time website builds without a maintenance tier',async({page})=>{
   await waitReady(page);
   await page.locator('#pricing').scrollIntoViewIfNeeded();
-  await expect(page.locator('[data-pricing-panel="build"]')).toBeVisible();
-  await expect(page.locator('[data-pricing-panel="build"]')).toContainText('₹17,999');
-  await page.locator('[data-pricing-tab="ongoing"]').click();
-  await expect(page.locator('[data-pricing-panel="build"]')).toBeHidden();
-  await expect(page.locator('[data-pricing-panel="ongoing"]')).toBeVisible();
-  await expect(page.locator('[data-pricing-panel="ongoing"]')).toContainText('₹3,999');
+  const pricing=page.locator('#pricing');
+  const panel=page.locator('[data-pricing-panel="build"]');
+  await expect(panel).toBeVisible();
+  for(const price of ['₹2,499','₹3,999','₹5,999','₹9,999+'])await expect(panel).toContainText(price);
+  await expect(pricing).toContainText('Every plan below is a complete website build.');
+  await expect(pricing).toContainText('one-time');
+  await expect(pricing).not.toContainText('/ month');
+  await expect(page.locator('[data-pricing-tab="ongoing"]')).toHaveCount(0);
+  await expect(panel.locator('article')).toHaveCount(4);
 });
 
 test('system surface can be interrupted by the visitor',async({page})=>{
@@ -118,12 +133,13 @@ test('mobile controls have comfortable touch targets and pricing does not collid
   const menu=await page.locator('[data-menu-button]').boundingBox();
   expect(menu.width).toBeGreaterThanOrEqual(44);expect(menu.height).toBeGreaterThanOrEqual(44);
   await page.locator('#pricing').scrollIntoViewIfNeeded();
-  for(const button of await page.locator('.pricing-toggle button').all()){
-    const b=await button.boundingBox();expect(b.height).toBeGreaterThanOrEqual(44);
-  }
-  const first=page.locator('[data-pricing-panel="build"] article').first();
+  const cards=page.locator('[data-pricing-panel="build"] article');
+  await expect(cards).toHaveCount(4);
+  const first=cards.first();
   const price=await first.locator('strong').boundingBox();const action=await first.locator('a').boundingBox();
+  expect(price).toBeTruthy();expect(action).toBeTruthy();
   expect(price.x+price.width).toBeLessThanOrEqual(action.x+2);
+  expect(action.height).toBeGreaterThanOrEqual(36);
 });
 
 test('post-hero styles are activated without being render blocking',async({page})=>{
@@ -135,6 +151,7 @@ test('post-hero styles are activated without being render blocking',async({page}
   await page.waitForFunction(()=>document.body.classList.contains('experience-ready'));
   await expect(page.locator('#experience-styles')).toHaveAttribute('media','all');
   await expect(page.locator('#post-fixes-styles')).toHaveAttribute('media','all');
+  await expect(page.locator('link[href="/refinements.css"]')).toHaveCount(1);
 });
 
 for(const [width,height] of [[1920,1080],[1440,900],[1366,768],[1280,720],[1024,768],[768,1024],[430,932],[390,844],[375,812],[360,800]]){

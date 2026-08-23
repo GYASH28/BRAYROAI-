@@ -5,6 +5,18 @@ const waitHome=async page=>{await page.goto('/',{waitUntil:'networkidle'});await
 const routes=[['/services','One direction.'],['/work','Fewer claims.'],['/plans','Accessible entry.'],['/contact','Bring the rough brief.']];
 
 test.describe('BRAYROAI rebuilt public experience',()=>{
+  test('keeps the latest launch film visible long enough to be perceived',async({page})=>{
+    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await page.waitForTimeout(1250);
+    const mid=await page.locator('[data-loader]').evaluate(el=>({opacity:Number(getComputedStyle(el).opacity),visibility:getComputedStyle(el).visibility}));
+    expect(mid.visibility).toBe('visible');
+    expect(mid.opacity).toBeGreaterThan(.8);
+    await page.waitForTimeout(3200);
+    const end=await page.locator('[data-loader]').evaluate(el=>({opacity:Number(getComputedStyle(el).opacity),visibility:getComputedStyle(el).visibility}));
+    expect(end.opacity).toBeLessThan(.1);
+    expect(end.visibility).toBe('hidden');
+  });
+
   test('keeps the frozen hero and exposes only the five primary destinations',async({page})=>{
     await waitHome(page);
     await expect(page.locator('#top h1')).toContainText('Digital, designed');
@@ -19,11 +31,22 @@ test.describe('BRAYROAI rebuilt public experience',()=>{
     await waitHome(page);
     const text=await page.locator('body').innerText();
     for(const price of ['₹2,599','₹3,999','₹5,999+'])expect(text).toContain(price);
+    expect(text).toContain('Every plan below is a complete website build');
+    expect(text).toContain('not a maintenance subscription');
     expect(text).not.toContain('₹9,999');
     expect(text).not.toContain('₹17,999');
     await expect(page.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(1);
     await expect(page.locator('a[href="https://github.com/GYASH28/LERNIOAI"]')).toHaveCount(1);
     await expect(page.locator('a[href="https://github.com/GYASH28/B.R.A.C.E"]')).toHaveCount(1);
+  });
+
+  test('dedicated plans page makes the one-time website-build model explicit',async({page})=>{
+    await page.goto('/plans',{waitUntil:'domcontentloaded'});
+    const text=await page.locator('main').innerText();
+    expect(text).toContain('Every plan on this page is for making a complete website');
+    expect(text).toContain('These are not monthly maintenance plans');
+    await expect(page.locator('[data-plan-row]')).toHaveCount(3);
+    await expect(page.locator('[data-plan-row="business"]')).toHaveClass(/is-featured/);
   });
 
   test('all four deep destinations build as real pages',async({page})=>{

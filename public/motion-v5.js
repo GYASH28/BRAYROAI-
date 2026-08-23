@@ -87,8 +87,8 @@
       this.output=document.querySelector('[data-plan-mode-output]');
       if(!this.root || !this.buttons.length) return;
       this.states={
-        monthly:['MONTHLY / ONGOING PARTNERSHIP','₹3,999/mo','Continuous website improvement, content changes and design or conversion refinement without starting a new project each time.','#monthly'],
-        onetime:['ONE-TIME / COMPLETE BUILD','₹17,999','A complete business website project with strategy, design, development, responsive refinement and launch as one scoped engagement.','#builds']
+        monthly:['MONTHLY / ONGOING PARTNERSHIP','Monthly Growth','₹3,999/mo','Continuous website improvement, content changes and design or conversion refinement without starting a new project each time.','#monthly'],
+        onetime:['ONE-TIME / COMPLETE BUILD','Business Experience','₹17,999','A complete business website project with strategy, design, development, responsive refinement and launch as one scoped engagement.','#builds']
       };
       this.buttons.forEach(button=>button.addEventListener('click',()=>this.select(button.dataset.planMode)));
       this.select(this.root.dataset.defaultMode || 'onetime');
@@ -99,8 +99,8 @@
       this.root.setAttribute('data-sc-verify-state',`mode:${key}`);
       this.buttons.forEach(button=>{const active=button.dataset.planMode===key;button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));});
       if(this.output){
-        const small=this.output.querySelector('small');const strong=this.output.querySelector('strong');const p=this.output.querySelector('p');const a=this.output.querySelector('a');
-        if(small) small.textContent=state[0]; if(strong) strong.textContent=state[1]; if(p) p.textContent=state[2]; if(a) a.href=state[3];
+        const small=this.output.querySelector('small');const title=this.output.querySelector('h2');const strong=this.output.querySelector('strong');const p=this.output.querySelector('p');const a=this.output.querySelector('a');
+        if(small) small.textContent=state[0]; if(title) title.textContent=state[1]; if(strong) strong.textContent=state[2]; if(p) p.textContent=state[3]; if(a) a.href=state[4];
       }
     }
   }

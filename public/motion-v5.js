@@ -4,6 +4,24 @@
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
   const root = document.documentElement;
 
+  const mountMotionV6 = () => {
+    if (!document.querySelector('link[data-motion-v6]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/motion-v6.css';
+      link.dataset.motionV6 = '';
+      document.head.append(link);
+    }
+    if (!document.querySelector('script[data-motion-v6]')) {
+      const script = document.createElement('script');
+      script.src = '/motion-v6.js';
+      script.defer = true;
+      script.dataset.motionV6 = '';
+      document.body.append(script);
+    }
+  };
+  mountMotionV6();
+
   class MicroCursor {
     constructor() {
       if (!fine || reduced) return;

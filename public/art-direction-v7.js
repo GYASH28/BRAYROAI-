@@ -30,6 +30,24 @@
   };
   mountV8();
 
+  const mountV9 = () => {
+    if (!document.querySelector('link[data-art-direction-v9]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/art-direction-v9.css';
+      link.dataset.artDirectionV9 = '';
+      document.head.append(link);
+    }
+    if (!document.querySelector('script[data-art-direction-v9]')) {
+      const script = document.createElement('script');
+      script.src = '/art-direction-v9.js';
+      script.defer = true;
+      script.dataset.artDirectionV9 = '';
+      document.body.append(script);
+    }
+  };
+  mountV9();
+
   body.classList.add('v7-ready');
 
   class NavCompact {

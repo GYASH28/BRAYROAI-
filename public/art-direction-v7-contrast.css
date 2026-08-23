@@ -1,0 +1,70 @@
+/* V7 light-surface contrast + positioning hardening. */
+:root{--v7-orange-ink:#aa3205;--v7-orange-dark-ui:#ff7f50}
+
+.build-card{position:relative!important}
+.terms-nav{z-index:100!important}
+body.terms-body::before{
+  background:linear-gradient(180deg,rgba(236,232,223,.88),rgba(236,232,223,.4) 48%,transparent)!important;
+}
+
+/* Bright orange stays a graphic accent. Text on paper uses a deeper accessible brand orange. */
+.pricing-mini.v7-recommended .v7-reco-badge,
+.pricing-mini.v7-recommended i,
+.build-card.is-featured .v7-reco-badge,
+.founder-preview em,
+.founder-preview .text-link span,
+.story em,
+.terms-hero h1 em,
+.terms-section__num,
+.terms-toc a.is-current::before,
+.editorial-sequence__word em{color:var(--v7-orange-ink)!important}
+
+/* The dark Terms navigation needs a brighter text-orange than paper surfaces do. */
+.terms-nav__brand span{color:var(--v7-orange-dark-ui)!important}
+
+/* Normal-size copy on light sections uses deliberate readable ink values. */
+.founder-preview .eyebrow,
+.v7-founder-kicker,
+.founder-preview .section-heading p,
+.story .eyebrow,
+.story__copy p,
+.story__copy span,
+.terms-hero .eyebrow,
+.terms-hero p,
+.terms-meta span,
+.terms-toc small,
+.terms-toc a,
+.terms-intro p,
+.terms-section p,
+.terms-section li,
+.terms-note{color:rgba(10,11,13,.72)!important}
+
+.story__copy b,
+.terms-intro strong,
+.terms-section h2,
+.terms-card strong{color:#0a0b0d!important}
+
+/* Tiny editorial indices must remain readable even though they are decorative. */
+.story .m5-section-index,
+.terms-section .m5-section-index{color:#55514c!important}
+
+/* Keep light featured-plan details readable without losing hierarchy. */
+.build-card.is-featured>header small,
+.build-card.is-featured small,
+.pricing-mini.v7-recommended small,
+.pricing-mini.v7-recommended p,
+.pricing-mini.v7-recommended strong span{color:rgba(10,11,13,.7)!important}
+.build-card.is-featured>section>p:first-child,
+.build-card.is-featured li,
+.build-card.is-featured .boundary{color:rgba(10,11,13,.72)!important}
+
+/* Legal-document footer is dark again, so its utility text needs a stronger neutral. */
+.terms-close>small,
+.terms-footer,
+.terms-footer span,
+.terms-footer a{color:#90908d!important}
+
+/* The fixed cinematic section-state rail is useful on the expressive pages, not on a legal document. */
+.terms-body .v8-section-state{display:none!important}
+
+@media(prefers-reduced-motion:reduce){.build-card{transition:none!important}}

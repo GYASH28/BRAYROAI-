@@ -1,0 +1,314 @@
+/* BRAYROAI / Art Direction V7
+   Design-system refinement: editorial contrast, cleaner surfaces, stronger hierarchy.
+   Motion remains restrained and subordinate to layout. */
+
+:root{
+  --v7-ink:#07080a;
+  --v7-ink-2:#0b0d10;
+  --v7-ink-3:#111419;
+  --v7-paper:#ece8df;
+  --v7-paper-2:#f4f0e8;
+  --v7-text:#f2efe8;
+  --v7-muted:rgba(242,239,232,.58);
+  --v7-dark:#0a0b0d;
+  --v7-orange:#ff5a1f;
+  --v7-line:rgba(255,255,255,.11);
+  --v7-radius:1rem;
+  --v7-ease:cubic-bezier(.16,1,.3,1);
+  --v7-local:0;
+  --v7-tilt-x:0deg;
+  --v7-tilt-y:0deg;
+}
+
+html{font-synthesis:none;text-rendering:optimizeLegibility}
+body{background:var(--v7-ink);letter-spacing:-.005em}
+.scene-shell,.plan-shell,.founder-shell{width:min(92rem,calc(100% - clamp(2rem,7vw,8rem)))!important}
+.section-heading,.plan-heading,.founder-heading{max-width:62rem}
+.section-heading h2,.plan-heading h2,.founder-heading h2,.care__heading h2{letter-spacing:-.078em!important}
+.section-heading>p:last-of-type,.plan-heading>p:last-child,.founder-heading>p:last-child{max-width:39rem!important;color:rgba(242,239,232,.61)!important;line-height:1.72!important}
+.eyebrow{letter-spacing:.145em!important;font-size:.62rem!important}
+
+/* Navigation becomes calmer and more product-like without turning into a UI pill bar. */
+.site-nav,.plans-nav,.founder-nav,.terms-nav{
+  border-color:rgba(255,255,255,.095)!important;
+  background:rgba(8,9,11,.74)!important;
+  box-shadow:0 .7rem 2.6rem rgba(0,0,0,.23)!important;
+  backdrop-filter:blur(18px) saturate(1.08)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.08)!important;
+}
+.site-nav,.plans-nav,.founder-nav{border-radius:999px!important;min-height:3.45rem!important}
+.v7-nav-compact .site-nav,.v7-nav-compact .plans-nav,.v7-nav-compact .founder-nav{min-height:3.2rem!important;top:.55rem!important}
+.site-nav__brand,.plans-nav__brand,.founder-nav__brand,.terms-nav__brand{letter-spacing:-.065em!important}
+.site-nav nav a,.plans-nav nav a,.founder-nav nav a,.terms-nav nav a{font-weight:650!important;letter-spacing:.005em}
+.site-nav__cta,.plans-nav__back,.founder-nav__back,.terms-nav__back{box-shadow:none!important;border:1px solid rgba(255,255,255,.08)}
+
+/* Global surfaces: reduce generic glass and make hierarchy come from layout. */
+.glass-panel,.glass-control{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+.glass-panel{background:rgba(255,255,255,.025)!important;border-color:rgba(255,255,255,.105)!important}
+.glass-control{background:rgba(255,255,255,.055)!important;border-color:rgba(255,255,255,.11)!important}
+
+/* HERO — retain the core composition, sharpen the framing. */
+.hero__stage{background:#060709!important}
+.hero__stage::before{
+  content:"";
+  position:absolute;
+  z-index:5;
+  inset:clamp(.75rem,1.3vw,1.2rem);
+  border:1px solid rgba(255,255,255,.08);
+  pointer-events:none;
+  opacity:.72;
+}
+.hero__stage::after{opacity:.42!important}
+.hero__grid{opacity:.105!important;background-size:10vw 10vw!important}
+.hero__shade{background:linear-gradient(90deg,rgba(5,6,8,.96) 0,rgba(5,6,8,.62) 34%,rgba(5,6,8,.08) 67%,transparent 78%),linear-gradient(180deg,rgba(5,6,8,.22),transparent 34%,rgba(5,6,8,.62))!important}
+.hero__copy{left:clamp(2rem,5vw,5.5rem)!important;width:min(61rem,68vw)!important}
+.hero__copy h1{font-size:clamp(4.75rem,8.9vw,10.6rem)!important;line-height:.8!important}
+.hero__body{max-width:34rem!important;color:rgba(255,255,255,.63)!important}
+.hero__actions{gap:.55rem!important}
+.primary-action,.colour-director{border-radius:999px!important;min-height:3.35rem!important}
+.primary-action{box-shadow:none!important;padding-inline:1.35rem!important}
+.colour-director{background:rgba(255,255,255,.05)!important}
+.hero__credit{right:2rem!important;bottom:1.65rem!important;color:rgba(255,255,255,.34)!important;letter-spacing:.16em!important}
+.v7-hero-meta{
+  position:absolute;z-index:8;left:clamp(2rem,5vw,5.5rem);bottom:1.45rem;
+  display:flex;gap:1.2rem;align-items:center;
+  color:rgba(255,255,255,.38);font:500 .55rem/1 "DM Mono",monospace;letter-spacing:.13em;
+  pointer-events:none
+}
+.v7-hero-meta span+span::before{content:"/";margin-right:1.2rem;color:rgba(255,255,255,.18)}
+
+/* SERVICES — convert the old floating instrument into a real editorial split layout. */
+.services{padding-block:clamp(7rem,12svh,11rem)!important;background:var(--v7-ink-2)!important}
+.capability-instrument{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.32fr) minmax(21rem,.68fr)!important;
+  grid-template-rows:auto 1fr!important;
+  min-height:clamp(34rem,58vw,47rem)!important;
+  margin-top:clamp(2.8rem,5vw,4.8rem)!important;
+  overflow:hidden!important;
+  border-radius:var(--v7-radius)!important;
+  background:#0a0c0f!important;
+  border:1px solid rgba(255,255,255,.1)!important;
+}
+.capability-instrument__visual{
+  position:relative!important;inset:auto!important;
+  grid-column:1!important;grid-row:1/3!important;
+  min-height:100%!important;
+  border-right:1px solid rgba(255,255,255,.1)
+}
+.capability-instrument__visual::after{background:linear-gradient(180deg,rgba(7,8,10,.08),rgba(7,8,10,.18) 60%,rgba(7,8,10,.55))!important}
+.capability-instrument__visual img{transform:scale(1.035);filter:saturate(.78) contrast(1.04)!important}
+.capability-instrument__controls{
+  position:relative!important;top:auto!important;right:auto!important;left:auto!important;
+  grid-column:2!important;grid-row:1!important;
+  display:grid!important;gap:0!important;padding:0!important;
+  border-bottom:1px solid rgba(255,255,255,.1)
+}
+.capability-instrument__controls button{
+  min-height:4.35rem!important;justify-content:flex-start!important;gap:1.1rem!important;
+  padding:0 1.35rem!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.07)!important;
+  border-radius:0!important;background:transparent!important;color:rgba(255,255,255,.52)!important;
+  text-align:left!important
+}
+.capability-instrument__controls button:last-child{border-bottom:0!important}
+.capability-instrument__controls button.is-active{color:#fff!important;background:rgba(255,255,255,.035)!important}
+.capability-instrument__controls button.is-active span{color:var(--v7-orange)!important}
+.capability-instrument__copy{
+  position:relative!important;right:auto!important;bottom:auto!important;left:auto!important;width:auto!important;
+  grid-column:2!important;grid-row:2!important;align-self:end!important;
+  padding:clamp(1.5rem,3vw,2.5rem)!important
+}
+.capability-instrument__copy h3{font-size:clamp(2.7rem,4.4vw,5rem)!important;line-height:.86!important;letter-spacing:-.07em!important}
+.capability-instrument__copy p{max-width:27rem!important;color:rgba(255,255,255,.55)!important}
+.capability-instrument__signal{opacity:.36!important}
+
+/* Editorial sequence: preserve the structure but make the frame feel more authored. */
+.editorial-sequence__frame{border-color:rgba(10,11,12,.17)!important}
+.editorial-sequence__topline,.editorial-sequence__footer{letter-spacing:.08em!important}
+.editorial-sequence__ghost{opacity:.035!important}
+.editorial-sequence__word{letter-spacing:-.09em!important}
+
+/* WORK — cleaner device composition and a studio proof strip. */
+.work{padding-block:clamp(7rem,12svh,11rem)!important;background:#080a0d!important}
+.work__layout{grid-template-columns:minmax(18rem,.52fr) minmax(0,1.48fr)!important;gap:clamp(2.5rem,6vw,7rem)!important;align-items:center!important}
+.work__canvas{perspective:1200px;transform-style:preserve-3d;min-height:clamp(34rem,54vw,48rem)!important}
+.work__desktop{
+  overflow:hidden!important;border-radius:.9rem!important;border:1px solid rgba(255,255,255,.14)!important;
+  background:#111317!important;padding:0!important;
+  transform:rotateX(var(--v7-tilt-x)) rotateY(var(--v7-tilt-y)) translateZ(0)!important;
+  transition:transform .42s var(--v7-ease),border-color .35s ease!important;
+}
+.work__desktop img{width:100%;height:auto!important;scale:1!important;translate:0 0!important}
+.work__mobile{border-radius:1.05rem!important;border:1px solid rgba(255,255,255,.18)!important;background:#101216!important;padding:.28rem!important;box-shadow:0 2rem 5rem rgba(0,0,0,.38)!important}
+.v7-browserbar{height:2rem;display:flex;align-items:center;gap:.36rem;padding:0 .72rem;background:#0d0f12;border-bottom:1px solid rgba(255,255,255,.08)}
+.v7-browserbar i{width:.35rem;height:.35rem;border-radius:50%;background:rgba(255,255,255,.22)}
+.v7-browserbar span{margin-left:auto;color:rgba(255,255,255,.28);font:500 .5rem/1 "DM Mono",monospace;letter-spacing:.12em}
+.v7-work-proof{
+  position:absolute;z-index:13;left:0;right:0;bottom:-2.8rem;
+  display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1)
+}
+.v7-work-proof span{padding:.8rem .9rem;border-right:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.43);font:500 .52rem/1.3 "DM Mono",monospace;letter-spacing:.1em}
+.v7-work-proof span:last-child{border-right:0}
+.v7-work-proof b{display:block;margin-top:.28rem;color:rgba(255,255,255,.76);font:650 .68rem/1.2 Manrope,sans-serif;letter-spacing:0}
+
+/* HOME PRICING — clearer hierarchy and one confident recommendation per family. */
+.plans-preview{background:#090b0e!important}
+.pricing-dual{gap:clamp(3rem,6vw,5.5rem)!important}
+.pricing-band{padding-top:1.45rem!important}
+.pricing-band__head{margin-bottom:1rem!important}
+.pricing-band__badge{border-radius:999px!important;background:transparent!important}
+.pricing-band__grid{border-color:rgba(255,255,255,.11)!important}
+.pricing-mini{min-height:15rem!important;padding:1.3rem!important}
+.pricing-mini strong{font-size:clamp(2.5rem,4.4vw,4.6rem)!important}
+.pricing-mini.v7-recommended{
+  background:var(--v7-paper)!important;color:var(--v7-dark)!important;
+  border-right-color:rgba(10,11,13,.12)!important
+}
+.pricing-mini.v7-recommended small,.pricing-mini.v7-recommended p{color:rgba(10,11,13,.56)!important}
+.pricing-mini.v7-recommended strong{color:var(--v7-dark)!important}
+.pricing-mini.v7-recommended strong span{color:rgba(10,11,13,.48)!important}
+.pricing-mini.v7-recommended i{color:var(--v7-orange)!important}
+.v7-reco-badge{position:absolute;top:1rem;right:1rem;color:var(--v7-orange)!important;font:500 .52rem/1 "DM Mono",monospace;letter-spacing:.12em}
+
+/* DEDICATED PLANS — transform the featured plan into an intentional paper object. */
+.plans-hero{background:linear-gradient(180deg,#08090b 0,#0a0c0f 100%)!important}
+.plan-mode-switch{border-radius:999px!important;overflow:hidden!important;background:rgba(255,255,255,.025)!important}
+.plan-mode-switch button{min-height:3rem!important}
+.scope-switch[data-plan-mode-output]{border-radius:var(--v7-radius)!important;background:rgba(255,255,255,.025)!important;border-color:rgba(255,255,255,.1)!important}
+.plan-family__heading{padding-bottom:1.3rem!important}
+.build-stack{gap:1.15rem!important}
+.build-card{
+  border-radius:var(--v7-radius)!important;background:rgba(255,255,255,.018)!important;
+  border-color:rgba(255,255,255,.105)!important;box-shadow:none!important;
+  transition:translate .48s var(--v7-ease),border-color .35s ease!important
+}
+.build-card:hover{translate:0 -.22rem!important;transform:none!important;box-shadow:none!important}
+.build-card.is-featured{
+  background:var(--v7-paper)!important;color:var(--v7-dark)!important;border-color:transparent!important
+}
+.build-card.is-featured>header{border-right-color:rgba(10,11,13,.13)!important}
+.build-card.is-featured>header span{color:rgba(10,11,13,.14)!important}
+.build-card.is-featured>header small,.build-card.is-featured small{color:rgba(10,11,13,.48)!important}
+.build-card.is-featured h3,.build-card.is-featured strong{color:var(--v7-dark)!important}
+.build-card.is-featured>section{border-left-color:rgba(10,11,13,.12)!important}
+.build-card.is-featured>section>p:first-child,.build-card.is-featured li,.build-card.is-featured .boundary{color:rgba(10,11,13,.6)!important}
+.build-card.is-featured li::before{color:var(--v7-orange)!important}
+.build-card.is-featured>section a{background:var(--v7-dark)!important;color:var(--v7-paper)!important}
+.build-card.is-featured>section a span{color:var(--v7-orange)!important}
+.compare-table{border-top-color:rgba(255,255,255,.12)!important}
+.compare-table>div{min-height:4.6rem!important}
+.care-grid article{border-radius:var(--v7-radius)!important;background:rgba(255,255,255,.02)!important}
+
+/* HOME FOUNDER — a warm editorial interruption, intentionally unlike the tech sections. */
+.founder-preview{background:var(--v7-paper)!important;color:var(--v7-dark)!important}
+.founder-preview::before{background:linear-gradient(90deg,transparent,rgba(10,11,13,.14),transparent)!important}
+.founder-preview .eyebrow{color:rgba(10,11,13,.48)!important}
+.founder-preview .section-heading h2{color:var(--v7-dark)!important}
+.founder-preview .section-heading p{color:rgba(10,11,13,.58)!important}
+.founder-preview .text-link{color:var(--v7-dark)!important;border-bottom-color:rgba(10,11,13,.32)!important}
+.founder-preview__portrait{border-radius:.85rem!important;box-shadow:none!important;background:#c8c3ba!important}
+.founder-preview__portrait img{filter:grayscale(1) contrast(1.03)!important}
+.founder-preview__portrait figcaption{color:#fff!important}
+.founder-preview .m5-section-index{color:rgba(10,11,13,.28)!important}
+.v7-founder-kicker{display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;color:rgba(10,11,13,.44);font:500 .56rem/1 "DM Mono",monospace;letter-spacing:.12em}
+.v7-founder-kicker::before{content:"";width:2.4rem;height:1px;background:var(--v7-orange)}
+
+/* FOUNDER PAGE — magazine pacing: light story + orange conviction. */
+.founder-hero__copy{max-width:58rem!important}
+.story{background:var(--v7-paper)!important;color:var(--v7-dark)!important}
+.story::before{background:linear-gradient(90deg,transparent,rgba(10,11,13,.14),transparent)!important}
+.story .eyebrow,.story__copy p,.story__copy span{color:rgba(10,11,13,.55)!important}
+.story .founder-heading h2,.story__copy b{color:var(--v7-dark)!important}
+.story__copy>div{border-top-color:rgba(10,11,13,.14)!important;border-bottom-color:rgba(10,11,13,.14)!important}
+.principle-instrument{border-radius:var(--v7-radius)!important;background:#0a0c0f!important;border-color:rgba(255,255,255,.1)!important}
+.method__image{border-radius:.85rem!important;overflow:hidden!important}
+.method__image img{filter:saturate(.78) contrast(1.04)!important}
+.conviction{background:var(--v7-orange)!important;color:var(--v7-dark)!important}
+.conviction blockquote p,.conviction blockquote footer{color:var(--v7-dark)!important}
+.conviction__line{background:rgba(10,11,13,.28)!important}
+
+/* CONTACT — less orb, more typography. */
+.close,.plan-close,.founder-close{background:#060708!important}
+.close::before,.plan-close::before,.founder-close::before{
+  content:"BRAYROAI";position:absolute;left:50%;top:50%;translate:-50% -50%;
+  color:rgba(255,255,255,.018);font:400 clamp(8rem,22vw,26rem)/.7 "Archivo Black",sans-serif;
+  letter-spacing:-.1em;pointer-events:none;white-space:nowrap
+}
+.close__copy h2,.plan-close__copy h2,.founder-close__copy h2{max-width:72rem!important}
+.close__action,.plan-close__copy>a,.founder-close__copy>a{border-bottom-width:1px!important}
+
+/* TERMS — switch from dark dashboard to readable editorial paper. */
+body.terms-body{background:var(--v7-paper)!important;color:var(--v7-dark)!important}
+.terms-main{background:var(--v7-paper)!important}
+.terms-hero{border-bottom-color:rgba(10,11,13,.13)!important;background:var(--v7-paper)!important}
+.terms-hero::before{color:rgba(10,11,13,.035)!important}
+.terms-hero .eyebrow{color:rgba(10,11,13,.45)!important}
+.terms-hero h1{color:var(--v7-dark)!important;font-family:"Archivo Black",sans-serif!important;font-weight:400!important}
+.terms-hero p{color:rgba(10,11,13,.58)!important}
+.terms-meta span{border-color:rgba(10,11,13,.13)!important;color:rgba(10,11,13,.48)!important}
+.terms-layout{max-width:1360px!important}
+.terms-toc small{color:rgba(10,11,13,.38)!important}
+.terms-toc a{color:rgba(10,11,13,.44)!important;border-bottom-color:rgba(10,11,13,.09)!important}
+.terms-toc a:hover,.terms-toc a.is-current{color:var(--v7-dark)!important}
+.terms-intro,.terms-section{border-bottom-color:rgba(10,11,13,.12)!important}
+.terms-intro p,.terms-section p,.terms-section li{color:rgba(10,11,13,.6)!important}
+.terms-section h2,.terms-intro strong{color:var(--v7-dark)!important}
+.terms-card{background:rgba(255,255,255,.3)!important;border-color:rgba(10,11,13,.12)!important}
+.terms-card strong{color:var(--v7-dark)!important}
+.terms-note{color:rgba(10,11,13,.44)!important}
+.terms-close{background:#101216!important;color:var(--v7-paper)!important}
+.terms-close small{color:rgba(242,239,232,.46)!important}
+.terms-close a{color:var(--v7-paper)!important;border-bottom-color:rgba(242,239,232,.3)!important}
+.terms-footer{background:#101216!important;color:rgba(242,239,232,.46)!important;border-top-color:rgba(255,255,255,.08)!important}
+.terms-nav{background:rgba(8,9,11,.82)!important}
+
+/* Small interaction polish introduced by V7. */
+[data-v7-enter]{opacity:0;translate:0 1.15rem;filter:blur(5px);transition:opacity .7s var(--v7-ease),translate .85s var(--v7-ease),filter .85s var(--v7-ease)}
+[data-v7-enter].v7-entered{opacity:1;translate:0 0;filter:blur(0)}
+.v7-hairline{position:absolute;z-index:4;left:0;top:0;width:clamp(3rem,7vw,7rem);height:1px;background:var(--v7-orange);transform:scaleX(var(--v7-line,0));transform-origin:left;pointer-events:none}
+
+@media(hover:hover) and (pointer:fine){
+  .pricing-mini:not(.v7-recommended):hover{background:rgba(255,255,255,.035)!important}
+  .v7-recommended:hover{translate:0 -.18rem}
+  .founder-preview__portrait:hover img{filter:grayscale(.2) contrast(1.02)!important;transform:scale(1.018)!important}
+}
+
+@media(max-width:980px){
+  .work__layout{grid-template-columns:1fr!important}
+  .v7-work-proof{bottom:-2.6rem}
+  .capability-instrument{grid-template-columns:1fr minmax(18rem,.7fr)!important}
+}
+
+@media(max-width:760px){
+  .scene-shell,.plan-shell,.founder-shell{width:calc(100% - 2rem)!important}
+  .site-nav,.plans-nav,.founder-nav{border-radius:.85rem!important;min-height:3.25rem!important}
+  .hero__stage::before{inset:.55rem}.hero__copy{left:1rem!important;width:auto!important}.v7-hero-meta{display:none}
+  .hero__grid{background-size:22vw 22vw!important;opacity:.08!important}
+  .services{padding-block:7rem!important}
+  .capability-instrument{display:block!important;min-height:43rem!important;border-radius:.85rem!important}
+  .capability-instrument__visual{position:absolute!important;inset:0!important;border-right:0!important}
+  .capability-instrument__controls{position:absolute!important;z-index:5!important;top:1rem!important;left:1rem!important;right:1rem!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;border:1px solid rgba(255,255,255,.11)!important;border-radius:999px!important;overflow:hidden!important;background:rgba(7,8,10,.72)!important;backdrop-filter:blur(12px)!important}
+  .capability-instrument__controls button{min-height:2.75rem!important;justify-content:center!important;padding:0 .45rem!important;border:0!important;border-right:1px solid rgba(255,255,255,.08)!important}
+  .capability-instrument__controls button:last-child{border-right:0!important}.capability-instrument__controls button span{display:none!important}
+  .capability-instrument__copy{position:absolute!important;z-index:4!important;right:1.2rem!important;bottom:1.4rem!important;left:1.2rem!important;padding:0!important}
+  .capability-instrument__copy h3{font-size:2.85rem!important}
+  .work{padding-block:7rem!important}.work__canvas{min-height:31rem!important}.v7-work-proof{display:none}.work__desktop{transform:none!important}
+  .pricing-band__grid{mask-image:none!important}.pricing-mini.v7-recommended{background:rgba(242,239,232,.96)!important}
+  .build-card.is-featured{background:var(--v7-paper)!important}
+  .founder-preview{padding-block:7rem!important}.founder-preview__layout{grid-template-columns:1fr!important}
+  .story{padding-block:7rem!important}
+  .conviction{min-height:82svh!important}
+  .terms-layout{padding-inline:1.2rem!important}.terms-hero{padding-inline:1.2rem!important}.terms-toc{display:none!important}
+  .m5-cursor{display:none!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  [data-v7-enter]{opacity:1!important;translate:0!important;filter:none!important;transition:none!important}
+  .work__desktop{transform:none!important;transition:none!important}
+  .v7-hairline{transform:scaleX(1)!important}
+  .site-nav,.plans-nav,.founder-nav{transition:none!important}
+}

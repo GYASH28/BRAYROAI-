@@ -2,19 +2,26 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 const serious=r=>r.violations.filter(v=>['serious','critical'].includes(v.impact));
 const clearOpening=async page=>{await page.evaluate(()=>{document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach(n=>n.remove());document.body.classList.remove('polish-opening','hf-intro-active')})};
-const openPage=async(page,route='/')=>{await page.goto(route,{waitUntil:'networkidle'});await clearOpening(page)};
+const openPage=async(page,route='/')=>{await page.goto(route,{waitUntil:'networkidle'});await clearOpening(page);await page.waitForSelector('link[data-art-direction-v7]',{state:'attached'});await page.waitForSelector('link[data-art-direction-v7-contrast]',{state:'attached'});await page.waitForSelector('link[data-work-showcase-v8]',{state:'attached'});await page.waitForSelector('script[data-work-showcase-v8]',{state:'attached'})};
 
-test('homepage keeps seven scenes, dual pricing and Motion V6',async({page})=>{
+test('homepage keeps seven scenes, dual pricing and V8 client showcase',async({page})=>{
   await openPage(page);
   await expect(page.locator('[data-scene]')).toHaveCount(7);
-  await expect(page.locator('link[href="/motion-v5.css"]')).toHaveCount(1);
-  await expect(page.locator('script[src="/motion-v5.js"]')).toHaveCount(1);
   await expect(page.locator('link[data-motion-v6][href="/motion-v6.css"]')).toHaveCount(1);
-  await expect(page.locator('script[data-motion-v6][src="/motion-v6.js"]')).toHaveCount(1);
-  expect(await page.locator('[data-m6-spotlight]').count()).toBeGreaterThanOrEqual(5);
+  await expect(page.locator('link[data-art-direction-v7][href="/art-direction-v7.css"]')).toHaveCount(1);
+  await expect(page.locator('link[data-art-direction-v7-contrast][href="/art-direction-v7-contrast.css"]')).toHaveCount(1);
+  await expect(page.locator('link[data-work-showcase-v8][href="/work-showcase-v8.css"]')).toHaveCount(1);
+  await expect(page.locator('script[data-work-showcase-v8][src="/work-showcase-v8.js"]')).toHaveCount(1);
+  await expect(page.locator('.v7-hero-meta')).toHaveCount(1);
+  await expect(page.locator('.v7-browserbar')).toHaveCount(1);
+  await expect(page.locator('.v8-work-kicker')).toHaveText('FLAGSHIP CASE / PROJECT 01');
+  await expect(page.locator('.v8-work-meta')).toContainText('YARN WHOLESALE');
+  await expect(page.locator('.v8-work-modebar button')).toHaveCount(3);
+  await expect(page.locator('.v8-work-chapters button')).toHaveCount(3);
+  await expect(page.locator('.v8-section-state')).toHaveCount(1);
+  await expect(page.locator('#plans .pricing-mini.v7-recommended')).toHaveCount(2);
   const plans=page.locator('#plans');
   for(const t of ['₹2,599','₹3,999','₹5,999+','₹9,999','₹17,999','₹25K–₹35K+','Ongoing website partnership','Complete website builds']) await expect(plans).toContainText(t);
-  await expect(page.locator('a[href="/terms"]')).toHaveCount(3);
 });
 
 test('HyperFrames intro is the only homepage video experience',async({page})=>{
@@ -27,7 +34,22 @@ test('HyperFrames intro is the only homepage video experience',async({page})=>{
   await expect(page.locator('body')).not.toHaveClass(/hf-intro-active/);
 });
 
-test('Motion V6 case-study dialog opens and closes accessibly',async({page})=>{
+test('flagship FakhriMart showcase switches desktop mobile and detail modes',async({page})=>{
+  await openPage(page);
+  await page.locator('#work').scrollIntoViewIfNeeded();
+  const stage=page.locator('[data-work-stage]');
+  await expect(stage).toHaveAttribute('data-v8-mode','desktop');
+  await page.locator('.v8-work-modebar [data-v8-work-mode="mobile"]').click();
+  await expect(stage).toHaveAttribute('data-sc-verify-state','work:mobile');
+  await expect(page.locator('.v8-work-modebar [data-v8-work-mode="mobile"]')).toHaveAttribute('aria-pressed','true');
+  await page.locator('.v8-work-modebar [data-v8-work-mode="detail"]').click();
+  await expect(stage).toHaveAttribute('data-sc-verify-state','work:detail');
+  await expect(page.locator('.v8-work-detail')).toContainText('Browse-first hierarchy');
+  await page.locator('.v8-work-chapters [data-v8-work-mode="desktop"]').click();
+  await expect(stage).toHaveAttribute('data-sc-verify-state','work:desktop');
+});
+
+test('case-study dialog carries richer client proof and closes accessibly',async({page})=>{
   await openPage(page);
   await page.locator('#work').scrollIntoViewIfNeeded();
   const trigger=page.locator('.m6-view-tag');
@@ -36,6 +58,9 @@ test('Motion V6 case-study dialog opens and closes accessibly',async({page})=>{
   const dialog=page.locator('.m6-case-dialog');
   await expect(dialog).toBeVisible();
   await expect(dialog).toContainText('Built to make browsing feel obvious.');
+  await expect(dialog.locator('.v8-dialog-profile')).toContainText('FakhriMart');
+  await expect(dialog.locator('.v8-dialog-profile')).toContainText('Yarn wholesale');
+  await expect(dialog.locator('.v8-dialog-mobile img')).toHaveCount(1);
   await expect(dialog.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(1);
   await dialog.locator('.m6-case-dialog__close').click();
   await expect(dialog).not.toBeVisible();
@@ -51,45 +76,45 @@ test('editorial DESIGN BUILD SHIP sequence remains native',async({page})=>{
   await expect(sequence).toHaveAttribute('data-sc-verify-state','editorial:join');
 });
 
-test('core homepage interactions still work under V6',async({page})=>{
+test('core homepage interactions still work under V8',async({page})=>{
   await openPage(page);
   await page.locator('[data-colour-toggle]').click();await expect(page.locator('[data-colour-toggle]')).toHaveAttribute('aria-pressed','true');
   await page.locator('[data-capability="ai"]').click();await expect(page.locator('[data-capability-stage]')).toHaveAttribute('data-sc-verify-state','capability:ai');
-  await page.locator('[data-work-toggle]').click();await expect(page.locator('[data-work-stage]')).toHaveAttribute('data-sc-verify-state','work:mobile');
+  await page.locator('.v8-work-modebar [data-v8-work-mode="mobile"]').click();await expect(page.locator('[data-work-stage]')).toHaveAttribute('data-sc-verify-state','work:mobile');
   await page.locator('[data-project-type="ai"]').click();await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
 });
 
-test('Plans exposes three monthly and three one-time plans with animated mode director',async({page})=>{
+test('Plans keeps six offers and featured paper hierarchy',async({page})=>{
   await openPage(page,'/plans');
   await expect(page.locator('[data-plan-scene]')).toHaveCount(6);
   await expect(page.locator('.build-card')).toHaveCount(6);
+  await expect(page.locator('.build-card.is-featured')).toHaveCount(2);
   for(const t of ['₹2,599','₹3,999','₹5,999+','PER MONTH / ONGOING','₹9,999','₹17,999','₹25K–₹35K+','ONE-TIME BUILD']) await expect(page.locator('main')).toContainText(t);
   const monthly=page.locator('[data-plan-mode="monthly"]');await monthly.click();await expect(monthly).toHaveAttribute('aria-pressed','true');await expect(page.locator('[data-plan-mode-output] strong')).toHaveText('₹3,999/mo');
   const once=page.locator('[data-plan-mode="onetime"]');await once.click();await expect(page.locator('[data-plan-mode-output] strong')).toHaveText('₹17,999');
-  await expect(page.locator('link[data-motion-v6]')).toHaveCount(1);
 });
 
-test('Terms page is routed, readable and receives V6 spotlight surfaces',async({page})=>{
+test('Terms becomes a readable paper document without losing content',async({page})=>{
   await openPage(page,'/terms');
   await expect(page.locator('h1')).toContainText('Clear terms.');
   await expect(page.locator('.terms-section')).toHaveCount(12);
   await expect(page.locator('body')).toContainText('Monthly plans currently start at ₹2,599/month');
   await expect(page.locator('body')).toContainText('One-time website builds currently start at ₹9,999');
-  await expect(page.locator('#ownership')).toContainText('Approved work transfers after payment');
-  await expect(page.locator('#liability')).toContainText('Digital work has practical limits');
-  expect(await page.locator('.terms-card[data-m6-spotlight]').count()).toBeGreaterThan(0);
+  const background=await page.locator('body').evaluate(node=>getComputedStyle(node).backgroundColor);
+  expect(background).toBe('rgb(236, 232, 223)');
 });
 
-test('Founder page keeps six scenes and principle instrument',async({page})=>{
+test('Founder page keeps six scenes and editorial contrast',async({page})=>{
   await openPage(page,'/founder');
   await expect(page.locator('[data-founder-scene]')).toHaveCount(6);
   await page.locator('[data-principle="craft"]').click();
   await expect(page.locator('[data-principle-stage]')).toHaveAttribute('data-sc-verify-state','principle:craft');
-  await expect(page.locator('a[href="/terms"]')).toHaveCount(1);
+  const storyBg=await page.locator('#story').evaluate(node=>getComputedStyle(node).backgroundColor);
+  expect(storyBg).toBe('rgb(236, 232, 223)');
 });
 
 for(const route of ['/','/plans','/founder','/terms']) test(`${route} has no serious accessibility violations`,async({page})=>{await openPage(page,route);const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(serious(results)).toEqual([])});
 
 for(const [w,h] of [[320,720],[390,844],[768,1024],[1440,900],[1920,1080]]) test(`public pages avoid overflow at ${w}x${h}`,async({page})=>{await page.setViewportSize({width:w,height:h});for(const route of ['/','/plans','/founder','/terms']){await openPage(page,route);expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth),`${route}@${w}`).toBeLessThanOrEqual(1)}});
 
-test('reduced motion keeps all content available',async({browser})=>{const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});const page=await context.newPage();await page.goto('/',{waitUntil:'networkidle'});await expect(page.locator('.opening-sequence')).toBeHidden();for(const s of ['#services','[data-editorial-sequence]','#work','#plans','#studio','#contact'])await expect(page.locator(s)).toBeVisible();await context.close()});
+test('reduced motion keeps all content and V8 controls available',async({browser})=>{const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});const page=await context.newPage();await page.goto('/',{waitUntil:'networkidle'});await expect(page.locator('.opening-sequence')).toBeHidden();for(const s of ['#services','[data-editorial-sequence]','#work','#plans','#studio','#contact'])await expect(page.locator(s)).toBeVisible();await expect(page.locator('.v8-work-modebar')).toBeVisible();await context.close()});

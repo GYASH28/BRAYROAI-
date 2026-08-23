@@ -12,6 +12,7 @@ const files = {
   refinements: read('public/latest-refinements.css'),
   polishCss: read('public/premium-polish.css'), polishJs: read('public/premium-polish.js'),
   directionCss: read('public/direction-pass.css'), directionJs: read('public/direction-pass.js'),
+  motionCss: read('public/motion-v4.css'),
   plansCss: read('public/plans-page.css'), plansJs: read('public/plans-page.js'),
   founderCss: read('public/founder-page.css'), founderJs: read('public/founder-page.js')
 };
@@ -31,6 +32,7 @@ for (const html of [home, plans, founder]) {
   expect(html.includes('src="/direction-pass.js"'), 'editorial direction runtime is not wired into every public page');
   expect(!html.includes('experience-v2'), 'obsolete V2 AI-tech layer is still wired into a public page');
 }
+expect(files.directionJs.includes("link.href = '/motion-v4.css'"), 'Motion V4 stylesheet is not loaded by the shared direction runtime');
 
 expect(home.includes('data-colour-stage') && files.homeJs.includes('class ColourDirector'), 'homepage colour interaction incomplete');
 expect((home.match(/data-capability=/g) || []).length === 3 && files.homeJs.includes('class CapabilityInstrument'), 'capability interaction incomplete');
@@ -39,7 +41,7 @@ expect(home.includes('data-editorial-sequence'), 'editorial third scene missing'
 expect(home.includes('DESI<em>GN</em>') && home.includes('BU<em>ILD</em>') && home.includes('SH<em>IP</em>'), 'DESIGN / BUILD / SHIP sequence incomplete');
 expect(home.includes('ONE STUDIO.<br>NO <span>HANDOFF.</span>'), 'editorial convergence payoff missing');
 expect(home.includes('data-editorial-index') && home.includes('data-editorial-status'), 'editorial sequence instrumentation missing');
-expect(!home.includes('<video') && !home.includes('data-commercial-film') && !home.includes('data-film-controls'), 'background video or playback controls returned');
+expect(!home.includes('<video') && !home.includes('data-commercial-film') && !home.includes('data-film-controls'), 'background video or playback controls returned to page markup');
 expect(!home.includes('data-signal-chamber') && !home.includes('SIGNAL CHAMBER') && !home.includes('LIVE SYSTEM'), 'AI-dashboard signal chamber language returned');
 expect(files.directionJs.includes('class EditorialSequence') && files.directionJs.includes("phase = 'join'") && files.directionJs.includes('ONE STUDIO / NO HANDOFF'), 'editorial scroll runtime incomplete');
 expect(files.directionCss.includes('.film.editorial-sequence') && files.directionCss.includes('.editorial-sequence__join') && files.directionCss.includes('No sci-fi dashboard language'), 'editorial scene visual system incomplete');
@@ -59,17 +61,19 @@ expect(home.includes('NO MAINTENANCE SUBSCRIPTION REQUIRED'), 'homepage maintena
 expect(plans.includes('Every plan on this page is for making and launching a complete website'), 'plans page does not define low tiers as full website builds');
 expect(plans.includes('You do not need a maintenance subscription'), 'plans page optional-maintenance boundary missing');
 
-expect(files.polishCss.includes('polishOpeningExit') && files.polishCss.includes('polishOpeningMark'), 'cinematic opening foundation missing');
+expect(files.directionJs.includes('class HyperFramesIntro'), 'HyperFrames opening controller missing');
+expect(files.directionJs.includes('/assets/brayroai-cinematic-opening.mp4'), 'HyperFrames opening asset is not wired into runtime');
+expect(files.directionJs.includes('data-hf-sound') && files.directionJs.includes('data-hf-skip') && files.directionJs.includes('bindReplay()'), 'opening sound / skip / replay controls incomplete');
+expect(files.motionCss.includes('body.hf-intro-mode') && files.motionCss.includes('[data-micro-surface]'), 'Motion V4 handoff or micro-interaction layer incomplete');
+expect(files.motionCss.includes('.scope-open,.founder-open{display:none!important}'), 'obsolete subpage opening cards are still visually active');
 expect(files.polishCss.includes('.services{min-height:118svh'), 'desktop pacing refinements missing');
-expect(files.polishCss.includes('@media(max-width:700px)') && files.polishCss.includes('.opening-sequence{display:block!important'), 'mobile opening/pacing foundation missing');
-expect(files.directionCss.includes('.polish-open__beats{display:none!important}'), 'generic opening beat list was not removed');
-expect(files.directionJs.includes('class StudioIdent') && files.directionJs.includes('DIRECTION → DELIVERY'), 'editorial studio-ident treatment missing');
-expect(files.directionJs.includes('class SceneDirector') && files.directionJs.includes('--v3-progress') && files.directionJs.includes('--v3-media-y'), 'continuous scene direction runtime incomplete');
-expect(files.directionCss.includes('@media(prefers-reduced-motion:reduce)') && files.directionJs.includes("matchMedia('(prefers-reduced-motion: reduce)')"), 'direction pass reduced-motion safeguards missing');
+expect(files.directionJs.includes('class SceneDirector') && files.directionJs.includes('--v3-progress') && files.directionJs.includes('--v4-heading-y'), 'continuous scene direction runtime incomplete');
+expect(files.directionCss.includes('@media(prefers-reduced-motion:reduce)') && files.directionJs.includes("matchMedia('(prefers-reduced-motion: reduce)')") && files.motionCss.includes('@media(prefers-reduced-motion:reduce)'), 'reduced-motion safeguards incomplete');
 expect(Buffer.byteLength(files.polishCss) < 24000, 'premium polish CSS exceeds 24KB guardrail');
 expect(Buffer.byteLength(files.polishJs) < 12000, 'premium polish JS exceeds 12KB guardrail');
 expect(Buffer.byteLength(files.directionCss) < 28000, 'direction-pass CSS exceeds 28KB guardrail');
-expect(Buffer.byteLength(files.directionJs) < 12000, 'direction-pass JS exceeds 12KB guardrail');
+expect(Buffer.byteLength(files.directionJs) < 24000, 'direction-pass JS exceeds 24KB guardrail');
+expect(Buffer.byteLength(files.motionCss) < 16000, 'Motion V4 CSS exceeds 16KB guardrail');
 
 expect(files.plansJs.includes("'Website Starter', '₹2,599'") && files.plansJs.includes("'Business Website', '₹3,999'") && files.plansJs.includes("'Premium Website', '₹5,999+'"), 'interactive scope director can revert to old pricing');
 expect((plans.match(/data-plan-scene=/g) || []).length === 5, 'plans page must contain five purposeful scenes');
@@ -81,8 +85,8 @@ expect(founder.includes('Yash Ganesh') && founder.includes('https://github.com/G
 expect((founder.match(/data-principle=/g) || []).length === 3 && files.founderJs.includes('class PrincipleInstrument'), 'founder principle interaction incomplete');
 for (const asset of ['about-yash.webp','brayroai-process-table.webp','brayroai-installation-hero.webp']) expect(founder.includes(asset), `founder page missing ${asset}`);
 
-for (const [name, css] of Object.entries({home:files.homeCss, plans:files.plansCss, founder:files.founderCss, polish:files.polishCss, direction:files.directionCss})) {
-  if (!['polish','direction'].includes(name)) expect(css.includes(':focus-visible'), `${name} focus-visible safeguards missing`);
+for (const [name, css] of Object.entries({home:files.homeCss, plans:files.plansCss, founder:files.founderCss, polish:files.polishCss, direction:files.directionCss, motion:files.motionCss})) {
+  if (!['polish','direction','motion'].includes(name)) expect(css.includes(':focus-visible'), `${name} focus-visible safeguards missing`);
   expect(/@media\s*\(prefers-reduced-motion:\s*reduce\)/.test(css), `${name} reduced-motion styles missing`);
   expect(!/transition\s*:\s*all/i.test(css), `${name} contains prohibited transition: all`);
 }
@@ -92,8 +96,13 @@ for (const [name, js] of Object.entries({home:files.homeJs, plans:files.plansJs,
   expect(js.includes("matchMedia('(prefers-reduced-motion: reduce)')"), `${name} reduced-motion branch missing`);
 }
 
-for (const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png','brayroai-installation-hero.webp','brayroai-process-table.webp']) {
+for (const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png','brayroai-installation-hero.webp','brayroai-process-table.webp','brayroai-cinematic-opening.mp4','brayroai-cinematic-opening-silent.mp4']) {
   expect(exists(path.join('public/assets', asset)), `missing production asset: ${asset}`);
+}
+const introAsset = path.join(root,'public/assets/brayroai-cinematic-opening.mp4');
+if (exists(introAsset)) {
+  const size = fs.statSync(introAsset).size;
+  expect(size > 500000 && size < 3000000, `HyperFrames intro asset has unexpected size: ${size}`);
 }
 expect(!exists('public/experience-v2.css') && !exists('public/experience-v2.js') && !exists('public/experience-v2-compat.css'), 'obsolete V2 direction files should be removed');
 expect(vite.includes("plans:resolve(process.cwd(),'plans.html')") && vite.includes("founder:resolve(process.cwd(),'founder.html')"), 'Vite multi-page entries incomplete');
@@ -108,4 +117,4 @@ for (const [name, html] of Object.entries({home, plans, founder})) {
 }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
-console.log('Integrity OK: editorial handoff + restrained motion direction + one-time website pricing checked');
+console.log('Integrity OK: HyperFrames intro + editorial handoff + Motion V4 + one-time website pricing checked');

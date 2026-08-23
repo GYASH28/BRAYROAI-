@@ -20,7 +20,19 @@ class LockedHeroController{
     this.setupLoader();this.ensureSignalDeck();this.setupPointerDepth();
     if(this.hero&&'IntersectionObserver'in window){this.visibilityObserver=new IntersectionObserver(entries=>{this.visible=Boolean(entries[0]?.isIntersecting);window.__BRAYROAI__?.schedule()},{rootMargin:'25% 0px',threshold:0});this.visibilityObserver.observe(this.hero)}
   }
-  setupLoader(){const loader=$('[data-loader]');if(!loader){document.body.classList.add('hero-ready');return}if(reduced){loader.remove();document.body.classList.add('hero-ready');return}setTimeout(()=>{loader.classList.add('is-done');document.body.classList.add('hero-ready')},920)}
+  setupLoader(){
+    const loader=$('[data-loader]');
+    if(!loader){document.body.classList.add('hero-ready');return}
+    if(reduced){loader.remove();document.body.classList.add('hero-ready');return}
+    const status=$('[data-intro-status]',loader),count=$('[data-intro-count]',loader);
+    const setPhase=(label,step)=>{if(status)status.textContent=label;if(count)count.textContent=step};
+    loader.classList.add('is-playing');
+    setTimeout(()=>setPhase('ALIGNING SYSTEM','02 / 03'),850);
+    setTimeout(()=>setPhase('SHAPING MOTION','03 / 03'),1700);
+    setTimeout(()=>setPhase('READY / ENTER','READY'),2320);
+    setTimeout(()=>{loader.classList.add('is-releasing');document.body.classList.add('hero-ready')},2450);
+    setTimeout(()=>loader.classList.add('is-done'),3200);
+  }
   ensureSignalDeck(){if(!this.hero||$('.hero-signal-deck',this.hero))return;const deck=document.createElement('div');deck.className='hero-signal-deck';deck.setAttribute('aria-hidden','true');deck.innerHTML='<p>BRAYROAI / SIGNAL SYSTEM</p><div>CRAFT <span>AUTHORED</span></div><div>TECH <span>USEFUL</span></div><div>MOTION <span>PURPOSEFUL</span></div>';this.hero.appendChild(deck)}
   setupPointerDepth(){if(!this.hero||!this.depthRoot||reduced||coarse)return;this.depthRoot.addEventListener('pointermove',event=>{const rect=this.depthRoot.getBoundingClientRect();if(!rect.width||!rect.height)return;this.px=(event.clientX-rect.left)/rect.width-.5;this.py=(event.clientY-rect.top)/rect.height-.5;window.__BRAYROAI__?.schedule()},{passive:true});this.depthRoot.addEventListener('pointerleave',()=>{this.px=0;this.py=0;window.__BRAYROAI__?.schedule()})}
   update(){if(!this.hero||!this.depthRoot||reduced||!this.visible)return;const rect=this.hero.getBoundingClientRect();const scrollP=clamp(0,-rect.top/Math.max(1,rect.height),1);const chapterP=clamp(0,(innerHeight-rect.top)/Math.max(1,rect.height+innerHeight),1);this.hero.style.setProperty('--hero-scroll',scrollP.toFixed(4));this.hero.style.setProperty('--chapter-progress',chapterP.toFixed(4));if(this.heroUI){this.heroUI.style.opacity=String(1-clamp(0,scrollP*1.45,1));this.heroUI.style.translate=`0 ${scrollP*-30}px`}if(this.brandType)this.brandType.style.filter=`blur(${scrollP*1.7}px)`;this.depthLayers.forEach(layer=>{const depth=Number(layer.dataset.depth||.3);const x=this.px*34*depth;const y=this.py*24*depth-scrollP*86*depth;const scale=1+scrollP*.035*depth;layer.style.transform=`translate3d(${x}px,${y}px,0) scale(${scale})`})}

@@ -1,0 +1,304 @@
+/* BRAYROAI / Premium Polish
+   A restrained motion layer for pacing, continuity and micro-interaction.
+   It deliberately enhances the existing ScrollCraft/commercial-cut system instead of replacing it. */
+
+:root{
+  --polish-ease:cubic-bezier(.16,1,.3,1);
+  --polish-ease-soft:cubic-bezier(.22,.72,.22,1);
+  --polish-x:0px;
+  --polish-y:0px;
+  --polish-x-neg:0px;
+  --polish-y-neg:0px;
+}
+html{scroll-padding-top:5.25rem}
+body{isolation:isolate}
+body.polish-opening{overflow:hidden}
+a,button{-webkit-tap-highlight-color:transparent}
+
+/* ---------- OPENING / HOME ---------- */
+.opening-sequence{
+  pointer-events:auto!important;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(255,255,255,.045),transparent 24rem),
+    radial-gradient(circle at 73% 24%,rgba(255,90,31,.06),transparent 26rem),
+    #050608!important;
+  animation:polishOpeningExit .58s 4.05s var(--polish-ease) both!important;
+}
+.opening-sequence::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:-12%;
+  background:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:8vw 8vw;
+  opacity:.22;
+  transform:scale(1.08);
+  animation:polishGridBreathe 4s var(--polish-ease-soft) both;
+}
+.opening-sequence__mark{z-index:6!important;animation:polishOpeningMark 2.85s .26s var(--polish-ease) both!important}
+.opening-sequence__mark small{display:block;color:rgba(255,255,255,.55);animation:polishMicroIn .65s .12s var(--polish-ease) both}
+.opening-sequence__mark strong{text-shadow:0 0 3.5rem rgba(255,255,255,.025);animation:polishTypeFocus 2.7s .2s var(--polish-ease) both}
+.opening-sequence__shutter{z-index:4!important;background:#050608!important}
+.opening-sequence__shutter--top{animation:polishShutterTop 1.12s 2.96s var(--polish-ease) both!important}
+.opening-sequence__shutter--bottom{animation:polishShutterBottom 1.12s 2.96s var(--polish-ease) both!important}
+.opening-sequence>span{z-index:8!important;animation:polishScan 1.45s .82s var(--polish-ease-soft) both!important}
+.opening-sequence::after{display:none!important}
+
+.polish-open__meta{
+  position:absolute;
+  z-index:7;
+  top:clamp(1.15rem,3.5vh,2.4rem);
+  right:clamp(1.15rem,3vw,3rem);
+  left:clamp(1.15rem,3vw,3rem);
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  color:rgba(255,255,255,.4);
+  font:500 .54rem/1 var(--mono,monospace);
+  letter-spacing:.12em;
+  animation:polishMicroIn .7s .18s var(--polish-ease) both;
+}
+.polish-open__beats{
+  position:absolute;
+  z-index:7;
+  right:clamp(1.15rem,3vw,3rem);
+  bottom:clamp(2rem,7vh,5rem);
+  left:clamp(1.15rem,3vw,3rem);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:.55rem;
+}
+.polish-open__beats span{
+  position:relative;
+  padding-top:.75rem;
+  border-top:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.28);
+  font:500 .52rem/1 var(--mono,monospace);
+  letter-spacing:.1em;
+  animation:polishBeat 2.7s var(--beat-delay,0s) var(--polish-ease) both;
+}
+.polish-open__beats span::before{
+  content:"";
+  position:absolute;
+  top:-1px;
+  left:0;
+  width:34%;
+  height:1px;
+  background:var(--orange,#ff5a1f);
+  transform:scaleX(0);
+  transform-origin:left;
+  animation:polishBeatLine .72s calc(var(--beat-delay,0s) + .08s) var(--polish-ease) both;
+}
+.polish-open__progress{
+  position:absolute;
+  z-index:8;
+  right:clamp(1.15rem,3vw,3rem);
+  bottom:clamp(1rem,3.4vh,2rem);
+  left:clamp(1.15rem,3vw,3rem);
+  height:1px;
+  background:rgba(255,255,255,.1);
+  overflow:hidden;
+}
+.polish-open__progress i{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--orange,#ff5a1f),rgba(255,255,255,.9));transform-origin:left;animation:polishProgress 3.78s .18s var(--polish-ease-soft) both}
+
+@keyframes polishOpeningMark{0%{opacity:0;transform:scale(.965)}14%{opacity:1;transform:scale(1)}69%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.018);filter:blur(3px)}}
+@keyframes polishTypeFocus{0%{letter-spacing:-.115em;filter:blur(12px);opacity:.08}25%{filter:blur(0);opacity:1}72%{letter-spacing:-.085em;opacity:1}100%{letter-spacing:-.07em;opacity:0}}
+@keyframes polishMicroIn{from{opacity:0;transform:translateY(-.45rem)}to{opacity:1;transform:none}}
+@keyframes polishGridBreathe{0%{opacity:0;transform:scale(1.12)}24%{opacity:.22}100%{opacity:.07;transform:scale(1)}}
+@keyframes polishScan{0%{opacity:0;transform:translateX(-18vw) scaleY(.08)}24%{opacity:1;transform:translateX(-8vw) scaleY(1)}78%{opacity:.7}100%{opacity:0;transform:translateX(34vw) scaleY(.82)}}
+@keyframes polishShutterTop{from{transform:translateY(0)}to{transform:translateY(-103%)}}
+@keyframes polishShutterBottom{from{transform:translateY(0)}to{transform:translateY(103%)}}
+@keyframes polishOpeningExit{0%{opacity:1;visibility:visible}99%{opacity:0;visibility:visible}100%{opacity:0;visibility:hidden}}
+@keyframes polishProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes polishBeat{0%,12%{color:rgba(255,255,255,.2);transform:translateY(.2rem)}24%,58%{color:rgba(255,255,255,.9);transform:none}82%,100%{color:rgba(255,255,255,.28)}}
+@keyframes polishBeatLine{0%{transform:scaleX(0)}55%,100%{transform:scaleX(1)}}
+
+/* Make the reveal underneath the shutters feel connected, not pre-played. */
+.hero__copy .eyebrow{animation:polishHeroFade .72s 3.36s var(--polish-ease) both}
+.hero__copy h1>span{animation:polishHeroLine 1.02s 3.46s var(--polish-ease) both!important}
+.hero__copy h1>span:nth-child(2){animation-delay:3.57s!important}
+.hero__body{animation:polishHeroFade .82s 3.72s var(--polish-ease) both!important}
+.hero__actions{animation:polishHeroFade .82s 3.84s var(--polish-ease) both!important}
+.hero__credit{animation:polishHeroFade .7s 3.95s var(--polish-ease) both}
+.hero__grid{animation:polishHeroGrid 1.25s 3.25s var(--polish-ease) both}
+.site-nav{animation:navArrive .72s 3.78s var(--polish-ease) both!important}
+@keyframes polishHeroLine{from{opacity:0;transform:translateY(108%);filter:blur(7px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes polishHeroFade{from{opacity:0;transform:translateY(.9rem);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes polishHeroGrid{from{opacity:0;transform:scale(1.035)}to{opacity:.18;transform:scale(1)}}
+
+/* ---------- SUBPAGE OPENINGS ---------- */
+.scope-open,.founder-open{
+  pointer-events:auto;
+  background:radial-gradient(circle at 50% 48%,rgba(255,255,255,.04),transparent 22rem),#050608!important;
+  animation:polishSubExit .52s 2.72s var(--polish-ease) both!important;
+}
+.scope-open::before,.founder-open::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:9vw 9vw;
+  opacity:.18;
+}
+.scope-open strong,.founder-open strong{position:relative;z-index:3;animation:polishSubMark 2.05s .18s var(--polish-ease) both!important}
+.scope-open>span,.founder-open>small{position:relative;z-index:3;color:rgba(255,255,255,.5);animation:polishMicroIn .6s .12s var(--polish-ease) both}
+.scope-open>i,.founder-open>i{z-index:4!important;animation:polishSubScan 1.15s .72s var(--polish-ease) both!important}
+.plans-nav,.founder-nav{animation:scopeNavIn .7s 2.62s var(--polish-ease) both!important}
+@keyframes polishSubMark{0%{opacity:0;transform:scale(.965);filter:blur(9px)}20%,69%{opacity:1;transform:scale(1);filter:blur(0)}100%{opacity:0;transform:scale(1.018);filter:blur(2px)}}
+@keyframes polishSubScan{0%{opacity:0;transform:translateX(-16vw) scaleY(.1)}28%{opacity:1;transform:translateX(-5vw) scaleY(1)}100%{opacity:0;transform:translateX(32vw) scaleY(1)}}
+@keyframes polishSubExit{0%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
+
+/* ---------- CONTINUITY / NAV ---------- */
+.site-nav,.plans-nav,.founder-nav{
+  transition:background-color .45s var(--polish-ease),border-color .45s var(--polish-ease),box-shadow .45s var(--polish-ease),transform .42s var(--polish-ease),opacity .35s ease;
+}
+body.has-scrolled .site-nav,body.has-scrolled .plans-nav,body.has-scrolled .founder-nav{background:rgba(8,10,13,.78);border-color:rgba(255,255,255,.18);box-shadow:0 1.35rem 4.2rem rgba(0,0,0,.31),inset 0 1px rgba(255,255,255,.1)}
+body.scrolling-down .site-nav,body.scrolling-down .plans-nav,body.scrolling-down .founder-nav{transform:translateX(-50%) translateY(-2px) scale(.996)}
+.site-nav nav a,.plans-nav nav a,.founder-nav nav a{position:relative}
+.site-nav nav a::after,.plans-nav nav a::after,.founder-nav nav a::after{content:"";position:absolute;right:0;bottom:-.45rem;left:0;height:1px;background:var(--orange,#ff5a1f);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--polish-ease)}
+.site-nav nav a.is-current::after,.plans-nav nav a.is-current::after,.founder-nav nav a.is-current::after{transform:scaleX(1)}
+.site-nav nav a.is-current,.plans-nav nav a.is-current,.founder-nav nav a.is-current{color:#fff}
+
+/* ---------- SHARED MICRO MOTION ---------- */
+.scene,.plan-scene,.founder-scene{isolation:isolate}
+.scene::after,.plan-scene::after,.founder-scene::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(circle at 78% 10%,rgba(255,255,255,.035),transparent 25rem);
+  opacity:0;
+  transform:translateY(1.2rem);
+  transition:opacity .9s var(--polish-ease),transform 1.2s var(--polish-ease);
+}
+.scene.is-scene-live::after,.plan-scene.is-scene-live::after,.founder-scene.is-scene-live::after{opacity:1;transform:none}
+.scene+ .scene::before,.plan-scene+ .plan-scene::before,.founder-scene+ .founder-scene::before{transform:scaleX(.28);transform-origin:center;transition:transform 1.05s var(--polish-ease),opacity .65s ease;opacity:.55}
+.scene.is-scene-live::before,.plan-scene.is-scene-live::before,.founder-scene.is-scene-live::before{transform:scaleX(1);opacity:1}
+
+.js .reveal{transition-delay:var(--reveal-delay,0ms)!important;transition-duration:.86s,1.02s!important;will-change:opacity,transform}
+.js .reveal.is-visible{will-change:auto}
+.section-heading .eyebrow,.plan-heading .eyebrow,.founder-heading .eyebrow{transition:letter-spacing .55s var(--polish-ease),color .4s ease}
+.is-scene-live .section-heading .eyebrow,.is-scene-live .plan-heading .eyebrow,.is-scene-live .founder-heading .eyebrow{letter-spacing:.155em;color:rgba(255,255,255,.58)}
+
+.glass-panel,.glass-control{position:relative;isolation:isolate}
+.glass-panel::after,.glass-control::after{
+  content:"";
+  position:absolute;
+  z-index:8;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.055) 47%,transparent 64%);
+  background-size:220% 100%;
+  background-position:110% 0;
+  opacity:0;
+  transition:opacity .35s ease,background-position .8s var(--polish-ease);
+}
+@media(hover:hover) and (pointer:fine){
+  .glass-panel:hover::after,.glass-control:hover::after{opacity:1;background-position:-20% 0}
+  .text-link:hover span,.close__action:hover span,.site-nav__cta:hover span,.plans-nav__back:hover span,.founder-nav__back:hover span{transform:translate3d(.24rem,-.1rem,0)}
+}
+.text-link span,.close__action span,.site-nav__cta span,.plans-nav__back span,.founder-nav__back span{display:inline-block;transition:transform .32s var(--polish-ease)}
+
+/* ---------- HOME: SCENE-SPECIFIC POLISH ---------- */
+@media(min-width:901px){
+  .services{min-height:118svh!important;padding-top:14svh!important}
+  .film{min-height:185svh!important}
+  .work{min-height:118svh!important;padding-top:14svh!important;padding-bottom:12svh!important}
+  .plans-preview{min-height:122svh!important;padding-top:14svh!important}
+  .founder-preview{min-height:106svh!important}
+  .close{min-height:100svh!important}
+}
+.hero__word{transform:translate3d(var(--polish-x-neg),var(--polish-y-neg),0);transition:transform .55s var(--polish-ease)}
+.hero__shade{transition:opacity .8s var(--polish-ease)}
+.hero.is-scene-live .hero__shade{opacity:.96}
+.capability-instrument{transition:transform .85s var(--polish-ease),border-color .45s ease,box-shadow .65s ease}
+.services.is-scene-live .capability-instrument{transform:translateY(-.25rem);box-shadow:0 3rem 8rem rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.12)}
+.capability-instrument__signal i{animation:polishSignal 3.8s ease-in-out infinite alternate}
+.capability-instrument__signal i:nth-child(2){animation-delay:-1.2s}.capability-instrument__signal i:nth-child(3){animation-delay:-2.1s}
+@keyframes polishSignal{from{filter:brightness(.8)}to{filter:brightness(1.5);opacity:.8}}
+.film__poster,.film video{transform:scale(1.025);transition:opacity .65s var(--polish-ease),transform 1.6s var(--polish-ease)}
+.film.is-scene-live .film__poster,.film.is-scene-live video{transform:scale(1)}
+.film__controls{transform:translateY(.6rem);opacity:.82;transition:transform .7s var(--polish-ease),opacity .5s ease,border-color .35s ease}
+.film.is-scene-live .film__controls{transform:none;opacity:1}
+.work__canvas{transition:transform .9s var(--polish-ease)}
+.work.is-scene-live .work__canvas{transform:translateY(-.25rem)}
+.work__desktop,.work__mobile{box-shadow:0 2.5rem 6rem rgba(0,0,0,.32)}
+.build-ribbon__item{transition:transform .58s var(--polish-ease),border-color .4s ease,box-shadow .58s var(--polish-ease)}
+.build-ribbon__item i{transition:transform .42s var(--polish-ease)}
+.build-ribbon__item:hover i{transform:translate3d(.25rem,-.25rem,0)}
+.plans-preview.is-scene-live .build-ribbon__item:nth-child(1){transform:translateY(-.12rem)}
+.plans-preview.is-scene-live .build-ribbon__item:nth-child(2){transform:translateY(-.35rem)}
+.plans-preview.is-scene-live .build-ribbon__item:nth-child(3){transform:translateY(-.18rem)}
+.founder-preview__portrait{transition:transform .85s var(--polish-ease),box-shadow .7s ease}
+.founder-preview.is-scene-live .founder-preview__portrait{transform:translateY(-.25rem);box-shadow:0 3.5rem 9rem rgba(0,0,0,.4)}
+.founder-preview__portrait img{transform:scale(1.012) translate3d(var(--polish-x-neg),var(--polish-y-neg),0)}
+.close__orb{transform:translate3d(var(--polish-x),var(--polish-y),0);animation:polishOrb 7s ease-in-out infinite alternate;transition:transform .7s var(--polish-ease)}
+.close__orb i:first-child{animation:polishOrbRing 6.5s ease-in-out infinite alternate}.close__orb i:last-child{animation:polishOrbRing 5.3s -2s ease-in-out infinite alternate-reverse}
+@keyframes polishOrb{from{box-shadow:inset 0 0 8rem rgba(255,255,255,.018),0 0 5rem rgba(255,90,31,.02)}to{box-shadow:inset 0 0 12rem rgba(255,255,255,.035),0 0 10rem rgba(255,90,31,.055)}}
+@keyframes polishOrbRing{from{transform:scale(.985);opacity:.65}to{transform:scale(1.02);opacity:1}}
+.project-intent button,.scope-switch button,.principle-instrument__choices button{box-shadow:inset 0 1px rgba(255,255,255,.04)}
+.project-intent button.is-active,.scope-switch button.is-active,.principle-instrument__choices button.is-active{box-shadow:0 .65rem 1.8rem rgba(0,0,0,.22),inset 0 1px #fff}
+
+/* ---------- PLANS ---------- */
+.plans-hero__word,.founder-hero__word{transform:translate3d(var(--polish-x-neg),var(--polish-y-neg),0);transition:transform .6s var(--polish-ease)}
+.plans-hero__grid{background-position:var(--polish-x) var(--polish-y);transition:background-position .8s var(--polish-ease)}
+.scope-switch{transition:transform .8s var(--polish-ease),box-shadow .65s ease}
+.plans-hero.is-scene-live .scope-switch{transform:translateY(-.25rem);box-shadow:0 3rem 8rem rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.12)}
+.build-card{transform-origin:center;transition:transform .62s var(--polish-ease),border-color .42s ease,box-shadow .62s var(--polish-ease)!important}
+.build-card.is-featured{box-shadow:0 2.6rem 7rem rgba(0,0,0,.32),0 0 0 1px rgba(255,90,31,.05),inset 0 1px rgba(255,255,255,.12)}
+.compare-table>div{transition:background-color .3s ease,transform .4s var(--polish-ease)}
+@media(hover:hover) and (pointer:fine){.compare-table>div:hover{background:rgba(255,255,255,.035);transform:translateX(.22rem)}}
+.care-grid article{transition:transform .55s var(--polish-ease),border-color .35s ease,box-shadow .55s var(--polish-ease)}
+@media(hover:hover) and (pointer:fine){.care-grid article:hover{transform:translateY(-.35rem);border-color:rgba(255,255,255,.24);box-shadow:0 2.5rem 7rem rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.12)}}
+@media(min-width:901px){.plans-hero{min-height:110svh!important}.builds{min-height:154svh!important}.compare{min-height:100svh!important}}
+
+/* ---------- FOUNDER ---------- */
+.founder-hero__copy .eyebrow{animation:polishSubHeroFade .65s 2.48s var(--polish-ease) both}
+.founder-hero__copy h1 span{animation:polishSubHeroLine .95s 2.55s var(--polish-ease) both!important}.founder-hero__copy h1 span:nth-child(2){animation-delay:2.66s!important}
+.founder-hero__copy>p:last-of-type,.founder-hero__copy>a,.founder-hero__note{animation:polishSubHeroFade .8s 2.76s var(--polish-ease) both}
+@keyframes polishSubHeroLine{from{opacity:0;transform:translateY(106%);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes polishSubHeroFade{from{opacity:0;transform:translateY(.75rem)}to{opacity:1;transform:none}}
+.story__copy>p{transition:color .5s ease,transform .65s var(--polish-ease)}
+.story.is-scene-live .story__copy>p:first-child{transform:translateX(.18rem)}
+.principle-instrument{transition:transform .85s var(--polish-ease),box-shadow .65s ease}.principles.is-scene-live .principle-instrument{transform:translateY(-.25rem);box-shadow:0 3rem 8rem rgba(0,0,0,.36),inset 0 1px rgba(255,255,255,.12)}
+.method__image{transition:transform .85s var(--polish-ease),box-shadow .65s ease}.method.is-scene-live .method__image{transform:translateY(-.25rem);box-shadow:0 3.5rem 9rem rgba(0,0,0,.4)}
+.conviction__line{transform-origin:center;transition:transform 1.2s var(--polish-ease),opacity .7s ease}.conviction:not(.is-scene-live) .conviction__line{transform:scaleX(.25);opacity:.35}
+@media(min-width:901px){.story{min-height:108svh!important}.principles{min-height:126svh!important}.method{min-height:118svh!important}}
+
+/* ---------- MOBILE / TOUCH ---------- */
+@media(max-width:700px){
+  .opening-sequence{display:block!important;animation:polishOpeningExit .48s 3.18s var(--polish-ease) both!important}
+  .opening-sequence::before{background-size:18vw 18vw}
+  .opening-sequence__mark{animation-duration:2.25s!important}
+  .opening-sequence__mark strong{font-size:clamp(3.35rem,18vw,5.8rem)!important}
+  .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.92s!important;animation-delay:2.42s!important}
+  .opening-sequence>span{animation-duration:1.05s!important;animation-delay:.65s!important}
+  .polish-open__meta{font-size:.46rem;top:1rem}
+  .polish-open__meta span:last-child{display:none}
+  .polish-open__beats{bottom:3.2rem;grid-template-columns:repeat(2,1fr);gap:.6rem 1rem}
+  .polish-open__beats span{font-size:.47rem;padding-top:.55rem}
+  .polish-open__progress{bottom:1.25rem}
+  .polish-open__progress i{animation-duration:2.94s}
+  .site-nav{animation:navArrive .58s 2.95s var(--polish-ease) both!important}
+  .hero__copy .eyebrow{animation-delay:2.72s}.hero__copy h1>span{animation-delay:2.8s!important}.hero__copy h1>span:nth-child(2){animation-delay:2.89s!important}.hero__body{animation-delay:2.99s!important}.hero__actions{animation-delay:3.08s!important}
+  body.scrolling-down .site-nav,body.scrolling-down .plans-nav,body.scrolling-down .founder-nav{transform:translateX(-50%)}
+  .scene::after,.plan-scene::after,.founder-scene::after{display:none}
+  .glass-panel::after,.glass-control::after{display:none}
+  .founder-preview__portrait img{transform:none}
+  .close__orb{transform:none;animation-duration:9s}
+  .build-ribbon__item,.build-ribbon__item.is-featured{transform:none!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.polish-opening{overflow:auto}
+  .opening-sequence,.scope-open,.founder-open{display:none!important}
+  .polish-open__meta,.polish-open__beats,.polish-open__progress{display:none!important}
+  .hero__copy .eyebrow,.hero__copy h1>span,.hero__body,.hero__actions,.hero__credit,.hero__grid,.founder-hero__copy *{animation:none!important}
+  .capability-instrument__signal i,.close__orb,.close__orb i{animation:none!important}
+  .hero__word,.plans-hero__word,.founder-hero__word,.founder-preview__portrait img,.close__orb{transform:none!important}
+  .scene::after,.plan-scene::after,.founder-scene::after{display:none}
+}

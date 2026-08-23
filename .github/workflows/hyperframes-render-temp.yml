@@ -1,0 +1,52 @@
+name: Temporary HyperFrames Render
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'hyperframes/brayroai-opening-cinematic-v2/**'
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: hyperframes/brayroai-opening-cinematic-v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check numpy
+      - name: Generate cinematic sound
+        run: python make_audio.py
+      - name: HyperFrames info
+        run: npx --yes hyperframes@0.8.8 info
+      - name: HyperFrames lint
+        run: npx --yes hyperframes@0.8.8 lint . --verbose
+      - name: HyperFrames validate
+        run: npx --yes hyperframes@0.8.8 validate .
+      - name: HyperFrames inspect
+        run: npx --yes hyperframes@0.8.8 inspect . --samples 17
+      - name: Render 1080p 60fps master
+        run: npx --yes hyperframes@0.8.8 render . --output BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2.mp4 --fps 60 --quality high --workers 2 --strict
+      - name: Create web encode
+        run: ffmpeg -y -i BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2.mp4 -an -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p -movflags +faststart BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2_WEB.mp4
+      - name: Verify output
+        run: ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate -show_entries format=duration,size -of json BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BRAYROAI-CINEMATIC-HYPERFRAMES-V2
+          path: |
+            hyperframes/brayroai-opening-cinematic-v2/BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2.mp4
+            hyperframes/brayroai-opening-cinematic-v2/BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2_WEB.mp4
+            hyperframes/brayroai-opening-cinematic-v2/index.html
+            hyperframes/brayroai-opening-cinematic-v2/DESIGN.md
+          retention-days: 14

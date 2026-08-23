@@ -1,0 +1,84 @@
+/* BRAYROAI production refinements — August 2026.
+   Keeps the existing hero composition intact while improving the intro handoff,
+   pricing clarity, readability, and mobile behavior. */
+
+/* --- Opening sequence: readable, staged, and cinematic rather than a sub-second flash. --- */
+.intro-loader{
+  background:
+    radial-gradient(circle at 18% 18%,rgba(62,123,255,.16),transparent 34%),
+    radial-gradient(circle at 82% 78%,rgba(255,107,44,.11),transparent 31%),
+    #09090B;
+  animation:loaderFailsafe .01s 5.2s forwards;
+  transition:opacity .72s cubic-bezier(.16,1,.3,1),visibility 0s .72s;
+}
+.intro-loader::before,.intro-loader::after{content:"";position:absolute;pointer-events:none}
+.intro-loader::before{inset:18px;border:1px solid rgba(243,240,234,.07);clip-path:polygon(0 0,18% 0,18% 1px,100% 1px,100% 100%,82% 100%,82% calc(100% - 1px),0 calc(100% - 1px));opacity:0;animation:introFrame 1.1s .18s cubic-bezier(.16,1,.3,1) forwards}
+.intro-loader::after{left:50%;top:0;width:1px;height:100%;background:linear-gradient(transparent,rgba(175,194,255,.22),rgba(255,107,44,.18),transparent);opacity:0;transform:translateX(-50%);animation:introScan 2.55s .28s ease-in-out forwards}
+.intro-loader.is-releasing{opacity:0;pointer-events:none}
+.intro-loader.is-done{opacity:0;visibility:hidden;pointer-events:none;animation:none}
+.intro-loader__grid{opacity:0;animation:introGrid 2.45s .08s cubic-bezier(.16,1,.3,1) both}
+.intro-loader__mark{filter:drop-shadow(0 18px 50px rgba(0,0,0,.3))}
+.intro-loader__mark span:first-child{animation:introMarkLeft .9s .42s cubic-bezier(.16,1,.3,1) both}
+.intro-loader__mark span:last-child{animation:introMarkRight .9s .42s cubic-bezier(.16,1,.3,1) both}
+.intro-loader__mark i{animation:introSlash .72s .82s cubic-bezier(.16,1,.3,1) both}
+.intro-loader>p{bottom:54px;opacity:0;animation:introCopy .6s 1.08s ease forwards}
+.intro-loader__bar{bottom:38px;width:min(240px,56vw);opacity:0;animation:introCopy .45s .62s ease forwards}
+.intro-loader__bar i{animation:introProgress 2.35s .68s cubic-bezier(.6,0,.2,1) both}
+.intro-loader__meta{position:absolute;z-index:2;left:clamp(22px,3vw,48px);right:clamp(22px,3vw,48px);top:clamp(24px,3vw,44px);display:flex;justify-content:space-between;gap:20px;font:500 8px/1.2 'DM Mono',monospace;letter-spacing:.13em;color:rgba(243,240,234,.42);opacity:0;transform:translateY(-8px);animation:introMeta .7s .32s cubic-bezier(.16,1,.3,1) forwards}
+.intro-loader__status{position:absolute;z-index:2;left:clamp(22px,3vw,48px);right:clamp(22px,3vw,48px);bottom:clamp(24px,3vw,42px);display:flex;justify-content:space-between;align-items:center;gap:18px;font:500 7px/1.2 'DM Mono',monospace;letter-spacing:.12em;color:rgba(243,240,234,.42);text-transform:uppercase;opacity:0;animation:introCopy .55s 1.28s ease forwards}
+.intro-loader__status span{color:rgba(243,240,234,.72)}
+.intro-loader__status b{font-weight:500;color:#AFC2FF}
+body:not(.hero-ready) .site-nav{opacity:0;pointer-events:none;transform:translate(-50%,-12px)}
+body.hero-ready .site-nav{opacity:1}
+.site-nav{transition:transform .45s var(--ease),opacity .5s ease,background .35s,border-color .35s,box-shadow .35s}
+
+@keyframes introGrid{0%{opacity:0;transform:perspective(600px) rotateX(76deg) translateY(30%) scale(1.08)}42%{opacity:.34}100%{opacity:.22;transform:perspective(600px) rotateX(60deg) translateY(16%) scale(1)}}
+@keyframes introMarkLeft{0%{transform:translate3d(-92px,0,0);opacity:0;filter:blur(8px)}100%{transform:none;opacity:1;filter:blur(0)}}
+@keyframes introMarkRight{0%{transform:translate3d(92px,0,0);opacity:0;filter:blur(8px)}100%{transform:none;opacity:1;filter:blur(0)}}
+@keyframes introSlash{0%{transform:scaleY(0);opacity:0}55%{transform:scaleY(1.35);opacity:1}100%{transform:scaleY(1);opacity:1}}
+@keyframes introProgress{0%{transform:scaleX(0)}22%{transform:scaleX(.12)}58%{transform:scaleX(.58)}84%{transform:scaleX(.84)}100%{transform:scaleX(1)}}
+@keyframes introCopy{to{opacity:1}}
+@keyframes introMeta{to{opacity:1;transform:none}}
+@keyframes introFrame{to{opacity:1}}
+@keyframes introScan{0%{opacity:0;transform:translate(-50%,-35%)}22%{opacity:.55}78%{opacity:.22}100%{opacity:0;transform:translate(-50%,35%)}}
+
+/* --- Readability pass: keep the visual restraint, remove unnecessary low contrast. --- */
+.hero-v3 .hero-topline{color:rgba(255,255,255,.68)}
+.hero-v3 .hero-description{color:rgba(243,240,234,.78)}
+.hero-v3 .hero-meta{color:rgba(255,255,255,.55)}
+.service-copy{color:rgba(243,240,234,.76)}
+.system-note{color:rgba(243,240,234,.58)}
+.studio-message>span{color:rgba(243,240,234,.72)}
+.contact-bottom>span{color:rgba(243,240,234,.68)}
+
+/* --- Pricing: every visible tier is a complete one-time website build. --- */
+.pricing-heading>span{max-width:520px;color:#4E5660;font-weight:600}
+.pricing-heading>span strong{color:#09090B}
+.price-lines{margin-top:42px}
+.price-lines article{position:relative;min-height:138px}
+.price-lines article.is-featured{background:rgba(62,123,255,.045);box-shadow:inset 4px 0 0 #3E7BFF}
+.price-lines article.is-featured::before{content:"MOST POPULAR";position:absolute;right:0;top:16px;font:600 7px/1 'DM Mono',monospace;letter-spacing:.1em;color:#315FC2}
+.price-lines article>strong small{color:#646C76}
+.price-lines article p{color:#505861;font-size:12.5px;line-height:1.62}
+.price-lines article a{padding:11px 0;border-bottom:1px solid rgba(9,9,11,.25);transition:border-color .22s,color .22s}
+.price-lines article a:hover{border-color:#3E7BFF;color:#204EA9}
+.pricing-fineprint{max-width:900px;color:#59616B;font-size:10.5px}
+
+@media(max-width:760px){
+  .intro-loader__meta{font-size:6px;letter-spacing:.09em}.intro-loader__meta span:last-child{display:none}
+  .intro-loader__status{font-size:6px}.intro-loader__status b{display:none}
+  .intro-loader>p{bottom:58px;font-size:7px}.intro-loader__bar{bottom:46px}
+  .pricing-heading>span{font-size:12.5px;line-height:1.65}
+  .price-lines{margin-top:30px}
+  .price-lines article{padding:32px 0 30px;grid-template-columns:1fr auto;row-gap:15px}
+  .price-lines article.is-featured::before{top:18px}
+  .price-lines article>span{padding-right:94px}
+  .price-lines article>strong{font-size:38px}
+  .price-lines article p{font-size:12px;line-height:1.62;max-width:none}
+  .price-lines article a{align-self:end;padding:10px 0}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .intro-loader__meta,.intro-loader__status{display:none!important}
+  body:not(.hero-ready) .site-nav{opacity:1;pointer-events:auto;transform:translateX(-50%)}
+}

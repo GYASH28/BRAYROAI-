@@ -36,6 +36,9 @@ jobs:
           test -f dist/latest-refinements.css
           test -f dist/premium-polish.css
           test -f dist/premium-polish.js
+          test -f dist/experience-v2.css
+          test -f dist/experience-v2-compat.css
+          test -f dist/experience-v2.js
           test -f dist/plans-page.css
           test -f dist/plans-page.js
           test -f dist/founder-page.css
@@ -52,7 +55,14 @@ jobs:
           grep -q 'Digital, designed' dist/index.html
           grep -q 'id="plans"' dist/index.html
           grep -q 'premium-polish.css' dist/index.html
-          grep -q 'premium-polish.js' dist/index.html
+          grep -q 'experience-v2.css' dist/index.html
+          grep -q 'experience-v2.js' dist/index.html
+          grep -q 'data-signal-chamber' dist/index.html
+          grep -q 'BRAYROAI / SIGNAL CHAMBER' dist/index.html
+          grep -q 'ONE CONNECTED PRODUCTION' dist/index.html
+          ! grep -q '<video' dist/index.html
+          ! grep -q 'data-commercial-film' dist/index.html
+          ! grep -q 'data-film-controls' dist/index.html
           grep -q '₹2,599' dist/index.html
           grep -q '₹3,999' dist/index.html
           grep -q '₹5,999+' dist/index.html
@@ -90,7 +100,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="plans"' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹2,599'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'data-signal-chamber' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹2,599'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -114,9 +124,10 @@ jobs:
             const browser=await chromium.launch({headless:true});
             const frames=[
               ['hero',null,0],
-              ['plans','#plans',0],
-              ['work','#work',0],
               ['services','#services',0],
+              ['signal','[data-signal-chamber]',0],
+              ['work','#work',0],
+              ['plans','#plans',0],
               ['studio','#studio',0],
               ['contact','#contact',0]
             ];

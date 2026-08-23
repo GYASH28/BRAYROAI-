@@ -28,9 +28,13 @@ jobs:
       - run: npm run qa:static
       - name: Guard production bundle
         run: |
-          for f in index.html plans.html founder.html terms.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7-contrast.css art-direction-v7.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do test -f "dist/$f"; done
+          for f in index.html plans.html founder.html terms.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7-contrast.css art-direction-v7.js work-showcase-v8.css work-showcase-v8.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do test -f "dist/$f"; done
           test -f dist/assets/brayroai-cinematic-opening.mp4
+          test -f dist/assets/fakhrimart-case-desktop.png
+          test -f dist/assets/fakhrimart-case-mobile.png
           grep -q 'data-editorial-sequence' dist/index.html
+          grep -q 'REAL WORK / FAKHRIMART' dist/index.html
+          grep -q 'fakhriyarns.vercel.app' dist/index.html
           grep -q '₹2,599' dist/index.html
           grep -q '₹3,999' dist/index.html
           grep -q '₹5,999+' dist/index.html
@@ -52,17 +56,22 @@ jobs:
           grep -q '/art-direction-v7.css' dist/motion-v6.js
           grep -q '/art-direction-v7.js' dist/motion-v6.js
           grep -q '/art-direction-v7-contrast.css' dist/art-direction-v7.js
-          grep -q 'class WorkFrame' dist/art-direction-v7.js
-          grep -q 'class RecommendedPlans' dist/art-direction-v7.js
-          grep -q '.pricing-mini.v7-recommended' dist/art-direction-v7.css
-          grep -q 'body.terms-body' dist/art-direction-v7.css
+          grep -q '/work-showcase-v8.css' dist/art-direction-v7.js
+          grep -q '/work-showcase-v8.js' dist/art-direction-v7.js
+          grep -q 'class WorkShowcaseV8' dist/work-showcase-v8.js
+          grep -q 'class CaseDialogV8' dist/work-showcase-v8.js
+          grep -q 'FLAGSHIP CASE / PROJECT 01' dist/work-showcase-v8.js
+          grep -q 'FakhriMart / Fakhri Yarns' dist/work-showcase-v8.js
+          grep -q '.v8-work-modebar' dist/work-showcase-v8.css
+          grep -q '.v8-work-lens' dist/work-showcase-v8.css
+          grep -q '.v8-section-state' dist/work-showcase-v8.css
           grep -q -- '--v7-orange-ink:#aa3205' dist/art-direction-v7-contrast.css
           ! grep -q 'data-commercial-film' dist/index.html
           ! grep -q 'data-signal-chamber' dist/index.html
           test ! -f dist/experience-v2.css
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 9500
+          test "$TOTAL" -lt 9800
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
@@ -85,7 +94,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q '₹17,999' && curl -fsS http://127.0.0.1:4173/terms | grep -q 'Terms & Conditions' && curl -fsS http://127.0.0.1:4173/art-direction-v7.js | grep -q 'WorkFrame'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q '₹17,999' && curl -fsS http://127.0.0.1:4173/terms | grep -q 'Terms & Conditions' && curl -fsS http://127.0.0.1:4173/work-showcase-v8.js | grep -q 'WorkShowcaseV8'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -113,9 +122,13 @@ jobs:
               for(const [route,name] of [['/','home'],['/plans','plans'],['/founder','founder'],['/terms','terms']]){
                 await page.goto(`http://127.0.0.1:4173${route}`,{waitUntil:'networkidle'});
                 await page.evaluate(()=>{document.querySelectorAll('.opening-sequence').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active')});
-                await page.waitForTimeout(480);
+                await page.waitForTimeout(520);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
+              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              await page.evaluate(()=>{document.querySelectorAll('.opening-sequence').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active');document.querySelector('#work')?.scrollIntoView()});
+              await page.waitForTimeout(520);
+              await page.screenshot({path:`artifacts/screenshots/${device}-work.png`,fullPage:false});
               await context.close();
             }
             await browser.close();

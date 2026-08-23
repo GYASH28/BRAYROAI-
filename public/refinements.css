@@ -60,7 +60,7 @@ body.hero-ready .site-nav{opacity:1}
 .price-lines article.is-featured::before{content:"MOST POPULAR";position:absolute;right:0;top:16px;font:600 7px/1 'DM Mono',monospace;letter-spacing:.1em;color:#315FC2}
 .price-lines article>strong small{color:#646C76}
 .price-lines article p{color:#505861;font-size:12.5px;line-height:1.62}
-.price-lines article a{padding:11px 0;border-bottom:1px solid rgba(9,9,11,.25);transition:border-color .22s,color .22s}
+.price-lines article a{min-height:44px;padding:11px 0;border-bottom:1px solid rgba(9,9,11,.25);transition:border-color .22s,color .22s}
 .price-lines article a:hover{border-color:#3E7BFF;color:#204EA9}
 .pricing-fineprint{max-width:900px;color:#59616B;font-size:10.5px}
 

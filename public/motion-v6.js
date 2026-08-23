@@ -14,8 +14,7 @@
     schedule(){if(!this.raf)this.raf=requestAnimationFrame(()=>this.paint());}
     paint(){
       this.raf=0;
-      const v=clamp(0,scrollY/220,1);
-      root.style.setProperty('--m6-blur',v.toFixed(3));
+      root.style.setProperty('--m6-blur',clamp(0,scrollY/220,1).toFixed(3));
     }
   }
 
@@ -56,15 +55,8 @@
   class SpotlightSurfaces {
     constructor(){
       this.targets=[...document.querySelectorAll([
-        '.capability-instrument',
-        '.pricing-mini',
-        '.build-card',
-        '.work__desktop',
-        '.work__mobile',
-        '.principle-instrument',
-        '.scope-switch',
-        '.care-grid article',
-        '.terms-card'
+        '.capability-instrument','.pricing-mini','.build-card','.work__desktop','.work__mobile',
+        '.principle-instrument','.scope-switch','.care-grid article','.terms-card'
       ].join(','))];
       this.targets.forEach(target=>{
         target.dataset.m6Spotlight='';
@@ -87,7 +79,7 @@
 
   class BorderTrails {
     constructor(){
-      this.targets=[...document.querySelectorAll('.pricing-mini.is-featured,.build-card.is-featured,.site-nav__cta,.primary-action,.close__action')];
+      this.targets=[...document.querySelectorAll('.pricing-band__grid .pricing-mini:nth-child(2),.build-card.is-featured,.site-nav__cta,.primary-action,.close__action')];
       this.targets.forEach(target=>{
         target.dataset.m6Trail='';
         if(!target.querySelector(':scope > .m6-border-trail')){
@@ -105,16 +97,22 @@
 
   class ShineAndRipple {
     constructor(){
-      document.querySelectorAll('a,button').forEach(control=>{
-        if(control.closest('.mobile-menu')||control.classList.contains('m6-case-dialog__close'))return;
+      const shineTargets=[...document.querySelectorAll('.primary-action,.site-nav__cta,.close__action,.plan-close__copy>a,.founder-close__copy a,.build-card>section>a')];
+      shineTargets.forEach(control=>{
         control.dataset.m6Shine='';
+        if(!control.querySelector(':scope > .m6-shine')){
+          const shine=document.createElement('i');
+          shine.className='m6-shine';
+          shine.setAttribute('aria-hidden','true');
+          control.append(shine);
+        }
       });
       if(reduced)return;
       document.addEventListener('pointerdown',event=>{
         const control=event.target.closest('a,button');
         if(!control||!control.isConnected)return;
         const r=control.getBoundingClientRect();
-        if(r.width>420||r.height>120)return;
+        if(r.width>420||r.height>120||r.width<30||r.height<24)return;
         const dot=document.createElement('i');
         dot.className='m6-ripple';
         dot.style.left=`${event.clientX-r.left}px`;
@@ -173,16 +171,22 @@
       this.root=document.querySelector('[data-plan-mode-director]');
       this.output=document.querySelector('[data-plan-mode-output]');
       if(!this.root||!this.output)return;
-      this.root.addEventListener('click',event=>{
+      const prepare=event=>{
         const button=event.target.closest('[data-plan-mode]');
         if(!button||button.classList.contains('is-active'))return;
         this.output.classList.remove('m6-entering');
         this.output.classList.add('m6-switching');
+      };
+      this.root.addEventListener('pointerdown',prepare,{passive:true});
+      this.root.addEventListener('keydown',event=>{if(['Enter',' '].includes(event.key))prepare(event);});
+      this.root.addEventListener('click',event=>{
+        const button=event.target.closest('[data-plan-mode]');
+        if(!button)return;
         setTimeout(()=>{
           this.output.classList.remove('m6-switching');
           this.output.classList.add('m6-entering');
           setTimeout(()=>this.output.classList.remove('m6-entering'),620);
-        },190);
+        },80);
       });
     }
   }
@@ -191,11 +195,12 @@
     constructor(){
       this.stage=document.querySelector('.work__canvas');
       if(!this.stage)return;
-      const tag=document.createElement('span');
-      tag.className='m6-view-tag';
-      tag.textContent='OPEN CASE / ↗';
-      tag.setAttribute('aria-hidden','true');
-      this.stage.append(tag);
+      this.trigger=document.createElement('button');
+      this.trigger.type='button';
+      this.trigger.className='m6-view-tag';
+      this.trigger.textContent='OPEN CASE / ↗';
+      this.trigger.setAttribute('aria-haspopup','dialog');
+      this.stage.append(this.trigger);
 
       this.dialog=document.createElement('dialog');
       this.dialog.className='m6-case-dialog';
@@ -215,35 +220,16 @@
           </div>
         </div>`;
       body.append(this.dialog);
-      this.closeButtons=[...this.dialog.querySelectorAll('.m6-case-dialog__close,[data-m6-dialog-close]')];
-      this.stage.addEventListener('click',event=>{
-        if(event.target.closest('a,button'))return;
-        this.open();
-      });
-      this.stage.setAttribute('role','button');
-      this.stage.setAttribute('tabindex','0');
-      this.stage.setAttribute('aria-label','Open FakhriMart project preview');
-      this.stage.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();this.open();}});
-      this.closeButtons.forEach(button=>button.addEventListener('click',()=>this.dialog.close()));
+      this.trigger.addEventListener('click',()=>this.open());
+      this.dialog.querySelectorAll('.m6-case-dialog__close,[data-m6-dialog-close]').forEach(button=>button.addEventListener('click',()=>this.dialog.close()));
       this.dialog.addEventListener('click',event=>{if(event.target===this.dialog)this.dialog.close();});
     }
-    open(){
-      if(typeof this.dialog.showModal==='function')this.dialog.showModal();
-    }
+    open(){if(typeof this.dialog.showModal==='function')this.dialog.showModal();}
   }
 
   class KeyHighlights {
     constructor(){
       document.querySelectorAll('.section-heading h2 em,.plan-heading h2 em,.founder-heading h2 em,.care__heading h2 em,.plans-hero__copy h1 em,.founder-hero__copy h1 em').forEach(node=>node.classList.add('m6-highlight'));
-    }
-  }
-
-  class TermsDisclosureUpgrade {
-    constructor(){
-      const terms=document.querySelector('.terms-main');
-      if(!terms)return;
-      const sections=[...terms.querySelectorAll('.terms-card')];
-      sections.forEach(card=>card.dataset.m6Spotlight='');
     }
   }
 
@@ -257,5 +243,4 @@
   new PricingModeTransition();
   new WorkMorphDialog();
   new KeyHighlights();
-  new TermsDisclosureUpgrade();
 })();

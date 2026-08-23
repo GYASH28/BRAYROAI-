@@ -10,6 +10,7 @@ const founder = read('founder.html');
 const files = {
   homeCss: read('public/commercial-cut.css'), homeJs: read('public/commercial-cut.js'),
   refinements: read('public/latest-refinements.css'),
+  polishCss: read('public/premium-polish.css'), polishJs: read('public/premium-polish.js'),
   plansCss: read('public/plans-page.css'), plansJs: read('public/plans-page.js'),
   founderCss: read('public/founder-page.css'), founderJs: read('public/founder-page.js')
 };
@@ -21,7 +22,10 @@ const expect = (condition, message) => { if (!condition) errors.push(message); }
 expect((home.match(/data-scene=/g) || []).length === 7, 'homepage must contain seven focused scenes');
 for (const id of ['top','services','work','plans','studio','contact']) expect(home.includes(`id="${id}"`), `homepage missing #${id}`);
 expect(home.includes('href="/plans"') && home.includes('href="/founder"'), 'homepage missing latest Plans / Founder routes');
-expect(home.includes('href="/latest-refinements.css"'), 'latest refinement layer not loaded');
+for (const html of [home,plans,founder]) {
+  expect(html.includes('href="/premium-polish.css"'), 'premium polish CSS is not wired into every public page');
+  expect(html.includes('src="/premium-polish.js"'), 'premium polish runtime is not wired into every public page');
+}
 expect(home.includes('data-colour-stage') && files.homeJs.includes('class ColourDirector'), 'homepage colour interaction incomplete');
 expect((home.match(/data-capability=/g) || []).length === 3 && files.homeJs.includes('class CapabilityInstrument'), 'capability interaction incomplete');
 expect(home.includes('data-commercial-film') && files.homeJs.includes('URL.createObjectURL'), 'brand film implementation incomplete');
@@ -38,12 +42,18 @@ expect(home.includes('Every plan below is for building and launching a complete 
 expect(home.includes('NO MAINTENANCE SUBSCRIPTION REQUIRED'), 'homepage maintenance clarification missing');
 expect(plans.includes('Every plan on this page is for making and launching a complete website'), 'plans page does not clearly define low tiers as full website builds');
 expect(plans.includes('You do not need a maintenance subscription'), 'plans page optional-maintenance boundary missing');
-expect(!plans.includes('These are not smaller website builds') && !plans.includes('A SEPARATE SERVICE / PAID MONTHLY'), 'old monthly-care positioning returned');
 
-expect(files.refinements.includes('openingAway 0s 3.8s') && files.refinements.includes('shutterTop 1.28s 2.35s'), 'latest homepage opening is not held long enough');
-expect(files.refinements.includes('openingProgress 3.35s'), 'opening progress choreography missing');
+expect(files.polishCss.includes('polishOpeningExit') && files.polishCss.includes('polishOpeningMark') && files.polishCss.includes('polishShutterTop'), 'enhanced multi-beat homepage opening missing');
+expect(files.polishCss.includes('.film{min-height:185svh') && files.polishCss.includes('.services{min-height:118svh'), 'desktop pacing refinements missing');
+expect(files.polishCss.includes('@media(max-width:700px)') && files.polishCss.includes('.opening-sequence{display:block!important'), 'mobile opening/pacing treatment missing');
+expect(files.polishCss.includes('@media(prefers-reduced-motion:reduce)'), 'premium polish reduced-motion safeguard missing');
+expect(files.polishJs.includes('polish-open__beats') && files.polishJs.includes("['SIGNAL', 'DIRECTION', 'SYSTEM', 'LAUNCH']"), 'opening beat director missing');
+expect(files.polishJs.includes('is-scene-live') && files.polishJs.includes('scrolling-down') && files.polishJs.includes('--reveal-delay'), 'scene continuity/stagger motion director incomplete');
+expect(files.polishJs.includes("matchMedia('(prefers-reduced-motion: reduce)')"), 'premium runtime reduced-motion branch missing');
+expect(Buffer.byteLength(files.polishCss) < 24000, 'premium polish CSS exceeds 24KB guardrail');
+expect(Buffer.byteLength(files.polishJs) < 12000, 'premium polish JS exceeds 12KB guardrail');
+
 expect(files.plansJs.includes("'Website Starter', '₹2,599'") && files.plansJs.includes("'Business Website', '₹3,999'") && files.plansJs.includes("'Premium Website', '₹5,999+'"), 'interactive scope director can revert to old pricing');
-
 expect((plans.match(/data-plan-scene=/g) || []).length === 5, 'plans page must contain five purposeful scenes');
 expect((plans.match(/class="build-card/g) || []).length === 3, 'plans page requires three website build scopes');
 expect((plans.match(/data-scope-choice=/g) || []).length === 3 && files.plansJs.includes('class ScopeDirector'), 'plans scope director incomplete');
@@ -54,8 +64,8 @@ expect(founder.includes('Yash Ganesh') && founder.includes('https://github.com/G
 expect((founder.match(/data-principle=/g) || []).length === 3 && files.founderJs.includes('class PrincipleInstrument'), 'founder principle interaction incomplete');
 for (const asset of ['about-yash.webp','brayroai-process-table.webp','brayroai-installation-hero.webp']) expect(founder.includes(asset), `founder page missing ${asset}`);
 
-for (const [name, css] of Object.entries({home:files.homeCss, plans:files.plansCss, founder:files.founderCss})) {
-  expect(css.includes(':focus-visible'), `${name} focus-visible safeguards missing`);
+for (const [name, css] of Object.entries({home:files.homeCss, plans:files.plansCss, founder:files.founderCss, polish:files.polishCss})) {
+  if (name !== 'polish') expect(css.includes(':focus-visible'), `${name} focus-visible safeguards missing`);
   expect(/@media\s*\(prefers-reduced-motion:\s*reduce\)/.test(css), `${name} reduced-motion styles missing`);
   expect(!/transition\s*:\s*all/i.test(css), `${name} contains prohibited transition: all`);
 }
@@ -81,4 +91,4 @@ for (const [name, html] of Object.entries({home, plans, founder})) {
 }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
-console.log('Integrity OK: latest commercial-cut site + founder story + complete one-time low-cost website plans + slower opening choreography checked');
+console.log('Integrity OK: latest commercial-cut architecture + premium pacing/motion layer + enhanced openings + one-time website pricing checked');

@@ -2,21 +2,24 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 const serious=r=>r.violations.filter(v=>['serious','critical'].includes(v.impact));
 const clearOpening=async page=>{await page.evaluate(()=>{document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach(n=>n.remove());document.body.classList.remove('polish-opening','hf-intro-active')})};
-const openPage=async(page,route='/')=>{await page.goto(route,{waitUntil:'networkidle'});await clearOpening(page);await page.waitForSelector('link[data-art-direction-v7]',{state:'attached'});await page.waitForSelector('link[data-art-direction-v7-contrast]',{state:'attached'})};
+const openPage=async(page,route='/')=>{await page.goto(route,{waitUntil:'networkidle'});await clearOpening(page);await page.waitForSelector('link[data-art-direction-v7]',{state:'attached'});await page.waitForSelector('link[data-art-direction-v7-contrast]',{state:'attached'});await page.waitForSelector('link[data-work-showcase-v8]',{state:'attached'});await page.waitForSelector('script[data-work-showcase-v8]',{state:'attached'})};
 
-test('homepage keeps seven scenes, dual pricing and Art Direction V7',async({page})=>{
+test('homepage keeps seven scenes, dual pricing and V8 client showcase',async({page})=>{
   await openPage(page);
   await expect(page.locator('[data-scene]')).toHaveCount(7);
   await expect(page.locator('link[data-motion-v6][href="/motion-v6.css"]')).toHaveCount(1);
-  await expect(page.locator('script[data-motion-v6][src="/motion-v6.js"]')).toHaveCount(1);
   await expect(page.locator('link[data-art-direction-v7][href="/art-direction-v7.css"]')).toHaveCount(1);
-  await expect(page.locator('script[data-art-direction-v7][src="/art-direction-v7.js"]')).toHaveCount(1);
   await expect(page.locator('link[data-art-direction-v7-contrast][href="/art-direction-v7-contrast.css"]')).toHaveCount(1);
+  await expect(page.locator('link[data-work-showcase-v8][href="/work-showcase-v8.css"]')).toHaveCount(1);
+  await expect(page.locator('script[data-work-showcase-v8][src="/work-showcase-v8.js"]')).toHaveCount(1);
   await expect(page.locator('.v7-hero-meta')).toHaveCount(1);
   await expect(page.locator('.v7-browserbar')).toHaveCount(1);
-  await expect(page.locator('.v7-work-proof')).toHaveCount(1);
+  await expect(page.locator('.v8-work-kicker')).toHaveText('FLAGSHIP CASE / PROJECT 01');
+  await expect(page.locator('.v8-work-meta')).toContainText('YARN WHOLESALE');
+  await expect(page.locator('.v8-work-modebar button')).toHaveCount(3);
+  await expect(page.locator('.v8-work-chapters button')).toHaveCount(3);
+  await expect(page.locator('.v8-section-state')).toHaveCount(1);
   await expect(page.locator('#plans .pricing-mini.v7-recommended')).toHaveCount(2);
-  expect(await page.locator('[data-m6-spotlight]').count()).toBeGreaterThanOrEqual(5);
   const plans=page.locator('#plans');
   for(const t of ['₹2,599','₹3,999','₹5,999+','₹9,999','₹17,999','₹25K–₹35K+','Ongoing website partnership','Complete website builds']) await expect(plans).toContainText(t);
 });
@@ -31,7 +34,22 @@ test('HyperFrames intro is the only homepage video experience',async({page})=>{
   await expect(page.locator('body')).not.toHaveClass(/hf-intro-active/);
 });
 
-test('case-study dialog opens and closes accessibly',async({page})=>{
+test('flagship FakhriMart showcase switches desktop mobile and detail modes',async({page})=>{
+  await openPage(page);
+  await page.locator('#work').scrollIntoViewIfNeeded();
+  const stage=page.locator('[data-work-stage]');
+  await expect(stage).toHaveAttribute('data-v8-mode','desktop');
+  await page.locator('.v8-work-modebar [data-v8-work-mode="mobile"]').click();
+  await expect(stage).toHaveAttribute('data-sc-verify-state','work:mobile');
+  await expect(page.locator('.v8-work-modebar [data-v8-work-mode="mobile"]')).toHaveAttribute('aria-pressed','true');
+  await page.locator('.v8-work-modebar [data-v8-work-mode="detail"]').click();
+  await expect(stage).toHaveAttribute('data-sc-verify-state','work:detail');
+  await expect(page.locator('.v8-work-detail')).toContainText('Browse-first hierarchy');
+  await page.locator('.v8-work-chapters [data-v8-work-mode="desktop"]').click();
+  await expect(stage).toHaveAttribute('data-sc-verify-state','work:desktop');
+});
+
+test('case-study dialog carries richer client proof and closes accessibly',async({page})=>{
   await openPage(page);
   await page.locator('#work').scrollIntoViewIfNeeded();
   const trigger=page.locator('.m6-view-tag');
@@ -40,6 +58,9 @@ test('case-study dialog opens and closes accessibly',async({page})=>{
   const dialog=page.locator('.m6-case-dialog');
   await expect(dialog).toBeVisible();
   await expect(dialog).toContainText('Built to make browsing feel obvious.');
+  await expect(dialog.locator('.v8-dialog-profile')).toContainText('FakhriMart');
+  await expect(dialog.locator('.v8-dialog-profile')).toContainText('Yarn wholesale');
+  await expect(dialog.locator('.v8-dialog-mobile img')).toHaveCount(1);
   await expect(dialog.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(1);
   await dialog.locator('.m6-case-dialog__close').click();
   await expect(dialog).not.toBeVisible();
@@ -55,11 +76,11 @@ test('editorial DESIGN BUILD SHIP sequence remains native',async({page})=>{
   await expect(sequence).toHaveAttribute('data-sc-verify-state','editorial:join');
 });
 
-test('core homepage interactions still work under V7',async({page})=>{
+test('core homepage interactions still work under V8',async({page})=>{
   await openPage(page);
   await page.locator('[data-colour-toggle]').click();await expect(page.locator('[data-colour-toggle]')).toHaveAttribute('aria-pressed','true');
   await page.locator('[data-capability="ai"]').click();await expect(page.locator('[data-capability-stage]')).toHaveAttribute('data-sc-verify-state','capability:ai');
-  await page.locator('[data-work-toggle]').click();await expect(page.locator('[data-work-stage]')).toHaveAttribute('data-sc-verify-state','work:mobile');
+  await page.locator('.v8-work-modebar [data-v8-work-mode="mobile"]').click();await expect(page.locator('[data-work-stage]')).toHaveAttribute('data-sc-verify-state','work:mobile');
   await page.locator('[data-project-type="ai"]').click();await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
 });
 
@@ -96,4 +117,4 @@ for(const route of ['/','/plans','/founder','/terms']) test(`${route} has no ser
 
 for(const [w,h] of [[320,720],[390,844],[768,1024],[1440,900],[1920,1080]]) test(`public pages avoid overflow at ${w}x${h}`,async({page})=>{await page.setViewportSize({width:w,height:h});for(const route of ['/','/plans','/founder','/terms']){await openPage(page,route);expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth),`${route}@${w}`).toBeLessThanOrEqual(1)}});
 
-test('reduced motion keeps all content available',async({browser})=>{const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});const page=await context.newPage();await page.goto('/',{waitUntil:'networkidle'});await expect(page.locator('.opening-sequence')).toBeHidden();for(const s of ['#services','[data-editorial-sequence]','#work','#plans','#studio','#contact'])await expect(page.locator(s)).toBeVisible();await context.close()});
+test('reduced motion keeps all content and V8 controls available',async({browser})=>{const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});const page=await context.newPage();await page.goto('/',{waitUntil:'networkidle'});await expect(page.locator('.opening-sequence')).toBeHidden();for(const s of ['#services','[data-editorial-sequence]','#work','#plans','#studio','#contact'])await expect(page.locator(s)).toBeVisible();await expect(page.locator('.v8-work-modebar')).toBeVisible();await context.close()});

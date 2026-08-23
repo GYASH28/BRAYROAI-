@@ -3,7 +3,7 @@ import { chromium } from '@playwright/test';
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
 const concurrency = Number(process.env.STRESS_CONCURRENCY || 24);
 const total = Number(process.env.STRESS_REQUESTS || 600);
-const routes = ['/', '/plans', '/founder', '/commercial-cut.css', '/commercial-cut.js', '/premium-polish.css', '/premium-polish.js', '/direction-pass.css', '/direction-pass.js', '/plans-page.css', '/plans-page.js', '/founder-page.css', '/founder-page.js', '/scrollcraft.css', '/scrollcraft.js', '/assets/hero-background.webp', '/assets/yash-cutout.webp', '/assets/about-yash.webp', '/assets/brayroai-installation-hero.webp', '/assets/brayroai-process-table.webp', '/assets/fakhrimart-case-desktop.png', '/assets/fakhrimart-case-mobile.png'];
+const routes = ['/', '/plans', '/founder', '/commercial-cut.css', '/commercial-cut.js', '/premium-polish.css', '/premium-polish.js', '/direction-pass.css', '/direction-pass.js', '/motion-v4.css', '/plans-page.css', '/plans-page.js', '/founder-page.css', '/founder-page.js', '/scrollcraft.css', '/scrollcraft.js', '/assets/hero-background.webp', '/assets/yash-cutout.webp', '/assets/about-yash.webp', '/assets/brayroai-installation-hero.webp', '/assets/brayroai-process-table.webp', '/assets/fakhrimart-case-desktop.png', '/assets/fakhrimart-case-mobile.png', '/assets/brayroai-cinematic-opening.mp4'];
 const failures = [];
 const timings = [];
 const assert = (condition, message) => { if (!condition) failures.push(message); };
@@ -46,7 +46,7 @@ async function inspectPage(page, route, selector, count, viewport) {
   await page.waitForFunction(({ selector, count }) => document.querySelectorAll(selector).length === count, { selector, count });
   await page.evaluate(() => {
     document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach((node) => node.remove());
-    document.body.classList.remove('polish-opening');
+    document.body.classList.remove('polish-opening','hf-intro-active');
   });
   const dimensions = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth - innerWidth, screens: document.documentElement.scrollHeight / innerHeight }));
   assert(dimensions.overflow <= 1, `${route} overflow at ${viewport.width}px: ${dimensions.overflow}px`);
@@ -61,6 +61,21 @@ async function browserLoad() {
   page.on('pageerror', (error) => runtimeErrors.push(`pageerror: ${error.message}`));
   page.on('console', (message) => { if (message.type() === 'error') runtimeErrors.push(`console: ${message.text()}`); });
   page.on('requestfailed', (request) => { if (request.url().startsWith(base)) runtimeErrors.push(`requestfailed: ${request.url()} (${request.failure()?.errorText || 'unknown'})`); });
+
+  // Dedicated opening check: the one allowed video is the HyperFrames intro, never the third scene.
+  await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('[data-hf-intro-video]');
+  assert(await page.locator('[data-hf-intro-video]').count() === 1, 'HyperFrames opening video did not mount exactly once');
+  assert((await page.locator('[data-hf-intro-video]').getAttribute('src'))?.includes('brayroai-cinematic-opening.mp4'), 'opening video is not using the permanent HyperFrames asset');
+  assert(await page.locator('[data-editorial-sequence] video,[data-commercial-film]').count() === 0, 'background video returned to editorial third scene');
+  const sound = page.locator('[data-hf-sound]');
+  await sound.click();
+  assert(await sound.getAttribute('aria-pressed') === 'true', 'intro sound control did not enable audio on user gesture');
+  await sound.click();
+  assert(await sound.getAttribute('aria-pressed') === 'false', 'intro sound control did not return to muted state');
+  await page.locator('[data-hf-skip]').click();
+  await page.waitForTimeout(620);
+  assert(!(await page.locator('body').evaluate((node) => node.classList.contains('hf-intro-active'))), 'intro did not release page scroll after skip');
 
   for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 1024 }, { width: 1440, height: 900 }, { width: 1920, height: 1080 }]) {
     await inspectPage(page, '/', '[data-scene]', 7, viewport);
@@ -81,8 +96,9 @@ async function browserLoad() {
   assert(await page.locator('[data-work-stage]').getAttribute('data-sc-verify-state') === 'work:desktop', 'work focus lost parity');
   assert(await page.locator('[data-project-intent]').getAttribute('data-sc-verify-state') === 'project:ai', 'project intent lost final state');
 
-  assert(await page.locator('video').count() === 0, 'removed background video returned');
+  assert(await page.locator('[data-editorial-sequence] video,[data-commercial-film]').count() === 0, 'removed background video returned');
   assert(await page.locator('[data-signal-chamber],.signal-chamber__core,.signal-chamber__orbit').count() === 0, 'obsolete AI-dashboard chamber returned');
+  assert(await page.locator('[data-micro-surface]').count() >= 5, 'Motion V4 micro surfaces did not mount');
   const sequence = page.locator('[data-editorial-sequence]');
   await sequence.scrollIntoViewIfNeeded();
   await page.evaluate(async () => {
@@ -112,6 +128,7 @@ async function browserLoad() {
 
   for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
     await inspectPage(page, '/plans', '[data-plan-scene]', 5, viewport);
+    assert(await page.locator('.scope-open').count() === 0, 'obsolete Plans opening overlay returned');
     await scrollStorm(page);
     await page.evaluate(() => { const choices = [...document.querySelectorAll('[data-scope-choice]')]; for (let i = 0; i < 90; i += 1) choices[i % choices.length].click(); });
     assert(await page.locator('[data-scope-director]').getAttribute('data-sc-verify-state') === 'scope:custom', `plans director lost final state at ${viewport.width}px`);
@@ -120,6 +137,7 @@ async function browserLoad() {
 
   for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
     await inspectPage(page, '/founder', '[data-founder-scene]', 6, viewport);
+    assert(await page.locator('.founder-open').count() === 0, 'obsolete Founder opening overlay returned');
     await scrollStorm(page);
     await page.evaluate(() => { const choices = [...document.querySelectorAll('[data-principle]')]; for (let i = 0; i < 90; i += 1) choices[i % choices.length].click(); });
     assert(await page.locator('[data-principle-stage]').getAttribute('data-sc-verify-state') === 'principle:use', `principle selector lost final state at ${viewport.width}px`);
@@ -136,8 +154,8 @@ await httpLoad();
 await browserLoad();
 timings.sort((a, b) => a - b);
 const quantile = (q) => timings[Math.min(timings.length - 1, Math.floor(timings.length * q))] || Infinity;
-const summary = { httpRequests: total, concurrency, routes: routes.length, pages: 3, viewports: 4, scrollWrites: 396, interactionWrites: 470, failures: failures.length, medianMs: Math.round(quantile(.5)), p95Ms: Math.round(quantile(.95)), p99Ms: Math.round(quantile(.99)), elapsedMs: Math.round(performance.now() - started) };
+const summary = { httpRequests: total, concurrency, routes: routes.length, pages: 3, viewports: 4, scrollWrites: 396, interactionWrites: 474, failures: failures.length, medianMs: Math.round(quantile(.5)), p95Ms: Math.round(quantile(.95)), p99Ms: Math.round(quantile(.99)), elapsedMs: Math.round(performance.now() - started) };
 console.log(JSON.stringify(summary, null, 2));
 if (summary.p95Ms > 2000) failures.push(`HTTP p95 ${summary.p95Ms}ms exceeds 2000ms`);
 if (failures.length) { console.error(failures.slice(0,30).join('\n')); process.exit(1); }
-console.log('Stress test passed: load, resize, editorial handoff, scroll and interaction pressure stayed coherent across all three pages.');
+console.log('Stress test passed: HyperFrames intro, load, resize, editorial handoff, scroll and interaction pressure stayed coherent across all three pages.');

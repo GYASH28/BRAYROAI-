@@ -4,6 +4,14 @@
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
   const body = document.body;
 
+  if (!document.querySelector('link[data-art-direction-v7-contrast]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/art-direction-v7-contrast.css';
+    link.dataset.artDirectionV7Contrast = '';
+    document.head.append(link);
+  }
+
   body.classList.add('v7-ready');
 
   class NavCompact {

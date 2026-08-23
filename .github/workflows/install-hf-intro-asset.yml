@@ -1,0 +1,42 @@
+name: Install HyperFrames Intro Asset
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/install-hf-intro-asset.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download verified HyperFrames render
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf /tmp/brayro-hf
+          mkdir -p /tmp/brayro-hf
+          gh run download 32665372917 --repo GYASH28/BRAYROAI- --name BRAYROAI-CINEMATIC-HYPERFRAMES-V2 --dir /tmp/brayro-hf
+          test -s /tmp/brayro-hf/BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2.mp4
+
+      - name: Install permanent website asset
+        run: |
+          cp /tmp/brayro-hf/BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2.mp4 public/assets/brayroai-cinematic-opening.mp4
+          cp /tmp/brayro-hf/BRAYROAI_CINEMATIC_OPENING_HYPERFRAMES_V2_WEB.mp4 public/assets/brayroai-cinematic-opening-silent.mp4
+
+      - name: Commit rendered assets
+        run: |
+          git config user.name "BRAYROAI Build"
+          git config user.email "actions@github.com"
+          git add public/assets/brayroai-cinematic-opening.mp4 public/assets/brayroai-cinematic-opening-silent.mp4
+          git commit -m "Install cinematic HyperFrames website intro"
+          git push origin HEAD:main

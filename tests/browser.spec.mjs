@@ -20,7 +20,9 @@ test('premium homepage keeps the current seven-scene commercial architecture', a
   const scenes = await page.locator('[data-scene]').evaluateAll((nodes) => nodes.map((node) => node.dataset.scene));
   expect(scenes).toEqual(['hero','services','film','work','plans','founder','contact']);
   await expect(page.locator('link[href="/premium-polish.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/experience-v2.css"]')).toHaveCount(1);
   await expect(page.locator('script[src="/premium-polish.js"]')).toHaveCount(1);
+  await expect(page.locator('script[src="/experience-v2.js"]')).toHaveCount(1);
   await expect(page.locator('a[href="/plans"]')).toHaveCount(2);
   await expect(page.locator('a[href="/founder"]')).toHaveCount(2);
 });
@@ -31,10 +33,7 @@ test('opening sequence reads as a multi-beat cinematic sequence before the hero 
   const opening = page.locator('.opening-sequence');
   await expect(opening).toBeVisible();
   await expect(page.locator('.polish-open__beats span')).toHaveCount(4);
-  await expect(page.locator('.polish-open__beats')).toContainText('SIGNAL');
-  await expect(page.locator('.polish-open__beats')).toContainText('DIRECTION');
-  await expect(page.locator('.polish-open__beats')).toContainText('SYSTEM');
-  await expect(page.locator('.polish-open__beats')).toContainText('LAUNCH');
+  for (const beat of ['SIGNAL','DIRECTION','SYSTEM','LAUNCH']) await expect(page.locator('.polish-open__beats')).toContainText(beat);
   await page.waitForTimeout(1200);
   const during = await opening.evaluate((element) => ({ visibility:getComputedStyle(element).visibility, opacity:Number(getComputedStyle(element).opacity) }));
   expect(during.visibility).not.toBe('hidden');
@@ -43,6 +42,31 @@ test('opening sequence reads as a multi-beat cinematic sequence before the hero 
   const after = await opening.evaluate((element) => ({ visibility:getComputedStyle(element).visibility, opacity:Number(getComputedStyle(element).opacity) }));
   expect(after.visibility === 'hidden' || after.opacity < .05).toBeTruthy();
   await expect(page.locator('#top h1')).toContainText('Digital, designed');
+});
+
+test('third scene is a native signal chamber with no background video', async ({ page }) => {
+  await page.setViewportSize({ width:1440, height:900 });
+  await openPage(page);
+  const chamber = page.locator('[data-signal-chamber]');
+  await expect(chamber).toHaveCount(1);
+  await expect(chamber.locator('.signal-chamber__core')).toHaveCount(1);
+  await expect(chamber.locator('.signal-chamber__orbit')).toHaveCount(2);
+  await expect(page.locator('video')).toHaveCount(0);
+  await expect(page.locator('[data-commercial-film],[data-film-controls]')).toHaveCount(0);
+  await chamber.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(120);
+  const before = await chamber.evaluate((node) => getComputedStyle(node).getPropertyValue('--signal-scale').trim());
+  await page.evaluate(() => {
+    const node = document.querySelector('[data-signal-chamber]');
+    const top = node.getBoundingClientRect().top + scrollY;
+    const range = Math.max(1,node.offsetHeight-innerHeight);
+    scrollTo(0,top+range*.78);
+  });
+  await page.waitForTimeout(140);
+  const after = await chamber.evaluate((node) => getComputedStyle(node).getPropertyValue('--signal-scale').trim());
+  expect(Number(after)).toBeGreaterThan(Number(before));
+  await expect(page.locator('[data-signal-status]')).toHaveText('SHIPPING THE EXPERIENCE');
+  await expect(page.locator('[data-signal-index]')).toHaveText('03 / 03');
 });
 
 test('homepage sells complete low-cost website builds, not maintenance plans', async ({ page }) => {
@@ -84,6 +108,7 @@ test('scene handoffs resolve live-state motion and active navigation', async ({ 
   await page.locator('#services').scrollIntoViewIfNeeded();
   await page.waitForTimeout(180);
   await expect(page.locator('#services')).toHaveClass(/is-scene-live/);
+  await expect(page.locator('#services')).toHaveClass(/v2-live/);
   await expect(page.locator('.site-nav nav a[href="#services"]')).toHaveClass(/is-current/);
   await page.locator('#work').scrollIntoViewIfNeeded();
   await page.waitForTimeout(180);
@@ -96,6 +121,7 @@ test('dedicated Plans page keeps one-time pricing and the interactive scope dire
   await expect(page.locator('[data-plan-scene]')).toHaveCount(5);
   await expect(page.locator('.build-card')).toHaveCount(3);
   await expect(page.locator('link[href="/premium-polish.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/experience-v2.css"]')).toHaveCount(1);
   const main = page.locator('main');
   for (const text of ['₹2,599','₹3,999','₹5,999+','ONE-TIME BUILD','You do not need a maintenance subscription']) await expect(main).toContainText(text);
   const starter = page.locator('[data-scope-choice="starter"]');
@@ -112,6 +138,7 @@ test('Founder page keeps the portrait story and principle instrument intact', as
   await expect(page.locator('[data-founder-scene]')).toHaveCount(6);
   await expect(page.locator('h1')).toContainText('The work stays');
   await expect(page.locator('link[href="/premium-polish.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/experience-v2.css"]')).toHaveCount(1);
   const craft = page.locator('[data-principle="craft"]');
   await craft.click();
   await expect(craft).toHaveAttribute('aria-pressed','true');
@@ -162,6 +189,6 @@ test('reduced motion removes cinematic blockers without hiding the website', asy
   const page = await context.newPage();
   await page.goto('/', { waitUntil:'networkidle' });
   await expect(page.locator('.opening-sequence')).toBeHidden();
-  for (const selector of ['#services','#work','#plans','#studio','#contact']) await expect(page.locator(selector)).toBeVisible();
+  for (const selector of ['#services','[data-signal-chamber]','#work','#plans','#studio','#contact']) await expect(page.locator(selector)).toBeVisible();
   await context.close();
 });

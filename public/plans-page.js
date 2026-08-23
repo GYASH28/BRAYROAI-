@@ -8,8 +8,8 @@ class PlansOpening {
   constructor() {
     const finish = () => document.body.classList.remove('is-opening');
     if (plansReducedMotion) return finish();
-    addEventListener('load', () => setTimeout(finish, 1180), { once: true });
-    setTimeout(finish, 2100);
+    addEventListener('load', () => setTimeout(finish, 1500), { once: true });
+    setTimeout(finish, 2400);
   }
 }
 
@@ -41,9 +41,9 @@ class ScopeDirector {
     this.answer = document.querySelector('[data-scope-answer]');
     this.link = document.querySelector('[data-scope-link]');
     this.states = {
-      starter: ['01 / 03', 'Website Starter', '₹9,999', 'A focused one-page launch for a business that needs to look credible and make the next action obvious.', '#starter'],
-      business: ['02 / 03', 'Business Website', '₹17,999', 'A complete brand and enquiry system with room to explain, persuade and convert.', '#business'],
-      custom: ['03 / 03', 'Custom Experience', '₹25K–₹35K+', 'A purpose-built digital experience with deeper motion, functionality or integrations.', '#custom']
+      starter: ['01 / 03', 'Website Starter', '₹2,599', 'A complete focused website for a business that needs a credible digital presence and a clear next action.', '#starter'],
+      business: ['02 / 03', 'Business Website', '₹3,999', 'A complete small-business website with stronger structure, polished visual direction and a clear enquiry path.', '#business'],
+      custom: ['03 / 03', 'Premium Website', '₹5,999+', 'A complete premium website with more custom sections, stronger motion, richer storytelling and deeper refinement.', '#custom']
     };
     if (!this.root || !this.buttons.length) return;
     this.buttons.forEach((button) => {

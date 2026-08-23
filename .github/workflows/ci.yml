@@ -34,6 +34,8 @@ jobs:
           test -f dist/commercial-cut.css
           test -f dist/commercial-cut.js
           test -f dist/latest-refinements.css
+          test -f dist/premium-polish.css
+          test -f dist/premium-polish.js
           test -f dist/plans-page.css
           test -f dist/plans-page.js
           test -f dist/founder-page.css
@@ -49,6 +51,8 @@ jobs:
           test -f dist/assets/fakhrimart-case-mobile.png
           grep -q 'Digital, designed' dist/index.html
           grep -q 'id="plans"' dist/index.html
+          grep -q 'premium-polish.css' dist/index.html
+          grep -q 'premium-polish.js' dist/index.html
           grep -q '₹2,599' dist/index.html
           grep -q '₹3,999' dist/index.html
           grep -q '₹5,999+' dist/index.html
@@ -126,11 +130,12 @@ jobs:
                 if(!target){await page.evaluate(()=>window.scrollTo(0,0));}
                 else{await page.evaluate(({target,offset})=>{const el=document.querySelector(target);const top=el.getBoundingClientRect().top+window.scrollY+offset;window.scrollTo(0,Math.max(0,top));},{target,offset});}
                 await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-                await page.waitForTimeout(name==='hero'?4100:240);
+                await page.waitForTimeout(name==='hero'?4550:320);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               for(const [route,name] of [['/plans','plans-page'],['/founder','founder-page']]){
                 await page.goto(`http://127.0.0.1:4173${route}`,{waitUntil:'networkidle'});
+                await page.waitForTimeout(3350);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               await context.close();

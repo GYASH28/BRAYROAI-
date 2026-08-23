@@ -1,0 +1,39 @@
+/* Compatibility overrides for the V2 signal chamber. */
+.signal-chamber{
+  --signal-cx:50%;--signal-cy:48%;--signal-grid-y:8%;--signal-scale:.82;
+  --signal-rot-one:-12deg;--signal-rot-two:18deg;
+  --signal-rail-one:.42;--signal-rail-two:.2;--signal-rail-three:.7;
+  --signal-sweep:-38vw;--signal-field-x:0px;--signal-field-y:0px;
+  --signal-core-x:0px;--signal-core-y:0px;
+  background:
+    radial-gradient(circle at var(--signal-cx) var(--signal-cy),rgba(255,255,255,.055),transparent 18rem),
+    radial-gradient(circle at 64% 44%,rgba(255,90,31,.07),transparent 27rem),
+    linear-gradient(180deg,#050608,#080a0d 58%,#050608)!important;
+}
+.signal-chamber__grid{transform:perspective(70rem) rotateX(58deg) scale(1.45) translateY(var(--signal-grid-y))!important}
+.signal-chamber__field{transform:translate3d(var(--signal-field-x),var(--signal-field-y),0)!important}
+.signal-chamber__rails i:nth-child(1){transform:scaleX(var(--signal-rail-one))!important}
+.signal-chamber__rails i:nth-child(2){transform:scaleX(var(--signal-rail-two))!important}
+.signal-chamber__rails i:nth-child(3){transform:scaleX(var(--signal-rail-three))!important}
+.signal-chamber__core{transform:translate(-50%,-50%) translate3d(var(--signal-core-x),var(--signal-core-y),0) scale(var(--signal-scale))!important}
+.signal-chamber__orbit--one{transform:translate(-50%,-50%) rotate(var(--signal-rot-one))!important}
+.signal-chamber__orbit--two{transform:translate(-50%,-50%) rotate(var(--signal-rot-two))!important}
+.signal-chamber__sweep{transform:translateX(var(--signal-sweep)) rotate(8deg)!important}
+.services.v2-live .capability-instrument__beam,.services.is-scene-live .capability-instrument__beam{animation:v2BeamPulse 3.4s ease-in-out infinite}
+
+/* tiny depth response, deliberately capped to a few pixels */
+@media(hover:hover) and (pointer:fine){
+  .build-ribbon__item,.build-card,.work__desktop,.work__mobile,.founder-preview__portrait,.method__image{will-change:transform}
+}
+
+@media(max-width:700px){
+  .signal-chamber__field{transform:none!important}
+  .signal-chamber__core{transform:translate(-50%,-50%) scale(var(--signal-scale))!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .signal-chamber__grid{transform:perspective(70rem) rotateX(58deg) scale(1.45) translateY(4%)!important}
+  .signal-chamber__field{transform:none!important}
+  .signal-chamber__core{transform:translate(-50%,-50%)!important}
+  .signal-chamber__orbit--one,.signal-chamber__orbit--two{transform:translate(-50%,-50%)!important}
+}

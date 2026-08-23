@@ -11,6 +11,7 @@ const plans = read('plans.html');
 const plansCss = read('public/plans-page.css');
 const plansJs = read('public/plans-page.js');
 const vite = read('vite.config.mjs');
+const vercel = read('vercel.json');
 const errors = [];
 const expect = (condition, message) => { if (!condition) errors.push(message); };
 
@@ -67,6 +68,7 @@ expect(plansCss.includes('@media (prefers-reduced-motion: reduce)') && plansCss.
 expect(!/transition\s*:\s*all/i.test(plansCss), 'transition: all is prohibited on plans page');
 expect(!/[—]/.test(plans), 'visible em dash is prohibited on plans page');
 expect(vite.includes("plans:resolve(process.cwd(),'plans.html')"), 'plans page is missing from the production build');
+expect(vercel.includes("media-src 'self' blob:"), 'production CSP must allow the Blob-backed brand film');
 
 const refs = [...html.matchAll(/(?:src|href)="\/(?!\/)([^"?#]+)["?#]?/g)]
   .map((match) => match[1])

@@ -32,14 +32,46 @@
 .care-grid article h3{max-width:16rem}
 .care-grid article p{color:rgba(243,244,240,.68)}
 
+/* Third scene: retire the old background film until the new authored asset is ready.
+   Keep the composition alive with the poster artwork and restrained scroll depth. */
+.film video{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.film__controls{display:none!important}
+.film__poster{
+  opacity:1!important;
+  transform:scale(calc(1.075 - (var(--scene-p,0) * .035))) translate3d(0,calc((.5 - var(--scene-p,0)) * 1.2rem),0);
+  filter:saturate(.58) contrast(1.08) brightness(.72);
+  transition:filter .8s var(--polish-ease,var(--ease));
+  will-change:transform;
+}
+.film.is-scene-live .film__poster{filter:saturate(.78) contrast(1.06) brightness(.78)}
+.film__veil{
+  background:
+    radial-gradient(circle at 52% 42%,transparent 0,rgba(0,0,0,.12) 38%,rgba(0,0,0,.58) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.18),transparent 30%,rgba(0,0,0,.55));
+}
+.film__sticky::after{
+  content:"STATIC STUDY / NEW FILM IN DEVELOPMENT";
+  position:absolute;
+  z-index:5;
+  top:1.5rem;
+  right:1.5rem;
+  color:rgba(255,255,255,.42);
+  font:500 .52rem/1 var(--mono);
+  letter-spacing:.12em;
+  pointer-events:none;
+}
+
 @media(max-width:760px){
   .opening-sequence__mark strong{font-size:clamp(3.5rem,19vw,6rem)}
   .opening-sequence::after{left:1.1rem;right:1.1rem;bottom:5vh}
   .build-ribbon__item{min-height:12.5rem}
   .build-ribbon__item.is-featured::before{top:.75rem;right:.75rem}
+  .film__sticky::after{top:1rem;right:1rem;font-size:.45rem}
+  .film__poster{transform:scale(calc(1.1 - (var(--scene-p,0) * .035))) translate3d(0,calc((.5 - var(--scene-p,0)) * .75rem),0)}
 }
 
 @media(prefers-reduced-motion:reduce){
   .opening-sequence,.opening-sequence__mark,.opening-sequence__shutter,.opening-sequence>span,.opening-sequence::after,.site-nav{animation:none!important}
   .opening-sequence{visibility:hidden!important}
+  .film__poster{transform:none!important;will-change:auto}
 }

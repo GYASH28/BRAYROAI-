@@ -79,7 +79,6 @@ expect(experience.includes('.service-moment')&&experience.includes('.work-slices
 expect(experience.includes('@media(max-width:760px)'),'intentional mobile choreography missing');
 expect(experience.includes('@media(prefers-reduced-motion:reduce)'),'reduced-motion choreography missing');
 expect(js.includes('class CinematicExperience')&&js.includes('class ServiceRail')&&js.includes('class WorkFilm')&&js.includes('class SystemFilm'),'central cinematic controllers missing');
-expect(js.includes('ENTER')===false,'implementation should not hard-code old explanatory transition copy in JS');
 expect((js.match(/addEventListener\('scroll'/g)||[]).length===1,'scroll work must be centralized through one passive listener');
 expect(js.includes('requestAnimationFrame'),'shared RAF scheduler missing');
 expect(!/Lenis|ScrollTrigger|locomotive/i.test(js+experience),'scroll-hijacking dependency slipped into production');

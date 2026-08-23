@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 const serious=r=>r.violations.filter(v=>['serious','critical'].includes(v.impact));
 const clearOpening=async page=>{await page.evaluate(()=>{document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach(n=>n.remove());document.body.classList.remove('polish-opening','hf-intro-active')})};
-const openPage=async(page,route='/')=>{await page.goto(route,{waitUntil:'networkidle'});await clearOpening(page);await page.waitForSelector('link[data-art-direction-v7]',{state:'attached'})};
+const openPage=async(page,route='/')=>{await page.goto(route,{waitUntil:'networkidle'});await clearOpening(page);await page.waitForSelector('link[data-art-direction-v7]',{state:'attached'});await page.waitForSelector('link[data-art-direction-v7-contrast]',{state:'attached'})};
 
 test('homepage keeps seven scenes, dual pricing and Art Direction V7',async({page})=>{
   await openPage(page);
@@ -11,6 +11,7 @@ test('homepage keeps seven scenes, dual pricing and Art Direction V7',async({pag
   await expect(page.locator('script[data-motion-v6][src="/motion-v6.js"]')).toHaveCount(1);
   await expect(page.locator('link[data-art-direction-v7][href="/art-direction-v7.css"]')).toHaveCount(1);
   await expect(page.locator('script[data-art-direction-v7][src="/art-direction-v7.js"]')).toHaveCount(1);
+  await expect(page.locator('link[data-art-direction-v7-contrast][href="/art-direction-v7-contrast.css"]')).toHaveCount(1);
   await expect(page.locator('.v7-hero-meta')).toHaveCount(1);
   await expect(page.locator('.v7-browserbar')).toHaveCount(1);
   await expect(page.locator('.v7-work-proof')).toHaveCount(1);

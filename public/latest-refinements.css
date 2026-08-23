@@ -1,0 +1,45 @@
+/* BRAYROAI / latest commercial-cut refinements */
+
+/* Give the opening enough screen time to read as an authored sequence. */
+.opening-sequence{animation:openingAway 0s 3.8s both!important}
+.opening-sequence__mark{animation:openingMark 2.45s var(--ease) both!important}
+.opening-sequence__shutter--top{animation:shutterTop 1.28s 2.35s var(--ease) both!important}
+.opening-sequence__shutter--bottom{animation:shutterBottom 1.28s 2.35s var(--ease) both!important}
+.opening-sequence>span{animation:openingScan 1.35s .48s var(--ease) both!important}
+.opening-sequence::after{content:"";position:absolute;z-index:5;left:7vw;right:7vw;bottom:7vh;height:1px;background:rgba(255,255,255,.14);transform-origin:left;animation:openingProgress 3.35s .2s cubic-bezier(.2,.72,.2,1) both}
+.site-nav{animation:navArrive .62s 3.35s var(--ease) both!important}
+@keyframes openingProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* Make the low-entry offer read as full websites, not support retainers. */
+.plans-preview .section-heading>p:last-child{max-width:46rem;color:rgba(243,244,240,.72)}
+.build-ribbon__item{min-height:15.5rem}
+.build-ribbon__item small{letter-spacing:.08em}
+.build-ribbon__item strong{letter-spacing:-.07em}
+.build-ribbon__item.is-featured{border-color:rgba(255,90,31,.5);box-shadow:0 1.4rem 4rem rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.12)}
+.build-ribbon__item.is-featured::before{content:"MOST CHOSEN";position:absolute;top:.9rem;right:.9rem;padding:.35rem .48rem;border-radius:999px;background:var(--orange);color:var(--ink);font:700 .48rem/1 var(--mono);letter-spacing:.08em}
+.care-note{align-items:center}
+.care-note>div p{max-width:30rem;color:rgba(243,244,240,.7)}
+.care-note>a{min-height:2.75rem;display:flex;align-items:center;justify-content:center;text-align:center}
+
+/* Dedicated plans page: improve clarity without changing the latest visual language. */
+.plans-hero__copy>p:last-child{max-width:46rem;color:rgba(243,244,240,.7)}
+.build-card>div>small{color:rgba(243,244,240,.58)}
+.build-card.is-featured{border-color:rgba(255,90,31,.48)}
+.build-card.is-featured header small{color:var(--orange)}
+.boundary{color:rgba(243,244,240,.55)!important}
+.care__heading>p{color:rgba(243,244,240,.68)}
+.care-grid article{min-height:13rem}
+.care-grid article h3{max-width:16rem}
+.care-grid article p{color:rgba(243,244,240,.68)}
+
+@media(max-width:760px){
+  .opening-sequence__mark strong{font-size:clamp(3.5rem,19vw,6rem)}
+  .opening-sequence::after{left:1.1rem;right:1.1rem;bottom:5vh}
+  .build-ribbon__item{min-height:12.5rem}
+  .build-ribbon__item.is-featured::before{top:.75rem;right:.75rem}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .opening-sequence,.opening-sequence__mark,.opening-sequence__shutter,.opening-sequence>span,.opening-sequence::after,.site-nav{animation:none!important}
+  .opening-sequence{visibility:hidden!important}
+}

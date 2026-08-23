@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="/commercial-cut.css">
   <link rel="stylesheet" href="/latest-refinements.css">
   <link rel="stylesheet" href="/premium-polish.css">
+  <link rel="stylesheet" href="/experience-v2.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to the experience</a>
@@ -111,19 +112,29 @@
       </div>
     </section>
 
-    <section class="scene film" data-sc-act="flow" data-scene="film">
-      <div class="film__sticky">
-        <img class="film__poster" src="/assets/brayroai-convergence-poster.webp" width="1600" height="900" alt="Abstract BRAYROAI convergence film frame.">
-        <video data-commercial-film data-src="/assets/brayroai-convergence.mp4" data-src-mobile="/assets/brayroai-convergence-mobile.mp4" muted loop playsinline preload="none" poster="/assets/brayroai-convergence-poster.webp"></video>
-        <div class="film__veil" aria-hidden="true"></div>
+    <section class="scene film signal-scene" data-sc-act="flow" data-scene="film" data-signal-chamber>
+      <div class="film__sticky signal-chamber">
+        <div class="signal-chamber__grid" aria-hidden="true"></div>
+        <div class="signal-chamber__noise" aria-hidden="true"></div>
+        <div class="signal-chamber__haze" aria-hidden="true"></div>
+        <div class="signal-chamber__rails" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="signal-chamber__field" aria-hidden="true"></div>
+        <div class="signal-chamber__sweep" aria-hidden="true"></div>
+        <div class="signal-chamber__orbit signal-chamber__orbit--one" aria-hidden="true"><span>DESIGN</span><span>ENGINEERING</span><span>USEFUL AI</span></div>
+        <div class="signal-chamber__orbit signal-chamber__orbit--two" aria-hidden="true"><span>STRATEGY → SYSTEM</span><span>IDEA → EXPERIENCE</span></div>
+        <div class="signal-chamber__core" aria-hidden="true">
+          <div class="signal-chamber__mark">BRAYRO<span>AI</span></div>
+          <div class="signal-chamber__core-dot"></div>
+          <small>ONE CONNECTED PRODUCTION</small>
+        </div>
+        <div class="signal-chamber__metrics" aria-hidden="true">
+          <div><span>BRAYROAI / SIGNAL CHAMBER</span><strong data-signal-index>01 / 03</strong></div>
+          <div class="signal-chamber__status"><span><i></i><b>LIVE SYSTEM</b></span><strong data-signal-status>FINDING THE SIGNAL</strong></div>
+        </div>
         <p class="film__line film__line--one" data-film-line>DESIGN FINDS THE SIGNAL.</p>
         <p class="film__line film__line--two" data-film-line>ENGINEERING MAKES IT REAL.</p>
         <p class="film__line film__line--three" data-film-line>ONE STUDIO. ALL SIGNAL.</p>
-        <div class="film__controls glass-control" data-film-controls data-sc-verify-state="film:loading">
-          <button type="button" data-film-toggle aria-label="Pause brand film"><span data-film-icon>Ⅱ</span><b data-film-label>Pause</b></button>
-          <input data-film-range type="range" min="0" max="1000" value="0" aria-label="Brand film timeline">
-          <output data-film-time>00:00 / 00:00</output>
-        </div>
+        <p class="signal-chamber__caption">SCROLL TO CONVERGE / MOVE TO BEND THE FIELD</p>
       </div>
     </section>
 
@@ -202,5 +213,6 @@
   <script src="/scrollcraft.js"></script>
   <script src="/commercial-cut.js"></script>
   <script src="/premium-polish.js"></script>
+  <script src="/experience-v2.js"></script>
 </body>
 </html>

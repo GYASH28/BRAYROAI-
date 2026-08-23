@@ -146,6 +146,8 @@
         if (!visible) continue;
         const progress = clamp(0, (innerHeight - rect.top) / Math.max(innerHeight + rect.height, 1), 1);
         section.style.setProperty('--v3-progress', progress.toFixed(4));
+        section.style.setProperty('--v3-media-y', `${((.5 - progress) * 22).toFixed(2)}px`);
+        section.style.setProperty('--v3-scale', (1.035 - progress * .018).toFixed(4));
         const distance = Math.abs((rect.top + rect.height * .5) - innerHeight * .5);
         if (distance < nearestDistance) {
           nearest = section;

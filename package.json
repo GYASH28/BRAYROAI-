@@ -1,13 +1,13 @@
 {
   "name": "brayroai-studio-site",
   "private": true,
-  "version": "6.1.0",
+  "version": "6.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test:syntax": "node --check public/commercial-cut.js && node --check public/premium-polish.js && node --check public/direction-pass.js && node --check public/motion-v5.js && node --check public/plans-page.js && node --check public/founder-page.js && node --check public/terms-page.js && node --check public/scrollcraft.js && node --check vite.config.mjs",
+    "test:syntax": "node --check public/commercial-cut.js && node --check public/premium-polish.js && node --check public/direction-pass.js && node --check public/motion-v5.js && node --check public/motion-v6.js && node --check public/plans-page.js && node --check public/founder-page.js && node --check public/terms-page.js && node --check public/scrollcraft.js && node --check vite.config.mjs",
     "test:integrity": "node tests/integrity.mjs",
     "test:browser": "playwright test",
     "test:stress": "node tests/stress.mjs",

@@ -26,7 +26,7 @@ test('homepage keeps native document scrolling and seven authored scenes', async
   await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0);
 });
 
-test('desktop pacing keeps the film energetic instead of overlong', async ({ page }) => {
+test('desktop pacing gives the editorial handoff enough room without dragging the rest of the site', async ({ page }) => {
   await page.setViewportSize({ width:1440, height:900 });
   await open(page);
   const ratios = await page.evaluate(() => {
@@ -35,26 +35,45 @@ test('desktop pacing keeps the film energetic instead of overlong', async ({ pag
   });
   expect(ratios.services).toBeGreaterThan(1.08);
   expect(ratios.services).toBeLessThan(1.28);
-  expect(ratios.film).toBeGreaterThan(1.7);
-  expect(ratios.film).toBeLessThan(2);
+  expect(ratios.film).toBeGreaterThan(2.05);
+  expect(ratios.film).toBeLessThan(2.25);
   expect(ratios.work).toBeLessThan(1.3);
   expect(ratios.plans).toBeLessThan(1.35);
 });
 
-test('premium pointer depth stays subtle and does not replace existing hero interaction', async ({ page }) => {
+test('directional pointer depth stays subtle and does not replace the hero interaction', async ({ page }) => {
   await page.setViewportSize({ width:1440, height:900 });
   await open(page);
   await page.mouse.move(1250,180);
-  await page.waitForTimeout(120);
+  await page.waitForTimeout(180);
   const values = await page.evaluate(() => ({
-    x:parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--polish-x')) || 0,
-    y:parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--polish-y')) || 0,
+    x:parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dir-x')) || 0,
+    y:parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dir-y')) || 0,
     colour:document.querySelector('[data-colour-stage]')?.dataset.scVerifyState
   }));
-  expect(Math.abs(values.x)).toBeGreaterThan(.5);
+  expect(Math.abs(values.x)).toBeGreaterThan(.4);
   expect(Math.abs(values.x)).toBeLessThanOrEqual(7.1);
   expect(Math.abs(values.y)).toBeLessThanOrEqual(5.1);
   expect(values.colour).toBe('colour:mono');
+});
+
+test('editorial sequence resolves through design build ship and join', async ({ page }) => {
+  await page.setViewportSize({ width:1440, height:900 });
+  await open(page);
+  const sequence = page.locator('[data-editorial-sequence]');
+  const setProgress = async (ratio) => {
+    await page.evaluate((ratio) => {
+      const node = document.querySelector('[data-editorial-sequence]');
+      const top = node.getBoundingClientRect().top + scrollY;
+      const range = Math.max(1,node.offsetHeight-innerHeight);
+      scrollTo(0,top+range*ratio);
+    }, ratio);
+    await page.waitForTimeout(140);
+  };
+  for (const [ratio,state] of [[.1,'design'],[.3,'build'],[.55,'ship'],[.82,'join']]) {
+    await setProgress(ratio);
+    await expect(sequence).toHaveAttribute('data-sc-verify-state',`editorial:${state}`);
+  }
 });
 
 test('colour director preserves the interactive hero treatment', async ({ page }) => {

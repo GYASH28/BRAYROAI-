@@ -13,27 +13,29 @@ const openPage = async (page, route = '/') => {
   await clearOpening(page);
 };
 
-test('premium homepage keeps the current seven-scene commercial architecture', async ({ page }) => {
+test('premium homepage keeps the seven-scene commercial architecture with the editorial direction layer', async ({ page }) => {
   await openPage(page);
   await expect(page.locator('#top h1')).toContainText('Digital, designed');
   await expect(page.locator('[data-scene]')).toHaveCount(7);
   const scenes = await page.locator('[data-scene]').evaluateAll((nodes) => nodes.map((node) => node.dataset.scene));
   expect(scenes).toEqual(['hero','services','film','work','plans','founder','contact']);
   await expect(page.locator('link[href="/premium-polish.css"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/experience-v2.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/direction-pass.css"]')).toHaveCount(1);
   await expect(page.locator('script[src="/premium-polish.js"]')).toHaveCount(1);
-  await expect(page.locator('script[src="/experience-v2.js"]')).toHaveCount(1);
+  await expect(page.locator('script[src="/direction-pass.js"]')).toHaveCount(1);
+  await expect(page.locator('link[href*="experience-v2"],script[src*="experience-v2"]')).toHaveCount(0);
   await expect(page.locator('a[href="/plans"]')).toHaveCount(2);
   await expect(page.locator('a[href="/founder"]')).toHaveCount(2);
 });
 
-test('opening sequence reads as a multi-beat cinematic sequence before the hero handoff', async ({ page }) => {
+test('opening reads as a restrained studio ident before the hero handoff', async ({ page }) => {
   await page.setViewportSize({ width:1440, height:900 });
   await page.goto('/', { waitUntil:'domcontentloaded' });
   const opening = page.locator('.opening-sequence');
   await expect(opening).toBeVisible();
-  await expect(page.locator('.polish-open__beats span')).toHaveCount(4);
-  for (const beat of ['SIGNAL','DIRECTION','SYSTEM','LAUNCH']) await expect(page.locator('.polish-open__beats')).toContainText(beat);
+  await expect(opening.locator('.opening-sequence__mark small')).toHaveText('BRAYROAI / STUDIO IDENT');
+  await expect(page.locator('.polish-open__beats')).toBeHidden();
+  await expect(page.locator('.polish-open__meta')).toContainText('DIRECTION → DELIVERY');
   await page.waitForTimeout(1200);
   const during = await opening.evaluate((element) => ({ visibility:getComputedStyle(element).visibility, opacity:Number(getComputedStyle(element).opacity) }));
   expect(during.visibility).not.toBe('hidden');
@@ -44,29 +46,40 @@ test('opening sequence reads as a multi-beat cinematic sequence before the hero 
   await expect(page.locator('#top h1')).toContainText('Digital, designed');
 });
 
-test('third scene is a native signal chamber with no background video', async ({ page }) => {
+test('third scene is an editorial DESIGN BUILD SHIP sequence with no video or AI dashboard', async ({ page }) => {
   await page.setViewportSize({ width:1440, height:900 });
   await openPage(page);
-  const chamber = page.locator('[data-signal-chamber]');
-  await expect(chamber).toHaveCount(1);
-  await expect(chamber.locator('.signal-chamber__core')).toHaveCount(1);
-  await expect(chamber.locator('.signal-chamber__orbit')).toHaveCount(2);
+  const sequence = page.locator('[data-editorial-sequence]');
+  await expect(sequence).toHaveCount(1);
+  await expect(sequence.locator('.editorial-sequence__word')).toHaveCount(3);
+  await expect(sequence).toContainText('ONE STUDIO.');
+  await expect(sequence).toContainText('NO HANDOFF.');
   await expect(page.locator('video')).toHaveCount(0);
-  await expect(page.locator('[data-commercial-film],[data-film-controls]')).toHaveCount(0);
-  await chamber.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(120);
-  const before = await chamber.evaluate((node) => getComputedStyle(node).getPropertyValue('--signal-scale').trim());
-  await page.evaluate(() => {
-    const node = document.querySelector('[data-signal-chamber]');
-    const top = node.getBoundingClientRect().top + scrollY;
-    const range = Math.max(1,node.offsetHeight-innerHeight);
-    scrollTo(0,top+range*.78);
-  });
-  await page.waitForTimeout(140);
-  const after = await chamber.evaluate((node) => getComputedStyle(node).getPropertyValue('--signal-scale').trim());
-  expect(Number(after)).toBeGreaterThan(Number(before));
-  await expect(page.locator('[data-signal-status]')).toHaveText('SHIPPING THE EXPERIENCE');
-  await expect(page.locator('[data-signal-index]')).toHaveText('03 / 03');
+  await expect(page.locator('[data-signal-chamber],.signal-chamber__core,.signal-chamber__orbit')).toHaveCount(0);
+
+  const setProgress = async (ratio) => {
+    await page.evaluate((ratio) => {
+      const node = document.querySelector('[data-editorial-sequence]');
+      const top = node.getBoundingClientRect().top + scrollY;
+      const range = Math.max(1,node.offsetHeight-innerHeight);
+      scrollTo(0,top+range*ratio);
+    }, ratio);
+    await page.waitForTimeout(150);
+  };
+
+  await setProgress(.31);
+  await expect(sequence).toHaveAttribute('data-sc-verify-state','editorial:build');
+  await expect(page.locator('[data-editorial-status]')).toContainText('ENGINEERING');
+
+  await setProgress(.57);
+  await expect(sequence).toHaveAttribute('data-sc-verify-state','editorial:ship');
+  await expect(page.locator('[data-editorial-status]')).toContainText('DELIVERY');
+
+  await setProgress(.84);
+  await expect(sequence).toHaveAttribute('data-sc-verify-state','editorial:join');
+  await expect(page.locator('[data-editorial-status]')).toContainText('NO HANDOFF');
+  const joinOpacity = await page.locator('.editorial-sequence__join').evaluate((node) => Number(getComputedStyle(node).opacity));
+  expect(joinOpacity).toBeGreaterThan(.8);
 });
 
 test('homepage sells complete low-cost website builds, not maintenance plans', async ({ page }) => {
@@ -79,7 +92,7 @@ test('homepage sells complete low-cost website builds, not maintenance plans', a
   for (const obsolete of ['₹9,999','₹17,999','₹25K–₹35K+','₹2,499/mo','₹3,999/mo','₹5,999+/mo']) expect(body).not.toContain(obsolete);
 });
 
-test('homepage interactions survive the richer motion layer', async ({ page }) => {
+test('homepage interactions survive the editorial motion layer', async ({ page }) => {
   await openPage(page);
   const colour = page.locator('[data-colour-toggle]');
   await colour.click();
@@ -102,17 +115,18 @@ test('homepage interactions survive the richer motion layer', async ({ page }) =
   await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
 });
 
-test('scene handoffs resolve live-state motion and active navigation', async ({ page }) => {
+test('scene handoffs resolve premium and editorial live states with active navigation', async ({ page }) => {
   await page.setViewportSize({ width:1440, height:900 });
   await openPage(page);
   await page.locator('#services').scrollIntoViewIfNeeded();
   await page.waitForTimeout(180);
   await expect(page.locator('#services')).toHaveClass(/is-scene-live/);
-  await expect(page.locator('#services')).toHaveClass(/v2-live/);
+  await expect(page.locator('#services')).toHaveClass(/v3-live/);
   await expect(page.locator('.site-nav nav a[href="#services"]')).toHaveClass(/is-current/);
   await page.locator('#work').scrollIntoViewIfNeeded();
   await page.waitForTimeout(180);
   await expect(page.locator('#work')).toHaveClass(/is-scene-live/);
+  await expect(page.locator('#work')).toHaveClass(/v3-live/);
   await expect(page.locator('.site-nav nav a[href="#work"]')).toHaveClass(/is-current/);
 });
 
@@ -121,7 +135,7 @@ test('dedicated Plans page keeps one-time pricing and the interactive scope dire
   await expect(page.locator('[data-plan-scene]')).toHaveCount(5);
   await expect(page.locator('.build-card')).toHaveCount(3);
   await expect(page.locator('link[href="/premium-polish.css"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/experience-v2.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/direction-pass.css"]')).toHaveCount(1);
   const main = page.locator('main');
   for (const text of ['₹2,599','₹3,999','₹5,999+','ONE-TIME BUILD','You do not need a maintenance subscription']) await expect(main).toContainText(text);
   const starter = page.locator('[data-scope-choice="starter"]');
@@ -133,12 +147,12 @@ test('dedicated Plans page keeps one-time pricing and the interactive scope dire
   await expect(page.locator('[data-scope-director]')).toHaveAttribute('data-sc-verify-state','scope:custom');
 });
 
-test('Founder page keeps the portrait story and principle instrument intact', async ({ page }) => {
+test('Founder page keeps portrait story and principle instrument intact', async ({ page }) => {
   await openPage(page, '/founder');
   await expect(page.locator('[data-founder-scene]')).toHaveCount(6);
   await expect(page.locator('h1')).toContainText('The work stays');
   await expect(page.locator('link[href="/premium-polish.css"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/experience-v2.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/direction-pass.css"]')).toHaveCount(1);
   const craft = page.locator('[data-principle="craft"]');
   await craft.click();
   await expect(craft).toHaveAttribute('aria-pressed','true');
@@ -146,7 +160,7 @@ test('Founder page keeps the portrait story and principle instrument intact', as
   await expect(page.locator('[data-principle-title]')).toContainText('browser agrees');
 });
 
-test('mobile navigation remains usable and the cinematic opening is visible on touch layouts', async ({ page }) => {
+test('mobile navigation remains usable and the studio opening is visible on touch layouts', async ({ page }) => {
   await page.setViewportSize({ width:390, height:844 });
   await page.goto('/', { waitUntil:'domcontentloaded' });
   await expect(page.locator('.opening-sequence')).toBeVisible();
@@ -189,6 +203,6 @@ test('reduced motion removes cinematic blockers without hiding the website', asy
   const page = await context.newPage();
   await page.goto('/', { waitUntil:'networkidle' });
   await expect(page.locator('.opening-sequence')).toBeHidden();
-  for (const selector of ['#services','[data-signal-chamber]','#work','#plans','#studio','#contact']) await expect(page.locator(selector)).toBeVisible();
+  for (const selector of ['#services','[data-editorial-sequence]','#work','#plans','#studio','#contact']) await expect(page.locator(selector)).toBeVisible();
   await context.close();
 });

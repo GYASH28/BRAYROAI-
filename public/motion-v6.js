@@ -5,6 +5,23 @@
   const root = document.documentElement;
   const body = document.body;
 
+  const mountArtDirectionV7 = () => {
+    if (!document.querySelector('link[data-art-direction-v7]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/art-direction-v7.css';
+      link.dataset.artDirectionV7 = '';
+      document.head.append(link);
+    }
+    if (!document.querySelector('script[data-art-direction-v7]')) {
+      const script = document.createElement('script');
+      script.src = '/art-direction-v7.js';
+      script.async = false;
+      script.dataset.artDirectionV7 = '';
+      document.body.append(script);
+    }
+  };
+
   class ProgressiveBlur {
     constructor(){this.raf=0;addEventListener('scroll',()=>this.schedule(),{passive:true});this.schedule();}
     schedule(){if(!this.raf)this.raf=requestAnimationFrame(()=>this.paint());}
@@ -136,4 +153,5 @@
   class KeyHighlights {constructor(){document.querySelectorAll('.section-heading h2 em,.plan-heading h2 em,.founder-heading h2 em,.care__heading h2 em,.plans-hero__copy h1 em,.founder-hero__copy h1 em').forEach(node=>node.classList.add('m6-highlight'));}}
 
   new ProgressiveBlur();new ActiveNavIndicator();new SpotlightSurfaces();new BorderTrails();new ShineAndRipple();new ContextCursor();new CapabilityCrosshair();new PricingModeTransition();new WorkMorphDialog();new KeyHighlights();
+  mountArtDirectionV7();
 })();

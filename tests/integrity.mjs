@@ -4,7 +4,7 @@ const root=process.cwd();
 const read=f=>fs.readFileSync(path.join(root,f),'utf8');
 const exists=f=>fs.existsSync(path.join(root,f));
 const home=read('index.html'),plans=read('plans.html'),founder=read('founder.html'),terms=read('terms.html');
-const files={homeJs:read('public/commercial-cut.js'),directionJs:read('public/direction-pass.js'),motion4:read('public/motion-v4.css'),motion5:read('public/motion-v5.css'),motion5js:read('public/motion-v5.js'),motion6:read('public/motion-v6.css'),motion6js:read('public/motion-v6.js'),v7:read('public/art-direction-v7.css'),v7js:read('public/art-direction-v7.js'),plansJs:read('public/plans-page.js'),founderJs:read('public/founder-page.js'),termsCss:read('public/terms-page.css'),termsJs:read('public/terms-page.js')};
+const files={homeJs:read('public/commercial-cut.js'),directionJs:read('public/direction-pass.js'),motion4:read('public/motion-v4.css'),motion5:read('public/motion-v5.css'),motion5js:read('public/motion-v5.js'),motion6:read('public/motion-v6.css'),motion6js:read('public/motion-v6.js'),v7:read('public/art-direction-v7.css'),v7contrast:read('public/art-direction-v7-contrast.css'),v7js:read('public/art-direction-v7.js'),plansJs:read('public/plans-page.js'),founderJs:read('public/founder-page.js'),termsCss:read('public/terms-page.css'),termsJs:read('public/terms-page.js')};
 const vite=read('vite.config.mjs'),vercel=read('vercel.json');
 const errors=[];const expect=(c,m)=>{if(!c)errors.push(m)};
 expect((home.match(/data-scene=/g)||[]).length===7,'homepage must keep seven scenes');
@@ -21,14 +21,17 @@ expect(files.motion5js.includes("link.href = '/motion-v6.css'")&&files.motion5js
 for(const token of ['class ProgressiveBlur','class ActiveNavIndicator','class SpotlightSurfaces','class BorderTrails','class WorkMorphDialog','class ContextCursor']) expect(files.motion6js.includes(token),`Motion V6 runtime missing ${token}`);
 for(const token of ['.m6-case-dialog','[data-m6-spotlight]','.m6-border-trail','.m6-highlight','body::before']) expect(files.motion6.includes(token),`Motion V6 CSS missing ${token}`);
 expect(files.motion6js.includes("link.href = '/art-direction-v7.css'")&&files.motion6js.includes("script.src = '/art-direction-v7.js'"),'Art Direction V7 is not mounted after Motion V6');
-for(const token of ['.capability-instrument{',' .founder-preview'.trim(),'.pricing-mini.v7-recommended','.build-card.is-featured','body.terms-body','.v7-browserbar']) expect(files.v7.includes(token),`Art Direction V7 CSS missing ${token}`);
+for(const token of ['.capability-instrument{','.founder-preview','.pricing-mini.v7-recommended','.build-card.is-featured','body.terms-body','.v7-browserbar']) expect(files.v7.includes(token),`Art Direction V7 CSS missing ${token}`);
 for(const token of ['class HeroMeta','class WorkFrame','class RecommendedPlans','class FounderEditorial','class EntryChoreography','class SectionHairlines']) expect(files.v7js.includes(token),`Art Direction V7 runtime missing ${token}`);
+expect(files.v7js.includes("link.href = '/art-direction-v7-contrast.css'"),'V7 contrast hardening is not loaded');
+expect(files.v7contrast.includes('--v7-orange-ink:#aa3205')&&files.v7contrast.includes('.terms-nav{z-index:100!important}')&&files.v7contrast.includes('.build-card{position:relative!important}'),'V7 paper contrast or positioning hardening incomplete');
 expect(files.v7.includes('@media(prefers-reduced-motion:reduce)'),'Art Direction V7 reduced-motion safeguards missing');
 expect(!/transition\s*:\s*all/i.test(files.v7),'Art Direction V7 contains prohibited transition: all');
 expect(Buffer.byteLength(files.motion6)<18000,'Motion V6 CSS exceeds 18KB guardrail');
 expect(Buffer.byteLength(files.motion6js)<18000,'Motion V6 JS exceeds 18KB guardrail');
 expect(Buffer.byteLength(files.v7)<26000,'Art Direction V7 CSS exceeds 26KB guardrail');
-expect(Buffer.byteLength(files.v7js)<10000,'Art Direction V7 JS exceeds 10KB guardrail');
+expect(Buffer.byteLength(files.v7contrast)<5000,'V7 contrast CSS exceeds 5KB guardrail');
+expect(Buffer.byteLength(files.v7js)<11000,'Art Direction V7 JS exceeds 11KB guardrail');
 
 expect(home.includes('href="/terms"')&&plans.includes('href="/terms"')&&founder.includes('href="/terms"'),'Terms links missing from public pages');
 for(const phrase of ['Terms & Conditions','Effective 24 August 2026','Monthly plans currently start at ₹2,599/month','One-time website builds currently start at ₹9,999','OWNERSHIP & PORTFOLIO','CANCELLATION & REFUNDS','laws of India']) expect(terms.includes(phrase),`Terms page missing: ${phrase}`);
@@ -38,7 +41,7 @@ expect(files.termsCss.includes('@media(prefers-reduced-motion:reduce)')&&files.t
 expect(files.directionJs.includes('class HyperFramesIntro')&&files.directionJs.includes('/assets/brayroai-cinematic-opening.mp4'),'HyperFrames intro integration missing');
 expect(!home.includes('data-commercial-film')&&!home.includes('data-signal-chamber'),'obsolete background film/signal chamber returned');
 for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png','brayroai-cinematic-opening.mp4']) expect(exists(path.join('public/assets',asset)),`missing ${asset}`);
-for(const file of ['public/motion-v5.css','public/motion-v5.js','public/motion-v6.css','public/motion-v6.js','public/art-direction-v7.css','public/art-direction-v7.js','public/terms-page.css','public/terms-page.js']) expect(exists(file),`missing ${file}`);
+for(const file of ['public/motion-v5.css','public/motion-v5.js','public/motion-v6.css','public/motion-v6.js','public/art-direction-v7.css','public/art-direction-v7-contrast.css','public/art-direction-v7.js','public/terms-page.css','public/terms-page.js']) expect(exists(file),`missing ${file}`);
 expect((founder.match(/data-founder-scene=/g)||[]).length===6,'founder page scene count changed');
 expect((founder.match(/data-principle=/g)||[]).length===3&&files.founderJs.includes('class PrincipleInstrument'),'founder principles broken');
 for(const [name,html] of Object.entries({home,plans,founder,terms})){

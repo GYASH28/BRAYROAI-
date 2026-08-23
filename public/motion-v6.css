@@ -30,9 +30,9 @@ body::before{
   transition:opacity .35s ease;
 }
 
-/* One moving active navigation indicator. */
-.site-nav nav,.plans-nav nav,.founder-nav nav{position:relative;isolation:isolate}
-.site-nav nav::before,.plans-nav nav::before,.founder-nav nav::before{
+/* One moving active navigation indicator on every page. */
+.site-nav nav,.plans-nav nav,.founder-nav nav,.terms-nav nav{position:relative;isolation:isolate}
+.site-nav nav::before,.plans-nav nav::before,.founder-nav nav::before,.terms-nav nav::before{
   content:"";
   position:absolute;
   z-index:-1;
@@ -47,7 +47,7 @@ body::before{
   transition:translate .62s var(--m6-ease),width .62s var(--m6-ease),opacity .28s ease;
   pointer-events:none;
 }
-.site-nav nav a,.plans-nav nav a,.founder-nav nav a{position:relative;z-index:1}
+.site-nav nav a,.plans-nav nav a,.founder-nav nav a,.terms-nav nav a{position:relative;z-index:1}
 
 /* Spotlight surfaces adapted to the brand. */
 [data-m6-spotlight]{--m6-sx:50%;--m6-sy:50%;position:relative;isolation:isolate}

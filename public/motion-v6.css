@@ -2,6 +2,7 @@
    Inspired by Motion Primitives, Magic UI, Aceternity and shadcn composition patterns.
    Adapted to BRAYROAI's editorial direction: quiet, tactile, useful motion. */
 
+@property --m6-angle{syntax:"<angle>";inherits:false;initial-value:0deg}
 :root{
   --m6-ease:cubic-bezier(.16,1,.3,1);
   --m6-spring:cubic-bezier(.2,.9,.2,1.08);
@@ -13,7 +14,7 @@
   --m6-blur:0;
 }
 
-/* progressive blur / scroll-fade treatment inspired by Motion Primitives + shadcn scroll-fade */
+/* Progressive blur / scroll-fade. */
 body::before{
   content:"";
   position:fixed;
@@ -29,7 +30,7 @@ body::before{
   transition:opacity .35s ease;
 }
 
-/* shadcn-like nav composition, but one moving active indicator instead of many pills */
+/* One moving active navigation indicator. */
 .site-nav nav,.plans-nav nav,.founder-nav nav{position:relative;isolation:isolate}
 .site-nav nav::before,.plans-nav nav::before,.founder-nav nav::before{
   content:"";
@@ -48,7 +49,7 @@ body::before{
 }
 .site-nav nav a,.plans-nav nav a,.founder-nav nav a{position:relative;z-index:1}
 
-/* spotlight / card spotlight adapted from Motion Primitives + Aceternity */
+/* Spotlight surfaces adapted to the brand. */
 [data-m6-spotlight]{--m6-sx:50%;--m6-sy:50%;position:relative;isolation:isolate}
 [data-m6-spotlight]::after{
   content:"";
@@ -57,14 +58,14 @@ body::before{
   inset:-1px;
   pointer-events:none;
   border-radius:inherit;
-  background:radial-gradient(22rem circle at var(--m6-sx) var(--m6-sy),rgba(255,255,255,.095),rgba(255,90,31,.028) 24%,transparent 58%);
+  background:radial-gradient(22rem circle at var(--m6-sx) var(--m6-sy),rgba(255,255,255,.09),rgba(255,90,31,.024) 24%,transparent 58%);
   opacity:0;
   transition:opacity .4s ease;
   mix-blend-mode:screen;
 }
 @media(hover:hover) and (pointer:fine){[data-m6-spotlight]:hover::after{opacity:1}}
 
-/* border trail: single restrained white/orange trace, not neon */
+/* Restrained border trail: one white/orange glint. */
 [data-m6-trail]{position:relative;isolation:isolate;overflow:hidden}
 [data-m6-trail]>.m6-border-trail{
   position:absolute;
@@ -74,32 +75,27 @@ body::before{
   border-radius:inherit;
   opacity:0;
   transition:opacity .42s ease;
-  --m6-a:0deg;
-  background:conic-gradient(from var(--m6-a),transparent 0 78%,rgba(242,239,232,.72) 84%,var(--m6-orange) 89%,transparent 95%);
+  background:conic-gradient(from var(--m6-angle),transparent 0 80%,rgba(242,239,232,.68) 85%,var(--m6-orange) 89%,transparent 94%);
   padding:1px;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;
   mask-composite:exclude;
 }
-[data-m6-trail].m6-trail-live>.m6-border-trail{opacity:.64;animation:m6Trail 5.8s linear infinite}
-@keyframes m6Trail{to{rotate:1turn}}
+[data-m6-trail].m6-trail-live>.m6-border-trail{opacity:.58;animation:m6Trail 6.2s linear infinite}
+@keyframes m6Trail{to{--m6-angle:360deg}}
 
-/* interactive button shine: tiny one-shot sweep */
+/* One-shot CTA shine; deliberately not applied to cards. */
 [data-m6-shine]{position:relative;overflow:hidden;isolation:isolate}
-[data-m6-shine]::before{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  top:-55%;bottom:-55%;
-  left:-36%;width:26%;
+[data-m6-shine]>.m6-shine{
+  position:absolute;z-index:1;top:-55%;bottom:-55%;left:-36%;width:26%;
+  pointer-events:none;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
   transform:skewX(-18deg) translateX(-280%);
   transition:transform .82s var(--m6-ease);
-  pointer-events:none;
 }
-@media(hover:hover) and (pointer:fine){[data-m6-shine]:hover::before{transform:skewX(-18deg) translateX(620%)}}
+@media(hover:hover) and (pointer:fine){[data-m6-shine]:hover>.m6-shine{transform:skewX(-18deg) translateX(620%)}}
 
-/* Motion-Primitives-like contextual cursor */
+/* Contextual cursor label. */
 .m5-cursor{display:grid!important;place-items:center;overflow:visible}
 .m5-cursor::before{
   content:attr(data-label);
@@ -117,11 +113,11 @@ body::before{
 .m5-cursor.has-label{width:52px;height:52px;border-color:rgba(255,255,255,.62);background:rgba(255,255,255,.045)}
 .m5-cursor.has-label::before{opacity:.82;transform:none}
 
-/* tiny ripple press, derived from modern button primitives */
-.m6-ripple{position:absolute;border-radius:50%;pointer-events:none;background:rgba(255,255,255,.22);translate:-50% -50%;animation:m6Ripple .65s var(--m6-ease) forwards}
+/* Tactile ripple. */
+.m6-ripple{position:absolute;z-index:9;border-radius:50%;pointer-events:none;background:rgba(255,255,255,.20);translate:-50% -50%;animation:m6Ripple .65s var(--m6-ease) forwards}
 @keyframes m6Ripple{from{width:0;height:0;opacity:.5}to{width:12rem;height:12rem;opacity:0}}
 
-/* animated price / mode transition - vertical number-flow feel */
+/* Price/mode transition with number-flow character. */
 [data-plan-mode-output] h2,[data-plan-mode-output] strong,[data-plan-mode-output] p,[data-plan-mode-output] small{transition:opacity .2s ease,translate .38s var(--m6-ease),filter .38s ease}
 [data-plan-mode-output].m6-switching h2,[data-plan-mode-output].m6-switching strong,[data-plan-mode-output].m6-switching p,[data-plan-mode-output].m6-switching small{opacity:0;translate:0 .55rem;filter:blur(5px)}
 [data-plan-mode-output].m6-entering h2,[data-plan-mode-output].m6-entering strong,[data-plan-mode-output].m6-entering p,[data-plan-mode-output].m6-entering small{animation:m6ModeIn .48s var(--m6-ease) both}
@@ -129,33 +125,29 @@ body::before{
 [data-plan-mode-output].m6-entering p{animation-delay:.08s}
 @keyframes m6ModeIn{from{opacity:0;translate:0 -.52rem;filter:blur(4px)}to{opacity:1;translate:0 0;filter:blur(0)}}
 
-/* featured plan gets a calm border trail only while in viewport */
-.pricing-mini.is-featured,.build-card.is-featured{isolation:isolate}
-.pricing-mini.is-featured::before,.build-card.is-featured::before{z-index:4}
-
-/* capability instrument: precision crosshair follows pointer */
+/* Capability precision crosshair. */
 .capability-instrument__visual{--m6-cx:50%;--m6-cy:50%}
 .capability-instrument__visual>.m6-crosshair{position:absolute;z-index:8;left:var(--m6-cx);top:var(--m6-cy);width:30px;height:30px;translate:-50% -50%;opacity:0;pointer-events:none;transition:opacity .35s ease}
 .capability-instrument__visual>.m6-crosshair::before,.capability-instrument__visual>.m6-crosshair::after{content:"";position:absolute;background:rgba(255,255,255,.36)}
 .capability-instrument__visual>.m6-crosshair::before{left:0;right:0;top:50%;height:1px}.capability-instrument__visual>.m6-crosshair::after{top:0;bottom:0;left:50%;width:1px}
-@media(hover:hover) and (pointer:fine){.capability-instrument:hover .m6-crosshair{opacity:.55}}
+@media(hover:hover) and (pointer:fine){.capability-instrument:hover .m6-crosshair{opacity:.52}}
 
-/* work morph-dialog trigger treatment */
-.work__canvas{cursor:pointer}
+/* Work quick-view trigger. */
 .work__canvas .m6-view-tag{
+  appearance:none;
   position:absolute;z-index:14;right:1rem;top:1rem;
   display:flex;align-items:center;gap:.55rem;
-  min-height:2rem;padding:0 .7rem;
+  min-height:2.15rem;padding:0 .75rem;
   border:1px solid rgba(255,255,255,.14);border-radius:999px;
-  background:rgba(7,8,9,.64);color:rgba(255,255,255,.72);
+  background:rgba(7,8,9,.68);color:rgba(255,255,255,.78);
   font:500 .55rem/1 "DM Mono",monospace;letter-spacing:.1em;
-  opacity:0;translate:0 -.3rem;
-  transition:opacity .35s ease,translate .45s var(--m6-ease),border-color .35s ease;
-  pointer-events:none;
+  opacity:.5;translate:0 -.2rem;
+  transition:opacity .35s ease,translate .45s var(--m6-ease),border-color .35s ease,background-color .35s ease;
+  cursor:pointer;
 }
-.work__canvas:hover .m6-view-tag{opacity:1;translate:0 0;border-color:rgba(255,255,255,.28)}
+.work__canvas:hover .m6-view-tag,.work__canvas .m6-view-tag:focus-visible{opacity:1;translate:0 0;border-color:rgba(255,255,255,.28);background:rgba(7,8,9,.82)}
 
-/* native <dialog>, using morphing-dialog composition principles */
+/* Native dialog using morphing-dialog composition principles. */
 .m6-case-dialog{width:min(94vw,78rem);height:min(90dvh,54rem);padding:0;border:0;background:#090a0c;color:#f2efe8;overflow:hidden;box-shadow:0 3rem 9rem rgba(0,0,0,.68)}
 .m6-case-dialog::backdrop{background:rgba(0,0,0,.76);backdrop-filter:blur(8px);opacity:0;animation:m6Backdrop .36s ease forwards}
 .m6-case-dialog[open]{animation:m6DialogIn .58s var(--m6-ease) both}
@@ -168,22 +160,16 @@ body::before{
 .m6-case-dialog__copy p{color:rgba(255,255,255,.58);line-height:1.65;font-size:.9rem}
 .m6-case-dialog__actions{margin-top:auto;display:grid;gap:.6rem}.m6-case-dialog__actions a,.m6-case-dialog__actions button{min-height:3rem;border:1px solid rgba(255,255,255,.12);background:transparent;color:#fff;padding:0 1rem;text-align:left;font-weight:700;cursor:pointer}.m6-case-dialog__actions a:first-child{display:flex;align-items:center;justify-content:space-between;background:#f2efe8;color:#08090b}.m6-case-dialog__close{position:absolute;right:1rem;top:1rem;width:2.4rem;height:2.4rem;border-radius:50%!important;padding:0!important;display:grid;place-items:center;text-align:center!important}
 
-/* accordion/disclosure composition on terms page */
-.terms-section details{border-top:1px solid rgba(255,255,255,.1)}
-.terms-section details:last-child{border-bottom:1px solid rgba(255,255,255,.1)}
-.terms-section summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding:1.1rem 0;color:#fff;font-weight:650}
-.terms-section summary::-webkit-details-marker{display:none}.terms-section summary::after{content:"+";font:500 1rem/1 "DM Mono",monospace;color:rgba(255,255,255,.48);transition:rotate .42s var(--m6-ease),color .3s ease}.terms-section details[open] summary::after{rotate:45deg;color:var(--m6-orange)}
-.terms-section details>div{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--m6-ease)}.terms-section details[open]>div{grid-template-rows:1fr}.terms-section details>div>div{overflow:hidden;padding-bottom:1.1rem}
+/* Key word highlighter. */
+.m6-highlight{position:relative;z-index:0}.m6-highlight::after{content:"";position:absolute;z-index:-1;left:-.04em;right:-.04em;bottom:.08em;height:.18em;background:rgba(255,90,31,.26);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--m6-ease)}.v3-live .m6-highlight::after,.m6-highlight.is-visible::after{transform:scaleX(1)}
 
-/* text highlighter: use only on key em spans */
-.m6-highlight{position:relative;z-index:0}.m6-highlight::after{content:"";position:absolute;z-index:-1;left:-.04em;right:-.04em;bottom:.08em;height:.18em;background:rgba(255,90,31,.28);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--m6-ease)}.v3-live .m6-highlight::after,.m6-highlight.is-visible::after{transform:scaleX(1)}
-
-/* mobile horizontal scroll fade for compact rows */
+/* Subtle mobile scroll-fade for pricing rows. */
 @media(max-width:760px){
-  .pricing-band__grid{position:relative;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;grid-template-columns:repeat(3,minmax(82vw,1fr))!important}
+  .pricing-band{overflow:hidden}
+  .pricing-band__grid{position:relative;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;grid-template-columns:repeat(3,minmax(82vw,1fr))!important;mask-image:linear-gradient(90deg,#000 0 92%,transparent 100%)}
   .pricing-band__grid::-webkit-scrollbar{display:none}.pricing-mini{scroll-snap-align:start}
   .m6-case-dialog{width:100vw;height:100dvh;max-width:none;max-height:none}.m6-case-dialog__grid{grid-template-columns:1fr;grid-template-rows:minmax(0,1.15fr) auto}.m6-case-dialog__copy{border-left:0;border-top:1px solid rgba(255,255,255,.1)}
-  body::before{height:5rem}.work__canvas .m6-view-tag{display:none}
+  body::before{height:5rem}.work__canvas .m6-view-tag{opacity:1;translate:0 0;top:auto;bottom:1rem}
 }
 
 @media(prefers-reduced-motion:reduce){

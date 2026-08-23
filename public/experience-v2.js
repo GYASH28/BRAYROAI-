@@ -18,15 +18,24 @@
           const rect = this.section.getBoundingClientRect();
           const x = clamp(-1, ((event.clientX - rect.left) / Math.max(1, rect.width) - .5) * 2, 1);
           const y = clamp(-1, ((event.clientY - rect.top) / Math.max(1, rect.height) - .5) * 2, 1);
-          this.section.style.setProperty('--signal-px', x.toFixed(3));
-          this.section.style.setProperty('--signal-py', y.toFixed(3));
+          this.paintPointer(x, y);
         }, { passive: true });
-        this.section.addEventListener('pointerleave', () => {
-          this.section.style.setProperty('--signal-px', '0');
-          this.section.style.setProperty('--signal-py', '0');
-        });
+        this.section.addEventListener('pointerleave', () => this.paintPointer(0, 0));
       }
+      this.paintPointer(0, 0);
       this.schedule();
+    }
+
+    paintPointer(x, y) {
+      const style = this.section.style;
+      style.setProperty('--signal-px', x.toFixed(3));
+      style.setProperty('--signal-py', y.toFixed(3));
+      style.setProperty('--signal-cx', `${(50 + x * 8).toFixed(2)}%`);
+      style.setProperty('--signal-cy', `${(48 + y * 7).toFixed(2)}%`);
+      style.setProperty('--signal-field-x', `${(x * 8).toFixed(2)}px`);
+      style.setProperty('--signal-field-y', `${(y * 6).toFixed(2)}px`);
+      style.setProperty('--signal-core-x', `${(x * 14).toFixed(2)}px`);
+      style.setProperty('--signal-core-y', `${(y * 11).toFixed(2)}px`);
     }
 
     schedule() {
@@ -38,7 +47,16 @@
       const rect = this.section.getBoundingClientRect();
       const range = Math.max(1, this.section.offsetHeight - innerHeight);
       const p = clamp(0, -rect.top / range, 1);
-      this.section.style.setProperty('--signal-p', p.toFixed(4));
+      const style = this.section.style;
+      style.setProperty('--signal-p', p.toFixed(4));
+      style.setProperty('--signal-grid-y', `${(8 - p * 7).toFixed(2)}%`);
+      style.setProperty('--signal-scale', (0.82 + p * 0.18).toFixed(4));
+      style.setProperty('--signal-rot-one', `${(-12 + p * 24).toFixed(2)}deg`);
+      style.setProperty('--signal-rot-two', `${(18 - p * 26).toFixed(2)}deg`);
+      style.setProperty('--signal-rail-one', (0.42 + p * 0.58).toFixed(4));
+      style.setProperty('--signal-rail-two', (0.20 + p * 0.80).toFixed(4));
+      style.setProperty('--signal-rail-three', (0.70 - p * 0.34).toFixed(4));
+      style.setProperty('--signal-sweep', `${(-38 + p * 76).toFixed(2)}vw`);
       let label = 'FINDING THE SIGNAL';
       let index = '01 / 03';
       if (p >= .34) { label = 'ALIGNING THE SYSTEM'; index = '02 / 03'; }

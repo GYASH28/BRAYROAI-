@@ -3,7 +3,7 @@ import { chromium } from '@playwright/test';
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
 const concurrency = Number(process.env.STRESS_CONCURRENCY || 24);
 const total = Number(process.env.STRESS_REQUESTS || 600);
-const routes = ['/', '/plans', '/founder', '/commercial-cut.css', '/commercial-cut.js', '/plans-page.css', '/plans-page.js', '/founder-page.css', '/founder-page.js', '/scrollcraft.css', '/scrollcraft.js', '/assets/hero-background.webp', '/assets/yash-cutout.webp', '/assets/about-yash.webp', '/assets/brayroai-installation-hero.webp', '/assets/brayroai-process-table.webp', '/assets/fakhrimart-case-desktop.png', '/assets/fakhrimart-case-mobile.png', '/assets/brayroai-convergence-poster.webp'];
+const routes = ['/', '/plans', '/founder', '/commercial-cut.css', '/commercial-cut.js', '/premium-polish.css', '/premium-polish.js', '/experience-v2.css', '/experience-v2-compat.css', '/experience-v2.js', '/plans-page.css', '/plans-page.js', '/founder-page.css', '/founder-page.js', '/scrollcraft.css', '/scrollcraft.js', '/assets/hero-background.webp', '/assets/yash-cutout.webp', '/assets/about-yash.webp', '/assets/brayroai-installation-hero.webp', '/assets/brayroai-process-table.webp', '/assets/fakhrimart-case-desktop.png', '/assets/fakhrimart-case-mobile.png'];
 const failures = [];
 const timings = [];
 const assert = (condition, message) => { if (!condition) failures.push(message); };
@@ -44,7 +44,10 @@ async function inspectPage(page, route, selector, count, viewport) {
   await page.setViewportSize(viewport);
   await page.goto(`${base}${route}`, { waitUntil: 'networkidle' });
   await page.waitForFunction(({ selector, count }) => document.querySelectorAll(selector).length === count, { selector, count });
-  await page.evaluate(() => document.body.classList.remove('is-opening'));
+  await page.evaluate(() => {
+    document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach((node) => node.remove());
+    document.body.classList.remove('polish-opening');
+  });
   const dimensions = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth - innerWidth, screens: document.documentElement.scrollHeight / innerHeight }));
   assert(dimensions.overflow <= 1, `${route} overflow at ${viewport.width}px: ${dimensions.overflow}px`);
   assert(dimensions.screens >= 5 && dimensions.screens <= 18, `${route} unexpected length at ${viewport.width}px: ${dimensions.screens.toFixed(2)} screens`);
@@ -78,13 +81,32 @@ async function browserLoad() {
   assert(await page.locator('[data-work-stage]').getAttribute('data-sc-verify-state') === 'work:desktop', 'work focus lost parity');
   assert(await page.locator('[data-project-intent]').getAttribute('data-sc-verify-state') === 'project:ai', 'project intent lost final state');
 
-  await page.locator('.film').scrollIntoViewIfNeeded();
-  await page.waitForFunction(() => { const film = document.querySelector('[data-commercial-film]'); return film?.currentSrc.startsWith('blob:') && film.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA; }, null, { timeout: 20_000 });
-  await page.evaluate(() => {
-    const range = document.querySelector('[data-film-range]');
-    for (let i = 0; i < 30; i += 1) { range.value = String((i * 137) % 1000); range.dispatchEvent(new Event('input', { bubbles: true })); }
+  assert(await page.locator('video').count() === 0, 'removed background video returned');
+  const chamber = page.locator('[data-signal-chamber]');
+  await chamber.scrollIntoViewIfNeeded();
+  await page.evaluate(async () => {
+    const node = document.querySelector('[data-signal-chamber]');
+    const top = node.getBoundingClientRect().top + scrollY;
+    const range = Math.max(1,node.offsetHeight-innerHeight);
+    for (let i = 0; i <= 36; i += 1) {
+      scrollTo(0, top + range * (i / 36));
+      if (i % 3 === 0) await new Promise(requestAnimationFrame);
+    }
   });
-  assert((await page.locator('[data-film-time]').textContent()) !== '00:00 / 00:00', 'film timeline stopped reporting');
+  const signal = await page.evaluate(() => {
+    const node = document.querySelector('[data-signal-chamber]');
+    return {
+      status: document.querySelector('[data-signal-status]')?.textContent,
+      index: document.querySelector('[data-signal-index]')?.textContent,
+      scale: getComputedStyle(node).getPropertyValue('--signal-scale').trim(),
+      orbits: node.querySelectorAll('.signal-chamber__orbit').length,
+      core: node.querySelectorAll('.signal-chamber__core').length
+    };
+  });
+  assert(signal.status === 'SHIPPING THE EXPERIENCE', 'signal chamber did not reach final narrative state');
+  assert(signal.index === '03 / 03', 'signal chamber index did not progress');
+  assert(Number(signal.scale) >= .99, 'signal chamber core did not converge');
+  assert(signal.orbits === 2 && signal.core === 1, 'signal chamber geometry incomplete');
 
   for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
     await inspectPage(page, '/plans', '[data-plan-scene]', 5, viewport);
@@ -112,8 +134,8 @@ await httpLoad();
 await browserLoad();
 timings.sort((a, b) => a - b);
 const quantile = (q) => timings[Math.min(timings.length - 1, Math.floor(timings.length * q))] || Infinity;
-const summary = { httpRequests: total, concurrency, routes: routes.length, pages: 3, viewports: 4, scrollWrites: 356, interactionWrites: 470, failures: failures.length, medianMs: Math.round(quantile(.5)), p95Ms: Math.round(quantile(.95)), p99Ms: Math.round(quantile(.99)), elapsedMs: Math.round(performance.now() - started) };
+const summary = { httpRequests: total, concurrency, routes: routes.length, pages: 3, viewports: 4, scrollWrites: 392, interactionWrites: 470, failures: failures.length, medianMs: Math.round(quantile(.5)), p95Ms: Math.round(quantile(.95)), p99Ms: Math.round(quantile(.99)), elapsedMs: Math.round(performance.now() - started) };
 console.log(JSON.stringify(summary, null, 2));
 if (summary.p95Ms > 2000) failures.push(`HTTP p95 ${summary.p95Ms}ms exceeds 2000ms`);
 if (failures.length) { console.error(failures.slice(0,30).join('\n')); process.exit(1); }
-console.log('Stress test passed: load, resize, scroll, media and interaction pressure stayed coherent across all three pages.');
+console.log('Stress test passed: load, resize, native signal chamber, scroll and interaction pressure stayed coherent across all three pages.');

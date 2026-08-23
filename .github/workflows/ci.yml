@@ -28,7 +28,7 @@ jobs:
       - run: npm run qa:static
       - name: Guard production bundle
         run: |
-          for f in index.html plans.html founder.html terms.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do test -f "dist/$f"; done
+          for f in index.html plans.html founder.html terms.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7-contrast.css art-direction-v7.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do test -f "dist/$f"; done
           test -f dist/assets/brayroai-cinematic-opening.mp4
           grep -q 'data-editorial-sequence' dist/index.html
           grep -q '₹2,599' dist/index.html
@@ -51,10 +51,12 @@ jobs:
           grep -q '/motion-v6.js' dist/motion-v5.js
           grep -q '/art-direction-v7.css' dist/motion-v6.js
           grep -q '/art-direction-v7.js' dist/motion-v6.js
+          grep -q '/art-direction-v7-contrast.css' dist/art-direction-v7.js
           grep -q 'class WorkFrame' dist/art-direction-v7.js
           grep -q 'class RecommendedPlans' dist/art-direction-v7.js
           grep -q '.pricing-mini.v7-recommended' dist/art-direction-v7.css
           grep -q 'body.terms-body' dist/art-direction-v7.css
+          grep -q -- '--v7-orange-ink:#aa3205' dist/art-direction-v7-contrast.css
           ! grep -q 'data-commercial-film' dist/index.html
           ! grep -q 'data-signal-chamber' dist/index.html
           test ! -f dist/experience-v2.css
@@ -111,7 +113,7 @@ jobs:
               for(const [route,name] of [['/','home'],['/plans','plans'],['/founder','founder'],['/terms','terms']]){
                 await page.goto(`http://127.0.0.1:4173${route}`,{waitUntil:'networkidle'});
                 await page.evaluate(()=>{document.querySelectorAll('.opening-sequence').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active')});
-                await page.waitForTimeout(420);
+                await page.waitForTimeout(480);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               await context.close();

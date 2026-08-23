@@ -7,6 +7,12 @@ on:
     paths:
       - 'hyperframes/brayroai-opening-cinematic-v2/**'
       - '.github/workflows/hyperframes-brayroai-opening.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'hyperframes/brayroai-opening-cinematic-v2/**'
+      - '.github/workflows/hyperframes-brayroai-opening.yml'
   workflow_dispatch:
 
 permissions:

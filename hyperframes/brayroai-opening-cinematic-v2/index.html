@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BRAYROAI / Cinematic Opening</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070809}
+    body{font-family:"Manrope",Arial,sans-serif}
+    [data-composition-id="brayroai-opening"]{
+      position:relative;width:1920px;height:1080px;overflow:hidden;isolation:isolate;background:#070809;color:#F2EFE8;
+    }
+    .stage-inner{position:absolute;inset:0;overflow:hidden;background:#070809;transform-origin:center center}
+    .grain{position:absolute;inset:-8%;opacity:.15;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");background-size:230px 230px}
+    .warm-pool{position:absolute;width:1040px;height:640px;left:440px;top:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,90,31,.12) 0%,rgba(255,90,31,.045) 33%,rgba(255,90,31,0) 70%);filter:blur(22px)}
+    .cold-pool{position:absolute;width:820px;height:620px;left:-110px;top:-160px;border-radius:50%;background:radial-gradient(circle,rgba(128,151,170,.065),rgba(7,8,9,0) 70%);filter:blur(32px)}
+    .letterbox{position:absolute;left:0;width:100%;height:70px;background:#000;z-index:20}.letterbox.top{top:0}.letterbox.bottom{bottom:0}
+    .hairline{position:absolute;left:340px;top:326px;width:1240px;height:2px;background:linear-gradient(90deg,rgba(242,239,232,0),rgba(242,239,232,.54) 17%,rgba(242,239,232,.54) 83%,rgba(242,239,232,0));transform-origin:center}
+    .meta-top{position:absolute;top:274px;left:0;width:100%;display:flex;justify-content:center;gap:28px;align-items:center;font-family:"DM Mono",monospace;font-size:22px;letter-spacing:.18em;color:#B7B1A8;text-transform:uppercase}
+    .meta-top i{display:block;width:4px;height:4px;background:#FF5A1F;border-radius:50%}
+    .brand-frame{position:absolute;left:230px;right:230px;top:350px;height:310px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .brand-ghost{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1.02);font-family:"Archivo Black",Impact,sans-serif;font-size:242px;letter-spacing:-.055em;color:transparent;-webkit-text-stroke:1px rgba(242,239,232,.12);white-space:nowrap}
+    .brand-solid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:"Archivo Black",Impact,sans-serif;font-size:214px;letter-spacing:-.055em;line-height:.9;white-space:nowrap;color:#F2EFE8;text-shadow:0 12px 48px rgba(0,0,0,.4)}
+    .brand-solid .ai{color:#FF5A1F}
+    .slice{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:1490px;text-align:center;font-family:"Archivo Black",Impact,sans-serif;font-size:214px;letter-spacing:-.055em;line-height:.9;white-space:nowrap;color:#F2EFE8}
+    .slice .ai{color:#FF5A1F}
+    .s1{clip-path:inset(0 90% 0 0)}.s2{clip-path:inset(0 80% 0 10%)}.s3{clip-path:inset(0 70% 0 20%)}.s4{clip-path:inset(0 60% 0 30%)}.s5{clip-path:inset(0 50% 0 40%)}.s6{clip-path:inset(0 40% 0 50%)}.s7{clip-path:inset(0 30% 0 60%)}.s8{clip-path:inset(0 20% 0 70%)}.s9{clip-path:inset(0 10% 0 80%)}.s10{clip-path:inset(0 0 0 90%)}
+    .scan{position:absolute;left:50%;top:325px;width:3px;height:370px;background:#FF5A1F;box-shadow:0 0 18px rgba(255,90,31,.42),0 0 70px rgba(255,90,31,.16);z-index:8}
+    .claim-wrap{position:absolute;left:0;top:700px;width:100%;height:128px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:16px}
+    .claim{font-family:"Manrope",Arial,sans-serif;font-size:58px;font-weight:750;letter-spacing:-.045em;line-height:1;color:#F2EFE8;white-space:nowrap}.claim em{font-style:normal;color:#FF5A1F}
+    .subclaim{font-family:"DM Mono",monospace;font-size:20px;letter-spacing:.16em;color:#9F9A92;text-transform:uppercase;white-space:nowrap}
+    .rules{position:absolute;top:799px;left:50%;width:760px;transform:translateX(-50%);display:flex;align-items:center;justify-content:space-between;gap:20px}.rules span{height:1px;background:rgba(242,239,232,.35);flex:1}.rules b{font-family:"DM Mono",monospace;font-size:18px;letter-spacing:.12em;font-weight:500;color:#8D8982}
+    .footer-left,.footer-right{position:absolute;bottom:102px;font-family:"DM Mono",monospace;font-size:18px;letter-spacing:.11em;color:#77736D;text-transform:uppercase}.footer-left{left:90px}.footer-right{right:90px}
+    .wipe{position:absolute;top:-180px;left:50%;width:240px;height:1440px;background:linear-gradient(90deg,rgba(255,90,31,0),rgba(255,90,31,.9) 45%,rgba(255,120,50,.98) 52%,rgba(255,90,31,0));filter:blur(12px);transform:translateX(-50%) skewX(-12deg);z-index:14;mix-blend-mode:screen}
+    .blackout{position:absolute;inset:0;background:#070809;z-index:30}
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="brayroai-opening" data-start="0" data-duration="5.6" data-track-index="1" data-width="1920" data-height="1080">
+    <div class="stage-inner">
+      <div class="cold-pool" data-layout-ignore></div>
+      <div class="warm-pool" data-layout-ignore></div>
+      <div class="grain" data-layout-ignore></div>
+      <div class="letterbox top" data-layout-ignore></div>
+      <div class="letterbox bottom" data-layout-ignore></div>
+      <div class="hairline"></div>
+      <div class="meta-top"><span>BRAYROAI / CREATIVE TECHNOLOGY</span><i></i><span>PUNE / 2026</span></div>
+      <div class="brand-frame" data-layout-allow-overflow>
+        <div class="brand-ghost" data-layout-ignore>BRAYROAI</div>
+        <div class="slice s1">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s2">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s3">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s4">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s5">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s6">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s7">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s8">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s9">BRAYRO<span class="ai">AI</span></div>
+        <div class="slice s10">BRAYRO<span class="ai">AI</span></div>
+        <div class="brand-solid">BRAYRO<span class="ai">AI</span></div>
+      </div>
+      <div class="scan" data-layout-ignore></div>
+      <div class="claim-wrap">
+        <div class="claim">ONE STUDIO. <em>NO HANDOFF.</em></div>
+        <div class="subclaim">DESIGN / ENGINEERING / USEFUL AI / ONE CONNECTED PRODUCTION</div>
+      </div>
+      <div class="rules"><span></span><b>DIRECTION → DELIVERY</b><span></span></div>
+      <div class="footer-left">BRAYROAI / OPENING IDENT</div>
+      <div class="footer-right">FILM 02 / 05.60 SEC</div>
+      <div class="wipe" data-layout-ignore></div>
+    </div>
+    <div class="blackout" data-layout-ignore></div>
+  </div>
+  <audio id="brayro-sfx" data-start="0" data-duration="5.6" data-track-index="2" src="assets/brayroai-cinematic-sfx.wav" data-volume="0.96"></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+
+    tl.from('.cold-pool', { opacity: 0, scale: 1.12, duration: 1.6, ease: 'power2.out' }, 0.12);
+    tl.from('.warm-pool', { opacity: 0, scale: .72, duration: 1.9, ease: 'expo.out' }, 0.18);
+    tl.from('.grain', { opacity: 0, duration: .8, ease: 'power1.out' }, 0.18);
+    tl.from('.letterbox.top', { y: -92, duration: .92, ease: 'expo.out' }, 0.14);
+    tl.from('.letterbox.bottom', { y: 92, duration: .92, ease: 'power4.out' }, 0.14);
+    tl.from('.hairline', { scaleX: 0, opacity: 0, duration: .68, ease: 'power3.out' }, 0.28);
+    tl.from('.meta-top span:first-child', { y: 18, opacity: 0, duration: .56, ease: 'power2.out' }, 0.5);
+    tl.from('.meta-top i', { scale: 0, opacity: 0, duration: .32, ease: 'back.out(2.1)' }, 0.66);
+    tl.from('.meta-top span:last-child', { y: -14, opacity: 0, duration: .52, ease: 'expo.out' }, 0.72);
+
+    const slices = gsap.utils.toArray('.slice');
+    const offsets = [-86,72,-58,46,-38,32,-26,22,-18,14];
+    slices.forEach((el, index) => {
+      tl.from(el, {
+        x: offsets[index],
+        y: index % 2 === 0 ? -10 : 10,
+        opacity: 0,
+        duration: .46 + index * .018,
+        ease: index % 3 === 0 ? 'expo.out' : index % 3 === 1 ? 'power4.out' : 'back.out(1.35)'
+      }, .78 + index * .105);
+    });
+
+    tl.from('.brand-ghost', { opacity: 0, scale: .84, duration: 1.3, ease: 'power3.out' }, 1.16);
+    tl.from('.brand-solid', { opacity: 0, scale: .988, duration: .72, ease: 'expo.out' }, 1.9);
+    tl.to('.slice', { opacity: .08, duration: .48, ease: 'power2.out' }, 2.18);
+    tl.from('.scan', { x: -1040, opacity: 0, duration: .34, ease: 'power2.out' }, 1.46);
+    tl.to('.scan', { x: 1035, duration: 1.28, ease: 'power2.inOut' }, 1.8);
+    tl.to('.scan', { opacity: 0, duration: .28, ease: 'power2.out' }, 3.06);
+
+    tl.from('.claim', { y: 36, opacity: 0, scale: .985, duration: .74, ease: 'power4.out' }, 2.66);
+    tl.from('.subclaim', { y: 18, opacity: 0, duration: .6, ease: 'expo.out' }, 3.02);
+    tl.from('.rules span:first-child', { scaleX: 0, transformOrigin: '100% 50%', duration: .64, ease: 'power3.out' }, 3.16);
+    tl.from('.rules b', { y: 10, opacity: 0, duration: .5, ease: 'back.out(1.3)' }, 3.28);
+    tl.from('.rules span:last-child', { scaleX: 0, transformOrigin: '0% 50%', duration: .64, ease: 'power3.out' }, 3.36);
+    tl.from('.footer-left', { x: -24, opacity: 0, duration: .52, ease: 'power2.out' }, 3.24);
+    tl.from('.footer-right', { x: 24, opacity: 0, duration: .52, ease: 'expo.out' }, 3.38);
+
+    tl.to('.stage-inner', { scale: 1.018, duration: 1.38, ease: 'sine.inOut' }, 3.72);
+    tl.from('.wipe', { x: -1380, opacity: 0, duration: .25, ease: 'power2.out' }, 4.18);
+    tl.to('.wipe', { x: 1380, duration: .84, ease: 'power4.inOut' }, 4.38);
+    tl.to('.wipe', { opacity: 0, duration: .22, ease: 'power2.out' }, 5.12);
+
+    tl.from('.blackout', { opacity: 0, duration: .46, ease: 'power2.inOut' }, 5.08);
+    tl.to('.stage-inner', { opacity: .15, duration: .4, ease: 'power2.in' }, 5.13);
+
+    window.__timelines['brayroai-opening'] = tl;
+  </script>
+</body>
+</html>

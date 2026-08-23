@@ -1,0 +1,50 @@
+/* V7 light-surface contrast + positioning hardening. */
+:root{--v7-orange-ink:#aa3205}
+
+.build-card{position:relative!important}
+
+/* Orange remains bright as a graphic accent, darker when it carries small text on paper. */
+.pricing-mini.v7-recommended .v7-reco-badge,
+.build-card.is-featured .v7-reco-badge,
+.founder-preview em,
+.story em,
+.terms-hero h1 em,
+.terms-section__num,
+.terms-toc a.is-current::before{color:var(--v7-orange-ink)!important}
+
+/* Normal-size copy on light sections uses a deliberate readable ink value. */
+.founder-preview .eyebrow,
+.v7-founder-kicker,
+.founder-preview .section-heading p,
+.story .eyebrow,
+.story__copy p,
+.story__copy span,
+.terms-hero .eyebrow,
+.terms-hero p,
+.terms-meta span,
+.terms-toc small,
+.terms-toc a,
+.terms-intro p,
+.terms-section p,
+.terms-section li,
+.terms-note{color:rgba(10,11,13,.66)!important}
+
+.story__copy b,
+.terms-intro strong,
+.terms-section h2,
+.terms-card strong{color:#0a0b0d!important}
+
+.story .m5-section-index,
+.terms-section .m5-section-index{color:rgba(10,11,13,.38)!important}
+
+/* Keep light featured-plan details readable without losing hierarchy. */
+.build-card.is-featured>header small,
+.build-card.is-featured small,
+.pricing-mini.v7-recommended small,
+.pricing-mini.v7-recommended p,
+.pricing-mini.v7-recommended strong span{color:rgba(10,11,13,.66)!important}
+.build-card.is-featured>section>p:first-child,
+.build-card.is-featured li,
+.build-card.is-featured .boundary{color:rgba(10,11,13,.68)!important}
+
+@media(prefers-reduced-motion:reduce){.build-card{transition:none!important}}

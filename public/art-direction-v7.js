@@ -12,6 +12,24 @@
     document.head.append(link);
   }
 
+  const mountV8 = () => {
+    if (!document.querySelector('link[data-work-showcase-v8]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/work-showcase-v8.css';
+      link.dataset.workShowcaseV8 = '';
+      document.head.append(link);
+    }
+    if (!document.querySelector('script[data-work-showcase-v8]')) {
+      const script = document.createElement('script');
+      script.src = '/work-showcase-v8.js';
+      script.defer = true;
+      script.dataset.workShowcaseV8 = '';
+      document.body.append(script);
+    }
+  };
+  mountV8();
+
   body.classList.add('v7-ready');
 
   class NavCompact {

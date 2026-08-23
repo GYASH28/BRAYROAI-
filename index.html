@@ -3,242 +3,185 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#08090c">
-  <meta name="description" content="BRAYROAI is a founder-led creative technology studio making bold websites, digital products, frontend systems and useful AI.">
+  <meta name="theme-color" content="#08090b">
+  <meta name="description" content="BRAYROAI is a founder-led creative technology studio making distinctive websites, digital products and useful AI systems.">
   <meta property="og:title" content="BRAYROAI · Digital, directed differently">
-  <meta property="og:description" content="Design, frontend engineering and useful AI shaped as one sharply directed production.">
+  <meta property="og:description" content="Strategy, design and engineering shaped as one focused production.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BRAYROAI">
   <meta name="twitter:card" content="summary_large_image">
-  <title>BRAYROAI · Director's Cut</title>
+  <title>BRAYROAI · Creative Technology Studio</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=optional" rel="stylesheet">
   <link rel="preload" href="/assets/hero-background.webp" as="image" fetchpriority="high">
   <link rel="preload" href="/assets/yash-cutout.webp" as="image" fetchpriority="high">
   <link rel="stylesheet" href="/scrollcraft.css">
   <link rel="stylesheet" href="/commercial-cut.css">
 </head>
-<body class="is-opening">
+<body>
   <a class="skip-link" href="#main">Skip to the experience</a>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="opening-sequence" aria-hidden="true">
+    <div class="opening-sequence__mark"><small>BRAYROAI / FILM 01</small><strong>MAKE<br>THE<br>DIFFERENCE.</strong></div>
+    <i class="opening-sequence__shutter opening-sequence__shutter--top"></i>
+    <i class="opening-sequence__shutter opening-sequence__shutter--bottom"></i>
+    <span></span>
+  </div>
 
-  <div class="sc-grain" aria-hidden="true"></div>
-  <div class="edit-flash" data-edit-flash aria-hidden="true"><i></i><span></span></div>
-
-  <header class="broadcast-bar" data-broadcast data-sc-verify-state="cut-1:0">
-    <a class="broadcast-bar__brand" href="#top" aria-label="BRAYROAI home">BRAYRO<span>AI</span></a>
-    <div class="broadcast-bar__status" aria-hidden="true"><i></i><span data-cut-name>OPENING FRAME</span><b data-timecode>00:00:00</b></div>
+  <header class="site-nav" data-site-nav data-sc-verify-state="scene:hero">
+    <a class="site-nav__brand" href="#top" aria-label="BRAYROAI home">BRAYRO<span>AI</span></a>
     <nav aria-label="Primary navigation">
-      <a href="#system">System</a>
+      <a href="#services">Services</a>
       <a href="#work">Work</a>
-      <a href="/plans.html">Plans</a>
-      <a href="#studio">Studio</a>
+      <a href="/plans">Plans</a>
+      <a href="/founder">Founder</a>
     </nav>
-    <a class="broadcast-bar__cta" href="mailto:yashganesh.work@gmail.com?subject=Start%20a%20BRAYROAI%20project">Start a project</a>
-    <div class="broadcast-bar__progress" aria-hidden="true"><i data-progress></i></div>
+    <a class="site-nav__cta magnetic" href="mailto:yashganesh.work@gmail.com?subject=Start%20a%20BRAYROAI%20project">Start a project <span>↗</span></a>
+    <button class="site-nav__menu" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><b>Menu</b></button>
+    <div class="site-nav__progress" aria-hidden="true"><i data-progress></i></div>
   </header>
 
+  <aside id="mobile-menu" class="mobile-menu" data-mobile-menu aria-hidden="true">
+    <nav aria-label="Mobile navigation">
+      <a href="#services">Services <span>01</span></a>
+      <a href="#work">Work <span>02</span></a>
+      <a href="/plans">Plans <span>03</span></a>
+      <a href="/founder">Founder <span>04</span></a>
+      <a href="#contact">Contact <span>05</span></a>
+    </nav>
+  </aside>
+
   <main id="main">
-    <section id="top" class="commercial-cut hero-cut" data-sc-act="flow" data-commercial-cut="OPENING FRAME" data-cut-theme="dark">
-      <div class="hero-composite" data-colour-stage>
-        <div class="hero-sequence" aria-hidden="true">
-          <div class="hero-sequence__slate"><small>BRAYROAI / PICTURE 01</small><strong>DIRECT<br>THE<br>DIFFERENCE.</strong></div>
-          <i class="hero-sequence__bar hero-sequence__bar--top"></i>
-          <i class="hero-sequence__bar hero-sequence__bar--bottom"></i>
-          <span class="hero-sequence__line"></span>
+    <section id="top" class="scene hero" data-sc-act="flow" data-scene="hero">
+      <div class="hero__stage" data-colour-stage data-sc-verify-state="colour:mono">
+        <div class="hero__picture hero__picture--mono">
+          <img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">
+          <div class="hero__word" aria-hidden="true">BRAYRO<span>AI</span></div>
+          <img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" alt="Yash Ganesh, founder of BRAYROAI.">
         </div>
-        <div class="hero-picture hero-picture--mono">
-          <img class="hero-picture__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">
-          <div class="hero-picture__word" aria-hidden="true"><span>BRAYRO</span><span>AI</span></div>
-          <img class="hero-picture__subject" src="/assets/yash-cutout.webp" width="900" height="697" alt="Yash Ganesh, founder of BRAYROAI.">
+        <div class="hero__picture hero__picture--colour" aria-hidden="true">
+          <img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">
+          <div class="hero__word">BRAYRO<span>AI</span></div>
+          <img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" alt="">
         </div>
-        <div class="hero-picture hero-picture--colour" aria-hidden="true">
-          <img class="hero-picture__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">
-          <div class="hero-picture__word"><span>BRAYRO</span><span>AI</span></div>
-          <img class="hero-picture__subject" src="/assets/yash-cutout.webp" width="900" height="697" alt="">
-        </div>
-        <div class="hero-shade" aria-hidden="true"></div>
-        <div class="hero-grid" aria-hidden="true"></div>
-        <div class="hero-copy" data-sc-in data-sc-stagger="60">
-          <p class="hero-kicker"><i></i> CREATIVE TECHNOLOGY STUDIO</p>
-          <h1>
-            <span class="hero-statement" data-hero-line="mono"><span class="hero-line"><b>Digital, designed</b></span><span class="hero-line"><b>to feel <em>different.</em></b></span></span>
-            <span class="hero-statement" data-hero-line="colour"><span class="hero-line"><b>This is what</b></span><span class="hero-line"><b><em>different</em> feels like.</b></span></span>
-          </h1>
-          <p class="hero-body">Bold web experiences, digital products and useful AI, directed as one complete production.</p>
-          <div class="hero-actions">
-            <a class="glass-button" href="mailto:yashganesh.work@gmail.com?subject=Start%20a%20BRAYROAI%20project">Start a project <span>↗</span></a>
-            <button class="colour-director" type="button" data-colour-toggle aria-pressed="false"><i></i><span>Direct the colour</span></button>
+        <div class="hero__shade" aria-hidden="true"></div>
+        <div class="hero__grid" aria-hidden="true"></div>
+        <div class="hero__copy">
+          <p class="eyebrow"><i></i> CREATIVE TECHNOLOGY STUDIO</p>
+          <h1><span>Digital, designed</span><span>to feel <em>different.</em></span></h1>
+          <p class="hero__body">Distinctive websites, digital products and useful AI. Strategy through launch, directed as one complete production.</p>
+          <div class="hero__actions">
+            <a class="primary-action magnetic" href="mailto:yashganesh.work@gmail.com?subject=Start%20a%20BRAYROAI%20project">Start a project <span>↗</span></a>
+            <button class="colour-director glass-control" type="button" data-colour-toggle aria-pressed="false"><i></i><span>Hold the colour</span></button>
           </div>
         </div>
-        <p class="hero-credit">BLACK &amp; WHITE UNTIL YOU ENTER THE FRAME</p>
+        <p class="hero__credit">MONOCHROME UNTIL YOU ENTER THE FRAME</p>
       </div>
     </section>
 
-    <section class="commercial-cut impact-cut" data-sc-act="flow" data-commercial-cut="THE HOOK" data-cut-theme="orange">
-      <div class="impact-word" aria-hidden="true">STOP</div>
-      <div class="impact-copy" data-sc-reveal="right" data-sc-reveal-at="0.08 0.58">
-        <p>YOUR FIRST IMPRESSION HAS ONE JOB</p>
-        <h2>Make them<br>stop.</h2>
-      </div>
-      <div class="impact-ticker" aria-hidden="true"><span>BRAND WITH A PULSE · PRODUCT WITH A POINT · FRONTEND WITH A FINISH · AI WITH A USE · BRAND WITH A PULSE · PRODUCT WITH A POINT · FRONTEND WITH A FINISH · AI WITH A USE ·</span></div>
-    </section>
-
-    <section id="system" class="commercial-cut web-cut" data-sc-act="flow" data-commercial-cut="WEB EXPERIENCES" data-cut-theme="dark">
-      <div class="commercial-type commercial-type--back" aria-hidden="true">WEB</div>
-      <figure class="glass-browser" data-responsive-preview data-preview-mode="desktop" data-sc-verify-state="preview:desktop" data-sc-reveal="left" data-sc-reveal-at="0.08 0.58">
-        <figcaption>
-          <span class="browser-lights" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="browser-address">fakhriyarns.vercel.app</span>
-          <span class="browser-modes" role="group" aria-label="Preview viewport">
-            <button type="button" class="is-active" data-preview-mode="desktop" aria-pressed="true">Desktop</button>
-            <button type="button" data-preview-mode="mobile" aria-pressed="false">Mobile</button>
-          </span>
-        </figcaption>
-        <div class="browser-preview" aria-live="polite">
-          <img class="browser-preview__desktop" src="/assets/fakhrimart-case-desktop.png" width="1440" height="1000" loading="lazy" alt="FakhriMart's live desktop website, designed and built by BRAYROAI.">
-          <img class="browser-preview__mobile" src="/assets/fakhrimart-case-mobile.png" width="390" height="844" loading="lazy" alt="FakhriMart's live mobile website, designed and built by BRAYROAI.">
-        </div>
-      </figure>
-      <div class="capability-copy capability-copy--right" data-sc-in data-sc-stagger="65">
-        <p>WEB EXPERIENCES</p>
-        <h2>Presence with a point of view.</h2>
-        <span>Strategy, art direction, motion and responsive implementation in the same room.</span>
-      </div>
-    </section>
-
-    <section class="commercial-cut product-cut" data-sc-act="flow" data-commercial-cut="PRODUCT DESIGN" data-cut-theme="paper">
-      <div class="product-copy" data-sc-in data-sc-stagger="55">
-        <p>PRODUCT DESIGN</p>
-        <h2>Complexity,<br>made tactile.</h2>
-        <span>Move the control. The interface responds because the detail is real, not decoration.</span>
-      </div>
-      <div class="relief-console" data-relief-console data-sc-reveal="up" data-sc-reveal-at="0.06 0.52">
-        <div class="relief-console__top"><span>INTERFACE CLARITY</span><output data-clarity-output>68%</output></div>
-        <div class="relief-console__preview" aria-hidden="true">
-          <i></i><i></i><i></i><i></i><i></i><i></i>
-        </div>
-        <label for="clarity">Shape the hierarchy</label>
-        <input id="clarity" data-clarity type="range" min="24" max="92" value="68">
-        <div class="relief-console__foot"><span>QUIET</span><span>DECISIVE</span></div>
-      </div>
-    </section>
-
-    <section class="commercial-cut frontend-cut" data-sc-act="flow" data-commercial-cut="FRONTEND ENGINEERING" data-cut-theme="dark">
-      <div class="frontend-copy" data-sc-in data-sc-stagger="55">
-        <p>FRONTEND ENGINEERING</p>
-        <h2>The idea survives<br>the browser.</h2>
-      </div>
-      <div class="code-film" data-sc-reveal="down" data-sc-reveal-at="0.06 0.5">
-        <div class="code-film__bar"><span>commercial-cut.css</span><b>LIVE</b></div>
-        <pre aria-label="A real responsive CSS excerpt"><code><span>@media</span> (max-width: 700px) {
-  .commercial-cut {
-    min-height: <em>100svh</em>;
-    overflow: clip;
-  }
-  .hero-copy {
-    inset: auto 1rem 2rem;
-  }
-}</code></pre>
-        <p>RESPONSIVE / ACCESSIBLE / FAST / AUTHORED</p>
-      </div>
-    </section>
-
-    <section class="commercial-cut ai-cut" data-sc-act="flow" data-commercial-cut="USEFUL AI" data-cut-theme="cobalt">
-      <div class="ai-copy" data-sc-in data-sc-stagger="60">
-        <p>USEFUL AI</p>
-        <h2>Not a gimmick.<br>A working advantage.</h2>
-        <span>Select a friction point. The studio workflow demo answers with the layer we would design.</span>
-      </div>
-      <div class="ai-workflow glass-surface" data-ai-demo data-sc-reveal="left" data-sc-reveal-at="0.05 0.5">
-        <div class="ai-workflow__head"><span>STUDIO WORKFLOW DEMO</span><i>READY</i></div>
-        <div class="ai-workflow__choices" role="group" aria-label="Select a workflow friction point">
-          <button type="button" class="is-active" data-ai-choice="leads" aria-pressed="true">Lead routing</button>
-          <button type="button" data-ai-choice="content" aria-pressed="false">Content operations</button>
-          <button type="button" data-ai-choice="support" aria-pressed="false">Customer support</button>
-        </div>
-        <div class="ai-workflow__answer" aria-live="polite">
-          <small>BRAYROAI RESPONSE</small>
-          <strong data-ai-title>Qualify before the inbox.</strong>
-          <p data-ai-answer>Capture intent, score fit and route each enquiry to the right next action without making the customer wait.</p>
+    <section id="services" class="scene services" data-sc-act="flow" data-scene="services">
+      <div class="scene-shell">
+        <header class="section-heading reveal" data-reveal>
+          <p class="eyebrow">ONE STUDIO / THREE DISCIPLINES</p>
+          <h2>Less handoff.<br>More <em>coherence.</em></h2>
+          <p>Move between the layers. Each one changes the instrument, while the outcome stays one connected experience.</p>
+        </header>
+        <div class="capability-instrument glass-panel reveal" data-reveal data-capability-stage data-sc-verify-state="capability:design">
+          <div class="capability-instrument__visual" aria-hidden="true">
+            <img src="/assets/brayroai-installation-hero.webp" width="1920" height="1080" loading="lazy" alt="">
+            <span class="capability-instrument__beam"></span>
+            <div class="capability-instrument__signal"><i></i><i></i><i></i></div>
+          </div>
+          <div class="capability-instrument__controls" role="group" aria-label="Explore BRAYROAI capabilities">
+            <button type="button" class="is-active" data-capability="design" aria-pressed="true"><span>01</span>Design</button>
+            <button type="button" data-capability="engineering" aria-pressed="false"><span>02</span>Engineering</button>
+            <button type="button" data-capability="ai" aria-pressed="false"><span>03</span>Useful AI</button>
+          </div>
+          <div class="capability-instrument__copy" aria-live="polite">
+            <small data-capability-index>01 / DESIGN</small>
+            <h3 data-capability-title>Make the right impression deliberate.</h3>
+            <p data-capability-copy>Positioning, art direction, interface and motion shaped around the action your visitor needs to take.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="commercial-cut silence-cut" data-sc-act="flow" data-commercial-cut="PICTURE LOCK" data-cut-theme="paper">
-      <div class="silence-disc" aria-hidden="true"><i></i><i></i><span>BR</span></div>
-      <p data-sc-in>Design. Engineering. Intelligence.</p>
-      <h2 data-sc-in>Same frame.</h2>
-    </section>
-
-    <section class="commercial-cut film-cut" data-sc-act="flow" data-commercial-cut="BRAND FILM" data-cut-theme="film">
-      <div class="film-stage">
-        <img class="film-cut__poster" src="/assets/brayroai-convergence-poster.webp" width="1600" height="900" alt="">
+    <section class="scene film" data-sc-act="flow" data-scene="film">
+      <div class="film__sticky">
+        <img class="film__poster" src="/assets/brayroai-convergence-poster.webp" width="1600" height="900" alt="Abstract BRAYROAI convergence film frame.">
         <video data-commercial-film data-src="/assets/brayroai-convergence.mp4" data-src-mobile="/assets/brayroai-convergence-mobile.mp4" muted loop playsinline preload="none" poster="/assets/brayroai-convergence-poster.webp"></video>
-        <div class="film-cut__wash" aria-hidden="true"></div>
-        <div class="film-super film-super--one" data-sc-in>ONE STUDIO.</div>
-        <div class="film-super film-super--two" data-sc-in>ALL SIGNAL.</div>
-        <div class="film-controls" data-film-controls data-sc-verify-state="film:loading">
+        <div class="film__veil" aria-hidden="true"></div>
+        <p class="film__line film__line--one" data-film-line>DESIGN FINDS THE SIGNAL.</p>
+        <p class="film__line film__line--two" data-film-line>ENGINEERING MAKES IT REAL.</p>
+        <p class="film__line film__line--three" data-film-line>ONE STUDIO. ALL SIGNAL.</p>
+        <div class="film__controls glass-control" data-film-controls data-sc-verify-state="film:loading">
           <button type="button" data-film-toggle aria-label="Pause brand film"><span data-film-icon>Ⅱ</span><b data-film-label>Pause</b></button>
-          <label for="film-timeline">Direct the cut</label>
-          <input id="film-timeline" data-film-range type="range" min="0" max="1000" value="0" aria-label="Brand film timeline">
-          <output data-film-time for="film-timeline">00:00 / 00:00</output>
+          <input data-film-range type="range" min="0" max="1000" value="0" aria-label="Brand film timeline">
+          <output data-film-time>00:00 / 00:00</output>
         </div>
-        <p>BRAYROAI / DIRECTOR'S CUT</p>
       </div>
     </section>
 
-    <section id="work" class="commercial-cut proof-cut" data-proof-stage data-proof-view="desktop" data-sc-verify-state="proof:desktop" data-sc-act="flow" data-commercial-cut="REAL WORK" data-cut-theme="paper">
-      <div class="proof-copy" data-sc-in data-sc-stagger="55">
-        <p>THE RECEIPT</p>
-        <h2>Proof, not promises.</h2>
-        <span>FakhriMart is a live catalogue-led website built around how customers browse yarn and send an enquiry.</span>
-        <a href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">Visit the live website <i>↗</i></a>
-      </div>
-      <div class="proof-device proof-device--desktop" data-sc-reveal="right" data-sc-reveal-at="0.03 0.5"><img src="/assets/fakhrimart-case-desktop.png" width="1440" height="1000" loading="lazy" alt="FakhriMart desktop website."></div>
-      <div class="proof-device proof-device--mobile" data-sc-reveal="up" data-sc-reveal-at="0.12 0.65"><img src="/assets/fakhrimart-case-mobile.png" width="390" height="844" loading="lazy" alt="FakhriMart mobile website."></div>
-      <p class="proof-view-status" aria-live="polite"><span>RESPONSIVE PROOF</span><b data-proof-label>Desktop leads. Mobile stays in frame.</b></p>
-    </section>
-
-    <section id="plans" class="commercial-cut plans-cut" data-plans-preview data-sc-act="flow" data-commercial-cut="SCOPE / PLANS" data-cut-theme="dark">
-      <div class="plans-preview__back" aria-hidden="true">SCOPE</div>
-      <div class="plans-preview__copy" data-sc-in data-sc-stagger="55">
-        <p>CLEAR WAYS TO START</p>
-        <h2>Pick the scope.<br>Keep the ambition.</h2>
-        <span>Three one-time builds. Three optional ways to stay sharp after launch.</span>
-        <a href="/plans.html">Enter the plans experience <i>↗</i></a>
-      </div>
-      <div class="plans-preview__runway" aria-label="Website build starting prices">
-        <a href="/plans.html#starter" class="plans-preview__step" data-plan-preview="starter"><small>Website Starter</small><strong>₹9,999</strong><span>One-page launch system</span></a>
-        <a href="/plans.html#business" class="plans-preview__step is-featured" data-plan-preview="business"><small>Business Website / Most Chosen</small><strong>₹17,999</strong><span>Multi-section brand and enquiry system</span></a>
-        <a href="/plans.html#custom" class="plans-preview__step" data-plan-preview="custom"><small>Custom Experience</small><strong>₹25K–₹35K+</strong><span>Advanced interactions, functionality and integrations</span></a>
-      </div>
-      <div class="plans-preview__care" aria-label="Optional monthly support plans">
-        <span>AFTER LAUNCH</span>
-        <a href="/plans.html#care">Launch <b>₹2,499/mo</b></a>
-        <a href="/plans.html#care">Grow <b>₹3,999/mo</b></a>
-        <a href="/plans.html#care">Pro <b>₹5,999+/mo</b></a>
+    <section id="work" class="scene work" data-sc-act="flow" data-scene="work">
+      <div class="scene-shell work__layout">
+        <header class="section-heading reveal" data-reveal>
+          <p class="eyebrow">REAL WORK / FAKHRIMART</p>
+          <h2>Proof has more weight than promises.</h2>
+          <p>A catalogue-led yarn website designed for confident browsing and direct enquiries across desktop and mobile.</p>
+          <a class="text-link magnetic" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">Visit the live website <span>↗</span></a>
+        </header>
+        <div class="work__canvas reveal" data-reveal data-work-stage data-sc-verify-state="work:desktop">
+          <figure class="work__desktop glass-panel"><img src="/assets/fakhrimart-case-desktop.png" width="1440" height="1000" loading="lazy" alt="FakhriMart desktop website."></figure>
+          <figure class="work__mobile glass-panel"><img src="/assets/fakhrimart-case-mobile.png" width="390" height="844" loading="lazy" alt="FakhriMart mobile website."></figure>
+          <button class="work__toggle glass-control" type="button" data-work-toggle aria-pressed="false"><span>Shift the focus</span><i>DESKTOP</i></button>
+        </div>
       </div>
     </section>
 
-    <section id="studio" class="commercial-cut studio-cut" data-sc-act="flow" data-commercial-cut="THE DIRECTOR" data-cut-theme="dark">
-      <div class="studio-frame" data-sc-reveal="left" data-sc-reveal-at="0.04 0.52">
-        <img src="/assets/about-yash.webp" width="1200" height="675" loading="lazy" alt="Yash Ganesh, founder of BRAYROAI.">
-        <span>FOUNDER / DESIGNER / ENGINEER</span>
-      </div>
-      <div class="studio-copy" data-sc-in data-sc-stagger="60">
-        <p>THE WORK STAYS CLOSE</p>
-        <h2>One person responsible for the whole impression.</h2>
-        <span>Yash Ganesh leads direction, interface and implementation, so the idea does not disappear between departments.</span>
-        <div><a href="https://github.com/GYASH28" target="_blank" rel="noreferrer">GitHub</a><a href="mailto:yashganesh.work@gmail.com">Email</a></div>
+    <section id="plans" class="scene plans-preview" data-sc-act="flow" data-scene="plans">
+      <div class="scene-shell">
+        <header class="section-heading reveal" data-reveal>
+          <p class="eyebrow">CLEAR WAYS TO START</p>
+          <h2>Choose the build.<br>Keep the ambition.</h2>
+          <p>Three one-time website scopes. Monthly care is a separate service for teams that want support after launch.</p>
+        </header>
+        <div class="build-ribbon reveal" data-reveal aria-label="One-time website builds">
+          <a class="build-ribbon__item glass-panel" href="/plans#starter"><small>Website Starter</small><strong>₹9,999</strong><span>Focused one-page launch</span><i>↗</i></a>
+          <a class="build-ribbon__item glass-panel is-featured" href="/plans#business"><small>Business Website / Most chosen</small><strong>₹17,999</strong><span>Complete brand and enquiry system</span><i>↗</i></a>
+          <a class="build-ribbon__item glass-panel" href="/plans#custom"><small>Custom Experience</small><strong>₹25K–₹35K+</strong><span>Advanced interactions and functionality</span><i>↗</i></a>
+        </div>
+        <div class="care-note reveal" data-reveal>
+          <div><small>SEPARATE MONTHLY CARE</small><p>Optional support after your website is live.</p></div>
+          <a href="/plans#care">Launch <b>₹2,499/mo</b></a>
+          <a href="/plans#care">Grow <b>₹3,999/mo</b></a>
+          <a href="/plans#care">Pro <b>₹5,999+/mo</b></a>
+        </div>
+        <a class="text-link plans-preview__link magnetic" href="/plans">Compare every plan <span>↗</span></a>
       </div>
     </section>
 
-    <section id="contact" class="commercial-cut close-cut" data-sc-act="flow" data-commercial-cut="END CARD" data-cut-theme="cobalt">
-      <div class="close-cut__copy" data-sc-in data-sc-stagger="60">
-        <p>YOUR NEXT LAUNCH STARTS HERE</p>
+    <section id="studio" class="scene founder-preview" data-sc-act="flow" data-scene="founder">
+      <div class="scene-shell founder-preview__layout">
+        <figure class="founder-preview__portrait reveal" data-reveal>
+          <img src="/assets/about-yash.webp" width="1200" height="675" loading="lazy" alt="Yash Ganesh, founder of BRAYROAI.">
+          <figcaption>YASH GANESH / FOUNDER</figcaption>
+        </figure>
+        <div class="section-heading reveal" data-reveal>
+          <p class="eyebrow">THE WORK STAYS CLOSE</p>
+          <h2>One mind across the whole impression.</h2>
+          <p>Yash leads strategy, interface and implementation. The idea stays intact because it does not disappear between departments.</p>
+          <a class="text-link magnetic" href="/founder">Meet the founder <span>↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="scene close" data-sc-act="flow" data-scene="contact">
+      <div class="close__orb" aria-hidden="true"><i></i><i></i></div>
+      <div class="close__copy reveal" data-reveal>
+        <p class="eyebrow">YOUR NEXT LAUNCH</p>
         <h2>Make the first impression impossible to ignore.</h2>
         <div class="project-intent" data-project-intent data-sc-verify-state="project:website">
           <span>WHAT ARE WE MAKING?</span>
@@ -248,9 +191,9 @@
             <button type="button" data-project-type="ai" aria-pressed="false">Useful AI</button>
           </div>
         </div>
-        <a data-project-cta href="mailto:yashganesh.work@gmail.com?subject=Start%20a%20BRAYROAI%20website%20project">Start a <b data-project-label>website</b> project <span>↗</span></a>
+        <a class="close__action magnetic" data-project-cta href="mailto:yashganesh.work@gmail.com?subject=Start%20a%20BRAYROAI%20website%20project">Start a <b data-project-label>website</b> project <span>↗</span></a>
       </div>
-      <footer><span>BRAYROAI / CREATIVE TECHNOLOGY STUDIO</span><span>PUNE, INDIA / 2026</span><a href="#top">Replay from the top</a></footer>
+      <footer><span>BRAYROAI / CREATIVE TECHNOLOGY STUDIO</span><span>PUNE, INDIA / 2026</span><a href="#top">Replay</a></footer>
     </section>
   </main>
 

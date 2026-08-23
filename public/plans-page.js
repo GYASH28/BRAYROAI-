@@ -1,30 +1,33 @@
+document.body.classList.add('js');
+
 const plansReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const plansFinePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const plansClamp = (min, value, max) => Math.min(max, Math.max(min, value));
 
-let plansScrollCraftMounted = false;
-const plansMountTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];
-const mountPlansScrollCraft = () => {
-  if (plansScrollCraftMounted || !window.ScrollCraft) return;
-  plansScrollCraftMounted = true;
-  plansMountTriggers.forEach((eventName) => removeEventListener(eventName, mountPlansScrollCraft));
-  window.ScrollCraft.mount(document.body);
-};
-
-if (plansReducedMotion) mountPlansScrollCraft();
-else {
-  plansMountTriggers.forEach((eventName) => addEventListener(eventName, mountPlansScrollCraft, { once: true, passive: eventName !== 'keydown' }));
-  if ('requestIdleCallback' in window) requestIdleCallback(mountPlansScrollCraft, { timeout: 2600 });
-  else setTimeout(mountPlansScrollCraft, 1800);
-}
-
 class PlansOpening {
   constructor() {
-    if (plansReducedMotion) {
-      document.body.classList.remove('is-opening');
+    const finish = () => document.body.classList.remove('is-opening');
+    if (plansReducedMotion) return finish();
+    addEventListener('load', () => setTimeout(finish, 1180), { once: true });
+    setTimeout(finish, 2100);
+  }
+}
+
+class PlansReveal {
+  constructor() {
+    const items = [...document.querySelectorAll('[data-reveal]')];
+    if (plansReducedMotion || !('IntersectionObserver' in window)) {
+      items.forEach((item) => item.classList.add('is-visible'));
       return;
     }
-    setTimeout(() => document.body.classList.remove('is-opening'), 1250);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.14, rootMargin: '-3% 0px -11% 0px' });
+    items.forEach((item) => observer.observe(item));
   }
 }
 
@@ -38,51 +41,24 @@ class ScopeDirector {
     this.answer = document.querySelector('[data-scope-answer]');
     this.link = document.querySelector('[data-scope-link]');
     this.states = {
-      starter: {
-        index: '01 / 03', title: 'Website Starter', price: '₹9,999',
-        answer: 'A focused one-page launch system for businesses that need to look credible, explain the offer and make the next action obvious.',
-        label: 'See Website Starter', href: '#starter'
-      },
-      business: {
-        index: '02 / 03', title: 'Business Website', price: '₹17,999',
-        answer: 'A multi-section brand and enquiry system for businesses that need more room to explain, persuade and convert.',
-        label: 'See Business Website', href: '#business'
-      },
-      custom: {
-        index: '03 / 03', title: 'Custom Experience', price: '₹25K–₹35K+',
-        answer: 'A purpose-built digital experience for advanced interactions, additional structures, useful AI or custom functionality.',
-        label: 'See Custom Experience', href: '#custom'
-      }
+      starter: ['01 / 03', 'Website Starter', '₹9,999', 'A focused one-page launch for a business that needs to look credible and make the next action obvious.', '#starter'],
+      business: ['02 / 03', 'Business Website', '₹17,999', 'A complete brand and enquiry system with room to explain, persuade and convert.', '#business'],
+      custom: ['03 / 03', 'Custom Experience', '₹25K–₹35K+', 'A purpose-built digital experience with deeper motion, functionality or integrations.', '#custom']
     };
     if (!this.root || !this.buttons.length) return;
     this.buttons.forEach((button) => {
       button.addEventListener('click', () => this.select(button.dataset.scopeChoice));
       button.addEventListener('keydown', (event) => this.navigate(event, button));
     });
-    if (plansFinePointer && !plansReducedMotion) {
-      this.root.addEventListener('pointermove', (event) => this.move(event), { passive: true });
-      this.root.addEventListener('pointerleave', () => {
-        this.root.style.setProperty('--scope-x', '0');
-        this.root.style.setProperty('--scope-y', '0');
-      });
-    }
-    this.select('business');
   }
 
   navigate(event, button) {
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
     event.preventDefault();
-    const forward = ['ArrowRight', 'ArrowDown'].includes(event.key);
-    const position = this.buttons.indexOf(button);
-    const next = this.buttons[(position + (forward ? 1 : -1) + this.buttons.length) % this.buttons.length];
+    const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
+    const next = this.buttons[(this.buttons.indexOf(button) + direction + this.buttons.length) % this.buttons.length];
     next.focus();
     this.select(next.dataset.scopeChoice);
-  }
-
-  move(event) {
-    const rect = this.root.getBoundingClientRect();
-    this.root.style.setProperty('--scope-x', (((event.clientX - rect.left) / rect.width - 0.5) * 2).toFixed(3));
-    this.root.style.setProperty('--scope-y', (((event.clientY - rect.top) / rect.height - 0.5) * 2).toFixed(3));
   }
 
   select(key) {
@@ -93,33 +69,36 @@ class ScopeDirector {
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
     });
-    this.index.textContent = state.index;
-    this.title.textContent = state.title;
-    this.price.textContent = state.price;
-    this.answer.textContent = state.answer;
-    this.link.href = state.href;
-    this.link.childNodes[0].nodeValue = `${state.label} `;
+    [this.index.textContent, this.title.textContent, this.price.textContent, this.answer.textContent] = state;
+    this.link.href = state[4];
+    this.link.firstChild.textContent = `See ${state[1]} `;
     this.root.dataset.scVerifyState = `scope:${key}`;
+  }
+}
+
+class PlansSurfaceLight {
+  constructor() {
+    if (!plansFinePointer || plansReducedMotion) return;
+    document.querySelectorAll('.glass-panel').forEach((surface) => {
+      surface.addEventListener('pointermove', (event) => {
+        const rect = surface.getBoundingClientRect();
+        surface.style.setProperty('--spot-x', `${event.clientX - rect.left}px`);
+        surface.style.setProperty('--spot-y', `${event.clientY - rect.top}px`);
+      }, { passive: true });
+    });
   }
 }
 
 class PlansTimeline {
   constructor() {
-    this.cuts = [...document.querySelectorAll('[data-plan-cut]')];
-    this.nav = document.querySelector('[data-plans-nav]');
-    this.name = document.querySelector('[data-plan-cut-name]');
-    this.timecode = document.querySelector('[data-plan-timecode]');
+    this.scenes = [...document.querySelectorAll('[data-plan-scene]')];
     this.progress = document.querySelector('[data-plan-progress]');
+    this.nav = document.querySelector('[data-plans-nav]');
     this.frame = 0;
-    this.smoothY = scrollY;
-    this.lastY = scrollY;
-    this.lastTime = performance.now();
-    this.energy = 0;
-    this.activeIndex = 0;
-    this.schedule = this.schedule.bind(this);
+    this.y = scrollY;
     this.update = this.update.bind(this);
-    addEventListener('scroll', this.schedule, { passive: true });
-    addEventListener('resize', this.schedule, { passive: true });
+    addEventListener('scroll', () => this.schedule(), { passive: true });
+    addEventListener('resize', () => this.schedule(), { passive: true });
     this.bindAnchors();
     this.schedule();
   }
@@ -131,7 +110,6 @@ class PlansTimeline {
         if (!target) return;
         event.preventDefault();
         target.scrollIntoView({ behavior: plansReducedMotion ? 'auto' : 'smooth', block: 'start' });
-        history.replaceState(null, '', link.getAttribute('href'));
       });
     });
   }
@@ -142,50 +120,41 @@ class PlansTimeline {
 
   update() {
     this.frame = 0;
-    const now = performance.now();
-    const elapsed = Math.max(16, now - this.lastTime);
-    const moved = Math.abs(scrollY - this.lastY);
-    const rawEnergy = plansReducedMotion ? 0 : plansClamp(0, moved / (elapsed * 2.2), 1);
-    this.energy += (rawEnergy - this.energy) * (rawEnergy > this.energy ? 0.42 : 0.14);
-    if (this.energy < 0.005) this.energy = 0;
-    this.smoothY += (scrollY - this.smoothY) * (plansReducedMotion ? 1 : 0.26);
-    if (Math.abs(scrollY - this.smoothY) < 0.1) this.smoothY = scrollY;
-    this.lastY = scrollY;
-    this.lastTime = now;
-
+    this.y += (scrollY - this.y) * (plansReducedMotion ? 1 : .18);
+    if (Math.abs(scrollY - this.y) < .2) this.y = scrollY;
     const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-    const pageProgress = plansClamp(0, this.smoothY / max, 1);
-    const focal = innerHeight * 0.47;
-    let activeIndex = 0;
-    let nearest = Infinity;
-    this.cuts.forEach((cut, index) => {
-      const top = cut.offsetTop - this.smoothY;
-      const height = cut.offsetHeight;
-      const local = plansClamp(0, (innerHeight - top) / (innerHeight + height), 1);
-      cut.style.setProperty('--plan-p', local.toFixed(4));
-      cut.style.setProperty('--plan-o', ((local - 0.5) * 2).toFixed(4));
-      const distance = Math.abs(top + Math.min(height, innerHeight) * 0.5 - focal);
-      if (top + height > 0 && top < innerHeight && distance < nearest) {
-        nearest = distance;
-        activeIndex = index;
+    const p = plansClamp(0, this.y / max, 1);
+    if (this.progress) this.progress.style.transform = `scaleX(${p.toFixed(4)})`;
+    let active = this.scenes[0];
+    let distance = Infinity;
+    this.scenes.forEach((scene) => {
+      const top = scene.offsetTop - this.y;
+      const height = scene.offsetHeight;
+      const local = plansClamp(0, (innerHeight * .85 - top) / (height + innerHeight * .7), 1);
+      scene.style.setProperty('--plan-p', local.toFixed(4));
+      const current = Math.abs(top + Math.min(height, innerHeight) * .5 - innerHeight * .48);
+      if (top < innerHeight && top + height > 0 && current < distance) {
+        active = scene;
+        distance = current;
       }
     });
-    this.activeIndex = activeIndex;
-    const active = this.cuts[activeIndex];
-    const totalFrames = pageProgress * 42 * 24;
-    const seconds = Math.floor(totalFrames / 24);
-    const frames = Math.floor(totalFrames % 24);
-    if (this.name) this.name.textContent = active?.dataset.planCut || 'PLANS';
-    if (this.timecode) this.timecode.textContent = `00:00:${String(seconds).padStart(2, '0')}:${String(frames).padStart(2, '0')}`;
-    if (this.progress) this.progress.style.transform = `scaleX(${pageProgress.toFixed(4)})`;
-    if (this.nav) this.nav.dataset.scVerifyState = `plan-cut:${activeIndex + 1}:${Math.round(pageProgress * 100)}`;
-    document.documentElement.style.setProperty('--plan-energy', this.energy.toFixed(3));
-    document.body.dataset.planTheme = active?.dataset.planTheme || 'dark';
-    this.cuts.forEach((cut, index) => cut.classList.toggle('is-current-plan-cut', index === activeIndex));
-    if (this.energy > 0 || this.smoothY !== scrollY) this.schedule();
+    if (this.nav && active) this.nav.dataset.scVerifyState = `plans:${active.dataset.planScene}:${Math.round(p * 100)}`;
+    if (this.y !== scrollY) this.schedule();
   }
 }
 
 new PlansOpening();
+new PlansReveal();
 new ScopeDirector();
+new PlansSurfaceLight();
 new PlansTimeline();
+let plansScrollCraftMounted = false;
+const plansMountTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];
+const mountPlansScrollCraft = () => {
+  if (plansScrollCraftMounted || !window.ScrollCraft) return;
+  plansScrollCraftMounted = true;
+  plansMountTriggers.forEach((eventName) => removeEventListener(eventName, mountPlansScrollCraft));
+  window.ScrollCraft.mount(document.body);
+};
+if (plansReducedMotion) mountPlansScrollCraft();
+else plansMountTriggers.forEach((eventName) => addEventListener(eventName, mountPlansScrollCraft, { once: true, passive: eventName !== 'keydown' }));

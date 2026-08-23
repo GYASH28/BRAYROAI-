@@ -3,179 +3,141 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#08090c">
-  <meta name="description" content="BRAYROAI website builds and optional monthly support plans, with clear scope, pricing and direct enquiry paths.">
-  <meta property="og:title" content="BRAYROAI Plans · Choose the scope">
-  <meta property="og:description" content="Three website build paths and three optional support plans from BRAYROAI.">
+  <meta name="theme-color" content="#08090b">
+  <meta name="description" content="BRAYROAI one-time website builds and clearly separate monthly care plans.">
+  <meta property="og:title" content="BRAYROAI Plans · Choose the right scope">
+  <meta property="og:description" content="Three one-time website builds, plus optional monthly care after launch.">
   <meta property="og:type" content="website">
-  <title>BRAYROAI Plans · Choose the Scope</title>
+  <title>BRAYROAI Plans · Choose the Right Scope</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=optional" rel="stylesheet">
   <link rel="stylesheet" href="/scrollcraft.css">
   <link rel="stylesheet" href="/plans-page.css">
 </head>
-<body class="plans-page is-opening">
-  <a class="plans-skip" href="#plans-main">Skip to plans</a>
-  <div class="sc-grain" aria-hidden="true"></div>
-  <div class="plans-wipe" aria-hidden="true"><i></i><i></i><span>BRAYROAI / SCOPE PICTURE</span></div>
+<body>
+  <a class="skip-link" href="#plans-main">Skip to plans</a>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="scope-open" aria-hidden="true"><span>BRAYROAI / SCOPE</span><strong>THE RIGHT<br>SIZE MATTERS.</strong><i></i></div>
 
-  <header class="plans-nav" data-plans-nav data-sc-verify-state="plan-cut:opening">
-    <a class="plans-nav__brand" href="/" aria-label="Back to BRAYROAI">BRAYRO<span>AI</span></a>
-    <div class="plans-nav__cut" aria-hidden="true"><i></i><span data-plan-cut-name>CHOOSE THE SCOPE</span><b data-plan-timecode>00:00:00</b></div>
+  <header class="plans-nav" data-plans-nav data-sc-verify-state="plans:intro">
+    <a class="plans-nav__brand" href="/" aria-label="BRAYROAI home">BRAYRO<span>AI</span></a>
     <nav aria-label="Plans navigation">
-      <a href="#builds">Builds</a>
+      <a href="#builds">Website builds</a>
       <a href="#compare">Compare</a>
-      <a href="#care">After launch</a>
+      <a href="#care">Monthly care</a>
     </nav>
-    <a class="plans-nav__back" href="/">Agency site ↗</a>
+    <a class="plans-nav__back" href="/">Agency site <span>↗</span></a>
     <div class="plans-nav__progress" aria-hidden="true"><i data-plan-progress></i></div>
   </header>
 
   <main id="plans-main">
-    <section class="plan-cut plans-hero" data-plan-cut="CHOOSE THE SCOPE" data-plan-theme="dark" data-sc-act="flow">
+    <section class="plan-scene plans-hero" data-sc-act="flow" data-plan-scene="intro">
       <div class="plans-hero__grid" aria-hidden="true"></div>
-      <div class="plans-hero__word" aria-hidden="true">PLANS</div>
+      <div class="plans-hero__word" aria-hidden="true">SCOPE</div>
       <div class="plans-hero__copy">
-        <p>BRAYROAI / CLEAR WAYS TO START</p>
-        <h1><span>Choose the scope.</span><span>Keep the ambition.</span></h1>
-        <p>Three one-time website builds. Clear boundaries. No mystery between the price and the work.</p>
+        <p class="eyebrow">ONE-TIME WEBSITE BUILDS</p>
+        <h1><span>Choose the scope.</span><span>Keep the <em>ambition.</em></span></h1>
+        <p>Three clear starting points for the website itself. The smaller plans are monthly care, kept separate because they begin after launch.</p>
       </div>
-      <div class="scope-director" data-scope-director data-sc-verify-state="scope:business">
-        <div class="scope-director__head"><span>WHAT DOES THE SITE NEED TO DO?</span><b data-scope-index>02 / 03</b></div>
-        <div class="scope-director__choices" role="group" aria-label="Choose the closest website scope">
+      <div class="scope-switch glass-panel" data-scope-director data-sc-verify-state="scope:business">
+        <p>WHAT DOES THE WEBSITE NEED TO DO?</p>
+        <div role="group" aria-label="Choose the closest website scope">
           <button type="button" data-scope-choice="starter" aria-pressed="false">Launch clearly</button>
           <button type="button" class="is-active" data-scope-choice="business" aria-pressed="true">Present and persuade</button>
           <button type="button" data-scope-choice="custom" aria-pressed="false">Build something specific</button>
         </div>
-        <div class="scope-director__answer" aria-live="polite">
-          <small>NEAREST STARTING POINT</small>
-          <strong data-scope-title>Business Website</strong>
-          <span data-scope-price>₹17,999</span>
-          <p data-scope-answer>A multi-section brand and enquiry system for businesses that need more room to explain, persuade and convert.</p>
-          <a data-scope-link href="#business">See Business Website <i>↘</i></a>
+        <section aria-live="polite">
+          <small data-scope-index>02 / 03</small>
+          <h2 data-scope-title>Business Website</h2>
+          <strong data-scope-price>₹17,999</strong>
+          <p data-scope-answer>A complete brand and enquiry system with room to explain, persuade and convert.</p>
+          <a data-scope-link href="#business">See Business Website <span>↘</span></a>
+        </section>
+      </div>
+    </section>
+
+    <section id="builds" class="plan-scene builds" data-sc-act="flow" data-plan-scene="builds">
+      <div class="plan-shell">
+        <header class="plan-heading reveal" data-reveal>
+          <p class="eyebrow">THE WEBSITE / PAID ONCE</p>
+          <h2>Three ways<br>to <em>build.</em></h2>
+          <p>Every route includes custom direction, responsive implementation and a launch-ready result. The difference is scope.</p>
+        </header>
+        <div class="build-stack">
+          <article id="starter" class="build-card glass-panel reveal" data-reveal data-plan-key="starter">
+            <header><span>01</span><small>FOCUSED LAUNCH</small></header>
+            <div><h3>Website<br>Starter</h3><strong>₹9,999</strong><small>STARTING / ONE-TIME</small></div>
+            <section>
+              <p>A sharp one-page business website with clear hierarchy and a direct action path.</p>
+              <ul><li>Custom responsive one-page layout</li><li>Business information and services</li><li>WhatsApp, call or enquiry action</li><li>Basic SEO and launch delivery</li></ul>
+              <p class="boundary">Extra pages, ecommerce, large content entry and advanced integrations are separate.</p>
+              <a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Website%20Starter%20%2F%20%E2%82%B99%2C999">Enquire about Starter <span>↗</span></a>
+            </section>
+          </article>
+          <article id="business" class="build-card glass-panel is-featured reveal" data-reveal data-plan-key="business">
+            <header><span>02</span><small>MOST CHOSEN</small></header>
+            <div><h3>Business<br>Website</h3><strong>₹17,999</strong><small>STARTING / ONE-TIME</small></div>
+            <section>
+              <p>A complete brand presentation with purposeful motion and an enquiry journey built around customer decisions.</p>
+              <ul><li>Multi-section custom art direction</li><li>Conversion and enquiry flow</li><li>Responsive motion on desktop and mobile</li><li>Testing, refinement and launch support</li></ul>
+              <p class="boundary">Catalogues, accounts, ecommerce and custom application logic are separate.</p>
+              <a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Business%20Website%20%2F%20%E2%82%B917%2C999">Enquire about Business <span>↗</span></a>
+            </section>
+          </article>
+          <article id="custom" class="build-card glass-panel reveal" data-reveal data-plan-key="custom">
+            <header><span>03</span><small>PURPOSE-BUILT</small></header>
+            <div><h3>Custom<br>Experience</h3><strong>₹25K–₹35K+</strong><small>RANGE / SCOPED TOGETHER</small></div>
+            <section>
+              <p>For richer experiences where structure, interaction or functionality must be shaped around the business.</p>
+              <ul><li>Bespoke motion and interaction systems</li><li>Additional pages or content structures</li><li>Products, bookings, galleries or portals</li><li>Useful AI and advanced integrations</li></ul>
+              <p class="boundary">Final price follows the agreed pages, functionality, content and integration boundary.</p>
+              <a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Custom%20Experience%20enquiry">Discuss a Custom Experience <span>↗</span></a>
+            </section>
+          </article>
         </div>
       </div>
-      <p class="plans-hero__note">Starting prices are tied to defined scope. The full boundary is stated below.</p>
     </section>
 
-    <section id="builds" class="plan-cut scope-intro" data-plan-cut="BUILD ONCE" data-plan-theme="orange" data-sc-act="flow">
-      <p>ONE-TIME WEBSITE BUILDS</p>
-      <h2>Different scope.<br>Same standard of care.</h2>
-      <div aria-hidden="true"><span>9,999</span><span>17,999</span><span>25K+</span></div>
-    </section>
-
-    <section id="starter" class="plan-cut build-plan build-plan--starter" data-plan-key="starter" data-plan-cut="WEBSITE STARTER" data-plan-theme="paper" data-sc-act="flow">
-      <div class="build-plan__ghost" aria-hidden="true">START</div>
-      <div class="build-plan__number" aria-hidden="true">01</div>
-      <div class="build-plan__identity">
-        <p>FOCUSED ONE-PAGE BUILD</p>
-        <h2>Website<br>Starter</h2>
-        <strong>₹9,999</strong>
-        <small>STARTING PRICE / ONE-TIME</small>
-      </div>
-      <div class="build-plan__detail">
-        <p>A launch-ready one-page business website with clear hierarchy, responsive execution and a direct action path.</p>
-        <div class="build-plan__fit"><span>BEST FOR</span><b>New businesses, focused services and a clear first online presence.</b></div>
-        <ul>
-          <li>Business information and services</li>
-          <li>Custom responsive one-page layout</li>
-          <li>WhatsApp, call or enquiry action</li>
-          <li>Basic SEO and launch-ready delivery</li>
-        </ul>
-        <p class="build-plan__boundary">Extra pages, ecommerce, large content entry and advanced integrations need separate scope.</p>
-        <a class="build-plan__cta" href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Website%20Starter%20%2F%20%E2%82%B99%2C999">Enquire about Website Starter <i>↗</i></a>
+    <section id="compare" class="plan-scene compare" data-sc-act="flow" data-plan-scene="compare">
+      <div class="plan-shell">
+        <header class="plan-heading reveal" data-reveal>
+          <p class="eyebrow">THE SHORT VERSION</p>
+          <h2>See the boundary.<br>Choose with confidence.</h2>
+        </header>
+        <div class="compare-table reveal" data-reveal role="table" aria-label="Website build comparison">
+          <div role="row"><span role="columnheader">Decision</span><b role="columnheader">Starter</b><b role="columnheader">Business</b><b role="columnheader">Custom</b></div>
+          <div role="row"><span role="rowheader">Starting price</span><b role="cell">₹9,999</b><b role="cell">₹17,999</b><b role="cell">₹25K–₹35K+</b></div>
+          <div role="row"><span role="rowheader">Best shape</span><b role="cell">One focused page</b><b role="cell">Complete brand site</b><b role="cell">Purpose-built system</b></div>
+          <div role="row"><span role="rowheader">Motion</span><b role="cell">Refined</b><b role="cell">Directed</b><b role="cell">Bespoke</b></div>
+          <div role="row"><span role="rowheader">Functionality</span><b role="cell">Core actions</b><b role="cell">Enquiry journey</b><b role="cell">Advanced scope</b></div>
+        </div>
       </div>
     </section>
 
-    <section id="business" class="plan-cut build-plan build-plan--business" data-plan-key="business" data-plan-cut="BUSINESS WEBSITE" data-plan-theme="dark" data-sc-act="flow">
-      <div class="build-plan__ghost" aria-hidden="true">GROW</div>
-      <div class="build-plan__number" aria-hidden="true">02</div>
-      <div class="build-plan__identity">
-        <p>MOST CHOSEN / BUILT TO PERSUADE</p>
-        <h2>Business<br>Website</h2>
-        <strong>₹17,999</strong>
-        <small>STARTING PRICE / ONE-TIME</small>
-      </div>
-      <div class="build-plan__detail">
-        <p>A more complete brand presentation with multiple sections, purposeful motion and an enquiry journey shaped around real customer decisions.</p>
-        <div class="build-plan__fit"><span>BEST FOR</span><b>Established businesses that need credibility, explanation and stronger conversion.</b></div>
-        <ul>
-          <li>Multi-section custom art direction</li>
-          <li>Conversion and enquiry flow</li>
-          <li>Responsive motion across desktop and mobile</li>
-          <li>Testing, refinement and launch support</li>
-        </ul>
-        <p class="build-plan__boundary">Complex catalogues, accounts, ecommerce and custom application logic need separate scope.</p>
-        <a class="build-plan__cta build-plan__cta--featured" href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Business%20Website%20%2F%20%E2%82%B917%2C999">Enquire about Business Website <i>↗</i></a>
+    <section id="care" class="plan-scene care" data-sc-act="flow" data-plan-scene="care">
+      <div class="plan-shell">
+        <header class="care__heading reveal" data-reveal>
+          <div><p class="eyebrow">A SEPARATE SERVICE / PAID MONTHLY</p><h2>Monthly care begins <em>after launch.</em></h2></div>
+          <p>These are not smaller website builds. They are optional ongoing support plans for updates, improvements and closer design or development help once the website is live.</p>
+        </header>
+        <div class="care-grid reveal" data-reveal>
+          <article class="glass-panel"><small>01 / MAINTAIN</small><h3>Launch</h3><strong>₹2,499<span>/mo</span></strong><p>Dependable updates and routine attention.</p><a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Launch%20monthly%20care">Choose Launch <span>↗</span></a></article>
+          <article class="glass-panel is-featured"><small>02 / IMPROVE</small><h3>Grow</h3><strong>₹3,999<span>/mo</span></strong><p>UX, content and conversion improvements.</p><a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Grow%20monthly%20care">Choose Grow <span>↗</span></a></article>
+          <article class="glass-panel"><small>03 / PARTNER</small><h3>Pro</h3><strong>₹5,999+<span>/mo</span></strong><p>Closer design and development support.</p><a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Pro%20monthly%20care">Discuss Pro <span>↗</span></a></article>
+        </div>
+        <p class="care__note reveal" data-reveal>Hosting, domains, paid tools, ecommerce, large content work and advanced integrations are scoped separately when required.</p>
       </div>
     </section>
 
-    <section id="custom" class="plan-cut build-plan build-plan--custom" data-plan-key="custom" data-plan-cut="CUSTOM EXPERIENCE" data-plan-theme="cobalt" data-sc-act="flow">
-      <div class="build-plan__ghost" aria-hidden="true">BUILD</div>
-      <div class="build-plan__number" aria-hidden="true">03</div>
-      <div class="build-plan__identity">
-        <p>BEYOND THE STANDARD</p>
-        <h2>Custom<br>Experience</h2>
-        <strong>₹25K–₹35K+</strong>
-        <small>RANGE / SCOPED AFTER A CONVERSATION</small>
+    <section class="plan-scene plan-close" data-sc-act="flow" data-plan-scene="contact">
+      <div class="plan-close__copy reveal" data-reveal>
+        <p class="eyebrow">BRING THE ROUGH BRIEF</p>
+        <h2>We will make the right scope clear.</h2>
+        <a href="mailto:yashganesh.work@gmail.com?subject=Help%20me%20choose%20a%20BRAYROAI%20plan">Help me choose a plan <span>↗</span></a>
       </div>
-      <div class="build-plan__detail">
-        <p>For richer digital experiences where the structure, interactions or functionality need to be designed around the business itself.</p>
-        <div class="build-plan__fit"><span>BEST FOR</span><b>Distinct products, ambitious launches and requirements that do not fit a template.</b></div>
-        <ul>
-          <li>Deeper interaction and motion systems</li>
-          <li>Additional pages or content structures</li>
-          <li>Products, bookings, galleries or portals</li>
-          <li>Useful AI and advanced integrations</li>
-        </ul>
-        <p class="build-plan__boundary">Final price follows the agreed pages, functionality, content and integration boundary.</p>
-        <a class="build-plan__cta" href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Custom%20Experience%20enquiry">Discuss a Custom Experience <i>↗</i></a>
-      </div>
-    </section>
-
-    <section id="compare" class="plan-cut comparison-cut" data-plan-cut="COMPARE THE SCOPE" data-plan-theme="paper" data-sc-act="flow">
-      <div class="comparison-cut__head">
-        <p>THE SHORT VERSION</p>
-        <h2>See the boundary.<br>Choose with confidence.</h2>
-      </div>
-      <div class="scope-table" role="table" aria-label="Website build plan comparison">
-        <div class="scope-table__row scope-table__row--head" role="row"><span role="columnheader">Decision</span><span role="columnheader">Starter</span><span role="columnheader">Business</span><span role="columnheader">Custom</span></div>
-        <div class="scope-table__row" role="row"><span role="rowheader">Starting price</span><b role="cell">₹9,999</b><b role="cell">₹17,999</b><b role="cell">₹25K–₹35K+</b></div>
-        <div class="scope-table__row" role="row"><span role="rowheader">Best shape</span><b role="cell">One focused page</b><b role="cell">Multi-section site</b><b role="cell">Purpose-built system</b></div>
-        <div class="scope-table__row" role="row"><span role="rowheader">Motion</span><b role="cell">Refined</b><b role="cell">Directed</b><b role="cell">Bespoke</b></div>
-        <div class="scope-table__row" role="row"><span role="rowheader">Functionality</span><b role="cell">Core actions</b><b role="cell">Enquiry journey</b><b role="cell">Advanced scope</b></div>
-      </div>
-      <a href="mailto:yashganesh.work@gmail.com?subject=Help%20me%20choose%20a%20BRAYROAI%20plan">Help me choose the right plan <i>↗</i></a>
-    </section>
-
-    <section id="care" class="plan-cut care-cut" data-plan-cut="AFTER LAUNCH" data-plan-theme="dark" data-sc-act="flow">
-      <div class="care-cut__head">
-        <p>OPTIONAL MONTHLY SUPPORT</p>
-        <h2>After launch,<br>stay sharp.</h2>
-        <span>Monthly support is separate from the one-time website build. Choose it only when regular attention is useful.</span>
-      </div>
-      <div class="care-index">
-        <article><div><small>01</small><h3>Launch</h3><p>Dependable updates and routine attention.</p></div><strong>₹2,499<small>/mo</small></strong><a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Launch%20support">Choose Launch <i>↗</i></a></article>
-        <article class="is-featured"><div><small>02 / ACTIVE GROWTH</small><h3>Grow</h3><p>UX, content and conversion improvements.</p></div><strong>₹3,999<small>/mo</small></strong><a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Grow%20support">Choose Grow <i>↗</i></a></article>
-        <article><div><small>03</small><h3>Pro</h3><p>Closer design and development support.</p></div><strong>₹5,999+<small>/mo</small></strong><a href="mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20Pro%20support">Discuss Pro <i>↗</i></a></article>
-      </div>
-    </section>
-
-    <section class="plan-cut boundary-cut" data-plan-cut="THE BOUNDARY" data-plan-theme="orange" data-sc-act="flow">
-      <p>WHAT IS SEPARATE</p>
-      <h2>Clear price.<br>Clear boundary.</h2>
-      <p>Hosting, domains, paid tools, ecommerce, large content work and advanced integrations are scoped separately when required.</p>
-    </section>
-
-    <section class="plan-cut plan-close" data-plan-cut="MAKE THE CALL" data-plan-theme="cobalt" data-sc-act="flow">
-      <div>
-        <p>NOT SURE WHICH ONE FITS?</p>
-        <h2>Bring the rough brief.<br>We will make the scope clear.</h2>
-        <a href="mailto:yashganesh.work@gmail.com?subject=Help%20me%20choose%20a%20BRAYROAI%20plan">Help me choose a plan <i>↗</i></a>
-      </div>
-      <footer><span>BRAYROAI / PLANS</span><a href="/">Return to the agency site</a><a href="#plans-main">Replay the plans film</a></footer>
+      <footer><span>BRAYROAI / PLANS</span><a href="/">Agency site</a><a href="/founder">Meet the founder</a></footer>
     </section>
   </main>
 

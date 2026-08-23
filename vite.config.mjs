@@ -10,7 +10,8 @@ export default defineConfig({
     rollupOptions:{
       input:{
         home:resolve(process.cwd(),'index.html'),
-        plans:resolve(process.cwd(),'plans.html')
+        plans:resolve(process.cwd(),'plans.html'),
+        founder:resolve(process.cwd(),'founder.html')
       }
     }
   }

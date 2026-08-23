@@ -3,113 +3,78 @@ import AxeBuilder from '@axe-core/playwright';
 
 const ready = async (page) => {
   await page.goto('/', { waitUntil: 'networkidle' });
-  await page.waitForFunction(() => window.ScrollCraft && document.querySelector('[data-commercial-cut]'));
+  await page.waitForFunction(() => window.ScrollCraft && document.querySelectorAll('[data-scene]').length === 7);
+  await page.evaluate(() => document.body.classList.remove('is-opening'));
 };
 
-test('commercial edit contains twelve paced cuts, corrected plans and project proof', async ({ page }) => {
+test('homepage is a focused seven-scene experience with meaningful routes', async ({ page }) => {
   await ready(page);
-  await expect(page.locator('[data-commercial-cut]')).toHaveCount(12);
-  await expect(page.locator('img[src="/assets/fakhrimart-case-desktop.png"]')).toHaveCount(2);
-  await expect(page.locator('img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(2);
-  await expect(page.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(1);
-  await expect(page.locator('[data-plans-preview]')).toContainText('₹9,999');
-  await expect(page.locator('[data-plans-preview]')).toContainText('₹17,999');
-  await expect(page.locator('[data-plans-preview]')).toContainText('₹25K–₹35K+');
-  await expect(page.locator('a[href="/plans.html"]')).toHaveCount(2);
+  await expect(page.locator('[data-scene]')).toHaveCount(7);
+  for (const selector of ['#top', '#services', '#work', '#plans', '#studio', '#contact']) await expect(page.locator(selector)).toHaveCount(1);
+  await expect(page.locator('a[href="/plans"]')).toHaveCount(3);
+  await expect(page.locator('a[href="/founder"]')).toHaveCount(3);
+  await expect(page.locator('.edit-flash,.impact-cut,.product-cut,.frontend-cut,.ai-cut,.silence-cut')).toHaveCount(0);
 });
 
-test('hero starts monochrome and its director control locks the full colour grade', async ({ page }) => {
+test('hero begins monochrome and locks the original colour grade', async ({ page }) => {
   await ready(page);
-  expect(await page.locator('.hero-picture--mono').evaluate((element) => getComputedStyle(element).filter)).toContain('grayscale');
+  expect(await page.locator('.hero__picture--mono').evaluate((element) => getComputedStyle(element).filter)).toContain('grayscale');
   const control = page.locator('[data-colour-toggle]');
   await control.click();
   await expect(control).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-colour-stage]')).toHaveClass(/is-locked/);
-  await expect(control).toContainText('Release the grade');
+  await expect(control).toContainText('Release the colour');
 });
 
-test('neumorphic clarity control changes the rendered hierarchy state', async ({ page }) => {
+test('capability instrument supports pointer and keyboard choices', async ({ page }) => {
   await ready(page);
-  const input = page.locator('[data-clarity]');
-  await input.fill('84');
-  await expect(page.locator('[data-clarity-output]')).toHaveText('84%');
-  await expect(page.locator('[data-relief-console]')).toHaveAttribute('data-sc-verify-state', 'clarity:84');
+  const engineering = page.locator('[data-capability="engineering"]');
+  await engineering.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('[data-capability="ai"]')).toBeFocused();
+  await expect(page.locator('[data-capability="ai"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('[data-capability-stage]')).toHaveAttribute('data-sc-verify-state', 'capability:ai');
+  await expect(page.locator('[data-capability-title]')).toContainText('Remove friction');
 });
 
-test('AI workflow is keyboard-operable and returns a real response state', async ({ page }) => {
+test('builds and monthly care are explicitly separate', async ({ page }) => {
   await ready(page);
-  const support = page.locator('[data-ai-choice="support"]');
-  await support.focus();
-  await page.keyboard.press('Enter');
-  await expect(support).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('[data-ai-title]')).toContainText('Resolve the repeatable');
-  await expect(page.locator('[data-ai-demo]')).toHaveAttribute('data-sc-verify-state', 'workflow:support');
+  const plans = page.locator('#plans');
+  for (const price of ['₹9,999', '₹17,999', '₹25K–₹35K+', '₹2,499/mo', '₹3,999/mo', '₹5,999+/mo']) await expect(plans).toContainText(price);
+  await expect(plans).toContainText('Three one-time website scopes');
+  await expect(plans).toContainText('SEPARATE MONTHLY CARE');
+  await expect(plans).toContainText('Optional support after your website is live');
 });
 
-test('responsive preview selection carries into the proof composition', async ({ page }) => {
+test('work focus and project intent preserve a single active state', async ({ page }) => {
   await ready(page);
-  const mobile = page.locator('button[data-preview-mode="mobile"]');
-  await mobile.focus();
-  await page.keyboard.press('Enter');
-  await expect(mobile).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('[data-responsive-preview]')).toHaveAttribute('data-preview-mode', 'mobile');
-  await expect(page.locator('[data-proof-stage]')).toHaveAttribute('data-proof-view', 'mobile');
-  await expect(page.locator('[data-proof-label]')).toContainText('Mobile leads');
-});
-
-test('project intent changes the real enquiry subject and remains keyboard-operable', async ({ page }) => {
-  await ready(page);
+  await page.locator('[data-work-toggle]').click();
+  await expect(page.locator('[data-work-stage]')).toHaveAttribute('data-sc-verify-state', 'work:mobile');
   const usefulAI = page.locator('[data-project-type="ai"]');
-  await usefulAI.focus();
-  await page.keyboard.press('Enter');
+  await usefulAI.click();
   await expect(usefulAI).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-project-label]')).toHaveText('useful AI');
-  await expect(page.locator('[data-project-cta]')).toHaveAttribute('href', /Start(?:%20|\+)a(?:%20|\+)BRAYROAI(?:%20|\+)useful(?:%20|\+)AI(?:%20|\+)project/i);
+  await expect(page.locator('[data-project-cta]')).toHaveAttribute('href', /useful%20AI%20project/i);
 });
 
-for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
-  test(`commercial film is fetched completely at ${viewport.width}px`, async ({ page }) => {
-    const failed = [];
-    page.on('requestfailed', (request) => failed.push(request.url()));
-    await page.setViewportSize(viewport);
-    await ready(page);
-    await page.locator('.film-cut').scrollIntoViewIfNeeded();
-    await page.waitForFunction(() => {
-      const film = document.querySelector('[data-commercial-film]');
-      return film.currentSrc.startsWith('blob:') && film.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA;
-    });
-    expect(failed.filter((url) => url.includes('brayroai-convergence'))).toEqual([]);
-  });
-}
-
-test('brand film timeline can be paused, scrubbed and resumed', async ({ page }) => {
+test('film is fetched as a playable blob and the timeline can seek', async ({ page }) => {
   await ready(page);
-  await page.locator('.film-cut').scrollIntoViewIfNeeded();
+  await page.locator('.film').scrollIntoViewIfNeeded();
   await page.waitForFunction(() => {
     const film = document.querySelector('[data-commercial-film]');
     return film.currentSrc.startsWith('blob:') && film.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA;
   });
-  const range = page.locator('[data-film-range]');
-  await range.fill('620');
+  await page.locator('[data-film-range]').fill('620');
   await expect(page.locator('[data-film-controls]')).toHaveAttribute('data-sc-verify-state', /film:ready:.*:6[01-3]/);
-  const toggle = page.locator('[data-film-toggle]');
-  await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-label', /brand film/);
   await expect(page.locator('[data-film-time]')).not.toHaveText('00:00 / 00:00');
 });
 
-test('scroll choreography publishes finite cut progress and velocity state', async ({ page }) => {
+test('reveal timing does not pre-reveal content far below the viewport', async ({ page }) => {
   await ready(page);
-  await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * 0.58));
-  await page.waitForTimeout(120);
-  const state = await page.evaluate(() => ({
-    energy: getComputedStyle(document.documentElement).getPropertyValue('--motion-energy').trim(),
-    cuts: [...document.querySelectorAll('[data-commercial-cut]')].map((cut) => getComputedStyle(cut).getPropertyValue('--cut-p').trim()),
-    motion: document.body.dataset.motion
-  }));
-  expect(Number.isFinite(Number(state.energy))).toBe(true);
-  expect(state.cuts.every((value) => Number.isFinite(Number(value)))).toBe(true);
-  expect(['rush', 'moving', 'settled']).toContain(state.motion);
+  const target = page.locator('#work [data-reveal]').first();
+  await expect(target).not.toHaveClass(/is-visible/);
+  await target.scrollIntoViewIfNeeded();
+  await expect(target).toHaveClass(/is-visible/);
 });
 
 test('homepage has no serious or critical accessibility violations', async ({ page }) => {
@@ -119,20 +84,31 @@ test('homepage has no serious or critical accessibility violations', async ({ pa
 });
 
 for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
-  test(`no horizontal overflow at ${viewport.width}px`, async ({ page }) => {
+  test(`homepage has no horizontal overflow at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await ready(page);
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    expect(overflow).toBeLessThanOrEqual(1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
   });
 }
 
-test('reduced motion keeps the full edit readable and uses the film poster', async ({ browser }) => {
+test('mobile menu is keyboard reachable and closes with Escape', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await ready(page);
+  const button = page.locator('[data-menu-button]');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('[data-mobile-menu]')).toHaveClass(/open/);
+  await page.keyboard.press('Escape');
+  await expect(button).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('reduced motion keeps every scene readable and uses the film poster', async ({ browser }) => {
   const context = await browser.newContext({ reducedMotion: 'reduce' });
   const page = await context.newPage();
   await ready(page);
-  await expect(page.locator('[data-commercial-cut]')).toHaveCount(12);
+  await expect(page.locator('[data-scene]')).toHaveCount(7);
   await expect(page.locator('[data-commercial-film]')).toBeHidden();
-  await expect(page.locator('.film-cut__poster')).toBeVisible();
+  await expect(page.locator('.film__poster')).toBeVisible();
+  for (const item of await page.locator('[data-reveal]').all()) expect(Number(await item.evaluate((node) => getComputedStyle(node).opacity))).toBeGreaterThan(.9);
   await context.close();
 });

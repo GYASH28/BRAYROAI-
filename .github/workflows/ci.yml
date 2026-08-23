@@ -33,6 +33,7 @@ jobs:
           test -f dist/founder.html
           test -f dist/commercial-cut.css
           test -f dist/commercial-cut.js
+          test -f dist/latest-refinements.css
           test -f dist/plans-page.css
           test -f dist/plans-page.js
           test -f dist/founder-page.css
@@ -48,9 +49,17 @@ jobs:
           test -f dist/assets/fakhrimart-case-mobile.png
           grep -q 'Digital, designed' dist/index.html
           grep -q 'id="plans"' dist/index.html
-          grep -q '₹9,999' dist/index.html
-          grep -q '₹17,999' dist/index.html
-          grep -q 'These are not smaller website builds' dist/plans.html
+          grep -q '₹2,599' dist/index.html
+          grep -q '₹3,999' dist/index.html
+          grep -q '₹5,999+' dist/index.html
+          grep -q 'Every plan below is for building and launching a complete website' dist/index.html
+          grep -q 'NO MAINTENANCE SUBSCRIPTION REQUIRED' dist/index.html
+          grep -q 'Every plan on this page is for making and launching a complete website' dist/plans.html
+          grep -q 'You do not need a maintenance subscription' dist/plans.html
+          ! grep -q '₹9,999' dist/index.html
+          ! grep -q '₹17,999' dist/index.html
+          ! grep -q '₹25K–₹35K+' dist/index.html
+          ! grep -q '/mo' dist/plans.html
           grep -q 'YASH GANESH / FOUNDER' dist/founder.html
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
@@ -77,7 +86,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="plans"' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹9,999'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'id="plans"' && curl -fsS http://127.0.0.1:4173/ | grep -q '₹2,599'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -117,7 +126,7 @@ jobs:
                 if(!target){await page.evaluate(()=>window.scrollTo(0,0));}
                 else{await page.evaluate(({target,offset})=>{const el=document.querySelector(target);const top=el.getBoundingClientRect().top+window.scrollY+offset;window.scrollTo(0,Math.max(0,top));},{target,offset});}
                 await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-                await page.waitForTimeout(name==='hero'?800:240);
+                await page.waitForTimeout(name==='hero'?4100:240);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               for(const [route,name] of [['/plans','plans-page'],['/founder','founder-page']]){

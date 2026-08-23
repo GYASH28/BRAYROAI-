@@ -2,11 +2,17 @@
 :root{--v7-orange-ink:#aa3205}
 
 .build-card{position:relative!important}
+.terms-nav{z-index:100!important}
+body.terms-body::before{
+  background:linear-gradient(180deg,rgba(236,232,223,.88),rgba(236,232,223,.4) 48%,transparent)!important;
+}
 
-/* Orange remains bright as a graphic accent, darker when it carries small text on paper. */
+/* Orange remains bright as a graphic accent, darker when it carries text on paper. */
 .pricing-mini.v7-recommended .v7-reco-badge,
+.pricing-mini.v7-recommended i,
 .build-card.is-featured .v7-reco-badge,
 .founder-preview em,
+.founder-preview .text-link span,
 .story em,
 .terms-hero h1 em,
 .terms-section__num,

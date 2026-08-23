@@ -11,7 +11,8 @@ export default defineConfig({
       input:{
         home:resolve(process.cwd(),'index.html'),
         plans:resolve(process.cwd(),'plans.html'),
-        founder:resolve(process.cwd(),'founder.html')
+        founder:resolve(process.cwd(),'founder.html'),
+        terms:resolve(process.cwd(),'terms.html')
       }
     }
   }

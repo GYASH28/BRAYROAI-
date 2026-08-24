@@ -72,12 +72,14 @@
 
     set(key,user){
       const state=this.data[key]||this.data.clarity;
+      const activeTab=this.tabs.find(tab=>tab.dataset.v11Outcome===key)||this.tabs[0];
       this.section.dataset.scVerifyState=`outcome:${key}`;
       this.tabs.forEach(tab=>{
-        const active=tab.dataset.v11Outcome===key;
+        const active=tab===activeTab;
         tab.setAttribute('aria-selected',String(active));
         tab.tabIndex=active?0:-1;
       });
+      this.panel.setAttribute('aria-labelledby',activeTab.id);
       this.panel.dataset.word=state.word;
       this.panel.querySelector('[data-v11-index]').textContent=state.index;
       this.panel.querySelector('[data-v11-title]').textContent=state.title;
@@ -183,6 +185,8 @@
       const nav=document.createElement('nav');
       nav.className='v11-mobile-actions';
       nav.setAttribute('aria-label','Quick actions');
+      nav.setAttribute('aria-hidden','true');
+      nav.inert=true;
       const work=location.pathname==='/'?'#work':'/#work';
       nav.innerHTML=`<a href="${work}">Work</a><a href="/plans">Plans</a><a href="mailto:yashganesh.work@gmail.com?subject=Start%20a%20BRAYROAI%20project">Start</a>`;
       body.append(nav);
@@ -197,10 +201,12 @@
     schedule(){if(!this.raf)this.raf=requestAnimationFrame(()=>this.paint())}
     paint(){
       this.raf=0;
-      if(!mobile.matches){this.nav.classList.remove('is-visible');return;}
       const contactVisible=this.contact?(()=>{const r=this.contact.getBoundingClientRect();return r.top<innerHeight*.82&&r.bottom>0})():false;
       const menuOpen=document.querySelector('[data-mobile-menu]')?.getAttribute('aria-hidden')==='false';
-      this.nav.classList.toggle('is-visible',scrollY>innerHeight*.55&&!contactVisible&&!menuOpen);
+      const show=mobile.matches&&scrollY>innerHeight*.55&&!contactVisible&&!menuOpen;
+      this.nav.classList.toggle('is-visible',show);
+      this.nav.setAttribute('aria-hidden',String(!show));
+      this.nav.inert=!show;
     }
   }
 

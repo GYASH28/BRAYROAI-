@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="/direction-pass.css">
   <link rel="stylesheet" href="/motion-v4.css">
   <link rel="stylesheet" href="/motion-v5.css">
+  <link rel="stylesheet" href="/useful-ux-v11.css" data-useful-ux-v11>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to the experience</a>
@@ -39,7 +40,7 @@
   <header class="site-nav" data-site-nav data-sc-verify-state="scene:hero">
     <a class="site-nav__brand" href="#top" aria-label="BRAYROAI home">BRAYRO<span>AI</span></a>
     <nav aria-label="Primary navigation">
-      <a href="#services">Services</a>
+      <a href="#outcomes">What we fix</a>
       <a href="#work">Work</a>
       <a href="/plans">Plans</a>
       <a href="/founder">Founder</a>
@@ -51,7 +52,7 @@
 
   <aside id="mobile-menu" class="mobile-menu" data-mobile-menu aria-hidden="true">
     <nav aria-label="Mobile navigation">
-      <a href="#services">Services <span>01</span></a>
+      <a href="#outcomes">What we fix <span>01</span></a>
       <a href="#work">Work <span>02</span></a>
       <a href="/plans">Plans <span>03</span></a>
       <a href="/founder">Founder <span>04</span></a>
@@ -88,29 +89,44 @@
       </div>
     </section>
 
-    <section id="services" class="scene services" data-sc-act="flow" data-scene="services">
+    <section id="outcomes" class="scene useful-outcomes" data-sc-act="flow" data-scene="outcomes" data-sc-verify-state="outcome:clarity">
       <div class="scene-shell">
-        <header class="section-heading reveal" data-reveal>
-          <p class="eyebrow">ONE STUDIO / THREE DISCIPLINES</p>
-          <h2>Less handoff.<br>More <em>coherence.</em></h2>
-          <p>Move between the layers. Each one changes the instrument, while the outcome stays one connected experience.</p>
+        <header class="v11-outcomes-head">
+          <div>
+            <p class="eyebrow"><i></i> START WITH THE PROBLEM</p>
+            <h2>A better website should <em>do a job.</em></h2>
+          </div>
+          <p>Choose what is actually holding the business back. This is closer to how BRAYROAI scopes a project than a generic list of agency services.</p>
         </header>
-        <div class="capability-instrument glass-panel reveal" data-reveal data-capability-stage data-sc-verify-state="capability:design">
-          <div class="capability-instrument__visual" aria-hidden="true">
-            <img src="/assets/brayroai-installation-hero.webp" width="1920" height="1080" loading="lazy" alt="">
-            <span class="capability-instrument__beam"></span>
-            <div class="capability-instrument__signal"><i></i><i></i><i></i></div>
+
+        <div class="v11-outcomes-shell" data-v11-outcomes>
+          <div class="v11-outcomes-tabs" role="tablist" aria-label="Choose the website problem to solve">
+            <button class="v11-outcome-tab" type="button" role="tab" id="v12-tab-clarity" data-v12-outcome="clarity" aria-controls="v12-outcome-panel" aria-selected="true" tabindex="0"><small>01</small><span><b>People do not get it fast enough</b><small>Clarify the offer and the first impression.</small></span><i>↗</i></button>
+            <button class="v11-outcome-tab" type="button" role="tab" id="v12-tab-enquiries" data-v12-outcome="enquiries" aria-controls="v12-outcome-panel" aria-selected="false" tabindex="-1"><small>02</small><span><b>Enquiries arrive with no context</b><small>Guide selection before the conversation starts.</small></span><i>↗</i></button>
+            <button class="v11-outcome-tab" type="button" role="tab" id="v12-tab-system" data-v12-outcome="system" aria-controls="v12-outcome-panel" aria-selected="false" tabindex="-1"><small>03</small><span><b>The website keeps becoming outdated</b><small>Build a system that can keep improving.</small></span><i>↗</i></button>
           </div>
-          <div class="capability-instrument__controls" role="group" aria-label="Explore BRAYROAI capabilities">
-            <button type="button" class="is-active" data-capability="design" aria-pressed="true"><span>01</span>Design</button>
-            <button type="button" data-capability="engineering" aria-pressed="false"><span>02</span>Engineering</button>
-            <button type="button" data-capability="ai" aria-pressed="false"><span>03</span>Useful AI</button>
-          </div>
-          <div class="capability-instrument__copy" aria-live="polite">
-            <small data-capability-index>01 / DESIGN</small>
-            <h3 data-capability-title>Make the right impression deliberate.</h3>
-            <p data-capability-copy>Positioning, art direction, interface and motion shaped around the action your visitor needs to take.</p>
-          </div>
+
+          <article class="v11-outcome-panel" id="v12-outcome-panel" role="tabpanel" tabindex="0" aria-live="polite" aria-labelledby="v12-tab-clarity" data-word="CLARITY">
+            <div class="v11-outcome-copy">
+              <small data-v12-index>01 / CLARITY</small>
+              <h3 data-v12-title>Make the business obvious in seconds.</h3>
+              <p data-v12-copy>When visitors have to decode what you do, the design is already losing. We tighten the message, hierarchy and calls to action so the right person understands the offer quickly.</p>
+              <ul class="v11-outcome-list" data-v12-list>
+                <li><span>01</span>Positioning and page hierarchy</li>
+                <li><span>02</span>Responsive interface built around the main action</li>
+                <li><span>03</span>Clear calls to action without clutter</li>
+              </ul>
+              <div class="v11-outcome-actions"><a data-v12-plan href="/plans#builds">See the right plans <span>↗</span></a><a href="mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20website">Tell me what is not working <span>↗</span></a></div>
+            </div>
+            <aside class="v11-outcome-proof"><small>WHEN THIS HELPS</small><strong data-v12-proof-title>Best when the site feels confusing</strong><p data-v12-proof-copy>Useful for businesses with a good offer but a weak first impression or unclear website structure.</p><i aria-hidden="true"></i></aside>
+          </article>
+        </div>
+
+        <div class="v12-outcome-strip" aria-label="What a BRAYROAI website project can include">
+          <span><small>01</small><b>Clear direction</b><em>Message + hierarchy</em></span>
+          <span><small>02</small><b>Working interface</b><em>Useful interactions</em></span>
+          <span><small>03</small><b>Responsive build</b><em>Desktop + mobile</em></span>
+          <span><small>04</small><b>Launch ready</b><em>SEO + analytics foundations</em></span>
         </div>
       </div>
     </section>
@@ -197,5 +213,6 @@
   <script src="/premium-polish.js"></script>
   <script src="/direction-pass.js"></script>
   <script src="/motion-v5.js"></script>
+  <script src="/stability-v12.js"></script>
 </body>
 </html>

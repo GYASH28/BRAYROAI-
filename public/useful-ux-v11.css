@@ -81,6 +81,7 @@
 .v11-contact-tools button,.v11-contact-tools a{min-height:2.55rem;padding:.65rem .9rem;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.025);color:rgba(255,255,255,.72);font:600 .62rem/1 "Manrope",sans-serif;text-decoration:none;cursor:pointer;transition:transform .35s var(--v11-ease),border-color .3s ease,color .3s ease,background-color .3s ease}
 .v11-contact-tools button:hover,.v11-contact-tools a:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.28);color:#fff;background:rgba(255,255,255,.05)}
 .v11-contact-note{margin:.75rem 0 0!important;color:rgba(255,255,255,.35)!important;font:500 .5rem/1.5 "DM Mono",monospace!important;letter-spacing:.08em!important;text-align:center}
+.close__brief-note{max-width:28rem;margin:.9rem auto 0!important;color:rgba(255,255,255,.48)!important;font:500 .56rem/1.5 "DM Mono",monospace!important;letter-spacing:.07em!important;text-align:center}
 
 /* Mobile quick actions: useful, compact, and hidden near the main CTA. */
 .v11-mobile-actions{display:none}

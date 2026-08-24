@@ -30,6 +30,24 @@
   };
   mountV8();
 
+  const mountV9 = () => {
+    if (!document.querySelector('link[data-authored-flow-v9]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/authored-flow-v9.css';
+      link.dataset.authoredFlowV9 = '';
+      document.head.append(link);
+    }
+    if (!document.querySelector('script[data-authored-flow-v9]')) {
+      const script = document.createElement('script');
+      script.src = '/authored-flow-v9.js';
+      script.defer = true;
+      script.dataset.authoredFlowV9 = '';
+      document.body.append(script);
+    }
+  };
+  mountV9();
+
   body.classList.add('v7-ready');
 
   class NavCompact {

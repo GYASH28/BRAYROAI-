@@ -6,6 +6,8 @@ const v10=read('public/continuity-v10.js');
 const v11=read('public/useful-ux-v11.js');
 const v11css=read('public/useful-ux-v11.css');
 const work=read('public/work-showcase-v8.js');
+const direction=read('public/direction-pass.js');
+const commercial=read('public/commercial-cut.js');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 
@@ -20,6 +22,9 @@ expect(work.includes('this.scrollAuto=innerWidth>=981&&!reduced'),'Work auto cho
 expect(work.includes('performance.now()+7000'),'manual Work mode must stay stable long enough to inspect');
 expect(work.includes("this.legacyToggle.hidden=true")&&work.includes("this.stage.dispatchEvent(new CustomEvent('brayro:workmode'"),'Work state source-of-truth hardening missing');
 expect(work.includes("const group=button.closest('.v8-work-modebar,.v8-work-chapters')"),'Work keyboard navigation is not scoped to the active control group');
+expect(direction.includes('this.minimumWatchMs = 2800')&&direction.includes('finish(immediate = false, force = false)'),'opening film minimum-watch safeguard missing');
+expect(commercial.includes('What needs to improve:')&&commercial.includes('Approximate budget:'),'project CTA does not prefill a useful brief');
+expect(v11.includes("data-v11-scope")&&v11.includes('What visitors currently find difficult:'),'problem-first CTA does not prefill a relevant brief');
 for(const token of ['.work__toggle,.v8-work-chapters,.v8-work-progress{display:none!important}','@media(min-width:981px)','#work .v8-work-modebar{display:none!important}','@media(max-width:980px)','#work .v9-proof-reel{display:none!important}','.v11-mobile-actions','.v11-contact-tools'])expect(v11css.includes(token),`V11 CSS missing ${token}`);
 expect(v11css.includes('@media(prefers-reduced-motion:reduce)'),'V11 reduced-motion safeguards missing');
 expect(!/transition\s*:\s*all/i.test(v11css),'V11 contains prohibited transition: all');

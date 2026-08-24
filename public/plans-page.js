@@ -89,9 +89,45 @@ class PlansTimeline {
   }
 }
 
+class PlansBriefs {
+  constructor() {
+    document.querySelectorAll('[data-plan-key]').forEach((card) => {
+      const cta=card.querySelector('a[href^="mailto:"]');
+      if (!cta) return;
+      const plan=card.querySelector('h3')?.textContent.replace(/\s+/g,' ').trim() || 'BRAYROAI plan';
+      const monthly=card.dataset.planKey.startsWith('monthly');
+      const brief=[
+        'Hi Yash,',
+        '',
+        `I am interested in the ${plan} (${monthly ? 'monthly partnership' : 'one-time build'}).`,
+        '',
+        'Business / brand:',
+        'What needs to improve or be built:',
+        'Current website, if any:',
+        'Approximate budget and target date:',
+        '',
+        'Best way to reach me:'
+      ].join('\\n');
+      const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`BRAYROAI ${plan}`)}&body=${encodeURIComponent(brief)}`;
+      cta.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I am interested in the ${plan}.\n\n${brief}`)}`;
+      cta.target='_blank';cta.rel='noreferrer';
+      cta.innerHTML=`Chat about ${plan} <span>↗</span>`;
+      if(!card.querySelector('.plan-email-fallback')){const email=document.createElement('a');email.className='plan-email-fallback';email.href=emailHref;email.textContent='Prefer email? Send this brief ↗';cta.after(email)}
+    });
+    const helper=document.querySelector('.plan-close__copy a');
+    if(helper){
+      const brief=['Hi Yash,','','I am not sure which BRAYROAI plan fits yet.','','Business / brand:','What I need to improve or build:','Current website, if any:','Approximate budget and target date:','','Best way to reach me:'].join('\\n');
+      const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent('Help me choose a BRAYROAI plan')}&body=${encodeURIComponent(brief)}`;
+      helper.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I need help choosing a BRAYROAI plan.\n\n${brief}`)}`;helper.target='_blank';helper.rel='noreferrer';helper.innerHTML='Ask on WhatsApp <span>↗</span>';
+      if(!helper.parentElement.querySelector('.plan-email-fallback')){const email=document.createElement('a');email.className='plan-email-fallback';email.href=emailHref;email.textContent='Prefer email? Send the brief ↗';helper.after(email)}
+    }
+  }
+}
+
 new PlansReveal();
 new PlansSurfaceLight();
 new PlansTimeline();
+new PlansBriefs();
 let plansScrollCraftMounted = false;
 const plansMountTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];
 const mountPlansScrollCraft = () => {

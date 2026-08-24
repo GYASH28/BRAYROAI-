@@ -34,14 +34,20 @@ class FounderReveal {
 class PortraitReveal {
   constructor() {
     this.stage = document.querySelector('[data-founder-portrait]');
-    if (!this.stage || !founderFinePointer || founderReducedMotion) return;
+    this.toggle = document.querySelector('[data-founder-colour-toggle]');
+    this.locked = false;
+    if (!this.stage) return;
+    this.toggle?.addEventListener('click', () => this.setLocked(!this.locked));
+    if (!founderFinePointer || founderReducedMotion) return;
     this.stage.addEventListener('pointerenter', () => {
       this.stage.classList.add('is-hovering');
       this.stage.dataset.scVerifyState = 'portrait:colour';
     });
     this.stage.addEventListener('pointerleave', () => {
-      this.stage.classList.remove('is-hovering');
-      this.stage.dataset.scVerifyState = 'portrait:mono';
+      if (!this.locked) {
+        this.stage.classList.remove('is-hovering');
+        this.stage.dataset.scVerifyState = 'portrait:mono';
+      }
     });
     this.stage.addEventListener('pointermove', (event) => {
       const rect = this.stage.getBoundingClientRect();
@@ -52,6 +58,15 @@ class PortraitReveal {
       this.stage.style.setProperty('--portrait-x', (x - .5).toFixed(3));
       this.stage.style.setProperty('--portrait-y', (y - .5).toFixed(3));
     }, { passive: true });
+  }
+
+  setLocked(locked) {
+    this.locked = locked;
+    this.stage.classList.toggle('is-revealed', locked);
+    this.stage.dataset.scVerifyState = locked ? 'portrait:colour' : 'portrait:mono';
+    if (!this.toggle) return;
+    this.toggle.setAttribute('aria-pressed', String(locked));
+    this.toggle.querySelector('span').textContent = locked ? 'Return to monochrome' : 'Reveal the original grade';
   }
 }
 
@@ -172,6 +187,13 @@ new PortraitReveal();
 new PrincipleInstrument();
 new FounderSurfaceLight();
 new FounderTimeline();
+const founderProjectCta=document.querySelector('[data-founder-project-cta]');
+if(founderProjectCta){
+  const brief=['Hi Yash,','','I would like to discuss a project with BRAYROAI.','','Business / brand:','What needs to improve:','What should the website or product help people do:','Approximate budget and target date:','','Best way to reach me:'].join('\\n');
+  const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent('Start a project with Yash at BRAYROAI')}&body=${encodeURIComponent(brief)}`;
+  founderProjectCta.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I would like to discuss a project with BRAYROAI.\n\n${brief}`)}`;founderProjectCta.target='_blank';founderProjectCta.rel='noreferrer';founderProjectCta.innerHTML='Chat on WhatsApp <span>↗</span>';
+  const email=document.createElement('a');email.className='founder-email-fallback';email.href=emailHref;email.textContent='Prefer email? Send the project brief ↗';founderProjectCta.after(email);
+}
 let founderScrollCraftMounted = false;
 const founderMountTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];
 const mountFounderScrollCraft = () => {

@@ -3,8 +3,11 @@
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
   const root = document.documentElement;
+  const body = document.body;
 
   const mountMotionV6 = () => {
+    if (mountMotionV6.done) return;
+    mountMotionV6.done = true;
     if (!document.querySelector('link[data-motion-v6]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
@@ -20,7 +23,22 @@
       document.body.append(script);
     }
   };
-  mountMotionV6();
+
+  const mountEnhancedLayers = () => {
+    const schedule = () => {
+      if ('requestIdleCallback' in window) requestIdleCallback(mountMotionV6, { timeout: 450 });
+      else setTimeout(mountMotionV6, 90);
+    };
+    if (!body.classList.contains('hf-intro-active')) return schedule();
+    const observer = new MutationObserver(() => {
+      if (body.classList.contains('hf-intro-active')) return;
+      observer.disconnect();
+      schedule();
+    });
+    observer.observe(body, { attributes:true, attributeFilter:['class'] });
+    addEventListener('pagehide', () => observer.disconnect(), { once:true });
+  };
+  mountEnhancedLayers();
 
   class MicroCursor {
     constructor() {

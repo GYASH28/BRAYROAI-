@@ -123,6 +123,7 @@ em { color: var(--orange); font: inherit; }
 .care-grid a { display: flex; justify-content: space-between; margin-top: 1rem; padding-bottom: .55rem; border-bottom: 1px solid rgba(255,255,255,.3); font-size: .7rem; font-weight: 800; }
 .care-grid a span { color: var(--orange); }
 .care__note { margin: 1.5rem 0 0; color: rgba(255,255,255,.36); font-size: .68rem; line-height: 1.5; }
+.compare-hint{display:none;margin:1rem 0 0;color:rgba(255,255,255,.45);font:500 .56rem/1.5 var(--mono);letter-spacing:.08em}
 
 .plan-close { min-height: 100svh; display: grid; place-items: center; background: var(--ink); }
 .plan-close::after { content: "BRAYROAI"; position: absolute; top: 18%; left: 50%; color: transparent; font: 400 19vw/.8 var(--display); letter-spacing: -.1em; white-space: nowrap; -webkit-text-stroke: 1px rgba(255,255,255,.07); transform: translateX(-50%); }
@@ -150,6 +151,7 @@ em { color: var(--orange); font: inherit; }
   .build-card > div { min-height: 13rem; }
   .build-card > section { padding: 1.2rem 0 0; border-top: 1px solid var(--line); border-left: 0; }
   .compare-table { overflow-x: auto; padding-bottom: 1rem; }
+  .compare-hint { display:block; }
   .compare-table > div { min-width: 46rem; }
   .care__heading { grid-template-columns: 1fr; gap: 1.5rem; }
   .care-grid { grid-template-columns: 1fr; }

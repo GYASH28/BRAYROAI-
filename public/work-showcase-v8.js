@@ -17,14 +17,22 @@
       if(!this.section||!this.stage||!this.desktop||!this.mobile||!this.header)return;
       this.manualUntil=0;
       this.mode='desktop';
+      this.scrollAuto=innerWidth>=981&&!reduced;
+      this.retireLegacyToggle();
       this.injectCopy();
       this.injectControls();
       this.injectDetail();
       this.injectProgress();
       this.injectLens();
       this.bindScroll();
-      this.bindLegacy();
       this.setMode('desktop',false);
+    }
+
+    retireLegacyToggle(){
+      if(!this.legacyToggle)return;
+      this.legacyToggle.hidden=true;
+      this.legacyToggle.setAttribute('aria-hidden','true');
+      this.legacyToggle.tabIndex=-1;
     }
 
     injectCopy(){
@@ -55,42 +63,55 @@
     }
 
     injectControls(){
-      if(this.stage.querySelector('.v8-work-modebar'))return;
-      const controls=document.createElement('div');
-      controls.className='v8-work-modebar';
-      controls.setAttribute('role','group');
-      controls.setAttribute('aria-label','FakhriMart project view');
-      controls.innerHTML='<button type="button" data-v8-work-mode="desktop">Desktop</button><button type="button" data-v8-work-mode="mobile">Mobile</button><button type="button" data-v8-work-mode="detail">Detail</button>';
-      this.stage.append(controls);
+      if(!this.stage.querySelector('.v8-work-modebar')){
+        const controls=document.createElement('div');
+        controls.className='v8-work-modebar';
+        controls.setAttribute('role','group');
+        controls.setAttribute('aria-label','FakhriMart project view');
+        controls.innerHTML='<button type="button" data-v8-work-mode="desktop">Desktop</button><button type="button" data-v8-work-mode="mobile">Mobile</button><button type="button" data-v8-work-mode="detail">Details</button>';
+        this.stage.append(controls);
+      }
       this.controls=[...document.querySelectorAll('[data-v8-work-mode]')];
       this.controls.forEach(button=>{
-        button.addEventListener('click',()=>{this.manualUntil=performance.now()+4200;this.setMode(button.dataset.v8WorkMode,true)});
+        if(button.dataset.v8Bound)return;
+        button.dataset.v8Bound='true';
+        button.addEventListener('click',()=>{
+          this.manualUntil=performance.now()+7000;
+          this.setMode(button.dataset.v8WorkMode,true);
+        });
         button.addEventListener('keydown',event=>this.navigate(event,button));
       });
     }
 
     navigate(event,button){
-      if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
+      if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key))return;
       event.preventDefault();
-      const buttons=[...this.stage.querySelectorAll('[data-v8-work-mode]')];
-      const direction=event.key==='ArrowRight'?1:-1;
-      const next=buttons[(buttons.indexOf(button)+direction+buttons.length)%buttons.length];
-      next.focus();this.manualUntil=performance.now()+4200;this.setMode(next.dataset.v8WorkMode,true);
+      const group=button.closest('.v8-work-modebar,.v8-work-chapters');
+      const buttons=[...(group?.querySelectorAll('[data-v8-work-mode]')||[])];
+      if(buttons.length<2)return;
+      const direction=(event.key==='ArrowRight'||event.key==='ArrowDown')?1:-1;
+      const current=Math.max(0,buttons.indexOf(button));
+      const next=buttons[(current+direction+buttons.length)%buttons.length];
+      next.focus();
+      this.manualUntil=performance.now()+7000;
+      this.setMode(next.dataset.v8WorkMode,true);
     }
 
     injectDetail(){
-      if(this.stage.querySelector('.v8-work-detail'))return;
+      if(this.stage.querySelector('.v8-work-detail')){this.detail=this.stage.querySelector('.v8-work-detail');return;}
       const detail=document.createElement('aside');
       detail.className='v8-work-detail';
       detail.setAttribute('aria-label','FakhriMart project details');
       detail.innerHTML='<small>PROJECT PROOF / 03</small><h3>One system across the buying journey.</h3><p>The work was shaped around browsing yarn clearly on different screens and keeping the route to enquiry direct.</p><ul><li><span>CATALOGUE</span><b>Browse-first hierarchy</b></li><li><span>RESPONSIVE</span><b>Desktop + mobile</b></li><li><span>HANDOFF</span><b>Direct enquiry path</b></li></ul>';
       this.stage.append(detail);
+      this.detail=detail;
     }
 
     injectProgress(){
       if(this.stage.querySelector('.v8-work-progress'))return;
       const progress=document.createElement('div');
-      progress.className='v8-work-progress';progress.setAttribute('aria-hidden','true');
+      progress.className='v8-work-progress';
+      progress.setAttribute('aria-hidden','true');
       progress.innerHTML='<i></i><span>CASE / SCROLL</span>';
       this.stage.append(progress);
     }
@@ -98,29 +119,32 @@
     injectLens(){
       if(!fine||reduced||this.stage.querySelector('.v8-work-lens'))return;
       const lens=document.createElement('i');
-      lens.className='v8-work-lens';lens.setAttribute('aria-hidden','true');
-      this.stage.append(lens);this.lens=lens;
+      lens.className='v8-work-lens';
+      lens.setAttribute('aria-hidden','true');
+      this.stage.append(lens);
+      this.lens=lens;
       this.desktop.addEventListener('pointerenter',()=>{if(this.mode==='desktop')this.stage.classList.add('v8-lens-live')});
       this.desktop.addEventListener('pointerleave',()=>this.stage.classList.remove('v8-lens-live'));
       this.desktop.addEventListener('pointermove',event=>{
         if(this.mode!=='desktop')return;
-        const sr=this.stage.getBoundingClientRect();const dr=this.desktop.getBoundingClientRect();
-        const x=clamp(0,(event.clientX-dr.left)/Math.max(dr.width,1),1),y=clamp(0,(event.clientY-dr.top)/Math.max(dr.height,1),1);
-        lens.style.left=`${event.clientX-sr.left}px`;lens.style.top=`${event.clientY-sr.top}px`;
+        const sr=this.stage.getBoundingClientRect();
+        const dr=this.desktop.getBoundingClientRect();
+        const x=clamp(0,(event.clientX-dr.left)/Math.max(dr.width,1),1);
+        const y=clamp(0,(event.clientY-dr.top)/Math.max(dr.height,1),1);
+        const pad=54;
+        lens.style.left=`${clamp(pad,event.clientX-sr.left,Math.max(pad,sr.width-pad))}px`;
+        lens.style.top=`${clamp(pad,event.clientY-sr.top,Math.max(pad,sr.height-pad))}px`;
         lens.style.backgroundPosition=`${(x*100).toFixed(1)}% ${(y*100).toFixed(1)}%`;
       },{passive:true});
-    }
-
-    bindLegacy(){
-      if(!this.legacyToggle)return;
-      this.legacyToggle.addEventListener('click',()=>requestAnimationFrame(()=>this.setMode(this.stage.classList.contains('is-mobile')?'mobile':'desktop',false)));
     }
 
     bindScroll(){
       if(reduced){this.section.style.setProperty('--v8-work-p','0');return;}
       this.raf=0;
       const schedule=()=>{if(!this.raf)this.raf=requestAnimationFrame(()=>this.paint())};
-      addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule,{passive:true});schedule();
+      addEventListener('scroll',schedule,{passive:true});
+      addEventListener('resize',()=>{this.scrollAuto=innerWidth>=981&&!reduced;schedule()},{passive:true});
+      schedule();
     }
 
     paint(){
@@ -130,7 +154,7 @@
       const top=rect.top+scrollY;
       const p=clamp(0,(scrollY-top)/range,1);
       this.section.style.setProperty('--v8-work-p',p.toFixed(4));
-      if(performance.now()<this.manualUntil)return;
+      if(!this.scrollAuto||performance.now()<this.manualUntil)return;
       const next=p<.34?'desktop':p<.68?'mobile':'detail';
       if(next!==this.mode)this.setMode(next,false);
     }
@@ -142,32 +166,38 @@
       this.stage.classList.toggle('is-mobile',mode==='mobile');
       this.stage.classList.toggle('v8-detail-mode',mode==='detail');
       this.stage.dataset.scVerifyState=`work:${mode}`;
-      this.stage.classList.toggle('v8-lens-live',false);
+      this.stage.classList.remove('v8-lens-live');
+      this.detail?.setAttribute('aria-hidden',String(mode!=='detail'));
       document.querySelectorAll('[data-v8-work-mode]').forEach(button=>{
         const active=button.dataset.v8WorkMode===mode;
-        button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));
+        button.classList.toggle('is-active',active);
+        button.setAttribute('aria-pressed',String(active));
       });
-      if(this.legacyToggle){
-        this.legacyToggle.setAttribute('aria-pressed',String(mode==='mobile'));
-        const label=this.legacyToggle.querySelector('i');if(label)label.textContent=mode==='mobile'?'MOBILE':'DESKTOP';
-      }
-      if(user&&this.stage.scrollIntoView){/* preserve position; manual interaction only changes state */}
+      this.stage.dispatchEvent(new CustomEvent('brayro:workmode',{detail:{mode,user}}));
     }
   }
 
   class CaseDialogV8 {
-    constructor(){this.decorate();this.observer=new MutationObserver(()=>this.decorate());this.observer.observe(body,{childList:true,subtree:true});}
+    constructor(){
+      this.decorate();
+      this.observer=new MutationObserver(()=>this.decorate());
+      this.observer.observe(body,{childList:true,subtree:true});
+    }
     decorate(){
-      const dialog=document.querySelector('.m6-case-dialog');if(!dialog||dialog.classList.contains('v8-case-dialog'))return;
+      const dialog=document.querySelector('.m6-case-dialog');
+      if(!dialog||dialog.classList.contains('v8-case-dialog'))return;
       dialog.classList.add('v8-case-dialog');
-      const copy=dialog.querySelector('.m6-case-dialog__copy');const media=dialog.querySelector('.m6-case-dialog__media');
+      const copy=dialog.querySelector('.m6-case-dialog__copy');
+      const media=dialog.querySelector('.m6-case-dialog__media');
       if(copy&&!copy.querySelector('.v8-dialog-profile')){
-        const profile=document.createElement('div');profile.className='v8-dialog-profile';
+        const profile=document.createElement('div');
+        profile.className='v8-dialog-profile';
         profile.innerHTML='<div><small>CLIENT</small><b>FakhriMart</b></div><div><small>INDUSTRY</small><b>Yarn wholesale</b></div><div><small>SCOPE</small><b>Design + frontend</b></div><div><small>STATUS</small><b>Live website</b></div>';
         copy.insertBefore(profile,copy.querySelector('.m6-case-dialog__actions'));
       }
       if(media&&!media.querySelector('.v8-dialog-mobile')){
-        const phone=document.createElement('figure');phone.className='v8-dialog-mobile';
+        const phone=document.createElement('figure');
+        phone.className='v8-dialog-mobile';
         phone.innerHTML='<img src="/assets/fakhrimart-case-mobile.png" width="390" height="844" alt="FakhriMart mobile website view">';
         media.append(phone);
       }
@@ -178,29 +208,52 @@
     constructor(){
       this.sections=[...document.querySelectorAll('[data-scene],[data-plan-scene],[data-founder-scene],.terms-section')];
       if(!this.sections.length)return;
-      this.node=document.createElement('div');this.node.className='v8-section-state';this.node.setAttribute('aria-hidden','true');
-      this.node.innerHTML='<span>01</span><i></i><b>INTRO</b>';body.append(this.node);
-      this.raf=0;addEventListener('scroll',()=>this.schedule(),{passive:true});addEventListener('resize',()=>this.schedule(),{passive:true});this.schedule();
+      this.node=document.createElement('div');
+      this.node.className='v8-section-state';
+      this.node.setAttribute('aria-hidden','true');
+      this.node.innerHTML='<span>01</span><i></i><b>INTRO</b>';
+      body.append(this.node);
+      this.raf=0;
+      addEventListener('scroll',()=>this.schedule(),{passive:true});
+      addEventListener('resize',()=>this.schedule(),{passive:true});
+      this.schedule();
     }
     schedule(){if(!this.raf)this.raf=requestAnimationFrame(()=>this.paint())}
     paint(){
-      this.raf=0;let best=this.sections[0],distance=Infinity,index=0;
-      this.sections.forEach((section,i)=>{const r=section.getBoundingClientRect();const d=Math.abs(r.top-innerHeight*.32);if(r.bottom>0&&r.top<innerHeight&&d<distance){best=section;distance=d;index=i}});
-      const rect=best.getBoundingClientRect();const local=clamp(.08,(innerHeight-rect.top)/(innerHeight+rect.height),1);
+      this.raf=0;
+      let best=this.sections[0],distance=Infinity,index=0;
+      this.sections.forEach((section,i)=>{
+        const r=section.getBoundingClientRect();
+        const d=Math.abs(r.top-innerHeight*.32);
+        if(r.bottom>0&&r.top<innerHeight&&d<distance){best=section;distance=d;index=i}
+      });
+      const rect=best.getBoundingClientRect();
+      const local=clamp(.08,(innerHeight-rect.top)/(innerHeight+rect.height),1);
       this.node.querySelector('span').textContent=String(index+1).padStart(2,'0');
       this.node.querySelector('b').textContent=this.label(best);
       this.node.style.setProperty('--v8-section-p',local.toFixed(3));
     }
     label(section){
+      if(section.classList.contains('useful-outcomes'))return 'WHAT WE FIX';
       if(section.id)return section.id.toUpperCase();
       return (section.dataset.scene||section.dataset.planScene||section.dataset.founderScene||'SECTION').toUpperCase();
     }
   }
 
   class ScrollVelocityV8 {
-    constructor(){if(reduced)return;this.lastY=scrollY;this.lastT=performance.now();this.value=0;this.raf=0;addEventListener('scroll',()=>this.schedule(),{passive:true});}
+    constructor(){
+      if(reduced)return;
+      this.lastY=scrollY;this.lastT=performance.now();this.value=0;this.raf=0;
+      addEventListener('scroll',()=>this.schedule(),{passive:true});
+    }
     schedule(){if(!this.raf)this.raf=requestAnimationFrame(()=>this.paint())}
-    paint(){const now=performance.now(),dt=Math.max(16,now-this.lastT),v=(scrollY-this.lastY)/dt;this.value=this.value*.72+clamp(-18,v*8,18)*.28;root.style.setProperty('--v8-velocity',this.value.toFixed(3));body.classList.toggle('v8-velocity-live',Math.abs(this.value)>.45);this.lastY=scrollY;this.lastT=now;this.raf=0;}
+    paint(){
+      const now=performance.now(),dt=Math.max(16,now-this.lastT),v=(scrollY-this.lastY)/dt;
+      this.value=this.value*.72+clamp(-18,v*8,18)*.28;
+      root.style.setProperty('--v8-velocity',this.value.toFixed(3));
+      body.classList.toggle('v8-velocity-live',Math.abs(this.value)>.45);
+      this.lastY=scrollY;this.lastT=now;this.raf=0;
+    }
   }
 
   class StaggerV8 {
@@ -214,7 +267,9 @@
   }
 
   class TactileLinksV8 {
-    constructor(){document.querySelectorAll('.text-link,.primary-action,.site-nav__cta,.close__action,.plan-close__copy a,.founder-close__copy a,.terms-close a').forEach(node=>node.classList.add('v8-tactile'));}
+    constructor(){
+      document.querySelectorAll('.text-link,.primary-action,.site-nav__cta,.close__action,.plan-close__copy a,.founder-close__copy a,.terms-close a').forEach(node=>node.classList.add('v8-tactile'));
+    }
   }
 
   new WorkShowcaseV8();

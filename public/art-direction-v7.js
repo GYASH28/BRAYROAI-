@@ -48,6 +48,24 @@
   };
   mountV9();
 
+  const mountV10 = () => {
+    if (!document.querySelector('link[data-continuity-v10]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/continuity-v10.css';
+      link.dataset.continuityV10 = '';
+      document.head.append(link);
+    }
+    if (!document.querySelector('script[data-continuity-v10]')) {
+      const script = document.createElement('script');
+      script.src = '/continuity-v10.js';
+      script.defer = true;
+      script.dataset.continuityV10 = '';
+      document.body.append(script);
+    }
+  };
+  mountV10();
+
   body.classList.add('v7-ready');
 
   class NavCompact {

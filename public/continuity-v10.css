@@ -1,0 +1,116 @@
+/* BRAYROAI / Continuity V10
+   Cross-page continuity + scene atmosphere. Keeps V9’s art direction intact. */
+
+:root{
+  --v10-ease:cubic-bezier(.16,1,.3,1);
+  --v10-scene-tone:0;
+  --v10-page-p:0;
+  --v10-pointer-x:50%;
+  --v10-pointer-y:50%;
+}
+
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:v10-page-out .34s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:v10-page-in .52s var(--v10-ease) both}
+.site-nav__brand,.plans-nav__brand,.founder-nav__brand,.terms-nav__brand{view-transition-name:brayroai-brand}
+::view-transition-group(brayroai-brand){animation-duration:.48s;animation-timing-function:var(--v10-ease)}
+@keyframes v10-page-out{to{opacity:.08;filter:blur(5px);transform:translateY(-7px)}}
+@keyframes v10-page-in{from{opacity:.08;filter:blur(7px);transform:translateY(11px)}to{opacity:1;filter:none;transform:none}}
+
+body.v10-ready::after{
+  content:"";
+  position:fixed;
+  z-index:2147479000;
+  inset:0;
+  pointer-events:none;
+  background:#070809;
+  transform:translateY(102%);
+  transition:transform .46s var(--v10-ease);
+}
+body.v10-leaving::after{transform:translateY(0)}
+body.v10-ready::before{transition:opacity .35s ease!important}
+
+/* ---------- ATMOSPHERE: barely-visible scene-specific tonal movement ---------- */
+main::before{
+  content:"";
+  position:fixed;
+  z-index:-1;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(54rem 36rem at var(--v10-pointer-x) var(--v10-pointer-y),rgba(255,90,31,calc(.012 + var(--v10-scene-tone)*.018)),transparent 70%),
+    linear-gradient(180deg,rgba(255,255,255,calc(var(--v10-scene-tone)*.006)),transparent 42%);
+  opacity:.9;
+  transition:background .5s ease;
+}
+
+.scene,.plan-scene,.founder-scene{
+  --v10-edge:0;
+}
+.scene::after,.plan-scene::after,.founder-scene::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  left:50%;
+  bottom:0;
+  width:min(92rem,calc(100% - 8vw));
+  height:1px;
+  transform:translateX(-50%) scaleX(var(--v10-edge));
+  transform-origin:center;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.09) 18%,rgba(255,90,31,.23) 50%,rgba(255,255,255,.09) 82%,transparent);
+  pointer-events:none;
+}
+.film::after,.founder-preview::after{background:linear-gradient(90deg,transparent,rgba(9,10,12,.1) 18%,rgba(170,50,5,.28) 50%,rgba(9,10,12,.1) 82%,transparent)}
+
+/* ---------- NAV: one studio across routes ---------- */
+.site-nav,.plans-nav,.founder-nav,.terms-nav{transition:transform .48s var(--v10-ease),background-color .35s ease,border-color .35s ease!important}
+body.v10-scroll-fast .site-nav,body.v10-scroll-fast .plans-nav,body.v10-scroll-fast .founder-nav,body.v10-scroll-fast .terms-nav{transform:translateY(-2px)}
+.site-nav__brand,.plans-nav__brand,.founder-nav__brand,.terms-nav__brand{transform-origin:left center}
+
+/* ---------- HERO / PAGE HERO ENTRY ---------- */
+.hero__copy,.plans-hero__copy,.founder-hero__copy,.terms-hero__copy{will-change:transform}
+.v10-ready .hero__copy,.v10-ready .plans-hero__copy,.v10-ready .founder-hero__copy,.v10-ready .terms-hero__copy{animation:v10-hero-settle .72s .06s var(--v10-ease) both}
+@keyframes v10-hero-settle{from{opacity:.72;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- KEYBOARD-AWARE INTERACTIVE GROUPS ---------- */
+[data-capability-stage].v10-keyboard-live,
+[data-work-stage].v10-keyboard-live,
+[data-plan-mode-stage].v10-keyboard-live{box-shadow:0 0 0 1px rgba(255,90,31,.2) inset}
+.v10-keyboard-hint{display:flex;align-items:center;gap:.45rem;margin-top:.65rem;color:rgba(255,255,255,.32);font:500 .45rem/1 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+.v10-keyboard-hint kbd{display:grid;place-items:center;min-width:1.25rem;height:1.25rem;padding:0 .25rem;border:1px solid rgba(255,255,255,.12);border-radius:2px;background:rgba(255,255,255,.025);font:inherit;color:rgba(255,255,255,.48)}
+
+/* ---------- PRICING: make scanning easier without louder cards ---------- */
+.pricing-band__grid,.build-grid{position:relative}
+.pricing-band__grid::before,.build-grid::before{content:"";position:absolute;z-index:4;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(255,90,31,.32),transparent);left:var(--v10-focus-x,50%);opacity:0;pointer-events:none;transition:opacity .28s ease,left .5s var(--v10-ease)}
+.pricing-band__grid.v10-focus-live::before,.build-grid.v10-focus-live::before{opacity:1}
+.pricing-mini,.build-card{will-change:transform}
+
+/* ---------- MOBILE SCROLL RAILS ---------- */
+.v10-snap-status{display:none}
+@media(max-width:760px){
+  .v10-snap-status{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px}
+  .v10-snap-status i{width:18px;height:2px;background:rgba(255,255,255,.14);transition:width .4s var(--v10-ease),background-color .3s ease}
+  .v10-snap-status i.is-active{width:34px;background:#ff5a1f}
+  .pricing-band__grid,.build-grid{scrollbar-width:none}
+  .pricing-band__grid::-webkit-scrollbar,.build-grid::-webkit-scrollbar{display:none}
+  .scene::after,.plan-scene::after,.founder-scene::after{width:calc(100% - 32px)}
+}
+
+/* ---------- SMALL PHYSICAL DETAILS ---------- */
+.v10-pressable{position:relative;isolation:isolate}
+.v10-pressable::after{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(12rem circle at var(--v10-click-x,50%) var(--v10-click-y,50%),rgba(255,255,255,.07),transparent 70%);opacity:0;transition:opacity .26s ease}
+.v10-pressable.v10-hit::after{opacity:1}
+.v10-pressable.v10-hit{transform:translateY(1px) scale(.993)!important}
+
+/* ---------- TERMS: calmer than the cinematic pages ---------- */
+body.terms-body main::before{display:none}
+body.terms-body .terms-section::after{background:linear-gradient(90deg,transparent,rgba(9,10,12,.12),transparent)}
+
+@media(prefers-reduced-motion:reduce){
+  @view-transition{navigation:none}
+  ::view-transition-old(root),::view-transition-new(root),::view-transition-group(brayroai-brand){animation:none!important}
+  body.v10-ready::after{display:none!important}
+  .v10-ready .hero__copy,.v10-ready .plans-hero__copy,.v10-ready .founder-hero__copy,.v10-ready .terms-hero__copy{animation:none!important}
+  .scene::after,.plan-scene::after,.founder-scene::after{transform:translateX(-50%) scaleX(1)!important}
+  .v10-pressable,.v10-pressable.v10-hit{transform:none!important;transition:none!important}
+}

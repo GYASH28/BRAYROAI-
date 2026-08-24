@@ -48,8 +48,12 @@
       this.opening = document.querySelector('.opening-sequence');
       this.timer = 0;
       this.raf = 0;
+      this.finishTimer = 0;
       this.finishing = false;
       this.started = false;
+      // A short opening asset should still feel intentional instead of flashing past.
+      this.minimumWatchMs = 2800;
+      this.startedAt = 0;
 
       document.querySelectorAll('.scope-open,.founder-open').forEach((overlay) => overlay.remove());
       if (!this.opening) {
@@ -94,9 +98,9 @@
       this.video.addEventListener('ended', () => this.finish());
       this.video.addEventListener('error', () => this.finish(true));
       this.sound?.addEventListener('click', () => this.toggleSound());
-      this.skip?.addEventListener('click', () => this.finish());
+      this.skip?.addEventListener('click', () => this.finish(false, true));
       addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && body.classList.contains('hf-intro-active')) this.finish();
+        if (event.key === 'Escape' && body.classList.contains('hf-intro-active')) this.finish(false, true);
       });
 
       body.classList.add('hf-intro-active');
@@ -111,6 +115,7 @@
     start() {
       if (!this.video || this.finishing) return;
       this.opening.classList.add('is-playing');
+      if (!this.startedAt) this.startedAt = performance.now();
       this.started = true;
       if (this.video.paused) this.video.play().catch(() => {});
       this.paintProgress();
@@ -139,10 +144,20 @@
       this.raf = requestAnimationFrame(tick);
     }
 
-    finish(immediate = false) {
+    finish(immediate = false, force = false) {
       if (this.finishing) return;
+      const elapsed = this.startedAt ? performance.now() - this.startedAt : 0;
+      const remaining = !force && !immediate ? Math.max(0, this.minimumWatchMs - elapsed) : 0;
+      if (remaining) {
+        if (!this.finishTimer) this.finishTimer = window.setTimeout(() => {
+          this.finishTimer = 0;
+          this.finish(false, true);
+        }, remaining);
+        return;
+      }
       this.finishing = true;
       clearTimeout(this.timer);
+      clearTimeout(this.finishTimer);
       cancelAnimationFrame(this.raf);
       body.classList.remove('hf-intro-active');
       this.opening?.classList.add('is-exiting');
@@ -161,10 +176,12 @@
       if (!this.opening || !this.video || reduced) return;
       this.finishing = false;
       clearTimeout(this.timer);
+      clearTimeout(this.finishTimer);
       window.scrollTo({ top:0, behavior:'auto' });
       this.opening.classList.remove('is-complete','is-exiting');
       this.opening.setAttribute('aria-hidden', 'false');
       this.opening.style.setProperty('--hf-progress', '0');
+      this.startedAt = 0;
       body.classList.add('hf-intro-active');
       this.video.currentTime = 0;
       this.video.muted = true;

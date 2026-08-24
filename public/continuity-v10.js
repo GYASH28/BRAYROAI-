@@ -6,6 +6,24 @@
   const root=document.documentElement;
   body.classList.add('v10-ready');
 
+  const mountV11=()=>{
+    if(!document.querySelector('link[data-useful-ux-v11]')){
+      const link=document.createElement('link');
+      link.rel='stylesheet';
+      link.href='/useful-ux-v11.css';
+      link.dataset.usefulUxV11='';
+      document.head.append(link);
+    }
+    if(!document.querySelector('script[data-useful-ux-v11]')){
+      const script=document.createElement('script');
+      script.src='/useful-ux-v11.js';
+      script.defer=true;
+      script.dataset.usefulUxV11='';
+      document.body.append(script);
+    }
+  };
+  mountV11();
+
   class PageTransitionsV10{
     constructor(){
       if(reduced)return;

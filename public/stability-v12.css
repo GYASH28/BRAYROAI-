@@ -1,0 +1,163 @@
+/* BRAYROAI / Stability V12
+   One authoritative homepage hero geometry + a first-paint outcomes scene.
+   This file intentionally loads after the dynamic art-direction layers. */
+:root{
+  --v12-orange:#ff5a1f;
+  --v12-paper:#ece8df;
+  --v12-ink:#08090b;
+  --v12-ease:cubic-bezier(.16,1,.3,1);
+}
+
+/* SECOND SCENE / ALWAYS REAL, NEVER JS-EMPTY */
+#outcomes.useful-outcomes{
+  position:relative;
+  min-height:100svh;
+  background:#090a0c;
+  color:#fff;
+  overflow:hidden;
+  content-visibility:visible!important;
+  contain:none!important;
+}
+#outcomes.useful-outcomes::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(62rem 36rem at 84% 48%,rgba(255,90,31,.09),transparent 68%),
+    linear-gradient(180deg,rgba(255,255,255,.022),transparent 24%,transparent 76%,rgba(255,255,255,.018));
+}
+#outcomes .scene-shell{padding-top:clamp(7rem,11svh,10rem)!important;padding-bottom:clamp(5rem,9svh,8rem)!important}
+#outcomes .v11-outcomes-head,#outcomes .v11-outcomes-shell,#outcomes .v12-outcome-strip{position:relative;z-index:2}
+#outcomes .v11-outcomes-shell{box-shadow:0 2.5rem 7rem rgba(0,0,0,.18)}
+#outcomes .v11-outcome-panel{min-height:31rem}
+.v12-outcome-strip{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  border-bottom:1px solid rgba(255,255,255,.1);
+  margin-top:1.25rem;
+}
+.v12-outcome-strip>span{display:grid;gap:.28rem;min-height:6rem;padding:1.05rem 1rem;border-right:1px solid rgba(255,255,255,.09)}
+.v12-outcome-strip>span:last-child{border-right:0}
+.v12-outcome-strip small{color:var(--v12-orange);font:500 .48rem/1 "DM Mono",monospace;letter-spacing:.11em}
+.v12-outcome-strip b{color:rgba(255,255,255,.84);font-size:.76rem;font-weight:650;letter-spacing:-.015em}
+.v12-outcome-strip em{color:rgba(255,255,255,.36);font:500 .58rem/1.45 "Manrope",sans-serif;font-style:normal}
+#outcomes[data-sc-verify-state="outcome:clarity"]{--v11-proof:.33}
+#outcomes[data-sc-verify-state="outcome:enquiries"]{--v11-proof:.66}
+#outcomes[data-sc-verify-state="outcome:system"]{--v11-proof:1}
+
+/* HOME HERO / SINGLE SOURCE OF GEOMETRY */
+.hero,.hero__stage{min-height:max(100svh,46rem)!important}
+.hero__stage{isolation:isolate!important;overflow:hidden!important}
+.hero__copy{
+  top:50%!important;
+  left:clamp(2rem,5vw,5.5rem)!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:min(58rem,62vw)!important;
+  max-width:none!important;
+  transform:translateY(-46%)!important;
+}
+.hero__copy h1{
+  max-width:9.7ch!important;
+  font-size:clamp(4.45rem,8.15vw,9.8rem)!important;
+  line-height:.82!important;
+  letter-spacing:-.078em!important;
+  text-wrap:balance;
+}
+.hero__copy .eyebrow{max-width:34rem}
+.hero__body{max-width:33rem!important;margin-top:1.2rem!important}
+.hero__actions{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:.6rem!important;margin-top:1.55rem!important}
+.hero__subject{
+  right:clamp(-6rem,-2.6vw,-1.25rem)!important;
+  bottom:-1%!important;
+  width:min(58vw,56rem)!important;
+  max-width:none!important;
+}
+.hero__word{
+  top:20%!important;
+  right:-2vw!important;
+  font-size:clamp(7rem,17vw,20rem)!important;
+  max-width:none!important;
+}
+.hero__shade{
+  background:
+    linear-gradient(90deg,rgba(5,6,8,.97) 0,rgba(5,6,8,.7) 34%,rgba(5,6,8,.14) 63%,transparent 79%),
+    linear-gradient(180deg,rgba(5,6,8,.22),transparent 31%,rgba(5,6,8,.6))!important;
+}
+.v7-hero-meta{left:clamp(2rem,5vw,5.5rem)!important;bottom:1.5rem!important}
+.hero__credit{right:2rem!important;bottom:1.5rem!important}
+.v9-hero-scroll{right:clamp(1.65rem,3vw,3rem)!important}
+
+/* Keep other route heroes centered and predictable. */
+.plans-hero__copy,.founder-hero__copy{margin-inline:auto!important}
+
+@media(max-width:1100px) and (min-width:761px){
+  .hero__copy{width:min(60rem,66vw)!important;left:clamp(1.5rem,4vw,3rem)!important}
+  .hero__copy h1{font-size:clamp(4rem,8.4vw,7.1rem)!important}
+  .hero__subject{width:min(69vw,52rem)!important;right:-15vw!important;bottom:0!important}
+  .hero__word{right:-6vw!important;font-size:20vw!important}
+  .hero__shade{background:linear-gradient(90deg,rgba(5,6,8,.97),rgba(5,6,8,.72) 41%,rgba(5,6,8,.18) 70%,transparent),linear-gradient(180deg,rgba(5,6,8,.2),transparent 32%,rgba(5,6,8,.68))!important}
+}
+
+@media(max-width:980px){
+  #outcomes .scene-shell{padding-top:7rem!important;padding-bottom:6rem!important}
+  #outcomes .v11-outcome-panel{min-height:0}
+  .v12-outcome-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v12-outcome-strip>span:nth-child(2){border-right:0}
+  .v12-outcome-strip>span:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.09)}
+}
+
+@media(max-width:760px){
+  .hero,.hero__stage{min-height:max(100svh,45rem)!important}
+  .hero__stage::before{inset:.55rem!important}
+  .hero__copy{
+    top:auto!important;
+    left:1rem!important;
+    right:1rem!important;
+    bottom:clamp(1rem,2.8svh,1.65rem)!important;
+    width:auto!important;
+    transform:none!important;
+  }
+  .hero__copy h1{max-width:none!important;font-size:clamp(3.1rem,15vw,4.9rem)!important;line-height:.84!important;letter-spacing:-.075em!important}
+  .hero__copy .eyebrow{margin-bottom:.8rem!important;font-size:.55rem!important}
+  .hero__body{max-width:31rem!important;margin-top:.9rem!important;font-size:.8rem!important;line-height:1.55!important;color:rgba(255,255,255,.68)!important}
+  .hero__actions{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:.48rem!important;margin-top:1rem!important;width:100%!important}
+  .hero__actions .primary-action,.hero__actions .colour-director{width:100%!important;min-width:0!important;min-height:3.05rem!important;justify-content:center!important;gap:.55rem!important;padding-inline:.7rem!important;font-size:.62rem!important;white-space:nowrap}
+  .hero__background{inset:0 -12%!important;width:124%!important;max-width:none!important;object-position:58% center!important}
+  .hero__subject{width:min(126vw,42rem)!important;right:-31vw!important;bottom:clamp(9.5rem,21svh,12.5rem)!important;max-width:none!important}
+  .hero__word{top:18%!important;right:-4vw!important;font-size:25vw!important}
+  .hero__shade{background:linear-gradient(180deg,rgba(5,6,8,.24) 0,rgba(5,6,8,.03) 28%,rgba(5,6,8,.35) 54%,rgba(5,6,8,.98) 79%,#050608 100%)!important}
+  .hero__grid{background-size:22vw 22vw!important;opacity:.07!important}
+  .v7-hero-meta,.hero__credit,.v9-hero-scroll{display:none!important}
+  #outcomes .scene-shell{width:calc(100% - 1.5rem)!important;padding-top:5.8rem!important;padding-bottom:5rem!important}
+  #outcomes .v11-outcomes-head{margin-bottom:2rem!important}
+  #outcomes .v11-outcomes-head h2{font-size:clamp(2.65rem,13.5vw,4.4rem)!important;max-width:11ch!important}
+  #outcomes .v11-outcomes-head>p{font-size:.78rem!important;line-height:1.62!important}
+  #outcomes .v11-outcome-tab{min-height:5.5rem!important}
+  #outcomes .v11-outcome-panel{padding:1.35rem!important}
+  #outcomes .v11-outcome-copy h3{font-size:clamp(2rem,10.2vw,3.15rem)!important}
+  .v12-outcome-strip{grid-template-columns:1fr;margin-top:.8rem}
+  .v12-outcome-strip>span{min-height:4.7rem;border-right:0!important;border-bottom:1px solid rgba(255,255,255,.09)!important;padding:.85rem .4rem}
+  .v12-outcome-strip>span:last-child{border-bottom:0!important}
+}
+
+@media(max-width:380px){
+  .hero__copy h1{font-size:clamp(2.85rem,14.7vw,3.55rem)!important}
+  .hero__body{font-size:.75rem!important}
+  .hero__subject{width:136vw!important;right:-38vw!important;bottom:10.8rem!important}
+  .hero__actions .primary-action,.hero__actions .colour-director{font-size:.58rem!important;padding-inline:.45rem!important}
+}
+
+@media(max-height:700px) and (max-width:760px){
+  .hero,.hero__stage{min-height:43rem!important}
+  .hero__copy{bottom:.8rem!important}
+  .hero__copy h1{font-size:clamp(2.85rem,13.5vw,4rem)!important}
+  .hero__body{margin-top:.65rem!important;line-height:1.45!important}
+  .hero__actions{margin-top:.7rem!important}
+  .hero__subject{bottom:9.6rem!important;width:118vw!important;right:-27vw!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #outcomes .v11-outcome-panel::before,.v12-outcome-strip *{transition:none!important}
+}

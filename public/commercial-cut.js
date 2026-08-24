@@ -249,6 +249,7 @@ class ProjectIntent {
     this.root = document.querySelector('[data-project-intent]');
     this.buttons = [...document.querySelectorAll('[data-project-type]')];
     this.cta = document.querySelector('[data-project-cta]');
+    this.whatsapp = document.querySelector('[data-project-whatsapp]');
     this.label = document.querySelector('[data-project-label]');
     if (!this.root || !this.cta || !this.buttons.length) return;
     this.buttons.forEach((button) => {
@@ -276,7 +277,21 @@ class ProjectIntent {
       button.setAttribute('aria-pressed', String(active));
     });
     this.label.textContent = names[type];
-    this.cta.href = `mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`Start a BRAYROAI ${names[type]} project`)}`;
+    const brief = [
+      'Hi Yash,',
+      '',
+      `I would like help with a ${names[type]} project.`,
+      '',
+      'Business / brand:',
+      'What needs to improve:',
+      'What should the website or product help people do:',
+      'Target launch date:',
+      'Approximate budget:',
+      '',
+      'Best way to reach me:'
+    ].join('\n');
+    this.cta.href = `mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`Start a BRAYROAI ${names[type]} project`)}&body=${encodeURIComponent(brief)}`;
+    if(this.whatsapp)this.whatsapp.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I would like to discuss a ${names[type]} project with BRAYROAI.`)}`;
     this.root.dataset.scVerifyState = `project:${type}`;
   }
 }

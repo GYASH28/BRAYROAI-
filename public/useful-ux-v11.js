@@ -44,7 +44,7 @@
                 <h3 data-v11-title></h3>
                 <p data-v11-copy></p>
                 <ul class="v11-outcome-list" data-v11-list></ul>
-                <div class="v11-outcome-actions"><a data-v11-plan href="/plans#builds">See the right plans <span>↗</span></a><a href="mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20website">Tell me what is not working <span>↗</span></a></div>
+                <div class="v11-outcome-actions"><a data-v11-plan href="/plans#builds">See the right plans <span>↗</span></a><a data-v11-scope href="mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20website">Tell me what is not working <span>↗</span></a></div>
               </div>
               <aside class="v11-outcome-proof"><small>WHEN THIS HELPS</small><strong data-v11-proof-title></strong><p data-v11-proof-copy></p><i aria-hidden="true"></i></aside>
             </article>
@@ -88,6 +88,19 @@
       this.panel.querySelector('[data-v11-proof-title]').textContent=state.proofTitle;
       this.panel.querySelector('[data-v11-proof-copy]').textContent=state.proofCopy;
       this.panel.querySelector('[data-v11-plan]').href=state.plan;
+      const brief=[
+        'Hi Yash,',
+        '',
+        `The main thing I want to improve is: ${state.proofTitle.toLowerCase()}.`,
+        '',
+        'My business / brand:',
+        'What visitors currently find difficult:',
+        'The action I want people to take:',
+        'Approximate budget and target date:',
+        '',
+        'Best way to reach me:'
+      ].join('\\n');
+      this.panel.querySelector('[data-v11-scope]').href=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent('Help me scope my BRAYROAI website')}&body=${encodeURIComponent(brief)}`;
       if(user&&!reduced){this.panel.animate([{opacity:.55,transform:'translateY(7px)'},{opacity:1,transform:'none'}],{duration:360,easing:'cubic-bezier(.16,1,.3,1)'})}
     }
 
@@ -188,7 +201,7 @@
       nav.setAttribute('aria-hidden','true');
       nav.inert=true;
       const work=location.pathname==='/'?'#work':'/#work';
-      nav.innerHTML=`<a href="${work}">Work</a><a href="/plans">Plans</a><a href="mailto:yashganesh.work@gmail.com?subject=Start%20a%20BRAYROAI%20project">Start</a>`;
+      nav.innerHTML=`<a href="${work}">Work</a><a href="/plans">Plans</a><a href="https://wa.me/919175524637?text=${encodeURIComponent('Hi Yash, I would like to start a project with BRAYROAI.')}" target="_blank" rel="noreferrer">WhatsApp</a>`;
       body.append(nav);
       body.classList.add('v11-has-mobile-actions');
       this.nav=nav;

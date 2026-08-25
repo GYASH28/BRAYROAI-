@@ -9,11 +9,12 @@
       this.section=document.querySelector('#services');
       if(!this.section)return;
       this.data={
-        clarity:{index:'01 / CLARITY',word:'CLARITY',title:'Make the business obvious in seconds.',copy:'When visitors have to decode what you do, the design is already losing. We tighten the message, hierarchy and calls to action so the right person understands the offer quickly.',items:['Positioning and page hierarchy','Responsive interface built around the main action','Clear calls to action without clutter'],proofTitle:'Best when the site feels confusing',proofCopy:'Useful for businesses with a good offer but a weak first impression or unclear website structure.',plan:'/plans#builds'},
-        enquiries:{index:'02 / ENQUIRIES',word:'ENQUIRY',title:'Turn browsing into better enquiries.',copy:'A website can do more than look polished. We can turn product or service choices into guided selectors, calculators, RFQ flows and direct enquiry paths that give you better context before the conversation starts.',items:['Guided selectors, calculators or RFQ flows','WhatsApp, email or CRM enquiry routing','Decision helpers built around real customer questions'],proofTitle:'Best when leads arrive with no context',proofCopy:'Useful for product, engineering, service and catalogue businesses where customers need help choosing before they enquire.',plan:'/plans#business'},
-        system:{index:'03 / SYSTEM',word:'SYSTEM',title:'Build something you can keep improving.',copy:'Launch is not the finish line. The website should stay fast, understandable and easy to refine as the business changes instead of becoming another abandoned redesign.',items:['Fast responsive production build','SEO, analytics and maintainable foundations','Optional monthly refinement after launch'],proofTitle:'Best when the current site feels temporary',proofCopy:'Useful when you want a production website that can grow without rebuilding everything every few months.',plan:'/plans#monthly'}
+        clarity:{index:'01 / CLARITY',word:'CLARITY',problem:'People do not get it fast enough',title:'Make the business obvious in seconds.',copy:'When visitors have to decode what you do, the design is already losing. We tighten the message, hierarchy and calls to action so the right person understands the offer quickly.',items:['Positioning and page hierarchy','Responsive interface built around the main action','Clear calls to action without clutter'],proofTitle:'Best when the site feels confusing',proofCopy:'Useful for businesses with a good offer but a weak first impression or unclear website structure.',plan:'/plans#builds'},
+        enquiries:{index:'02 / ENQUIRIES',word:'ENQUIRY',problem:'Enquiries arrive with no context',title:'Turn browsing into better enquiries.',copy:'A website can do more than look polished. We can turn product or service choices into guided selectors, calculators, RFQ flows and direct enquiry paths that give you better context before the conversation starts.',items:['Guided selectors, calculators or RFQ flows','WhatsApp, email or CRM enquiry routing','Decision helpers built around real customer questions'],proofTitle:'Best when leads arrive with no context',proofCopy:'Useful for product, engineering, service and catalogue businesses where customers need help choosing before they enquire.',plan:'/plans#business'},
+        system:{index:'03 / SYSTEM',word:'SYSTEM',problem:'The website keeps becoming outdated',title:'Build something you can keep improving.',copy:'Launch is not the finish line. The website should stay fast, understandable and easy to refine as the business changes instead of becoming another abandoned redesign.',items:['Fast responsive production build','SEO, analytics and maintainable foundations','Optional monthly refinement after launch'],proofTitle:'Best when the current site feels temporary',proofCopy:'Useful when you want a production website that can grow without rebuilding everything every few months.',plan:'/plans#monthly'}
       };
       this.render();
+      this.bindReveal();
       this.bind();
       this.renameNavigation();
       this.set('clarity',false);
@@ -32,7 +33,7 @@
             </div>
             <p>Choose what is actually holding the business back. This is closer to how BRAYROAI scopes a project than a generic list of agency services.</p>
           </header>
-          <div class="v11-outcomes-shell reveal v7-entered" data-v11-outcomes>
+          <div class="v11-outcomes-shell reveal v7-entered" data-v11-outcomes data-reveal>
             <div class="v11-outcomes-tabs" role="tablist" aria-label="Choose the website problem to solve">
               <button class="v11-outcome-tab" type="button" role="tab" id="v11-tab-clarity" data-v11-outcome="clarity" aria-controls="v11-outcome-panel"><small>01</small><span><b>People do not get it fast enough</b><small>Clarify the offer and the first impression.</small></span><i>↗</i></button>
               <button class="v11-outcome-tab" type="button" role="tab" id="v11-tab-enquiries" data-v11-outcome="enquiries" aria-controls="v11-outcome-panel"><small>02</small><span><b>Enquiries arrive with no context</b><small>Guide selection before the conversation starts.</small></span><i>↗</i></button>
@@ -52,6 +53,30 @@
         </div>`;
       this.tabs=[...this.section.querySelectorAll('[data-v11-outcome]')];
       this.panel=this.section.querySelector('#v11-outcome-panel');
+    }
+
+    bindReveal(){
+      const items=[...this.section.querySelectorAll('[data-reveal]')];
+      const show=item=>item.classList.add('is-visible');
+      if(reduced||!('IntersectionObserver' in window)){
+        items.forEach(show);
+        return;
+      }
+      this.revealObserver=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(!entry.isIntersecting)return;
+          show(entry.target);
+          this.revealObserver.unobserve(entry.target);
+        });
+      },{threshold:.08,rootMargin:'4% 0px -8% 0px'});
+      items.forEach(item=>this.revealObserver.observe(item));
+      requestAnimationFrame(()=>{
+        const rect=this.section.getBoundingClientRect();
+        if(rect.top<innerHeight*.94&&rect.bottom>0)items.forEach(item=>{
+          show(item);
+          this.revealObserver?.unobserve(item);
+        });
+      });
     }
 
     bind(){
@@ -91,7 +116,7 @@
       const brief=[
         'Hi Yash,',
         '',
-        `The main thing I want to improve is: ${state.proofTitle.toLowerCase()}.`,
+        `The main thing I want to improve is: ${state.problem}.`,
         '',
         'My business / brand:',
         'What visitors currently find difficult:',
@@ -99,7 +124,7 @@
         'Approximate budget and target date:',
         '',
         'Best way to reach me:'
-      ].join('\\n');
+      ].join('\n');
       this.panel.querySelector('[data-v11-scope]').href=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent('Help me scope my BRAYROAI website')}&body=${encodeURIComponent(brief)}`;
       if(user&&!reduced){this.panel.animate([{opacity:.55,transform:'translateY(7px)'},{opacity:1,transform:'none'}],{duration:360,easing:'cubic-bezier(.16,1,.3,1)'})}
     }

@@ -14,6 +14,8 @@
   background:#090a0c;
   color:#fff;
   overflow:hidden;
+  content-visibility:visible!important;
+  contain-intrinsic-size:0!important;
 }
 #services.useful-outcomes::before{
   content:"";
@@ -82,6 +84,24 @@
 .v11-contact-tools button:hover,.v11-contact-tools a:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.28);color:#fff;background:rgba(255,255,255,.05)}
 .v11-contact-note{margin:.75rem 0 0!important;color:rgba(255,255,255,.35)!important;font:500 .5rem/1.5 "DM Mono",monospace!important;letter-spacing:.08em!important;text-align:center}
 .close__brief-note{max-width:28rem;margin:.9rem auto 0!important;color:rgba(255,255,255,.48)!important;font:500 .56rem/1.5 "DM Mono",monospace!important;letter-spacing:.07em!important;text-align:center}
+
+/* V7 changes Terms to a paper surface. Re-map legacy dark-page text colors so
+   the light editorial layout remains WCAG-readable. */
+body.terms-body .terms-quick small,
+body.terms-body .terms-quick__grid span,
+body.terms-body .terms-quick__grid i,
+body.terms-body .terms-section__num,
+body.terms-body .terms-toc a.is-current::before{color:#a62f05!important}
+body.terms-body .terms-quick__grid a{color:#0a0b0d!important;border-color:rgba(10,11,13,.14)!important}
+body.terms-body .terms-quick__grid strong{color:#0a0b0d!important}
+body.terms-body .terms-quick__grid p,
+body.terms-body .terms-intro p,
+body.terms-body .terms-section p,
+body.terms-body .terms-section li{color:rgba(10,11,13,.72)!important}
+body.terms-body .terms-toc small{color:rgba(10,11,13,.62)!important}
+body.terms-body .terms-toc a{color:rgba(10,11,13,.68)!important}
+body.terms-body .terms-note{color:rgba(10,11,13,.65)!important}
+body.terms-body .terms-meta span{color:rgba(10,11,13,.66)!important}
 
 /* Mobile quick actions: useful, compact, and hidden near the main CTA. */
 .v11-mobile-actions{display:none}

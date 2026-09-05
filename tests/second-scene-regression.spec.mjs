@@ -6,7 +6,7 @@ const openHome = async (page) => {
     document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach((node) => node.remove());
     document.body.classList.remove('polish-opening','hf-intro-active');
   });
-  await page.waitForSelector('#services[data-scene="services"] [data-v12-story]');
+  await page.waitForSelector('#services[data-v14-reel] [data-v14-stage]');
   await page.waitForFunction(() => document.body.classList.contains('v12-runtime-isolated'));
 };
 
@@ -14,34 +14,34 @@ for (const [label, width, height] of [
   ['desktop', 1440, 900],
   ['mobile', 390, 844],
 ]) {
-  test(`V12 capability scene paints after hero scroll on ${label}`, async ({ page }) => {
+  test(`V14 cinematic capability film paints after hero scroll on ${label}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
     await openHome(page);
 
     const section = page.locator('#services');
     await section.evaluate((node) => node.scrollIntoView({ block:'start', behavior:'auto' }));
 
-    const headReveals = section.locator('.v12-capabilities__head [data-v12-reveal]');
-    await expect(headReveals).toHaveCount(2);
-    await expect(headReveals.nth(0)).toHaveClass(/is-visible/);
-    await expect(headReveals.nth(1)).toHaveClass(/is-visible/);
-
     const renderState = await section.evaluate((node) => {
       const style = getComputedStyle(node);
       const rect = node.getBoundingClientRect();
-      return {
-        contentVisibility: style.contentVisibility,
-        height: rect.height,
-        width: rect.width,
-      };
+      return { contentVisibility:style.contentVisibility, height:rect.height, width:rect.width };
     });
 
     expect(renderState.contentVisibility).not.toBe('hidden');
-    expect(renderState.height).toBeGreaterThan(height * 0.8);
-    expect(renderState.width).toBeGreaterThan(width * 0.85);
-    await expect(section).toContainText('FOUR DISCIPLINES / ONE POINT OF VIEW');
-    await expect(section.locator('[data-v12-story]')).toBeVisible();
+    expect(renderState.height).toBeGreaterThan(height * 3.2);
+    expect(renderState.width).toBeGreaterThan(width * .95);
+    await expect(section.locator('[data-v14-stage]')).toBeVisible();
+    await expect(section.locator('[data-v14-frame]')).toHaveCount(4);
+    await expect(section.locator('[data-v14-copy]')).toHaveCount(4);
     await expect(section.locator('[data-v12-step]')).toHaveCount(4);
-    await expect(section.locator('[data-v12-story-visual]')).toBeVisible();
+    await expect(section).toContainText('CAPABILITY FILM');
+
+    await page.evaluate(() => {
+      const node=document.querySelector('#services');
+      scrollTo(0,node.offsetTop + (node.offsetHeight-innerHeight)*.98);
+    });
+    await page.waitForFunction(()=>document.querySelector('#services')?.dataset.reelState==='ai');
+    await expect(section.locator('[data-v14-counter]')).toHaveText('04 / 04');
+    await expect(section.locator('[data-v12-story-word]')).toHaveText('AI SYSTEMS');
   });
 }

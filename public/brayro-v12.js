@@ -1,6 +1,7 @@
 (() => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const mobile = matchMedia('(max-width:760px)').matches;
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
 
   class IntroPerformanceGuard {
@@ -9,10 +10,16 @@
       this.opening = document.querySelector('.opening-sequence.hf-intro');
       this.skip = this.opening?.querySelector('[data-hf-skip]');
       this.sound = this.opening?.querySelector('[data-hf-sound]');
-      if (!this.opening || !this.skip || !document.body.classList.contains('hf-intro-active')) return;
+      this.video = this.opening?.querySelector('[data-hf-intro-video]');
+      if (!this.opening || !document.body.classList.contains('hf-intro-active')) return;
 
-      // Keep the ident intentional, but do not let a passive cinematic intro become the page LCP.
-      // If someone explicitly enables sound, they have opted into the full film and we leave it alone.
+      if (mobile) {
+        this.mountLiteMobileIdent();
+        return;
+      }
+
+      if (!this.skip) return;
+      // Desktop keeps the film. Passive visits get a concise cut; sound-on means the user opted into the full film.
       this.timer = window.setTimeout(() => {
         if (!document.body.classList.contains('hf-intro-active')) return;
         if (this.sound?.getAttribute('aria-pressed') === 'true') return;
@@ -21,6 +28,64 @@
 
       this.skip.addEventListener('click', () => clearTimeout(this.timer), { once:true });
       addEventListener('pagehide', () => clearTimeout(this.timer), { once:true });
+    }
+
+    mountLiteMobileIdent() {
+      if (document.querySelector('.v12-mobile-ident')) return;
+
+      const style = document.createElement('style');
+      style.dataset.v12MobileIdent = '';
+      style.textContent = `
+        body.v12-mobile-ident-active{overflow:hidden!important;overscroll-behavior:none}
+        .v12-mobile-ident{position:fixed;z-index:2147481000;inset:0;display:grid;align-content:end;padding:max(1.25rem,env(safe-area-inset-top)) 1.2rem max(2rem,env(safe-area-inset-bottom));background:#070809;color:#f3f0ea;overflow:hidden;opacity:1;transition:opacity .48s cubic-bezier(.16,1,.3,1)}
+        .v12-mobile-ident::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 8%,rgba(255,255,255,.05) 8% calc(8% + 1px),transparent calc(8% + 1px) 92%,rgba(255,255,255,.05) 92% calc(92% + 1px),transparent calc(92% + 1px)),linear-gradient(180deg,transparent 0 14%,rgba(255,255,255,.04) 14% calc(14% + 1px),transparent calc(14% + 1px));pointer-events:none}
+        .v12-mobile-ident::after{content:"";position:absolute;left:1.2rem;right:1.2rem;bottom:max(1rem,env(safe-area-inset-bottom));height:1px;background:rgba(255,255,255,.1)}
+        .v12-mobile-ident__meta{position:absolute;top:max(1.2rem,env(safe-area-inset-top));left:1.2rem;right:1.2rem;display:flex;justify-content:space-between;color:rgba(243,240,234,.5);font:500 .56rem/1 "DM Mono",monospace;letter-spacing:.13em;text-transform:uppercase}
+        .v12-mobile-ident__copy{position:relative;z-index:2;padding-bottom:1.8rem}
+        .v12-mobile-ident__copy small{display:block;margin-bottom:.9rem;color:rgba(243,240,234,.52);font:500 .58rem/1 "DM Mono",monospace;letter-spacing:.14em;text-transform:uppercase;animation:v12IdentMeta .65s .08s both cubic-bezier(.16,1,.3,1)}
+        .v12-mobile-ident__copy strong{display:block;max-width:8ch;font:600 clamp(3.8rem,18vw,6.6rem)/.77 "Space Grotesk",Manrope,sans-serif;letter-spacing:-.075em;text-transform:uppercase;animation:v12IdentWord .9s .12s both cubic-bezier(.16,1,.3,1)}
+        .v12-mobile-ident__copy i{display:block;width:5rem;height:2px;margin-top:1.4rem;background:#ff6b2c;transform-origin:left;animation:v12IdentRule 1.2s .38s both cubic-bezier(.16,1,.3,1)}
+        .v12-mobile-ident__progress{position:absolute;z-index:3;left:1.2rem;right:1.2rem;bottom:max(1rem,env(safe-area-inset-bottom));height:1px;overflow:hidden}.v12-mobile-ident__progress i{display:block;width:100%;height:100%;background:#ff6b2c;transform-origin:left;animation:v12IdentProgress 2.55s linear both}
+        .v12-mobile-ident.is-exiting{opacity:0;pointer-events:none}
+        @keyframes v12IdentMeta{from{opacity:0;transform:translateY(.7rem);filter:blur(6px)}}
+        @keyframes v12IdentWord{from{opacity:0;transform:translateY(1.4rem);filter:blur(10px)}}
+        @keyframes v12IdentRule{from{transform:scaleX(0)}}
+        @keyframes v12IdentProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+      `;
+      document.head.append(style);
+
+      const ident = document.createElement('div');
+      ident.className = 'v12-mobile-ident';
+      ident.setAttribute('role', 'presentation');
+      ident.innerHTML = `
+        <div class="v12-mobile-ident__meta"><span>BRAYROAI / MOBILE CUT</span><span>01</span></div>
+        <div class="v12-mobile-ident__copy"><small>Creative technology studio</small><strong>Make the difference.</strong><i></i></div>
+        <div class="v12-mobile-ident__progress" aria-hidden="true"><i></i></div>`;
+      document.body.append(ident);
+      document.body.classList.add('v12-mobile-ident-active');
+
+      // Cancel the 2 MB desktop film before it becomes a mobile network dependency.
+      this.opening.style.setProperty('display', 'none', 'important');
+      this.opening.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('hf-intro-active');
+      if (this.video) {
+        try {
+          this.video.pause();
+          this.video.removeAttribute('src');
+          this.video.load();
+        } catch {}
+      }
+
+      this.exitTimer = window.setTimeout(() => ident.classList.add('is-exiting'), 2550);
+      this.removeTimer = window.setTimeout(() => {
+        ident.remove();
+        style.remove();
+        document.body.classList.remove('v12-mobile-ident-active');
+      }, 3050);
+      addEventListener('pagehide', () => {
+        clearTimeout(this.exitTimer);
+        clearTimeout(this.removeTimer);
+      }, { once:true });
     }
   }
 

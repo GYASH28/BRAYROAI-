@@ -128,5 +128,27 @@
     }
   }
 
+  class AIServiceLinks {
+    constructor() {
+      const cards=[...document.querySelectorAll('#ai-systems .v12-product-card')];
+      const details=[
+        {href:'/ai-workflow-audit',label:'See the full audit process'},
+        {href:'/company-second-brain',label:'See how integration works'}
+      ];
+      cards.forEach((card,index)=>{
+        if(!details[index]||card.querySelector('[data-v15-ai-detail]'))return;
+        const primary=card.querySelector('.v12-product-card__cta');
+        if(!primary)return;
+        const link=document.createElement('a');
+        link.className='v12-product-card__cta v15-detail-link';
+        link.dataset.v15AiDetail='';
+        link.href=details[index].href;
+        link.innerHTML=`${details[index].label} <span>↗</span>`;
+        primary.after(link);
+      });
+    }
+  }
+
   new PlayfulCapabilities();
+  new AIServiceLinks();
 })();

@@ -18,8 +18,8 @@ const homePerformanceTransform={
         `<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'">\n  <noscript><link rel="stylesheet" href="${googleFontsHref}"></noscript>`
       );
 
-      // Keep the prior V13 compatibility layer, then let the V14 film layer own the
-      // homepage capability reel and rate card. Both are direct stylesheet dependencies.
+      // Keep the prior compatibility layers, then let V14 own the homepage film,
+      // rate card, AI-offer cleanup and closing-scene finish.
       if(!html.includes('href="/brayro-v13.css"')){
         html=html.replace(
           '<link rel="stylesheet" href="/brayro-v12.css">',
@@ -29,7 +29,7 @@ const homePerformanceTransform={
       if(!html.includes('href="/brayro-v14.css"')){
         html=html.replace(
           '<link rel="stylesheet" href="/brayro-v13.css" data-brayro-v13>',
-          '<link rel="stylesheet" href="/brayro-v13.css" data-brayro-v13>\n  <link rel="stylesheet" href="/brayro-v14.css" data-brayro-v14>'
+          '<link rel="stylesheet" href="/brayro-v13.css" data-brayro-v13>\n  <link rel="stylesheet" href="/brayro-v14.css" data-brayro-v14>\n  <link rel="stylesheet" href="/brayro-v14-polish.css" data-brayro-v14-polish>'
         );
       }
 

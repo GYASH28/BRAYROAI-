@@ -18,12 +18,18 @@ const homePerformanceTransform={
         `<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'">\n  <noscript><link rel="stylesheet" href="${googleFontsHref}"></noscript>`
       );
 
-      // V13 used to be discovered from brayro-v12.js. Put it directly on the critical
-      // stylesheet graph so the second scene does not wait on a JS -> CSS dependency.
+      // Keep the prior V13 compatibility layer, then let the V14 film layer own the
+      // homepage capability reel and rate card. Both are direct stylesheet dependencies.
       if(!html.includes('href="/brayro-v13.css"')){
         html=html.replace(
           '<link rel="stylesheet" href="/brayro-v12.css">',
           '<link rel="stylesheet" href="/brayro-v12.css">\n  <link rel="stylesheet" href="/brayro-v13.css" data-brayro-v13>'
+        );
+      }
+      if(!html.includes('href="/brayro-v14.css"')){
+        html=html.replace(
+          '<link rel="stylesheet" href="/brayro-v13.css" data-brayro-v13>',
+          '<link rel="stylesheet" href="/brayro-v13.css" data-brayro-v13>\n  <link rel="stylesheet" href="/brayro-v14.css" data-brayro-v14>'
         );
       }
 
@@ -34,6 +40,15 @@ const homePerformanceTransform={
         '<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img src="/assets/fakhrimart-case-desktop.png" alt=""></div>',
         '<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img alt=""></div>'
       );
+
+      // V14 executes immediately after the existing V12 runtime. The old capability
+      // structure is replaced in the same parse turn, before first meaningful paint.
+      if(!html.includes('src="/brayro-v14.js"')){
+        html=html.replace(
+          '<script src="/brayro-v12.js"></script>',
+          '<script src="/brayro-v12.js"></script>\n  <script src="/brayro-v14.js"></script>'
+        );
+      }
 
       return html;
     }

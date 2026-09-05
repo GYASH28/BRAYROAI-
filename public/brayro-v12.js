@@ -3,6 +3,27 @@
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
 
+  class IntroPerformanceGuard {
+    constructor() {
+      if (reduced) return;
+      this.opening = document.querySelector('.opening-sequence.hf-intro');
+      this.skip = this.opening?.querySelector('[data-hf-skip]');
+      this.sound = this.opening?.querySelector('[data-hf-sound]');
+      if (!this.opening || !this.skip || !document.body.classList.contains('hf-intro-active')) return;
+
+      // Keep the ident intentional, but do not let a passive cinematic intro become the page LCP.
+      // If someone explicitly enables sound, they have opted into the full film and we leave it alone.
+      this.timer = window.setTimeout(() => {
+        if (!document.body.classList.contains('hf-intro-active')) return;
+        if (this.sound?.getAttribute('aria-pressed') === 'true') return;
+        this.skip.click();
+      }, 3200);
+
+      this.skip.addEventListener('click', () => clearTimeout(this.timer), { once:true });
+      addEventListener('pagehide', () => clearTimeout(this.timer), { once:true });
+    }
+  }
+
   class V12Reveal {
     constructor() {
       const nodes = [...document.querySelectorAll('[data-v12-reveal]')];
@@ -189,6 +210,7 @@
     }
   }
 
+  new IntroPerformanceGuard();
   new V12Reveal();
   new FloatingHeader();
   new CapabilityStory();

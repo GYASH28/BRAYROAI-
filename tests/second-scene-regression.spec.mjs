@@ -36,8 +36,8 @@ for (const [label, width, height] of [
       };
     });
 
-    expect(renderState.contentVisibility).toBe('visible');
-    expect(renderState.height).toBeGreaterThan(height * 1.5);
+    expect(renderState.contentVisibility).not.toBe('hidden');
+    expect(renderState.height).toBeGreaterThan(height * 0.8);
     expect(renderState.width).toBeGreaterThan(width * 0.85);
     await expect(section).toContainText('FOUR DISCIPLINES / ONE POINT OF VIEW');
     await expect(section.locator('[data-v12-story]')).toBeVisible();

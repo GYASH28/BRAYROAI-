@@ -11,7 +11,9 @@
   "rewrites":[
     {"source":"/plans","destination":"/plans.html"},
     {"source":"/founder","destination":"/founder.html"},
-    {"source":"/terms","destination":"/terms.html"}
+    {"source":"/terms","destination":"/terms.html"},
+    {"source":"/ai-workflow-audit","destination":"/ai-workflow-audit.html"},
+    {"source":"/company-second-brain","destination":"/company-second-brain.html"}
   ],
   "headers":[
     {"source":"/(.*)","headers":[
@@ -23,6 +25,6 @@
       {"key":"Content-Security-Policy","value":"default-src 'self'; img-src 'self' data:; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:; upgrade-insecure-requests"}
     ]},
     {"source":"/assets/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"}]},
-    {"source":"/(commercial-cut.css|commercial-cut.js|premium-polish.css|premium-polish.js|direction-pass.css|direction-pass.js|motion-v4.css|motion-v5.css|motion-v5.js|plans-page.css|plans-page.js|founder-page.css|founder-page.js|terms-page.css|terms-page.js|scrollcraft.css|scrollcraft.js)","headers":[{"key":"Cache-Control","value":"public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600"}]}
+    {"source":"/(commercial-cut.css|commercial-cut.js|premium-polish.css|premium-polish.js|direction-pass.css|direction-pass.js|motion-v4.css|motion-v5.css|motion-v5.js|plans-page.css|plans-page.js|founder-page.css|founder-page.js|terms-page.css|terms-page.js|scrollcraft.css|scrollcraft.js|brayro-v12.css|brayro-v12.js|brayro-v13.css|brayro-v14.css|brayro-v14-polish.css|brayro-v14.js|brayro-v15.css|brayro-v15.js|ai-service-pages.css|ai-service-pages.js)","headers":[{"key":"Cache-Control","value":"public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600"}]}
   ]
 }

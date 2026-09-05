@@ -19,8 +19,8 @@ body.v16-motion [data-v16-scene]>.v16-section-line::after{content:"";display:blo
 .v16-cursor.is-visible{opacity:1}.v16-cursor.is-active{width:4.8rem;height:4.8rem;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.7)}
 body.home-v16 .v16-cursor{display:none}
 
-body.v16-motion [data-v16-reveal]{opacity:0;clip-path:inset(0 0 18% 0);translate:0 2rem;transition:opacity .78s var(--v16-ease),clip-path .9s var(--v16-ease),translate .9s var(--v16-ease)}
-body.v16-motion [data-v16-reveal].v16-in{opacity:1;clip-path:inset(0 0 0 0);translate:0 0}
+body.v16-motion [data-v16-reveal]{opacity:1;clip-path:inset(0 0 18% 0);translate:0 2rem;transition:clip-path .9s var(--v16-ease),translate .9s var(--v16-ease)}
+body.v16-motion [data-v16-reveal].v16-in{clip-path:inset(0 0 0 0);translate:0 0}
 body.v16-motion [data-v16-reveal][data-v16-delay="1"]{transition-delay:.08s}body.v16-motion [data-v16-reveal][data-v16-delay="2"]{transition-delay:.16s}body.v16-motion [data-v16-reveal][data-v16-delay="3"]{transition-delay:.24s}
 
 body.v16-motion [data-v16-magnet]{--v16-mx:0px;--v16-my:0px;translate:var(--v16-mx) var(--v16-my);transition:translate .48s var(--v16-ease),background-color .3s ease,border-color .3s ease,color .3s ease}

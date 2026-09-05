@@ -12,22 +12,27 @@ const openPage=async(page,route='/')=>{
   await page.goto(route,{waitUntil:'networkidle'});
   await clearOpening(page);
   if(route==='/'){
-    await page.waitForSelector('[data-v12-story]');
+    await page.waitForSelector('[data-v14-reel]');
+    await page.waitForSelector('[data-v14-rates]');
     await page.waitForFunction(()=>document.body.classList.contains('v12-runtime-isolated'));
   }
 };
 
-test('V12 homepage owns eight scenes and keeps the legacy mutation chain isolated',async({page})=>{
+test('V14 homepage owns eight scenes and mounts the cinematic layer over the isolated legacy runtime',async({page})=>{
   await openPage(page);
   await expect(page.locator('[data-scene]')).toHaveCount(8);
   await expect(page.locator('link[href="/brayro-v12.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/brayro-v14.css"]')).toHaveCount(1);
   await expect(page.locator('script[src="/brayro-v12.js"]')).toHaveCount(1);
+  await expect(page.locator('script[src="/brayro-v14.js"]')).toHaveCount(1);
   await expect(page.locator('body')).toHaveClass(/v12-runtime-isolated/);
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(350);
   await expect(page.locator('script[data-motion-v6]')).toHaveCount(0);
   await expect(page.locator('script[data-useful-ux-v11]')).toHaveCount(0);
-  await expect(page.locator('#services')).toHaveAttribute('data-scene','services');
-  await expect(page.locator('#services [data-v12-step]')).toHaveCount(4);
+  await expect(page.locator('#services')).toHaveAttribute('data-v14-reel','');
+  await expect(page.locator('#services [data-v14-frame]')).toHaveCount(4);
+  await expect(page.locator('#plans')).toHaveAttribute('data-v14-rates','');
+  await expect(page.locator('#plans [data-v14-rate]')).toHaveCount(3);
 });
 
 test('hero text remains readable and structurally stable',async({page})=>{
@@ -42,18 +47,25 @@ test('hero text remains readable and structurally stable',async({page})=>{
   expect(box.width).toBeLessThanOrEqual(1440*.93);
   expect(box.x).toBeGreaterThanOrEqual(0);
   await expect(page.locator('.hero__body')).toContainText('practical AI systems');
+  await expect(page.locator('.v12-signal-strip').first()).toBeHidden();
 });
 
-test('four-discipline scrolling story advances to AI Systems',async({page})=>{
+test('cinematic capability film advances continuously to the practical AI cut',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await openPage(page);
-  await expect(page.locator('[data-v12-step]')).toHaveCount(4);
-  await expect(page.locator('[data-v12-story-visual]')).toHaveAttribute('data-state','web');
-  const ai=page.locator('[data-v12-step="ai"]');
-  await ai.scrollIntoViewIfNeeded();
-  await page.waitForFunction(()=>document.querySelector('[data-v12-story-visual]')?.dataset.state==='ai');
-  await expect(page.locator('[data-v12-story-word]')).toHaveText('AI SYSTEMS');
-  await expect(ai).toHaveClass(/is-active/);
+  const reel=page.locator('#services');
+  await expect(reel.locator('[data-v14-frame]')).toHaveCount(4);
+  await expect(reel.locator('[data-v14-copy]')).toHaveCount(4);
+  await expect(reel.locator('[data-v14-stage]')).toBeVisible();
+  await expect(reel).toHaveAttribute('data-reel-state','web');
+  await page.evaluate(()=>{
+    const node=document.querySelector('#services');
+    scrollTo(0,node.offsetTop+(node.offsetHeight-innerHeight)*.98);
+  });
+  await page.waitForFunction(()=>document.querySelector('#services')?.dataset.reelState==='ai');
+  await expect(reel.locator('[data-v14-counter]')).toHaveText('04 / 04');
+  await expect(reel.locator('[data-v12-story-word]')).toHaveText('AI SYSTEMS');
+  await expect(reel).toContainText('No robot imagery. No fake intelligence theatre.');
 });
 
 test('selected work uses real proof and the cursor-following showcase layer',async({page})=>{
@@ -85,7 +97,23 @@ test('AI products have clear prices, scopes and direct WhatsApp actions',async({
   expect(hrefs.every(href=>href?.startsWith('https://wa.me/919175524637'))).toBeTruthy();
 });
 
-test('core homepage controls still work under V12',async({page})=>{
+test('homepage pricing is a three-choice rate card while detailed /plans remains untouched',async({page})=>{
+  await openPage(page);
+  const rates=page.locator('#plans');
+  await rates.scrollIntoViewIfNeeded();
+  await expect(rates.locator('[data-v14-rate]')).toHaveCount(3);
+  for(const text of ['Website partnership','Complete website build','AI systems','₹2,599','₹9,999','₹29,999+ build'])await expect(rates).toContainText(text);
+  await expect(rates.locator('a[href="/plans"]')).toContainText('Open the full pricing page');
+  await rates.locator('[data-v14-rate="build"]').hover();
+  await expect(rates.locator('[data-v14-rate="build"]')).toHaveClass(/is-active/);
+
+  await openPage(page,'/plans');
+  await expect(page.locator('.build-card')).toHaveCount(6);
+  await expect(page.locator('.ai-plan-card')).toHaveCount(2);
+  await expect(page.locator('.compare-table')).toHaveCount(3);
+});
+
+test('core homepage controls still work under V14',async({page})=>{
   await openPage(page);
   const colour=page.locator('[data-colour-toggle]');
   await colour.click();
@@ -125,7 +153,7 @@ test('HyperFrames opening remains intact and skippable',async({page})=>{
 });
 
 for(const route of ['/','/plans','/founder','/terms']){
-  test(`${route} has no serious accessibility violations in the V12 release`,async({page})=>{
+  test(`${route} has no serious accessibility violations in the V14 release`,async({page})=>{
     await openPage(page,route);
     const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();
     expect(serious(results)).toEqual([]);
@@ -133,7 +161,7 @@ for(const route of ['/','/plans','/founder','/terms']){
 }
 
 for(const [width,height] of [[320,720],[390,844],[768,1024],[1440,900],[1920,1080]]){
-  test(`V12 public pages avoid horizontal overflow at ${width}x${height}`,async({page})=>{
+  test(`V14 public pages avoid horizontal overflow at ${width}x${height}`,async({page})=>{
     await page.setViewportSize({width,height});
     for(const route of ['/','/plans','/founder','/terms']){
       await openPage(page,route);
@@ -142,14 +170,16 @@ for(const [width,height] of [[320,720],[390,844],[768,1024],[1440,900],[1920,108
   });
 }
 
-test('reduced motion keeps the new story, work and AI offers available',async({browser})=>{
+test('reduced motion turns the film into readable static cuts and keeps all offers available',async({browser})=>{
   const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});
   const page=await context.newPage();
   await page.goto('/',{waitUntil:'networkidle'});
   await expect(page.locator('.opening-sequence')).toBeHidden();
-  await expect(page.locator('[data-v12-story]')).toBeVisible();
+  await expect(page.locator('[data-v14-reel]')).toBeVisible();
+  await expect(page.locator('[data-v14-copy]')).toHaveCount(4);
   await expect(page.locator('#work')).toBeVisible();
   await expect(page.locator('#ai-systems')).toBeVisible();
+  await expect(page.locator('#plans [data-v14-rate]')).toHaveCount(3);
   await expect(page.locator('.v12-cursor')).toBeHidden();
   await context.close();
 });

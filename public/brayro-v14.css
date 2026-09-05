@@ -1,5 +1,8 @@
 :root{--v14-ink:#08090b;--v14-paper:#f2efe8;--v14-bone:#ebe6de;--v14-orange:#ff5a1f;--v14-line:rgba(242,239,232,.15);--v14-ease:cubic-bezier(.16,1,.3,1)}
 
+/* The homepage now moves directly from hero into the film. Old marquee strips broke that continuity. */
+.v12-signal-strip{display:none!important}
+
 /* Homepage scene 02: a scroll-controlled film, not a UI section. */
 .brayro-film{position:relative;height:430svh;background:var(--v14-ink)!important;color:var(--v14-paper)!important;overflow:visible!important}
 .brayro-film__sticky{position:sticky;top:0;height:100svh;overflow:hidden;background:#08090b;isolation:isolate}
@@ -20,6 +23,7 @@
 .brayro-film__wash{z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(8,9,11,.36),transparent 45%),linear-gradient(180deg,rgba(8,9,11,.06),rgba(8,9,11,.34))}
 .brayro-film__topline{position:absolute;z-index:5;top:max(1.35rem,env(safe-area-inset-top));left:clamp(1rem,4vw,4rem);right:clamp(1rem,4vw,4rem);display:flex;align-items:center;justify-content:space-between;padding-top:.7rem;border-top:1px solid rgba(242,239,232,.17);font:500 .56rem/1 "DM Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:rgba(242,239,232,.52)}
 .brayro-film__topline strong{font-weight:500;color:rgba(242,239,232,.9)}
+.brayro-film__legacy-word{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .brayro-film__copies{position:absolute;z-index:5;inset:0;pointer-events:none}
 .brayro-film__copy{position:absolute;left:clamp(1rem,4vw,4rem);bottom:clamp(5.8rem,12vh,8.5rem);width:min(52rem,78vw);will-change:transform,opacity;opacity:0}
 .brayro-film__copy small,.brayro-film__copy>span{display:block;font:500 .6rem/1.4 "DM Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,239,232,.58)}

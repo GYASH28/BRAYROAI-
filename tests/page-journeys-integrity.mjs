@@ -19,6 +19,7 @@ const expect=(condition,message)=>{if(!condition)errors.push(message)};
 expect(plans.includes('compare-hint')&&plans.includes('Swipe sideways to compare every column.'),'Plans mobile comparison guidance is missing');
 expect(plansJs.includes('class PlansBriefs')&&plansJs.includes('Approximate budget and target date:'),'Plans CTAs do not prefill a useful brief');
 expect(plansCss.includes('.compare-hint')&&plansCss.includes('.compare-hint { display:block; }'),'Plans comparison hint is not responsive');
+expect(plans.includes('AI Workflow Audit')&&plans.includes('Company Second Brain')&&plans.includes('Knowledge Care'),'Plans AI decision path is missing');
 
 expect(founder.includes('data-founder-colour-toggle')&&founder.includes('data-founder-project-cta'),'Founder page lacks accessible portrait and project actions');
 expect(founderJs.includes('setLocked(locked)')&&founderJs.includes('What should the website or product help people do:'),'Founder interactions do not support keyboard/touch or a usable project brief');
@@ -29,7 +30,8 @@ expect(termsJs.includes('navLinks')&&termsJs.includes('.terms-quick a'),'Terms n
 expect(termsCss.includes('.terms-quick__grid')&&termsCss.includes('grid-template-columns:1fr'),'Terms quick-answer layout is not responsive');
 
 for(const [name,page] of [['home',home],['plans',plans],['founder',founder],['terms',terms]])expect(page.includes('/contact-priority.css')&&page.includes('/contact-priority.js')&&page.includes('/visual-finish.css'),`${name} is missing shared contact or visual finish assets`);
-expect(home.includes('data-project-whatsapp')&&home.includes('Chat on WhatsApp'),'Homepage does not prioritize WhatsApp at the project CTA');
+expect(home.includes('data-project-whatsapp')&&home.includes('Start a project'),'Homepage does not prioritize a direct project start path');
+expect(home.includes('href="#ai-systems"')&&home.includes('Plan the system'),'Homepage AI products do not expose a clear decision/action path');
 expect(plansJs.includes('https://wa.me/919175524637')&&plansJs.includes('plan-email-fallback'),'Plans do not offer WhatsApp first with an email fallback');
 expect(founderJs.includes('https://wa.me/919175524637')&&founderJs.includes('founder-email-fallback'),'Founder page does not offer WhatsApp first with an email fallback');
 expect(terms.includes('Ask on WhatsApp')&&terms.includes('terms-close__email'),'Terms page does not provide both contact paths');
@@ -37,4 +39,4 @@ expect(contactJs.includes('brayro-contact-dock')&&contactCss.includes('.brayro-c
 expect(fs.existsSync('public/visual-finish.css')&&read('public/visual-finish.css').includes('visual finishing pass'),'Shared visual finishing pass is missing');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('Page journey integrity OK: Plans, Founder and Terms keep their decision-making and accessibility improvements.');
+console.log('Page journey integrity OK: V12 Home, Plans, Founder and Terms keep clear decision-making and contact paths.');

@@ -9,7 +9,7 @@
 #ai-systems .v12-product-card:hover{transform:none!important;border-color:rgba(242,239,232,.16);box-shadow:none!important}
 #ai-systems .v12-product-card::before,#ai-systems .v12-product-card.brayro-spotlight-surface::after{display:none!important}
 #ai-systems .v12-product-card__top{grid-column:1/-1;padding-bottom:1.1rem;border-bottom:1px solid rgba(242,239,232,.08)}
-#ai-systems .v12-product-card__pill{padding:0;border:0;border-radius:0;color:rgba(242,239,232,.46)}
+#ai-systems .v12-product-card__pill{padding:0;border:0;border-radius:0;color:rgba(242,239,232,.55)}
 #ai-systems .v12-product-card h3{grid-column:1;grid-row:2;margin:1.6rem 0 .6rem;max-width:10ch;font-size:clamp(3.2rem,6.7vw,7rem);line-height:.82;letter-spacing:-.078em}
 #ai-systems .v12-product-card__price{grid-column:2;grid-row:2;align-self:end;margin-bottom:.85rem;font-size:clamp(2.5rem,4vw,4.4rem)}
 #ai-systems .v12-product-card>p{grid-column:1;max-width:38rem;margin:.2rem 0;color:rgba(242,239,232,.58)}

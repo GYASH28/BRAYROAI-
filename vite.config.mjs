@@ -11,15 +11,11 @@ const homePerformanceTransform={
       const isHome=context?.path==='/'||context?.path==='/index.html'||context?.filename?.endsWith('/index.html');
       if(!isHome)return html;
 
-      // Keep typography available without making the external Google Fonts stylesheet
-      // a first-paint blocker. Font display remains optional, so fallback text is stable.
       html=html.replace(
         `<link href="${googleFontsHref}" rel="stylesheet">`,
         `<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'">\n  <noscript><link rel="stylesheet" href="${googleFontsHref}"></noscript>`
       );
 
-      // Keep the prior compatibility layers, then let V14 own the homepage film,
-      // rate card, AI-offer cleanup and closing-scene finish.
       if(!html.includes('href="/brayro-v13.css"')){
         html=html.replace(
           '<link rel="stylesheet" href="/brayro-v12.css">',
@@ -32,21 +28,28 @@ const homePerformanceTransform={
           '<link rel="stylesheet" href="/brayro-v13.css" data-brayro-v13>\n  <link rel="stylesheet" href="/brayro-v14.css" data-brayro-v14>\n  <link rel="stylesheet" href="/brayro-v14-polish.css" data-brayro-v14-polish>'
         );
       }
+      if(!html.includes('href="/brayro-v15.css"')){
+        html=html.replace(
+          '<link rel="stylesheet" href="/brayro-v14-polish.css" data-brayro-v14-polish>',
+          '<link rel="stylesheet" href="/brayro-v14-polish.css" data-brayro-v14-polish>\n  <link rel="stylesheet" href="/brayro-v15.css" data-brayro-v15>'
+        );
+      }
 
-      // The cursor preview is invisible until a user hovers a project row. Leaving its
-      // 1.36 MB PNG in source made the HTML parser fetch it during initial navigation.
-      // ProjectPreview assigns the src on demand, so production ships an empty img shell.
       html=html.replace(
         '<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img src="/assets/fakhrimart-case-desktop.png" alt=""></div>',
         '<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img alt=""></div>'
       );
 
-      // V14 executes immediately after the existing V12 runtime. The old capability
-      // structure is replaced in the same parse turn, before first meaningful paint.
       if(!html.includes('src="/brayro-v14.js"')){
         html=html.replace(
           '<script src="/brayro-v12.js"></script>',
           '<script src="/brayro-v12.js"></script>\n  <script src="/brayro-v14.js"></script>'
+        );
+      }
+      if(!html.includes('src="/brayro-v15.js"')){
+        html=html.replace(
+          '<script src="/brayro-v14.js"></script>',
+          '<script src="/brayro-v14.js"></script>\n  <script src="/brayro-v15.js"></script>'
         );
       }
 
@@ -67,7 +70,9 @@ export default defineConfig({
         home:resolve(process.cwd(),'index.html'),
         plans:resolve(process.cwd(),'plans.html'),
         founder:resolve(process.cwd(),'founder.html'),
-        terms:resolve(process.cwd(),'terms.html')
+        terms:resolve(process.cwd(),'terms.html'),
+        audit:resolve(process.cwd(),'ai-workflow-audit.html'),
+        secondBrain:resolve(process.cwd(),'company-second-brain.html')
       }
     }
   }

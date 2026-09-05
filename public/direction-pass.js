@@ -1,6 +1,7 @@
 (() => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const introMobile = matchMedia('(max-width: 760px)').matches;
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
   const body = document.body;
   const root = document.documentElement;
@@ -29,11 +30,22 @@
         .hf-intro.is-playing .hf-intro__loading{opacity:0;pointer-events:none}
         .hf-intro__loading span{display:flex;align-items:center;gap:12px}.hf-intro__loading i{display:block;width:38px;height:1px;background:#ff5a1f;transform-origin:left;animation:hfLoad 1.1s cubic-bezier(.16,1,.3,1) infinite alternate}
         .hf-intro__controls{position:absolute;z-index:5;top:max(20px,env(safe-area-inset-top));right:max(22px,env(safe-area-inset-right));display:flex;align-items:center;gap:7px;opacity:0;transform:translateY(-6px);transition:opacity .5s .35s ease,transform .6s .35s cubic-bezier(.16,1,.3,1)}
-        .hf-intro.is-playing .hf-intro__controls{opacity:1;transform:none}
+        .hf-intro.is-playing .hf-intro__controls,.hf-intro--lite .hf-intro__controls{opacity:1;transform:none}
         .hf-intro__button{appearance:none;border:1px solid rgba(242,239,232,.18);background:rgba(7,8,9,.52);color:rgba(242,239,232,.72);padding:9px 11px;border-radius:999px;font:500 9px/1 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(8px);transition:color .25s ease,border-color .25s ease,background .25s ease,transform .25s cubic-bezier(.16,1,.3,1)}
         .hf-intro__button:hover,.hf-intro__button:focus-visible{color:#f2efe8;border-color:rgba(242,239,232,.42);background:rgba(7,8,9,.72);outline:none}.hf-intro__button:active{transform:scale(.96)}
         .hf-intro__progress{position:absolute;z-index:5;left:0;right:0;bottom:0;height:2px;background:rgba(242,239,232,.08);overflow:hidden}.hf-intro__progress i{display:block;width:100%;height:100%;background:#ff5a1f;transform:scaleX(var(--hf-progress,0));transform-origin:left;will-change:transform}
+        .hf-intro__lite{position:absolute;inset:0;display:grid;align-content:end;padding:1.25rem 1.2rem max(2rem,env(safe-area-inset-bottom));overflow:hidden;background:#070809;color:#f3f0ea}
+        .hf-intro__lite::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 8%,rgba(255,255,255,.05) 8% calc(8% + 1px),transparent calc(8% + 1px) 92%,rgba(255,255,255,.05) 92% calc(92% + 1px),transparent calc(92% + 1px)),linear-gradient(180deg,transparent 0 14%,rgba(255,255,255,.04) 14% calc(14% + 1px),transparent calc(14% + 1px));pointer-events:none}
+        .hf-intro__lite-meta{position:absolute;top:max(1.2rem,env(safe-area-inset-top));left:1.2rem;right:1.2rem;display:flex;justify-content:space-between;color:rgba(243,240,234,.5);font:500 .56rem/1 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase}
+        .hf-intro__lite-copy{position:relative;z-index:2;padding-bottom:1.7rem}.hf-intro__lite-copy small{display:block;margin-bottom:.9rem;color:rgba(243,240,234,.52);font:500 .58rem/1 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;animation:hfLiteMeta .65s .08s both cubic-bezier(.16,1,.3,1)}
+        .hf-intro__lite-copy strong{display:block;max-width:8ch;font:600 clamp(3.8rem,18vw,6.6rem)/.77 'Space Grotesk',Manrope,sans-serif;letter-spacing:-.075em;text-transform:uppercase;animation:hfLiteWord .9s .12s both cubic-bezier(.16,1,.3,1)}
+        .hf-intro__lite-copy i{display:block;width:5rem;height:2px;margin-top:1.4rem;background:#ff6b2c;transform-origin:left;animation:hfLiteRule 1.2s .38s both cubic-bezier(.16,1,.3,1)}
+        .hf-intro--lite .hf-intro__progress i{animation:hfLiteProgress 2.45s linear both}
         @keyframes hfLoad{from{transform:scaleX(.18);opacity:.38}to{transform:scaleX(1);opacity:1}}
+        @keyframes hfLiteMeta{from{opacity:0;transform:translateY(.7rem);filter:blur(6px)}}
+        @keyframes hfLiteWord{from{opacity:0;transform:translateY(1.4rem);filter:blur(10px)}}
+        @keyframes hfLiteRule{from{transform:scaleX(0)}}
+        @keyframes hfLiteProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
         @media(max-width:700px){.hf-intro__video{object-fit:contain}.hf-intro__controls{top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right))}.hf-intro__button{padding:8px 10px;font-size:8px}}
         @media(prefers-reduced-motion:reduce){.hf-intro{display:none!important}.scope-open,.founder-open{display:none!important}}
       `;
@@ -69,9 +81,34 @@
         return;
       }
 
-      this.opening.className = 'opening-sequence hf-intro';
+      this.opening.className = `opening-sequence hf-intro${introMobile ? ' hf-intro--lite' : ''}`;
       this.opening.removeAttribute('aria-hidden');
       this.opening.setAttribute('role', 'presentation');
+
+      if (introMobile) {
+        // Mobile gets the same BRAYROAI ident language without creating the 2 MB film request.
+        this.opening.innerHTML = `
+          <div class="hf-intro__lite" aria-hidden="true">
+            <div class="hf-intro__lite-meta"><span>BRAYROAI / MOBILE CUT</span><span>01</span></div>
+            <div class="hf-intro__lite-copy"><small>Creative technology studio</small><strong>Make the difference.</strong><i></i></div>
+          </div>
+          <div class="hf-intro__controls" aria-label="Opening controls">
+            <button class="hf-intro__button" type="button" data-hf-skip>Skip</button>
+          </div>
+          <div class="hf-intro__progress" aria-hidden="true"><i></i></div>`;
+        this.skip = this.opening.querySelector('[data-hf-skip]');
+        this.skip?.addEventListener('click', () => this.finish(false, true));
+        addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && body.classList.contains('hf-intro-active')) this.finish(false, true);
+        });
+        this.startedAt = performance.now();
+        this.started = true;
+        body.classList.add('hf-intro-active');
+        this.timer = window.setTimeout(() => this.finish(false, true), 2450);
+        this.bindReplay();
+        return;
+      }
+
       this.opening.innerHTML = `
         <video class="hf-intro__video" data-hf-intro-video preload="auto" muted playsinline src="/assets/brayroai-cinematic-opening.mp4"></video>
         <div class="hf-intro__loading" aria-hidden="true"><span><i></i>BRAYROAI / OPENING FILM</span></div>
@@ -173,7 +210,20 @@
     }
 
     replay() {
-      if (!this.opening || !this.video || reduced) return;
+      if (!this.opening || reduced) return;
+      if (introMobile) {
+        this.finishing = false;
+        clearTimeout(this.timer);
+        clearTimeout(this.finishTimer);
+        window.scrollTo({ top:0, behavior:'auto' });
+        this.opening.classList.remove('is-complete','is-exiting');
+        this.opening.setAttribute('aria-hidden', 'false');
+        this.startedAt = performance.now();
+        body.classList.add('hf-intro-active');
+        this.timer = window.setTimeout(() => this.finish(false, true), 2450);
+        return;
+      }
+      if (!this.video) return;
       this.finishing = false;
       clearTimeout(this.timer);
       clearTimeout(this.finishTimer);

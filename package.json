@@ -1,14 +1,14 @@
 {
   "name": "brayroai-studio-site",
   "private": true,
-  "version": "15.0.0",
+  "version": "16.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test:syntax": "node --check public/commercial-cut.js && node --check public/contact-priority.js && node --check public/premium-polish.js && node --check public/direction-pass.js && node --check public/motion-v5.js && node --check public/motion-v6.js && node --check public/art-direction-v7.js && node --check public/work-showcase-v8.js && node --check public/art-direction-v9.js && node --check public/continuity-v10.js && node --check public/useful-ux-v11.js && node --check public/brayro-v12.js && node --check public/brayro-v14.js && node --check public/brayro-v15.js && node --check public/ai-service-pages.js && node --check public/plans-page.js && node --check public/founder-page.js && node --check public/terms-page.js && node --check public/scrollcraft.js && node --check vite.config.mjs",
-    "test:integrity": "node tests/v15-integrity.mjs && node tests/v14-integrity.mjs && node tests/v12-integrity.mjs && node tests/v10-integrity.mjs && node tests/page-journeys-integrity.mjs",
+    "test:syntax": "node --check public/commercial-cut.js && node --check public/contact-priority.js && node --check public/premium-polish.js && node --check public/direction-pass.js && node --check public/motion-v5.js && node --check public/motion-v6.js && node --check public/art-direction-v7.js && node --check public/work-showcase-v8.js && node --check public/art-direction-v9.js && node --check public/continuity-v10.js && node --check public/useful-ux-v11.js && node --check public/brayro-v12.js && node --check public/brayro-v14.js && node --check public/brayro-v15.js && node --check public/experience-motion-v16.js && node --check public/ai-service-pages.js && node --check public/plans-page.js && node --check public/founder-page.js && node --check public/terms-page.js && node --check public/scrollcraft.js && node --check vite.config.mjs",
+    "test:integrity": "node tests/v16-motion-integrity.mjs && node tests/v15-integrity.mjs && node tests/v14-integrity.mjs && node tests/v12-integrity.mjs && node tests/v10-integrity.mjs && node tests/page-journeys-integrity.mjs",
     "test:browser": "playwright test",
     "test:stress": "node tests/stress.mjs",
     "test:lighthouse": "lighthouse http://127.0.0.1:4173 --quiet --chrome-flags=\"--headless --no-sandbox\" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=artifacts/lighthouse-local.json && node tests/lighthouse-budget.mjs artifacts/lighthouse-local.json",

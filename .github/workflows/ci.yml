@@ -28,7 +28,7 @@ jobs:
       - run: npm run qa:static
       - name: Guard production bundle
         run: |
-          for f in index.html plans.html founder.html terms.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7-contrast.css art-direction-v7.js work-showcase-v8.css work-showcase-v8.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js brayro-v12.css brayro-v12.js; do test -f "dist/$f"; done
+          for f in index.html plans.html founder.html terms.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7-contrast.css art-direction-v7.js work-showcase-v8.css work-showcase-v8.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js brayro-v12.css brayro-v13.css brayro-v12.js; do test -f "dist/$f"; done
           test -f dist/assets/brayroai-cinematic-opening.mp4
           test -f dist/assets/fakhrimart-case-desktop.png
           test -f dist/assets/fakhrimart-case-mobile.png
@@ -75,10 +75,18 @@ jobs:
           grep -q '.v8-work-lens' dist/work-showcase-v8.css
           grep -q '.v8-section-state' dist/work-showcase-v8.css
           grep -q -- '--v7-orange-ink:#aa3205' dist/art-direction-v7-contrast.css
-          grep -q 'class CapabilityStory' dist/brayro-v12.js
+          grep -q 'class CapabilityLedger' dist/brayro-v12.js
+          grep -q 'class FlipLinks' dist/brayro-v12.js
+          grep -q 'class SpotlightSurfaces' dist/brayro-v12.js
+          grep -q 'class CurtainReveal' dist/brayro-v12.js
+          grep -q 'BRAYROAI / CAPABILITY LEDGER' dist/brayro-v12.js
+          grep -q '.brayro-ledger' dist/brayro-v13.css
+          grep -q '.brayro-flip' dist/brayro-v13.css
+          grep -q '.brayro-curtain' dist/brayro-v13.css
           grep -q 'class ProjectPreview' dist/brayro-v12.js
           grep -q '.v12-ai-products' dist/brayro-v12.css
           grep -q '@media(prefers-reduced-motion:reduce)' dist/brayro-v12.css
+          grep -q '@media(prefers-reduced-motion:reduce)' dist/brayro-v13.css
           ! grep -q 'data-commercial-film' dist/index.html
           ! grep -q 'data-signal-chamber' dist/index.html
           test ! -f dist/experience-v2.css
@@ -107,7 +115,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Company Second Brain' && curl -fsS http://127.0.0.1:4173/terms | grep -q 'Terms & Conditions' && curl -fsS http://127.0.0.1:4173/brayro-v12.js | grep -q 'CapabilityStory'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Company Second Brain' && curl -fsS http://127.0.0.1:4173/terms | grep -q 'Terms & Conditions' && curl -fsS http://127.0.0.1:4173/brayro-v12.js | grep -q 'CapabilityLedger' && curl -fsS http://127.0.0.1:4173/brayro-v13.css | grep -q 'brayro-ledger'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -139,7 +147,10 @@ jobs:
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
-              await page.evaluate(()=>{document.querySelectorAll('.opening-sequence').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active');document.querySelector('#work')?.scrollIntoView()});
+              await page.evaluate(()=>{document.querySelectorAll('.opening-sequence').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active');document.querySelector('#services')?.scrollIntoView()});
+              await page.waitForTimeout(620);
+              await page.screenshot({path:`artifacts/screenshots/${device}-services.png`,fullPage:false});
+              await page.evaluate(()=>document.querySelector('#work')?.scrollIntoView());
               await page.waitForTimeout(520);
               await page.screenshot({path:`artifacts/screenshots/${device}-work.png`,fullPage:false});
               await context.close();

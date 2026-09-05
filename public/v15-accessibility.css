@@ -1,0 +1,40 @@
+/* V15 microcopy contrast pass. Keep the hierarchy quiet without dropping below WCAG AA. */
+#services .play-scene__copy small,
+#services .play-scene__top,
+#services .play-scene__control span,
+#services .play-scene__control i,
+#services .play-scene__hint{
+  color:rgba(9,10,12,.68)!important;
+}
+
+#services .play-scene__control:hover span,
+#services .play-scene__control:hover i,
+#services .play-scene__control:focus-visible span,
+#services .play-scene__control:focus-visible i,
+#services .play-scene__control.is-active span,
+#services .play-scene__control.is-active i{
+  color:rgba(241,238,231,.72)!important;
+}
+
+body.ai-detail .ai-price span,
+body.ai-detail .ai-price small,
+body.ai-detail .ai-strip small,
+body.ai-detail .ai-footer,
+body.ai-detail .ai-hero__meta,
+body.ai-detail .ai-hero__copy>small,
+body.ai-detail .ai-kicker,
+body.ai-detail .matrix-row>span:first-child,
+body.ai-detail .arch-col>small,
+body.ai-detail .arch-node span,
+body.ai-detail .arch-status small,
+body.ai-detail .faq summary small{
+  color:rgba(241,238,231,.68)!important;
+}
+
+body.ai-detail .ai-section--paper .ai-kicker,
+body.ai-detail .ai-section--paper .process-stage__copy small,
+body.ai-detail .ai-section--paper .process-tab span,
+body.ai-detail .ai-section--paper .deliver small,
+body.ai-detail .ai-section--paper .scope-row small{
+  color:rgba(9,10,12,.68)!important;
+}

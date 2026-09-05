@@ -28,7 +28,7 @@ jobs:
       - run: npm run qa:static
       - name: Guard production bundle
         run: |
-          for f in index.html plans.html founder.html terms.html ai-workflow-audit.html company-second-brain.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7-contrast.css art-direction-v7.js work-showcase-v8.css work-showcase-v8.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js brayro-v12.css brayro-v13.css brayro-v14.css brayro-v14-polish.css brayro-v15.css brayro-v12.js brayro-v14.js brayro-v15.js ai-service-pages.css ai-service-pages.js; do test -f "dist/$f"; done
+          for f in index.html plans.html founder.html terms.html ai-workflow-audit.html company-second-brain.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7-contrast.css art-direction-v7.js work-showcase-v8.css work-showcase-v8.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js brayro-v12.css brayro-v13.css brayro-v14.css brayro-v14-polish.css brayro-v15.css brayro-v12.js brayro-v14.js brayro-v15.js v15-accessibility.css experience-motion-v16.css experience-motion-v16.js ai-service-pages.css ai-service-pages.js; do test -f "dist/$f"; done
           test -f dist/assets/brayroai-cinematic-opening.mp4
           test -f dist/assets/fakhrimart-case-desktop.png
           test -f dist/assets/fakhrimart-case-mobile.png
@@ -60,6 +60,15 @@ jobs:
           grep -q 'class ProcessLab' dist/ai-service-pages.js
           grep -q 'class ArchitectureLab' dist/ai-service-pages.js
           grep -q '.architecture' dist/ai-service-pages.css
+          grep -q 'class SceneKinetics' dist/experience-motion-v16.js
+          grep -q 'class PointerFeedback' dist/experience-motion-v16.js
+          grep -q '.v16-page-transition' dist/experience-motion-v16.css
+          grep -q 'body.terms-v16' dist/experience-motion-v16.css
+          grep -q 'body.ai-v16' dist/experience-motion-v16.css
+          for page in index.html plans.html founder.html terms.html ai-workflow-audit.html company-second-brain.html; do
+            grep -q '/experience-motion-v16.css' "dist/$page"
+            grep -q '/experience-motion-v16.js' "dist/$page"
+          done
           grep -q '/brayro-v15.css' dist/index.html
           grep -q '/brayro-v15.js' dist/index.html
           ! grep -q 'data-commercial-film' dist/index.html
@@ -67,7 +76,7 @@ jobs:
           test ! -f dist/experience-v2.css
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 10200
+          test "$TOTAL" -lt 10300
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
@@ -90,7 +99,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Company Second Brain' && curl -fsS http://127.0.0.1:4173/ai-workflow-audit | grep -q 'AI WORKFLOW AUDIT' && curl -fsS http://127.0.0.1:4173/company-second-brain | grep -q 'COMPANY SECOND BRAIN' && curl -fsS http://127.0.0.1:4173/brayro-v15.js | grep -q 'PlayfulCapabilities'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Company Second Brain' && curl -fsS http://127.0.0.1:4173/ai-workflow-audit | grep -q 'AI WORKFLOW AUDIT' && curl -fsS http://127.0.0.1:4173/company-second-brain | grep -q 'COMPANY SECOND BRAIN' && curl -fsS http://127.0.0.1:4173/brayro-v15.js | grep -q 'PlayfulCapabilities' && curl -fsS http://127.0.0.1:4173/experience-motion-v16.js | grep -q 'SceneKinetics'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log
@@ -117,16 +126,16 @@ jobs:
               const page=await context.newPage();
               for(const [route,name] of [['/','home'],['/plans','plans'],['/founder','founder'],['/terms','terms'],['/ai-workflow-audit','audit'],['/company-second-brain','second-brain']]){
                 await page.goto(`http://127.0.0.1:4173${route}`,{waitUntil:'networkidle'});
-                await page.evaluate(()=>{document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active','polish-opening')});
-                await page.waitForTimeout(420);
+                await page.evaluate(()=>{document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active','polish-opening','is-opening')});
+                await page.waitForTimeout(700);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
               await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
               await page.evaluate(()=>{document.querySelectorAll('.opening-sequence').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active');document.querySelector('#services')?.scrollIntoView()});
-              await page.waitForTimeout(420);
+              await page.waitForTimeout(520);
               await page.screenshot({path:`artifacts/screenshots/${device}-services.png`,fullPage:false});
               await page.evaluate(()=>document.querySelector('#plans')?.scrollIntoView());
-              await page.waitForTimeout(420);
+              await page.waitForTimeout(520);
               await page.screenshot({path:`artifacts/screenshots/${device}-home-pricing.png`,fullPage:false});
               await context.close();
             }

@@ -11,7 +11,7 @@ const pkg=read('package.json');
 
 for(const token of ['class PageCurtain','class RevealDirector','class SceneKinetics','class PointerFeedback','class InteractionChoreography'])expect(js.includes(token),`V16 runtime missing ${token}`);
 for(const token of ['home-v16','plans-v16','founder-v16','terms-v16','ai-v16'])expect(js.includes(token),`V16 page classifier missing ${token}`);
-for(const token of ['data-v16-reveal','data-v16-scene','data-v16-magnet','data-v16-surface'])expect(js.includes(token),`V16 runtime missing ${token}`);
+for(const token of ['dataset.v16Reveal','dataset.v16Scene','dataset.v16Magnet','dataset.v16Surface'])expect(js.includes(token),`V16 runtime missing ${token}`);
 for(const token of ['.v16-page-transition','.v16-cursor','body.home-v16','body.plans-v16','body.founder-v16','body.terms-v16','body.ai-v16','@media(prefers-reduced-motion:reduce)'])expect(css.includes(token),`V16 CSS missing ${token}`);
 expect(css.includes('.terms-section.v16-reading'),'Terms reading-state choreography missing');
 expect(css.includes('.arch-arrow')&&css.includes('@keyframes v16Engine'),'AI architecture motion missing');

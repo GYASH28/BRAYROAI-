@@ -14,7 +14,7 @@ const pkg=read('package.json');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 
-expect((home.match(/data-scene=/g)||[]).length===8,'V12 homepage must contain eight purposeful scenes');
+expect((home.match(/data-scene=/g)||[]).length===8,'V12 homepage must contain eight purposeful source scenes');
 expect(home.includes('class="v12-hero-title"')&&home.includes('Digital, designed'),'V12 hero typography guard is missing');
 expect(home.includes('data-v12-story')&&(home.match(/data-v12-step=/g)||[]).length===4,'V12 four-discipline source markup is incomplete');
 expect((home.match(/data-v12-project data-preview=/g)||[]).length===3,'V12 project showcase must contain three previewable rows');
@@ -35,8 +35,8 @@ expect(plans.includes('API usage')&&plans.includes('approved company sources'),'
 for(const token of ['.v12-hero-title','.v12-signal-strip','.v12-project-preview','.v12-ai-products','.v12-product-card','.v12-cursor','.ai-plan-card'])expect(css.includes(token),`V12 CSS missing ${token}`);
 for(const token of ['.brayro-ledger','.brayro-ledger__stage','.brayro-ledger__row','.brayro-flip','.brayro-spotlight-surface','.brayro-curtain'])expect(css13.includes(token),`V13 interaction CSS missing ${token}`);
 for(const token of ['class CapabilityLedger','class V12Reveal','class FloatingHeader','class FlipLinks','class SpotlightSurfaces','class CurtainReveal','class ProjectPreview','class ContextCursor','class ProductTilt','class HeroTextGuard'])expect(js.includes(token),`V12 runtime missing ${token}`);
-expect(js.includes('BRAYROAI / CAPABILITY LEDGER')&&js.includes('Less decoration.'),'editorial capability ledger copy is missing');
-expect(js.includes("diagram:['SOURCE','CONTEXT','ASSIST','ACTION']"),'AI capability must use practical workflow language instead of generic AI decoration');
+expect(js.includes('BRAYROAI / CAPABILITY LEDGER')&&js.includes('Less decoration.'),'legacy editorial capability layer is missing');
+expect(js.includes("diagram:['SOURCE','CONTEXT','ASSIST','ACTION']"),'legacy AI capability language regressed');
 expect(css.includes('@media(prefers-reduced-motion:reduce)'),'V12 reduced-motion CSS is missing');
 expect(css13.includes('@media(prefers-reduced-motion:reduce)'),'V13 interaction reduced-motion CSS is missing');
 expect(js.includes("matchMedia('(prefers-reduced-motion: reduce)')"),'V12 runtime reduced-motion handling is missing');
@@ -47,9 +47,9 @@ expect(Buffer.byteLength(css13)<12000,'V13 interaction CSS exceeds 12KB guardrai
 expect(Buffer.byteLength(js)<18000,'V12 JS exceeds 18KB guardrail');
 
 expect(motion5.includes("document.querySelector('.v12-capabilities')")&&motion5.includes("body.classList.add('v12-runtime-isolated')"),'legacy V5→V11 homepage mutation chain is not isolated');
-expect(pkg.includes('"version": "12.0.0"'),'package version is not V12');
-expect(pkg.includes('node --check public/brayro-v12.js'),'syntax suite does not check V12 runtime');
-expect(pkg.includes('node tests/v12-integrity.mjs'),'integrity suite does not enforce V12');
+expect(pkg.includes('"version": "14.0.0"'),'package release is not V14');
+expect(pkg.includes('node --check public/brayro-v12.js'),'syntax suite does not check V12 compatibility runtime');
+expect(pkg.includes('node tests/v12-integrity.mjs'),'integrity suite does not keep the V12 compatibility contract');
 
 for(const asset of ['hero-background.webp','yash-cutout.webp','about-yash.webp','fakhrimart-case-desktop.png','fakhrimart-case-mobile.png','brayroai-cinematic-opening.mp4'])expect(exists(path.join('public/assets',asset)),`missing ${asset}`);
 for(const file of ['public/brayro-v12.css','public/brayro-v13.css','public/brayro-v12.js','public/contact-priority.css','public/contact-priority.js','public/visual-finish.css'])expect(exists(file),`missing ${file}`);
@@ -60,4 +60,4 @@ for(const [name,html] of Object.entries({home,plans})){
 }
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V12 integrity OK: hero, editorial capability ledger, interaction layer, project showcase, AI offers, pricing and legacy isolation checked');
+console.log('V12 compatibility integrity OK beneath V14: source contracts, project proof, AI offers and legacy isolation checked');

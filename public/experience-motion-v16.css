@@ -1,0 +1,85 @@
+/* BRAYROAI V16 — sitewide motion language. Motion supports hierarchy; it never replaces it. */
+:root{--v16-ease:cubic-bezier(.16,1,.3,1);--v16-soft:cubic-bezier(.22,1,.36,1);--v16-px:0px;--v16-py:0px;--v16-scroll:0;--v16-velocity:0}
+html{scroll-behavior:smooth}
+body.v16-motion{--v16-page-y:0px}
+body.v16-motion main{isolation:isolate}
+body.v16-motion [data-v16-scene]{position:relative}
+body.v16-motion [data-v16-scene]>.v16-section-line{position:absolute;z-index:7;top:0;left:clamp(1rem,4vw,4rem);right:clamp(1rem,4vw,4rem);height:1px;pointer-events:none;overflow:hidden;background:rgba(127,135,148,.16)}
+body.v16-motion [data-v16-scene]>.v16-section-line::after{content:"";display:block;width:100%;height:100%;background:currentColor;transform:scaleX(var(--v16-line,0));transform-origin:left;transition:transform .08s linear;color:#ff5a1f}
+
+.v16-page-transition{position:fixed;z-index:9998;inset:0;pointer-events:none;display:grid;grid-template-rows:repeat(4,1fr);visibility:hidden}
+.v16-page-transition i{display:block;background:#090a0c;transform:scaleX(0);transform-origin:right}
+.v16-page-transition.is-entering{visibility:visible}.v16-page-transition.is-entering i{animation:v16CurtainIn .82s var(--v16-ease) both}.v16-page-transition.is-entering i:nth-child(2){animation-delay:.04s}.v16-page-transition.is-entering i:nth-child(3){animation-delay:.08s}.v16-page-transition.is-entering i:nth-child(4){animation-delay:.12s}
+.v16-page-transition.is-leaving{visibility:visible}.v16-page-transition.is-leaving i{transform-origin:left;animation:v16CurtainOut .42s var(--v16-ease) both}.v16-page-transition.is-leaving i:nth-child(2){animation-delay:.025s}.v16-page-transition.is-leaving i:nth-child(3){animation-delay:.05s}.v16-page-transition.is-leaving i:nth-child(4){animation-delay:.075s}
+@keyframes v16CurtainIn{0%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+@keyframes v16CurtainOut{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+
+.v16-cursor{position:fixed;z-index:9990;left:0;top:0;width:3.2rem;height:3.2rem;border:1px solid rgba(255,255,255,.38);border-radius:50%;pointer-events:none;opacity:0;mix-blend-mode:difference;transform:translate3d(calc(var(--v16-cx,-100px) - 50%),calc(var(--v16-cy,-100px) - 50%),0) scale(var(--v16-cs,.7));transition:opacity .25s ease,width .35s var(--v16-ease),height .35s var(--v16-ease),background .25s ease,border-color .25s ease;will-change:transform}
+.v16-cursor::after{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;border-radius:50%;background:white;transform:translate(-50%,-50%)}
+.v16-cursor.is-visible{opacity:1}.v16-cursor.is-active{width:4.8rem;height:4.8rem;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.7)}
+body.home-v16 .v16-cursor{display:none}
+
+body.v16-motion [data-v16-reveal]{opacity:0;clip-path:inset(0 0 18% 0);translate:0 2rem;transition:opacity .78s var(--v16-ease),clip-path .9s var(--v16-ease),translate .9s var(--v16-ease)}
+body.v16-motion [data-v16-reveal].v16-in{opacity:1;clip-path:inset(0 0 0 0);translate:0 0}
+body.v16-motion [data-v16-reveal][data-v16-delay="1"]{transition-delay:.08s}body.v16-motion [data-v16-reveal][data-v16-delay="2"]{transition-delay:.16s}body.v16-motion [data-v16-reveal][data-v16-delay="3"]{transition-delay:.24s}
+
+body.v16-motion [data-v16-magnet]{--v16-mx:0px;--v16-my:0px;translate:var(--v16-mx) var(--v16-my);transition:translate .48s var(--v16-ease),background-color .3s ease,border-color .3s ease,color .3s ease}
+body.v16-motion [data-v16-surface]{--v16-sx:50%;--v16-sy:50%;position:relative;isolation:isolate}
+body.v16-motion [data-v16-surface]::after{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;opacity:0;background:radial-gradient(340px circle at var(--v16-sx) var(--v16-sy),rgba(255,255,255,.085),transparent 62%);transition:opacity .35s ease}
+body.v16-motion [data-v16-surface]:hover::after,body.v16-motion [data-v16-surface]:focus-within::after{opacity:1}
+body.v16-motion [data-v16-lift]{transition:translate .45s var(--v16-ease),box-shadow .45s ease,border-color .35s ease}
+body.v16-motion [data-v16-lift]:hover,body.v16-motion [data-v16-lift]:focus-within{translate:0 -.38rem}
+
+/* Homepage: preserve V15 playground; add movement to the rest of the page. */
+body.home-v16 .v12-hero-title{translate:0 calc(var(--v16-hero-shift,0)*1px)}
+body.home-v16 .hero__visual img{scale:calc(1 + var(--v16-hero-depth,0)*.045);translate:0 calc(var(--v16-hero-depth,0)*12px)}
+body.home-v16 #work .v12-featured-case img{scale:calc(1.025 + var(--v16-focus,0)*.035);transition:scale .2s linear}
+body.home-v16 #ai-systems .v12-product-card,body.home-v16 #plans [data-v14-rate]{translate:0 calc((1 - var(--v16-focus,0))*1.1rem)}
+body.home-v16 #contact .contact__display{translate:0 calc((1 - var(--v16-focus,0))*1.4rem)}
+
+/* Plans: pricing should feel like objects entering a stage, not a static catalogue. */
+body.plans-v16 .plans-hero__word{translate:calc(var(--v16-drift-x,0)*1px) calc(var(--v16-drift-y,0)*1px);rotate:calc(var(--v16-drift-x,0)*.012deg)}
+body.plans-v16 .scope-switch{translate:0 calc((1 - var(--v16-focus,0))*1.6rem)}
+body.plans-v16 .build-stack{perspective:1200px}
+body.plans-v16 .build-card:nth-child(odd){translate:calc((1 - var(--v16-focus,0))*-1rem) calc((1 - var(--v16-focus,0))*1.2rem)}
+body.plans-v16 .build-card:nth-child(even){translate:calc((1 - var(--v16-focus,0))*1rem) calc((1 - var(--v16-focus,0))*1.2rem)}
+body.plans-v16 .ai-plan-card{translate:0 calc((1 - var(--v16-focus,0))*1.35rem)}
+body.plans-v16 .compare-table{background-position:calc(50% + var(--v16-drift-x,0)*.15px) 50%}
+
+/* Founder: portrait, method and conviction react at different speeds. */
+body.founder-v16 .founder-hero__word{translate:calc(var(--v16-drift-x,0)*.45px) calc(var(--v16-drift-y,0)*.5px)}
+body.founder-v16 .founder-hero__portrait{translate:0 calc(var(--v16-drift-y,0)*-.22px)}
+body.founder-v16 .founder-hero__image{scale:calc(1.02 + var(--v16-focus,0)*.03)}
+body.founder-v16 .story__copy{translate:0 calc((1 - var(--v16-focus,0))*1.6rem)}
+body.founder-v16 .principle-instrument__image img{scale:calc(1.04 + var(--v16-focus,0)*.045);translate:calc(var(--v16-drift-x,0)*-.1px) calc(var(--v16-drift-y,0)*-.12px)}
+body.founder-v16 .method__image img{scale:calc(1.03 + var(--v16-focus,0)*.055);translate:0 calc(var(--v16-drift-y,0)*-.16px)}
+body.founder-v16 .conviction__line{transform:scaleX(var(--v16-line,0));transform-origin:left}
+body.founder-v16 .founder-close h2{translate:0 calc((1 - var(--v16-focus,0))*1.5rem)}
+
+/* Terms: movement should help reading and orientation rather than distract. */
+body.terms-v16 .terms-hero__copy{translate:0 calc(var(--v16-drift-y,0)*-.12px)}
+body.terms-v16 .terms-toc{transition:translate .45s var(--v16-ease);translate:0 calc(var(--v16-toc-shift,0)*1px)}
+body.terms-v16 .terms-section{--v16-term:0;border-left:1px solid rgba(9,10,12,.1);padding-left:clamp(1rem,2vw,2rem);transition:border-color .4s ease,background-color .4s ease}
+body.terms-v16 .terms-section.v16-reading{border-left-color:#d94712;background:linear-gradient(90deg,rgba(217,71,18,.035),transparent 24%)}
+body.terms-v16 .terms-section__num{display:inline-block;translate:calc(var(--v16-term)*.45rem) 0;transition:translate .3s var(--v16-ease),color .3s ease}
+body.terms-v16 .terms-section.v16-reading .terms-section__num{color:#b93a0d}
+body.terms-v16 .terms-quick a i{display:inline-block;transition:translate .35s var(--v16-ease),rotate .35s var(--v16-ease)}
+body.terms-v16 .terms-quick a:hover i{translate:.25rem .25rem;rotate:-8deg}
+
+/* AI detail pages: architecture pulses and stage changes carry depth. */
+body.ai-v16 .ai-hero::before{translate:calc(var(--v16-drift-x,0)*.5px) calc(var(--v16-drift-y,0)*.45px)}
+body.ai-v16 .ai-hero h1{translate:0 calc(var(--v16-drift-y,0)*-.12px)}
+body.ai-v16 .process-stage{background-position:calc(50% + var(--v16-drift-x,0)*.18px) calc(50% + var(--v16-drift-y,0)*.12px)}
+body.ai-v16 .process-stage::after{translate:calc(var(--v16-drift-x,0)*.35px) calc(var(--v16-drift-y,0)*.28px)}
+body.ai-v16 .process-tab b,body.ai-v16 .arch-node strong{display:inline-block;transition:translate .35s var(--v16-ease)}
+body.ai-v16 .process-tab:hover b,body.ai-v16 .process-tab[aria-selected="true"] b,body.ai-v16 .arch-node:hover strong,body.ai-v16 .arch-node.is-active strong{translate:.28rem 0}
+body.ai-v16 .arch-arrow{animation:v16Arrow 1.8s ease-in-out infinite}
+body.ai-v16 .arch-engine{background-size:160% 160%;animation:v16Engine 8s ease-in-out infinite alternate}
+body.ai-v16 .faq summary::after{display:inline-block;transition:rotate .4s var(--v16-ease),scale .4s var(--v16-ease)}
+body.ai-v16 .faq details[open] summary::after{rotate:180deg;scale:1.14}
+body.ai-v16 .ai-cta::after{translate:calc(var(--v16-drift-x,0)*.35px) calc(var(--v16-drift-y,0)*.4px)}
+@keyframes v16Arrow{0%,100%{translate:-.18rem 0;opacity:.35}50%{translate:.22rem 0;opacity:.8}}
+@keyframes v16Engine{0%{background-position:15% 20%}100%{background-position:85% 80%}}
+
+@media(max-width:900px){.v16-cursor{display:none}body.v16-motion [data-v16-magnet]{translate:0 0!important}body.plans-v16 .build-card:nth-child(n){translate:0 calc((1 - var(--v16-focus,0))*.75rem)}body.terms-v16 .terms-section{padding-left:1rem}.v16-page-transition i{background:#090a0c}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.v16-page-transition,.v16-cursor{display:none!important}body.v16-motion [data-v16-reveal]{opacity:1!important;clip-path:none!important;translate:0 0!important;transition:none!important}body.v16-motion [data-v16-magnet],body.v16-motion [data-v16-lift],body.plans-v16 .build-card:nth-child(n),body.home-v16 .hero__visual img,body.founder-v16 .founder-hero__portrait,body.founder-v16 .founder-hero__image,body.founder-v16 .principle-instrument__image img,body.founder-v16 .method__image img,body.ai-v16 .ai-hero::before,body.ai-v16 .ai-hero h1,body.ai-v16 .process-stage::after,body.ai-v16 .ai-cta::after{translate:0 0!important;scale:1!important;rotate:0deg!important;transition:none!important;animation:none!important}.arch-arrow,.arch-engine{animation:none!important}}

@@ -127,10 +127,32 @@ class PlansBriefs {
   }
 }
 
+class AIServiceDetailLinks {
+  constructor() {
+    const cards=[...document.querySelectorAll('#ai-systems .ai-plan-card')];
+    const links=[
+      {href:'/ai-workflow-audit',label:'See exactly how the audit works ↗'},
+      {href:'/company-second-brain',label:'See how the Second Brain is integrated ↗'}
+    ];
+    cards.forEach((card,index)=>{
+      if(card.querySelector('[data-ai-detail-link]')||!links[index])return;
+      const primary=card.querySelector('a[href]');
+      if(!primary)return;
+      const detail=document.createElement('a');
+      detail.className='plan-email-fallback';
+      detail.dataset.aiDetailLink='';
+      detail.href=links[index].href;
+      detail.textContent=links[index].label;
+      primary.after(detail);
+    });
+  }
+}
+
 new PlansReveal();
 new PlansSurfaceLight();
 new PlansTimeline();
 new PlansBriefs();
+new AIServiceDetailLinks();
 let plansScrollCraftMounted = false;
 const plansMountTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];
 const mountPlansScrollCraft = () => {

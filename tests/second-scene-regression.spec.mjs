@@ -6,15 +6,15 @@ const openHome = async (page) => {
     document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach((node) => node.remove());
     document.body.classList.remove('polish-opening','hf-intro-active');
   });
-  await page.waitForFunction(() => document.body.classList.contains('v11-ready'));
-  await page.waitForSelector('#services[data-scene="outcomes"] [data-v11-outcomes]');
+  await page.waitForSelector('#services[data-scene="services"] [data-v12-story]');
+  await page.waitForFunction(() => document.body.classList.contains('v12-runtime-isolated'));
 };
 
 for (const [label, width, height] of [
   ['desktop', 1440, 900],
   ['mobile', 390, 844],
 ]) {
-  test(`second homepage scene paints after hero scroll on ${label}`, async ({ page }) => {
+  test(`V12 capability scene paints after hero scroll on ${label}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
     await openHome(page);
 
@@ -22,7 +22,7 @@ for (const [label, width, height] of [
     await section.scrollIntoViewIfNeeded();
 
     await page.waitForFunction(() => {
-      const reveals = [...document.querySelectorAll('#services [data-reveal]')];
+      const reveals = [...document.querySelectorAll('#services [data-v12-reveal]')];
       return reveals.length >= 2 && reveals.every((node) => Number.parseFloat(getComputedStyle(node).opacity) > 0.95);
     });
 
@@ -37,9 +37,11 @@ for (const [label, width, height] of [
     });
 
     expect(renderState.contentVisibility).toBe('visible');
-    expect(renderState.height).toBeGreaterThan(height * 0.5);
+    expect(renderState.height).toBeGreaterThan(height * 1.5);
     expect(renderState.width).toBeGreaterThan(width * 0.85);
-    await expect(section.locator('.v11-outcomes-head')).toContainText('A better website should do a job.');
-    await expect(section.locator('[data-v11-outcomes]')).toBeVisible();
+    await expect(section).toContainText('FOUR DISCIPLINES / ONE POINT OF VIEW');
+    await expect(section.locator('[data-v12-story]')).toBeVisible();
+    await expect(section.locator('[data-v12-step]')).toHaveCount(4);
+    await expect(section.locator('[data-v12-story-visual]')).toBeVisible();
   });
 }

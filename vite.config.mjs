@@ -8,7 +8,13 @@ const homePerformanceTransform={
   transformIndexHtml:{
     order:'pre',
     handler(html,context){
-      const isHome=context?.path==='/'||context?.path==='/index.html'||context?.filename?.endsWith('/index.html');
+      const filename=context?.filename||'';
+      const isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html');
+      const isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html');
+
+      if(isAiDetail&&!html.includes('href="/v15-accessibility.css"')){
+        html=html.replace('</head>','  <link rel="stylesheet" href="/v15-accessibility.css" data-v15-accessibility>\n</head>');
+      }
       if(!isHome)return html;
 
       html=html.replace(
@@ -31,7 +37,7 @@ const homePerformanceTransform={
       if(!html.includes('href="/brayro-v15.css"')){
         html=html.replace(
           '<link rel="stylesheet" href="/brayro-v14-polish.css" data-brayro-v14-polish>',
-          '<link rel="stylesheet" href="/brayro-v14-polish.css" data-brayro-v14-polish>\n  <link rel="stylesheet" href="/brayro-v15.css" data-brayro-v15>'
+          '<link rel="stylesheet" href="/brayro-v14-polish.css" data-brayro-v14-polish>\n  <link rel="stylesheet" href="/brayro-v15.css" data-brayro-v15>\n  <link rel="stylesheet" href="/v15-accessibility.css" data-v15-accessibility>'
         );
       }
 

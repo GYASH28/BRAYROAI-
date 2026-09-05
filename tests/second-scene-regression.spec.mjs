@@ -19,12 +19,12 @@ for (const [label, width, height] of [
     await openHome(page);
 
     const section = page.locator('#services');
-    await section.scrollIntoViewIfNeeded();
+    await section.evaluate((node) => node.scrollIntoView({ block:'start', behavior:'auto' }));
 
-    await page.waitForFunction(() => {
-      const reveals = [...document.querySelectorAll('#services [data-v12-reveal]')];
-      return reveals.length >= 2 && reveals.every((node) => Number.parseFloat(getComputedStyle(node).opacity) > 0.95);
-    });
+    const headReveals = section.locator('.v12-capabilities__head [data-v12-reveal]');
+    await expect(headReveals).toHaveCount(2);
+    await expect(headReveals.nth(0)).toHaveClass(/is-visible/);
+    await expect(headReveals.nth(1)).toHaveClass(/is-visible/);
 
     const renderState = await section.evaluate((node) => {
       const style = getComputedStyle(node);

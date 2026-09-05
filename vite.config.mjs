@@ -1,8 +1,48 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 
+const googleFontsHref='https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
+
+const homePerformanceTransform={
+  name:'brayro-home-performance-transform',
+  transformIndexHtml:{
+    order:'pre',
+    handler(html,context){
+      const isHome=context?.path==='/'||context?.path==='/index.html'||context?.filename?.endsWith('/index.html');
+      if(!isHome)return html;
+
+      // Keep typography available without making the external Google Fonts stylesheet
+      // a first-paint blocker. Font display remains optional, so fallback text is stable.
+      html=html.replace(
+        `<link href="${googleFontsHref}" rel="stylesheet">`,
+        `<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'">\n  <noscript><link rel="stylesheet" href="${googleFontsHref}"></noscript>`
+      );
+
+      // V13 used to be discovered from brayro-v12.js. Put it directly on the critical
+      // stylesheet graph so the second scene does not wait on a JS -> CSS dependency.
+      if(!html.includes('href="/brayro-v13.css"')){
+        html=html.replace(
+          '<link rel="stylesheet" href="/brayro-v12.css">',
+          '<link rel="stylesheet" href="/brayro-v12.css">\n  <link rel="stylesheet" href="/brayro-v13.css" data-brayro-v13>'
+        );
+      }
+
+      // The cursor preview is invisible until a user hovers a project row. Leaving its
+      // 1.36 MB PNG in source made the HTML parser fetch it during initial navigation.
+      // ProjectPreview assigns the src on demand, so production ships an empty img shell.
+      html=html.replace(
+        '<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img src="/assets/fakhrimart-case-desktop.png" alt=""></div>',
+        '<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img alt=""></div>'
+      );
+
+      return html;
+    }
+  }
+};
+
 export default defineConfig({
   publicDir:'public',
+  plugins:[homePerformanceTransform],
   build:{
     outDir:'dist',
     emptyOutDir:true,

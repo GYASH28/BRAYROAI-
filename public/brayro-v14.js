@@ -5,36 +5,44 @@
 
   const CAPABILITIES = [
     {
+      key:'web',
       kicker:'01 / WEB EXPERIENCES',
       title:'Make the page feel directed.',
       body:'Art direction, responsive UX and motion shaped as one continuous impression—not a stack of sections.',
       cue:'DIRECTION / TYPE / MOTION',
       asset:'/assets/brayroai-installation-hero.webp',
-      label:'WEB'
+      label:'WEB',
+      legacyWord:'WEB'
     },
     {
+      key:'product',
       kicker:'02 / PRODUCT DESIGN',
       title:'Show the product by letting it move.',
       body:'Flows and interface states are introduced the way a product film would introduce them: one clear action at a time.',
       cue:'FLOW / STATE / INTERACTION',
       asset:'/assets/fakhrimart-case-desktop.png',
-      label:'PRODUCT'
+      label:'PRODUCT',
+      legacyWord:'PRODUCT'
     },
     {
+      key:'frontend',
       kicker:'03 / FRONTEND ENGINEERING',
       title:'Keep the idea intact in the browser.',
       body:'Responsive engineering, accessibility and performance are part of the visual direction—not cleanup after design.',
       cue:'BUILD / PERFORMANCE / A11Y',
       asset:'/assets/brayroai-process-table.webp',
-      label:'BUILD'
+      label:'BUILD',
+      legacyWord:'FRONTEND'
     },
     {
+      key:'ai',
       kicker:'04 / PRACTICAL AI',
       title:'Use AI only where it earns the screen time.',
       body:'Workflow audits, company knowledge systems and useful automation. No robot imagery. No fake intelligence theatre.',
       cue:'SOURCE / CONTEXT / ACTION',
       asset:'',
-      label:'USEFUL AI'
+      label:'USEFUL AI',
+      legacyWord:'AI SYSTEMS'
     }
   ];
 
@@ -46,8 +54,10 @@
       this.stage = this.section.querySelector('[data-v14-stage]');
       this.frames = [...this.section.querySelectorAll('[data-v14-frame]')];
       this.copies = [...this.section.querySelectorAll('[data-v14-copy]')];
+      this.steps = [...this.section.querySelectorAll('[data-v12-step]')];
       this.counter = this.section.querySelector('[data-v14-counter]');
       this.progress = this.section.querySelector('[data-v14-progress]');
+      this.legacyWord = this.section.querySelector('[data-v12-story-word]');
       this.current = -1;
       this.raf = 0;
       this.bind();
@@ -57,18 +67,20 @@
     build() {
       this.section.className = 'scene brayro-film';
       this.section.dataset.v14Reel = '';
+      this.section.dataset.reelState = 'web';
       this.section.innerHTML = `
-        <div class="brayro-film__sticky" data-v14-stage>
+        <div class="brayro-film__sticky" data-v14-stage data-v12-story data-v12-story-visual data-state="web">
           <div class="brayro-film__media" aria-hidden="true">
             ${CAPABILITIES.map((item, index) => `
               <figure class="brayro-film__frame brayro-film__frame--${index + 1}" data-v14-frame="${index}">
-                ${item.asset ? `<img src="${item.asset}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">` : ''}
+                ${item.asset ? `<img src="${item.asset}" alt="" loading="lazy" fetchpriority="low">` : ''}
                 <div class="brayro-film__graphic"><span>${String(index + 1).padStart(2,'0')}</span><strong>${item.label}</strong><i></i></div>
               </figure>`).join('')}
           </div>
 
           <div class="brayro-film__wash" aria-hidden="true"></div>
           <div class="brayro-film__topline"><span>BRAYROAI / CAPABILITY FILM</span><strong data-v14-counter>01 / 04</strong></div>
+          <span class="brayro-film__legacy-word" data-v12-story-word aria-hidden="true">WEB</span>
 
           <div class="brayro-film__copies">
             ${CAPABILITIES.map((item, index) => `
@@ -83,12 +95,13 @@
           <div class="brayro-film__timeline" aria-hidden="true"><i data-v14-progress></i><span>SCROLL TO PLAY</span></div>
           <div class="brayro-film__caption" aria-hidden="true"><span>DESIGN</span><span>PRODUCT</span><span>ENGINEERING</span><span>AI</span></div>
         </div>
-        <div class="brayro-film__scroll" aria-hidden="true">${CAPABILITIES.map(() => '<div></div>').join('')}</div>`;
+        <div class="brayro-film__scroll" aria-hidden="true">${CAPABILITIES.map((item, index) => `<div data-v12-step="${item.key}" data-v14-trigger="${index}"></div>`).join('')}</div>`;
     }
 
     bind() {
       if (reduced) {
         this.section.classList.add('is-reduced');
+        this.steps.forEach(step => step.classList.add('is-active'));
         return;
       }
       const schedule = () => {
@@ -132,8 +145,12 @@
       if (this.progress) this.progress.style.transform = `scaleX(${p.toFixed(4)})`;
       if (force || active !== this.current) {
         this.current = active;
+        const item = CAPABILITIES[active];
         if (this.counter) this.counter.textContent = `${String(active + 1).padStart(2,'0')} / 04`;
-        this.section.dataset.reelState = ['web','product','frontend','ai'][active];
+        if (this.legacyWord) this.legacyWord.textContent = item.legacyWord;
+        this.section.dataset.reelState = item.key;
+        this.stage.dataset.state = item.key;
+        this.steps.forEach((step, index) => step.classList.toggle('is-active', index === active));
       }
     }
   }

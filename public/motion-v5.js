@@ -5,6 +5,14 @@
   const root = document.documentElement;
   const body = document.body;
 
+  // V12 owns the homepage interaction architecture. Keep V5 available for
+  // Plans / Founder / Terms, but do not let its legacy V6→V11 chain mutate
+  // the V12 capability story or project showcase after load.
+  if (document.querySelector('.v12-capabilities')) {
+    body.classList.add('v12-runtime-isolated');
+    return;
+  }
+
   const mountMotionV6 = () => {
     if (mountMotionV6.done) return;
     mountMotionV6.done = true;

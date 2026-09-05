@@ -47,7 +47,7 @@ expect(Buffer.byteLength(css13)<12000,'V13 interaction CSS exceeds 12KB guardrai
 expect(Buffer.byteLength(js)<18000,'V12 JS exceeds 18KB guardrail');
 
 expect(motion5.includes("document.querySelector('.v12-capabilities')")&&motion5.includes("body.classList.add('v12-runtime-isolated')"),'legacy V5→V11 homepage mutation chain is not isolated');
-expect(pkg.includes('"version": "15.0.0"'),'package release is not V15');
+expect(pkg.includes('"version": "16.0.0"'),'package release is not V16');
 expect(pkg.includes('node --check public/brayro-v12.js'),'syntax suite does not check V12 compatibility runtime');
 expect(pkg.includes('node tests/v12-integrity.mjs'),'integrity suite does not keep the V12 compatibility contract');
 
@@ -60,4 +60,4 @@ for(const [name,html] of Object.entries({home,plans})){
 }
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V12 compatibility integrity OK beneath V15: source contracts, project proof, AI offers and legacy isolation checked');
+console.log('V12 compatibility integrity OK beneath V16: source contracts, project proof, AI offers and legacy isolation checked');

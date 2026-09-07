@@ -10,10 +10,17 @@ const experienceTransform={
     handler(html,context){
       const filename=context?.filename||'';
       const isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html');
+      const isGrowthHome=isHome&&html.includes('/international-growth.css');
       const isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html');
 
       if(isAiDetail&&!html.includes('href="/v15-accessibility.css"')){
         html=html.replace('</head>','  <link rel="stylesheet" href="/v15-accessibility.css" data-v15-accessibility>\n</head>');
+      }
+
+      if(isGrowthHome){
+        // V12/V14/V15 capability runtimes intentionally target data-scene="services" and rebuild that section.
+        // Preserve those legacy assets for visual compatibility while moving the new commercial section outside their mutation contract.
+        html=html.replace('id="services" class="scene v12-capabilities" data-sc-act="flow" data-scene="services"','id="services" class="scene v12-capabilities" data-sc-act="flow" data-scene="growth-services"');
       }
 
       if(isHome){
@@ -85,6 +92,10 @@ export default defineConfig({
         plans:resolve(process.cwd(),'plans.html'),
         founder:resolve(process.cwd(),'founder.html'),
         terms:resolve(process.cwd(),'terms.html'),
+        growthAudit:resolve(process.cwd(),'audit.html'),
+        us:resolve(process.cwd(),'us.html'),
+        uae:resolve(process.cwd(),'uae.html'),
+        lab:resolve(process.cwd(),'lab.html'),
         audit:resolve(process.cwd(),'ai-workflow-audit.html'),
         secondBrain:resolve(process.cwd(),'company-second-brain.html')
       }

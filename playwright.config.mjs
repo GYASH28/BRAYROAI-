@@ -2,10 +2,10 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: /(browser-v12|second-scene-regression)\.spec\.mjs/,
+  testMatch: /v17-growth-browser\.spec\.mjs/,
   timeout: 45_000,
   expect: { timeout: 8_000 },
-  fullyParallel: true,
+  fullyParallel: false,
   retries: 1,
   reporter: [['line'], ['html', { outputFolder: 'artifacts/playwright-report', open: 'never' }]],
   use: {

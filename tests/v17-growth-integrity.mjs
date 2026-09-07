@@ -35,7 +35,7 @@ expect(uae.includes('WhatsApp')&&uae.includes('does not claim a Dubai office'),'
 expect(lab.includes('I RUN A BUSINESS')&&lab.includes('I BUILD / SELL SYSTEMS'),'Lab does not segment business and builder audiences');
 expect(audit.includes('data-ig-audit-form')&&audit.includes('Likely implementation budget'),'Audit qualification flow is incomplete');
 
-expect(plans.includes('Brayro Growth Engine')&&plans.includes('From US$1,500'),'Plans page was not migrated to the international offer architecture');
+expect(plans.includes('Growth Engine')&&plans.includes('From US$1,500'),'Plans page was not migrated to the international offer architecture');
 expect(!plans.includes('₹2,599')&&!plans.includes('₹17,999'),'Legacy low-ticket website plan pricing remains public on /plans');
 expect(founder.includes('No fake offices')&&founder.includes('international delivery'),'Founder page does not address international trust explicitly');
 

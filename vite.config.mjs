@@ -85,7 +85,11 @@ export default defineConfig({
         plans:resolve(process.cwd(),'plans.html'),
         founder:resolve(process.cwd(),'founder.html'),
         terms:resolve(process.cwd(),'terms.html'),
-        audit:resolve(process.cwd(),'ai-workflow-audit.html'),
+        audit:resolve(process.cwd(),'audit.html'),
+        us:resolve(process.cwd(),'us.html'),
+        uae:resolve(process.cwd(),'uae.html'),
+        lab:resolve(process.cwd(),'lab.html'),
+        legacyAudit:resolve(process.cwd(),'ai-workflow-audit.html'),
         secondBrain:resolve(process.cwd(),'company-second-brain.html')
       }
     }

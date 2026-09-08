@@ -13,7 +13,7 @@ body.home-v19 .hero__subject{translate:var(--v19-hero-subject-x,0px) var(--v19-h
 body.home-v19 .hero__word{translate:0 var(--v19-hero-word-y,0px);scale:var(--v19-hero-word-scale,1);transform-origin:center;will-change:transform}
 body.home-v19 .hero__copy{translate:0 var(--v19-hero-copy-y,0px);will-change:transform}
 body.home-v19 .hero__grid{translate:0 var(--v19-hero-grid-y,0px);will-change:transform}
-body.home-v19 .hero__shade{opacity:calc(.74 - (var(--v19-focus,1) * .11))}
+body.home-v19 .hero__shade{opacity:var(--v19-hero-shade,.68)}
 
 body.home-v19 #services .play-scene__stage{translate:0 var(--v19-services-y,0px);scale:var(--v19-services-scale,1);transform-origin:center;will-change:transform}
 body.home-v19 #services .play-scene__rings{rotate:var(--v19-services-rings-rot,0deg);will-change:transform}

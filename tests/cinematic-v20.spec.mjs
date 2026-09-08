@@ -23,6 +23,7 @@ test('V20 adds cinematic components without adding homepage sections',async({pag
   await expect(page.locator('[data-v20-film-gate]')).toHaveCount(1);
   await expect(page.locator('[data-v20-aperture]')).toHaveCount(1);
   await expect(page.locator('[data-v20-data-path]')).toHaveCount(2);
+  await expect(page.locator('[data-v20-rate-light]')).toHaveCount(3);
   await expect(page.locator('[data-v20-portrait-scan]')).toHaveCount(1);
   await expect(page.locator('[data-v20-scene-rail]')).toHaveCount(1);
 });
@@ -42,7 +43,7 @@ test('scene rail and film polish respond to the same scroll journey',async({page
   expect(scan).not.toBe('');
 });
 
-test('pointer polish updates local light fields and magnetic controls without changing layout',async({page})=>{
+test('pointer polish updates local light fields, pricing light and magnetic controls without changing layout',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await openHome(page);
 
@@ -60,9 +61,25 @@ test('pointer polish updates local light fields and magnetic controls without ch
   expect(vars.y).not.toBe('');
   expect(vars.o).toBe('1');
 
+  const rate=page.locator('#plans [data-v14-rate]').first();
+  await rate.scrollIntoViewIfNeeded();
+  const rateBox=await rate.boundingBox();
+  expect(rateBox).not.toBeNull();
+  await page.mouse.move(rateBox.x+rateBox.width*.7,rateBox.y+rateBox.height*.35);
+  await expect(rate.locator('[data-v20-rate-light]')).toHaveCount(1);
+  const rateVars=await rate.evaluate(node=>({
+    x:getComputedStyle(node).getPropertyValue('--v20-local-x').trim(),
+    o:getComputedStyle(node).getPropertyValue('--v20-spot-o').trim(),
+    authoredAfter:getComputedStyle(node,'::after').content
+  }));
+  expect(rateVars.x).not.toBe('');
+  expect(rateVars.o).toBe('1');
+  expect(rateVars.authoredAfter).not.toBe('none');
+
   await page.locator('#top').scrollIntoViewIfNeeded();
   const cta=page.locator('.primary-action.magnetic').first();
   const ctaBox=await cta.boundingBox();
+  expect(ctaBox).not.toBeNull();
   await page.mouse.move(ctaBox.x+ctaBox.width*.84,ctaBox.y+ctaBox.height*.65);
   const magnetic=await cta.evaluate(node=>getComputedStyle(node).getPropertyValue('--v20-mag-x').trim());
   expect(magnetic).not.toBe('');
@@ -96,6 +113,7 @@ test('reduced motion keeps V20 decorative components static and core interaction
   await openHome(page);
   await expect(page.locator('[data-scene]')).toHaveCount(8);
   await expect(page.locator('[data-v20-lens]')).toHaveCount(1);
+  await expect(page.locator('[data-v20-rate-light]')).toHaveCount(3);
   const orbitAnimation=await page.locator('.v20-signal-field__orbit').first().evaluate(node=>getComputedStyle(node).animationName);
   const dataAnimation=await page.locator('.v20-data-path i').first().evaluate(node=>getComputedStyle(node,'::after').animationName);
   expect(orbitAnimation).toBe('none');

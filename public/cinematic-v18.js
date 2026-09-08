@@ -36,19 +36,12 @@
 
     collectScenes(){
       this.scenes = [...document.querySelectorAll('main [data-scene]')].map((scene,index) => ({
-        scene,
-        index,
-        key:scene.dataset.scene || `scene-${index}`,
-        current:.5,
-        target:.5,
-        focus:0,
-        targetFocus:0
+        scene,index,key:scene.dataset.scene || `scene-${index}`,current:.5,target:.5,focus:0,targetFocus:0
       }));
     }
 
     bind(){
-      const schedule = () => this.schedule();
-      addEventListener('scroll',schedule,{passive:true});
+      addEventListener('scroll',() => this.schedule(),{passive:true});
       addEventListener('resize',() => {
         this.vh = innerHeight;
         this.vw = innerWidth;
@@ -64,19 +57,13 @@
       if (!this.frame) this.frame = requestAnimationFrame(() => this.tick());
     }
 
-    sceneProgress(rect){
-      return clamp01((this.vh - rect.top) / Math.max(rect.height + this.vh,1));
-    }
-
+    sceneProgress(rect){return clamp01((this.vh - rect.top) / Math.max(rect.height + this.vh,1))}
     sceneFocus(rect){
       const center = rect.top + rect.height * .5;
       const distance = Math.abs(center - this.vh * .5);
       return clamp01(1 - distance / Math.max(this.vh * .88,1));
     }
-
-    set(scene,name,value){
-      scene.style.setProperty(name,value);
-    }
+    set(scene,name,value){scene.style.setProperty(name,value)}
 
     paintHero(scene,phase,focus){
       const amp = compact ? .62 : 1;
@@ -100,6 +87,9 @@
       this.set(scene,'--v19-services-rings-rot',deg(phase * 3.2 * amp));
       this.set(scene,'--v19-services-copy-y',px(phase * -8 * amp));
       this.set(scene,'--v19-services-controls-y',px(phase * 7 * amp));
+      this.set(scene,'--v19-ticker-a-x',px(phase * 22 * amp));
+      this.set(scene,'--v19-ticker-b-x',px(phase * -29 * amp));
+      this.set(scene,'--v19-ticker-c-x',px(phase * 16 * amp));
     }
 
     paintFilm(scene,phase,focus){
@@ -121,6 +111,7 @@
       this.set(scene,'--v19-work-mobile-y',px(phase * 18 * amp));
       this.set(scene,'--v19-work-media-scale',(1.01 + (1-focus)*.018).toFixed(5));
       this.set(scene,'--v19-work-tilt',deg(phase * -.45 * amp));
+      this.set(scene,'--v19-work-mobile-tilt',deg(phase * .36 * amp));
     }
 
     paintAI(scene,phase,focus){
@@ -157,6 +148,8 @@
       this.set(scene,'--v19-contact-orb-y',px(phase * 26 * amp));
       this.set(scene,'--v19-contact-orb-x',px(phase * -18 * amp));
       this.set(scene,'--v19-contact-orb-scale',(1.02 + focus*.06).toFixed(5));
+      this.set(scene,'--v19-contact-orb-a-rot',deg(phase * 9 * amp));
+      this.set(scene,'--v19-contact-orb-b-rot',deg(phase * -6 * amp));
     }
 
     paintScene(record,force){
@@ -198,7 +191,6 @@
       const maxScroll = Math.max(document.documentElement.scrollHeight - this.vh,1);
       this.pageTarget = clamp01(y/maxScroll);
       this.pageCurrent = lerp(this.pageCurrent,this.pageTarget,reduced || this.force ? 1 : .105);
-
       root.style.setProperty('--v19-page',this.pageCurrent.toFixed(5));
       root.style.setProperty('--v19-speed',this.speed.toFixed(4));
       root.style.setProperty('--v19-velocity',this.velocity.toFixed(3));

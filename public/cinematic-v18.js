@@ -1,21 +1,22 @@
 (() => {
   'use strict';
 
-  if (document.documentElement.dataset.v18CinematicMounted) return;
+  if (document.documentElement.dataset.v19CinematicMounted) return;
   const path = location.pathname.replace(/\/$/,'') || '/';
   if (path !== '/' && !path.endsWith('/index.html')) return;
-
-  document.documentElement.dataset.v18CinematicMounted = 'true';
 
   const root = document.documentElement;
   const body = document.body;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const compact = matchMedia('(max-width: 760px)').matches;
   const clamp = (min,value,max) => Math.min(max,Math.max(min,value));
   const clamp01 = value => clamp(0,value,1);
   const lerp = (a,b,t) => a + (b-a)*t;
   const px = value => `${value.toFixed(2)}px`;
+  const deg = value => `${value.toFixed(3)}deg`;
 
-  body.classList.add('home-v18');
+  root.dataset.v19CinematicMounted = 'true';
+  body.classList.add('home-v18','home-v19');
 
   class CinematicScrollDirector {
     constructor(){
@@ -25,44 +26,29 @@
       this.velocity = 0;
       this.speed = 0;
       this.frame = 0;
+      this.pageCurrent = 0;
+      this.pageTarget = 0;
       this.scenes = [];
-      this.reel = document.querySelector('[data-v18-reel]');
-      this.reelCurrent = 0;
-      this.reelTarget = 0;
-      this.reelIndex = -1;
-      this.video = this.reel?.querySelector('[data-v18-video]') || null;
-      this.copy = this.reel?.querySelector('.v18-reel__copy') || null;
-      this.reelProgress = this.reel?.querySelector('.v18-reel__progress') || null;
-      this.reelIndexNode = this.reel?.querySelector('[data-v18-reel-index]') || null;
-      this.reelStatusNode = this.reel?.querySelector('[data-v18-reel-status]') || null;
-      this.shots = this.reel ? [...this.reel.querySelectorAll('[data-v18-shot]')] : [];
-      this.labels = [
-        ['01 / 04','DIRECTION / FIND THE FRAME BEFORE ADDING THE EFFECT'],
-        ['02 / 04','SYSTEM / TURN THE DIRECTION INTO A WORKING INTERFACE'],
-        ['03 / 04','PROOF / LET REAL CLIENT WORK CARRY THE CLAIM'],
-        ['04 / 04','AUTHORSHIP / KEEP ONE POINT OF VIEW THROUGH THE FINISH']
-      ];
-
       this.collectScenes();
       this.bind();
       this.schedule(true);
     }
 
     collectScenes(){
-      const unique = new Set();
-      this.scenes = [...document.querySelectorAll('main > section,[data-scene]')]
-        .filter(scene => {
-          if (unique.has(scene)) return false;
-          unique.add(scene);
-          return true;
-        })
-        .map((scene,index) => ({
-          scene,index,current:.5,target:.5,focus:0,targetFocus:0
-        }));
+      this.scenes = [...document.querySelectorAll('main [data-scene]')].map((scene,index) => ({
+        scene,
+        index,
+        key:scene.dataset.scene || `scene-${index}`,
+        current:.5,
+        target:.5,
+        focus:0,
+        targetFocus:0
+      }));
     }
 
     bind(){
-      addEventListener('scroll',() => this.schedule(),{passive:true});
+      const schedule = () => this.schedule();
+      addEventListener('scroll',schedule,{passive:true});
       addEventListener('resize',() => {
         this.vh = innerHeight;
         this.vw = innerWidth;
@@ -71,11 +57,6 @@
       },{passive:true});
       addEventListener('pageshow',() => this.schedule(true),{passive:true});
       document.fonts?.ready?.then(() => this.schedule(true));
-      if (this.video) {
-        this.video.pause();
-        this.video.addEventListener('loadedmetadata',() => this.schedule(true),{once:true});
-        this.video.addEventListener('canplay',() => this.schedule(),{once:true});
-      }
     }
 
     schedule(force=false){
@@ -83,130 +64,151 @@
       if (!this.frame) this.frame = requestAnimationFrame(() => this.tick());
     }
 
-    rawSceneProgress(rect){
+    sceneProgress(rect){
       return clamp01((this.vh - rect.top) / Math.max(rect.height + this.vh,1));
     }
 
-    rawSceneFocus(rect){
+    sceneFocus(rect){
       const center = rect.top + rect.height * .5;
       const distance = Math.abs(center - this.vh * .5);
-      return clamp01(1 - distance / Math.max(this.vh * .92,1));
+      return clamp01(1 - distance / Math.max(this.vh * .88,1));
     }
 
-    updateScene(record,force){
+    set(scene,name,value){
+      scene.style.setProperty(name,value);
+    }
+
+    paintHero(scene,phase,focus){
+      const amp = compact ? .62 : 1;
+      this.set(scene,'--v19-hero-bg-y',px(phase * -34 * amp));
+      this.set(scene,'--v19-hero-bg-x',px(phase * 7 * amp));
+      this.set(scene,'--v19-hero-bg-scale',(1.035 + (1-focus)*.025).toFixed(5));
+      this.set(scene,'--v19-hero-subject-y',px(phase * -18 * amp));
+      this.set(scene,'--v19-hero-subject-x',px(phase * -5 * amp));
+      this.set(scene,'--v19-hero-subject-scale',(1.006 + (1-focus)*.012).toFixed(5));
+      this.set(scene,'--v19-hero-word-y',px(phase * 15 * amp));
+      this.set(scene,'--v19-hero-word-scale',(1 + focus*.008).toFixed(5));
+      this.set(scene,'--v19-hero-copy-y',px(phase * -13 * amp));
+      this.set(scene,'--v19-hero-grid-y',px(phase * 10 * amp));
+    }
+
+    paintServices(scene,phase,focus){
+      const amp = compact ? .55 : 1;
+      this.set(scene,'--v19-services-y',px(phase * -18 * amp));
+      this.set(scene,'--v19-services-scale',(1.008 + (1-focus)*.012).toFixed(5));
+      this.set(scene,'--v19-services-ghost-y',px(phase * 22 * amp));
+      this.set(scene,'--v19-services-rings-rot',deg(phase * 3.2 * amp));
+      this.set(scene,'--v19-services-copy-y',px(phase * -8 * amp));
+      this.set(scene,'--v19-services-controls-y',px(phase * 7 * amp));
+    }
+
+    paintFilm(scene,phase,focus){
+      const amp = compact ? .6 : 1;
+      this.set(scene,'--v19-film-frame-y',px(phase * -14 * amp));
+      this.set(scene,'--v19-film-frame-scale',(1.003 + (1-focus)*.01).toFixed(5));
+      this.set(scene,'--v19-film-ghost-x',px(phase * -36 * amp));
+      this.set(scene,'--v19-film-ghost-y',px(phase * 12 * amp));
+      this.set(scene,'--v19-film-word-y',px(phase * -10 * amp));
+      this.set(scene,'--v19-film-rule-x',px(phase * 24 * amp));
+      this.set(scene,'--v19-film-accent-y',px(phase * 17 * amp));
+    }
+
+    paintWork(scene,phase,focus){
+      const amp = compact ? .6 : 1;
+      this.set(scene,'--v19-work-head-y',px(phase * -12 * amp));
+      this.set(scene,'--v19-work-index-y',px(phase * -8 * amp));
+      this.set(scene,'--v19-work-desktop-y',px(phase * -25 * amp));
+      this.set(scene,'--v19-work-mobile-y',px(phase * 18 * amp));
+      this.set(scene,'--v19-work-media-scale',(1.01 + (1-focus)*.018).toFixed(5));
+      this.set(scene,'--v19-work-tilt',deg(phase * -.45 * amp));
+    }
+
+    paintAI(scene,phase,focus){
+      const amp = compact ? .5 : 1;
+      this.set(scene,'--v19-ai-head-y',px(phase * -10 * amp));
+      this.set(scene,'--v19-ai-card-a-y',px(phase * -15 * amp));
+      this.set(scene,'--v19-ai-card-b-y',px(phase * 15 * amp));
+      this.set(scene,'--v19-ai-card-a-rot',deg(phase * -.55 * amp));
+      this.set(scene,'--v19-ai-card-b-rot',deg(phase * .55 * amp));
+      this.set(scene,'--v19-ai-scale',(1 + focus*.004).toFixed(5));
+    }
+
+    paintPlans(scene,phase,focus){
+      const amp = compact ? .5 : 1;
+      this.set(scene,'--v19-plans-head-y',px(phase * -10 * amp));
+      this.set(scene,'--v19-rate-a-y',px(phase * -12 * amp));
+      this.set(scene,'--v19-rate-b-y',px(phase * 6 * amp));
+      this.set(scene,'--v19-rate-c-y',px(phase * 14 * amp));
+      this.set(scene,'--v19-rates-scale',(1 + focus*.003).toFixed(5));
+    }
+
+    paintFounder(scene,phase,focus){
+      const amp = compact ? .55 : 1;
+      this.set(scene,'--v19-founder-image-y',px(phase * -22 * amp));
+      this.set(scene,'--v19-founder-image-x',px(phase * -7 * amp));
+      this.set(scene,'--v19-founder-image-scale',(1.02 + (1-focus)*.015).toFixed(5));
+      this.set(scene,'--v19-founder-copy-y',px(phase * 12 * amp));
+      this.set(scene,'--v19-founder-rot',deg(phase * -.35 * amp));
+    }
+
+    paintContact(scene,phase,focus){
+      const amp = compact ? .5 : 1;
+      this.set(scene,'--v19-contact-copy-y',px(phase * -11 * amp));
+      this.set(scene,'--v19-contact-orb-y',px(phase * 26 * amp));
+      this.set(scene,'--v19-contact-orb-x',px(phase * -18 * amp));
+      this.set(scene,'--v19-contact-orb-scale',(1.02 + focus*.06).toFixed(5));
+    }
+
+    paintScene(record,force){
       const rect = record.scene.getBoundingClientRect();
-      record.target = this.rawSceneProgress(rect);
-      record.targetFocus = this.rawSceneFocus(rect);
-      const rate = reduced || force ? 1 : .115;
+      record.target = this.sceneProgress(rect);
+      record.targetFocus = this.sceneFocus(rect);
+      const rate = reduced || force ? 1 : (compact ? .16 : .105);
       record.current = lerp(record.current,record.target,rate);
-      record.focus = lerp(record.focus,record.targetFocus,reduced || force ? 1 : .14);
+      record.focus = lerp(record.focus,record.targetFocus,reduced || force ? 1 : (compact ? .18 : .125));
 
-      const centred = record.current - .5;
-      const direction = record.index % 2 ? 1 : -1;
-      const cameraY = centred * -38;
-      const cameraX = centred * direction * 10;
-      const scale = 1.028 + (1-record.focus) * .018;
+      const phase = (record.current - .5) * 2;
+      this.set(record.scene,'--v19-p',record.current.toFixed(5));
+      this.set(record.scene,'--v19-phase',phase.toFixed(5));
+      this.set(record.scene,'--v19-focus',record.focus.toFixed(5));
 
-      record.scene.style.setProperty('--v18-p',record.current.toFixed(5));
-      record.scene.style.setProperty('--v18-scene-focus',record.focus.toFixed(5));
-      record.scene.style.setProperty('--v18-camera-y',px(cameraY));
-      record.scene.style.setProperty('--v18-camera-x',px(cameraX));
-      record.scene.style.setProperty('--v18-camera-scale',scale.toFixed(5));
+      switch(record.key){
+        case 'hero': this.paintHero(record.scene,phase,record.focus); break;
+        case 'services': this.paintServices(record.scene,phase,record.focus); break;
+        case 'film': this.paintFilm(record.scene,phase,record.focus); break;
+        case 'work': this.paintWork(record.scene,phase,record.focus); break;
+        case 'ai':
+        case 'ai-systems': this.paintAI(record.scene,phase,record.focus); break;
+        case 'plans': this.paintPlans(record.scene,phase,record.focus); break;
+        case 'founder': this.paintFounder(record.scene,phase,record.focus); break;
+        case 'contact': this.paintContact(record.scene,phase,record.focus); break;
+      }
 
       return Math.abs(record.current-record.target) + Math.abs(record.focus-record.targetFocus);
-    }
-
-    reelRawProgress(){
-      if (!this.reel) return 0;
-      const rect = this.reel.getBoundingClientRect();
-      const travel = Math.max(rect.height - this.vh,1);
-      return clamp01(-rect.top / travel);
-    }
-
-    shotAlpha(distance){
-      if (distance >= 1) return 0;
-      const c = Math.cos(distance * Math.PI * .5);
-      return c*c;
-    }
-
-    updateReel(force){
-      if (!this.reel || !this.shots.length) return 0;
-      this.reelTarget = this.reelRawProgress();
-      this.reelCurrent = lerp(this.reelCurrent,this.reelTarget,reduced || force ? 1 : .105);
-      const p = this.reelCurrent;
-      const maxIndex = this.shots.length - 1;
-      const position = p * maxIndex;
-      const activeIndex = clamp(0,Math.round(position),maxIndex);
-
-      this.reel.style.setProperty('--v18-reel-progress',p.toFixed(5));
-
-      const edge = Math.min(p,1-p);
-      const matte = edge < .085 ? (1-edge/.085) * 7.4 : 0;
-      this.reel.style.setProperty('--v18-matte',`${Math.max(0,matte).toFixed(3)}vh`);
-
-      this.shots.forEach((shot,index) => {
-        const distance = Math.abs(position-index);
-        const alpha = this.shotAlpha(distance);
-        const signed = index-position;
-        const x = signed * Math.min(this.vw*.052,76);
-        const y = signed * Math.min(this.vh*.026,28);
-        const scale = 1.012 + Math.min(distance,1) * .055;
-        const clip = Math.min(11.5,distance*10.5);
-
-        shot.style.setProperty('--v18-shot-o',alpha.toFixed(5));
-        shot.style.setProperty('--v18-shot-x',px(x));
-        shot.style.setProperty('--v18-shot-y',px(y));
-        shot.style.setProperty('--v18-shot-scale',scale.toFixed(5));
-        shot.style.setProperty('--v18-shot-clip',`${clip.toFixed(3)}%`);
-        shot.style.setProperty('--v18-shot-z',String(2 + Math.round(alpha*10)));
-        shot.style.visibility = alpha < .001 ? 'hidden' : 'visible';
-      });
-
-      if (this.copy) {
-        const copyY = Math.sin(p*Math.PI) * -10;
-        this.copy.style.transform = `translate3d(0,${copyY.toFixed(2)}px,0)`;
-      }
-
-      if (activeIndex !== this.reelIndex) {
-        this.reelIndex = activeIndex;
-        this.reel.dataset.v18Active = String(activeIndex);
-        const label = this.labels[activeIndex] || this.labels[0];
-        if (this.reelIndexNode) this.reelIndexNode.textContent = label[0];
-        if (this.reelStatusNode) this.reelStatusNode.textContent = label[1];
-      }
-
-      this.scrubVideo(p,maxIndex,force);
-      return Math.abs(this.reelCurrent-this.reelTarget);
-    }
-
-    scrubVideo(p,maxIndex,force){
-      if (!this.video || reduced || this.video.readyState < 1 || !Number.isFinite(this.video.duration) || this.video.duration <= 0) return;
-      // The film owns the first reel leg. Once the second still has taken over,
-      // hold the last frame instead of needlessly seeking an invisible video.
-      const local = clamp01(p * Math.max(maxIndex,1));
-      const target = local * Math.max(this.video.duration-.04,.01);
-      if (force || (!this.video.seeking && Math.abs(this.video.currentTime-target) > .035)) {
-        try { this.video.currentTime = target; } catch {}
-      }
     }
 
     tick(){
       this.frame = 0;
       const y = scrollY;
-      const delta = y-this.lastScroll;
+      const delta = y - this.lastScroll;
       this.lastScroll = y;
       this.velocity = lerp(this.velocity,delta,.18);
-      this.speed = lerp(this.speed,clamp01(Math.abs(delta)/70),.16);
-      root.style.setProperty('--v18-scroll-speed',this.speed.toFixed(4));
-      root.style.setProperty('--v18-scroll-velocity',this.velocity.toFixed(3));
+      this.speed = lerp(this.speed,clamp01(Math.abs(delta)/72),.15);
+
+      const maxScroll = Math.max(document.documentElement.scrollHeight - this.vh,1);
+      this.pageTarget = clamp01(y/maxScroll);
+      this.pageCurrent = lerp(this.pageCurrent,this.pageTarget,reduced || this.force ? 1 : .105);
+
+      root.style.setProperty('--v19-page',this.pageCurrent.toFixed(5));
+      root.style.setProperty('--v19-speed',this.speed.toFixed(4));
+      root.style.setProperty('--v19-velocity',this.velocity.toFixed(3));
 
       const force = !!this.force;
       this.force = false;
-      let unsettled = 0;
-      this.scenes.forEach(record => { unsettled += this.updateScene(record,force); });
-      unsettled += this.updateReel(force);
+      let unsettled = Math.abs(this.pageCurrent-this.pageTarget);
+      this.scenes.forEach(record => { unsettled += this.paintScene(record,force); });
 
-      const stillMoving = Math.abs(delta) > .01 || Math.abs(this.velocity) > .08 || this.speed > .015 || unsettled > .003;
+      const stillMoving = Math.abs(delta) > .01 || Math.abs(this.velocity) > .08 || this.speed > .012 || unsettled > .0025;
       if (!reduced && stillMoving) this.schedule();
     }
   }

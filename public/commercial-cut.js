@@ -394,14 +394,10 @@ class SmoothTimeline {
   }
 }
 
-let scrollCraftMounted = false;
-const scrollCraftTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];
-const mountScrollCraft = () => {
-  if (scrollCraftMounted || !window.ScrollCraft) return;
-  scrollCraftMounted = true;
-  scrollCraftTriggers.forEach((eventName) => removeEventListener(eventName, mountScrollCraft));
-  window.ScrollCraft.mount(document.body);
-};
+
+// The homepage no longer mounts ScrollCraft. Its eight scenes are plain flow markers,
+// while SmoothTimeline + V19/V20 own scroll motion. Keeping the generic runtime mounted
+// here forced a full-document layout pass on first interaction and hurt mobile TBT.
 
 new OpeningSequence();
 new RevealDirector();
@@ -413,5 +409,3 @@ new WorkFocus();
 new ProjectIntent();
 new SurfaceLight();
 new SmoothTimeline();
-if (reducedMotion) mountScrollCraft();
-else scrollCraftTriggers.forEach((eventName) => addEventListener(eventName, mountScrollCraft, { once: true, passive: eventName !== 'keydown' }));

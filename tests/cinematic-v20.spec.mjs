@@ -14,6 +14,12 @@ const openHome=async page=>{
 };
 
 const cssNumber=async(locator,name)=>Number.parseFloat(await locator.evaluate((node,name)=>getComputedStyle(node).getPropertyValue(name)||'0',name))||0;
+const dispatchPointer=async(locator,x=.7,y=.3)=>locator.evaluate((node,{x,y})=>{
+  const rect=node.getBoundingClientRect();
+  const init={bubbles:true,clientX:rect.left+rect.width*x,clientY:rect.top+rect.height*y,pointerType:'mouse'};
+  node.dispatchEvent(new PointerEvent('pointerenter',init));
+  node.dispatchEvent(new PointerEvent('pointermove',init));
+},{x,y});
 
 test('V20 adds cinematic components without adding homepage sections',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
@@ -43,12 +49,10 @@ test('scene rail, selector and film polish respond to one continuous journey',as
   await page.locator('[data-v15-control="2"]').click();
   await expect(page.locator('#services')).toHaveAttribute('data-play-state','build');
   await expect.poll(()=>selector.evaluate(node=>getComputedStyle(node).transform)).not.toBe(before);
-
   await page.locator('#work').scrollIntoViewIfNeeded();
   await page.waitForFunction(()=>document.body.dataset.v20Scene==='work');
   await expect(page.locator('[data-v20-rail-label]')).toHaveText('WORK');
   expect(await page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--v20-page'))||0)).toBeGreaterThan(.2);
-
   await page.locator('.editorial-sequence').scrollIntoViewIfNeeded();
   await expect.poll(()=>page.locator('.editorial-sequence').evaluate(node=>getComputedStyle(node).getPropertyValue('--v20-film-scan').trim())).not.toBe('');
 });
@@ -59,26 +63,20 @@ test('spring pointer polish follows live element positions without layout regres
 
   const card=page.locator('#ai-systems .v12-product-card').first();
   await card.scrollIntoViewIfNeeded();
-  const cardBox=await card.boundingBox();
-  expect(cardBox).not.toBeNull();
-  await card.hover({position:{x:cardBox.width*.72,y:cardBox.height*.28}});
+  await dispatchPointer(card,.72,.28);
   await expect.poll(()=>cssNumber(card,'--v20-spot-o')).toBeGreaterThan(.55);
   await expect.poll(()=>cssNumber(card,'--v20-local-x')).toBeGreaterThan(55);
 
   const rate=page.locator('#plans [data-v14-rate]').first();
   await rate.scrollIntoViewIfNeeded();
-  const rateBox=await rate.boundingBox();
-  expect(rateBox).not.toBeNull();
-  await rate.hover({position:{x:rateBox.width*.7,y:rateBox.height*.35}});
+  await dispatchPointer(rate,.7,.35);
   await expect(rate.locator('[data-v20-rate-light]')).toHaveCount(1);
   await expect.poll(()=>cssNumber(rate,'--v20-spot-o')).toBeGreaterThan(.55);
   expect(await rate.evaluate(node=>getComputedStyle(node,'::after').content)).not.toBe('none');
 
   await page.locator('#top').scrollIntoViewIfNeeded();
   const cta=page.locator('.primary-action.magnetic').first();
-  const ctaBox=await cta.boundingBox();
-  expect(ctaBox).not.toBeNull();
-  await cta.hover({position:{x:ctaBox.width*.84,y:ctaBox.height*.65}});
+  await dispatchPointer(cta,.84,.65);
   await expect.poll(()=>Math.abs(cssNumber(cta,'--v20-mag-x'))).toBeGreaterThan(.5);
 });
 

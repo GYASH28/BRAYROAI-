@@ -49,29 +49,279 @@
     radial-gradient(circle at 52% 42%,transparent 0,rgba(0,0,0,.12) 38%,rgba(0,0,0,.58) 100%),
     linear-gradient(180deg,rgba(0,0,0,.18),transparent 30%,rgba(0,0,0,.55));
 }
-.film__sticky::after{
-  content:"STATIC STUDY / NEW FILM IN DEVELOPMENT";
-  position:absolute;
-  z-index:5;
-  top:1.5rem;
-  right:1.5rem;
-  color:rgba(255,255,255,.42);
-  font:500 .52rem/1 var(--mono);
-  letter-spacing:.12em;
-  pointer-events:none;
+.film__sticky::after{content:none!important}
+
+/* --------------------------------------------------------------------------
+   V17 / SCROLL REFINEMENT
+   Keep the existing visual system. Make scroll itself the motion director.
+   Uses native scroll-driven animation, so motion continuously follows the
+   user's scroll position instead of firing once and then becoming static.
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline:view()) {
+  /* Hero depth: preserve all existing transforms by using the independent
+     translate/scale properties instead of replacing transform. */
+  .hero__copy{
+    animation:v17HeroCopy linear both;
+    animation-timeline:view(block);
+    animation-range:cover 0% cover 92%;
+    will-change:translate;
+  }
+  .hero__subject{
+    animation:v17HeroSubject linear both;
+    animation-timeline:view(block);
+    animation-range:cover 0% cover 100%;
+    will-change:translate,scale;
+  }
+  .hero__word{
+    animation:v17HeroWord linear both;
+    animation-timeline:view(block);
+    animation-range:cover 0% cover 100%;
+    will-change:translate;
+  }
+  .hero__grid,.hero__shade{
+    animation:v17HeroAtmosphere linear both;
+    animation-timeline:view(block);
+    animation-range:cover 0% cover 100%;
+  }
+
+  @keyframes v17HeroCopy{
+    0%,18%{translate:0 0}
+    55%{translate:0 -2.2vh}
+    100%{translate:0 -7vh}
+  }
+  @keyframes v17HeroSubject{
+    0%,12%{translate:0 0;scale:1}
+    55%{translate:0 1.5vh;scale:1.018}
+    100%{translate:0 6vh;scale:1.055}
+  }
+  @keyframes v17HeroWord{
+    0%,15%{translate:0 0;opacity:1}
+    60%{translate:0 -1.5vh;opacity:.72}
+    100%{translate:0 -4vh;opacity:.2}
+  }
+  @keyframes v17HeroAtmosphere{
+    0%,20%{opacity:1}
+    72%{opacity:.78}
+    100%{opacity:.34}
+  }
+
+  /* Continuous section breathing. These ranges intentionally begin before the
+     content reaches center and continue after it passes, so there is no dead
+     scroll between reveal moments. */
+  .v12-capabilities__head,
+  .v12-work-head,
+  .v12-ai-head,
+  .plans-preview>.scene-shell>.section-heading,
+  .founder-preview .section-heading,
+  .close__copy{
+    animation:v17SectionLead linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+    will-change:translate;
+  }
+  @keyframes v17SectionLead{
+    0%{translate:0 5.5vh}
+    24%{translate:0 1.2vh}
+    43%,58%{translate:0 0}
+    82%{translate:0 -1.5vh}
+    100%{translate:0 -4vh}
+  }
+
+  /* Capabilities becomes a true scroll progression instead of a static pair of
+     columns with discrete activation states. Existing v12 state switching stays
+     intact; this only adds depth and continuity. */
+  .v12-story__visual{
+    animation:v17StoryVisual linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+    will-change:translate,scale;
+  }
+  .v12-story-step{
+    animation:v17StoryStep linear both;
+    animation-timeline:view(block);
+    animation-range:entry 4% exit 96%;
+    will-change:translate;
+  }
+  @keyframes v17StoryVisual{
+    0%{translate:-2.2vw 3vh;scale:.965}
+    28%{translate:0 0;scale:1}
+    65%{translate:1vw -1vh;scale:1.012}
+    100%{translate:2.4vw -4vh;scale:.99}
+  }
+  @keyframes v17StoryStep{
+    0%{translate:0 3.2vh}
+    25%,56%{translate:0 0}
+    100%{translate:0 -2.5vh}
+  }
+
+  /* The editorial sequence is already sticky. Add slow opposing drift to make
+     each wheel/touchpad movement visibly change the composition. */
+  .editorial-sequence__ghost{
+    animation:v17EditorialGhost linear both;
+    animation-timeline:view(block);
+    animation-range:cover 0% cover 100%;
+    will-change:translate;
+  }
+  .editorial-sequence__frame{
+    animation:v17EditorialFrame linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+    will-change:translate;
+  }
+  @keyframes v17EditorialGhost{
+    0%{translate:-4vw 0;opacity:.08}
+    42%{translate:0 0;opacity:.2}
+    100%{translate:5vw 0;opacity:.06}
+  }
+  @keyframes v17EditorialFrame{
+    0%{translate:0 1.8vh}
+    48%{translate:0 0}
+    100%{translate:0 -1.8vh}
+  }
+
+  /* Work: make the real client interface feel physically carried through the
+     scroll instead of simply revealed. */
+  .v12-featured-case .section-heading{
+    animation:v17CaseCopy linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+  }
+  .work__canvas{
+    animation:v17WorkCanvas linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+    will-change:translate,scale;
+  }
+  .work__mobile{
+    animation:v17WorkMobile linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+    will-change:translate,rotate;
+  }
+  @keyframes v17CaseCopy{
+    0%{translate:0 3vh}
+    30%,60%{translate:0 0}
+    100%{translate:0 -2vh}
+  }
+  @keyframes v17WorkCanvas{
+    0%{translate:0 5vh;scale:.972}
+    28%{translate:0 0;scale:1}
+    66%{translate:0 -1vh;scale:1.012}
+    100%{translate:0 -5vh;scale:.985}
+  }
+  @keyframes v17WorkMobile{
+    0%{translate:1.2vw 4vh;rotate:1.6deg}
+    44%{translate:0 0;rotate:0deg}
+    100%{translate:-1vw -3vh;rotate:-1deg}
+  }
+
+  /* AI cards and pricing should move with the page but remain calm enough to
+     read. Alternate directions create depth without gimmicky bouncing. */
+  .v12-product-card,
+  .pricing-band,
+  .v12-ai-price-rail,
+  .care-note{
+    animation:v17Surface linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+    will-change:translate;
+  }
+  .v12-product-card:nth-child(even),
+  .pricing-band:nth-child(even){animation-name:v17SurfaceReverse}
+  @keyframes v17Surface{
+    0%{translate:-1.7vw 3.4vh}
+    27%,58%{translate:0 0}
+    100%{translate:1.2vw -2.7vh}
+  }
+  @keyframes v17SurfaceReverse{
+    0%{translate:1.7vw 3.4vh}
+    27%,58%{translate:0 0}
+    100%{translate:-1.2vw -2.7vh}
+  }
+
+  /* Founder portrait and close deliberately move slower than their copy to
+     create a final parallax handoff into contact. */
+  .founder-preview__portrait{
+    animation:v17FounderPortrait linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+    will-change:translate,scale;
+  }
+  .close__orb{
+    animation:v17CloseOrb linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% exit 100%;
+    will-change:translate,scale,opacity;
+  }
+  @keyframes v17FounderPortrait{
+    0%{translate:-1vw 5vh;scale:.975}
+    34%,60%{translate:0 0;scale:1}
+    100%{translate:1vw -4vh;scale:1.025}
+  }
+  @keyframes v17CloseOrb{
+    0%{translate:0 7vh;scale:.88;opacity:.4}
+    36%,66%{translate:0 0;scale:1;opacity:1}
+    100%{translate:0 -5vh;scale:1.07;opacity:.72}
+  }
+
+  /* Existing signal strips stay decorative, but now their displacement is tied
+     to real page progress instead of only looping autonomously. */
+  .v12-signal-track{
+    animation:v17SignalDrift linear both;
+    animation-timeline:scroll(root block);
+    animation-range:0% 100%;
+  }
+  @keyframes v17SignalDrift{
+    from{translate:0 0}
+    to{translate:-8vw 0}
+  }
 }
+
+
+/* V17 accessibility refinement: selected process labels keep the orange identity
+   but use a darker print-orange on light paper to meet WCAG AA for normal text. */
+.ai-section--paper .process-tab[aria-selected="true"] b{color:#a83208}
+
+/* Small refinement pass: reduce obvious filler, preserve authored parts. */
+.editorial-sequence__footer span:last-child{opacity:.58}
+.v12-project-row{transition:border-color .28s ease,background .28s ease,opacity .28s ease}
+.v12-project-row:hover{background:rgba(255,255,255,.025)}
 
 @media(max-width:760px){
   .opening-sequence__mark strong{font-size:clamp(3.5rem,19vw,6rem)}
   .opening-sequence::after{left:1.1rem;right:1.1rem;bottom:5vh}
   .build-ribbon__item{min-height:12.5rem}
   .build-ribbon__item.is-featured::before{top:.75rem;right:.75rem}
-  .film__sticky::after{top:1rem;right:1rem;font-size:.45rem}
   .film__poster{transform:scale(calc(1.1 - (var(--scene-p,0) * .035))) translate3d(0,calc((.5 - var(--scene-p,0)) * .75rem),0)}
+
+  @supports (animation-timeline:view()) {
+    .hero__copy,.hero__subject,.hero__word,
+    .v12-capabilities__head,.v12-work-head,.v12-ai-head,
+    .plans-preview>.scene-shell>.section-heading,
+    .founder-preview .section-heading,.close__copy,
+    .v12-story__visual,.v12-story-step,.editorial-sequence__frame,
+    .v12-featured-case .section-heading,.work__canvas,.work__mobile,
+    .v12-product-card,.pricing-band,.v12-ai-price-rail,.care-note,
+    .founder-preview__portrait,.close__orb{animation-range:entry 0% exit 92%}
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
   .opening-sequence,.opening-sequence__mark,.opening-sequence__shutter,.opening-sequence>span,.opening-sequence::after,.site-nav{animation:none!important}
   .opening-sequence{visibility:hidden!important}
   .film__poster{transform:none!important;will-change:auto}
+
+  .hero__copy,.hero__subject,.hero__word,.hero__grid,.hero__shade,
+  .v12-capabilities__head,.v12-work-head,.v12-ai-head,
+  .plans-preview>.scene-shell>.section-heading,.founder-preview .section-heading,.close__copy,
+  .v12-story__visual,.v12-story-step,.editorial-sequence__ghost,.editorial-sequence__frame,
+  .v12-featured-case .section-heading,.work__canvas,.work__mobile,
+  .v12-product-card,.pricing-band,.v12-ai-price-rail,.care-note,
+  .founder-preview__portrait,.close__orb,.v12-signal-track{
+    animation:none!important;
+    translate:none!important;
+    scale:none!important;
+    rotate:none!important;
+  }
 }

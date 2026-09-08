@@ -30,6 +30,7 @@
       this.mountFilmGate();
       this.mountWorkAperture();
       this.mountAIPaths();
+      this.mountPricingLights();
       this.mountFounderScan();
       this.mountSceneRail();
     }
@@ -83,6 +84,16 @@
         path.dataset.v20DataPath='';
         path.setAttribute('aria-hidden','true');
         card.appendChild(path);
+      });
+    }
+
+    mountPricingLights(){
+      document.querySelectorAll('#plans [data-v14-rate]').forEach(rate=>{
+        if(rate.querySelector('[data-v20-rate-light]'))return;
+        const light=create('i','v20-rate-light');
+        light.dataset.v20RateLight='';
+        light.setAttribute('aria-hidden','true');
+        rate.appendChild(light);
       });
     }
 

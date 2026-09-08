@@ -41,6 +41,9 @@ expect(css.includes('@media(prefers-reduced-motion:reduce)'),'V20 reduced-motion
 expect(!/transition\s*:\s*all/i.test(css),'V20 must not use transition: all');
 expect(!/backdrop-filter/i.test(css),'V20 should not introduce additional backdrop-filter cost');
 expect(!css.includes('#plans [data-v14-rate]::after'),'V20 must not override the authored pricing ::after layer');
+const dataKeyframes=css.match(/@keyframes v20-data\{[^}]*\}[^}]*\}[^}]*\}[^}]*\}/)?.[0]||'';
+expect(dataKeyframes.includes('translate3d'),'V20 AI pulse must animate with transforms');
+expect(!/left\s*:/.test(dataKeyframes),'V20 AI pulse must not animate the layout property left');
 expect(vite.includes('/cinematic-v20.css')&&vite.includes('/cinematic-v20.js'),'Vite does not inject V20 assets');
 expect(pkg.includes('node --check public/cinematic-v20.js'),'Syntax suite does not check V20 runtime');
 expect(pkg.includes('node tests/v20-polish-integrity.mjs'),'Integrity suite does not guard V20');
@@ -51,4 +54,4 @@ expect(Buffer.byteLength(js)<18000,'V20 JS exceeds 18KB guardrail');
 expect(pw.includes('cinematic-v20'),'Playwright config must include V20 regression coverage');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V20 polish integrity OK: animated components mount inside the existing eight scenes with pointer/reduced-motion protections and authored pricing layers preserved.');
+console.log('V20 polish integrity OK: animated components mount inside the existing eight scenes with pointer/reduced-motion protections, authored pricing layers preserved, and compositor-friendly pulse motion.');

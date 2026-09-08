@@ -12,6 +12,17 @@ const experienceTransform={
       const isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html');
       const isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html');
 
+      // Shared finish across every public page. The skip link remains fully
+      // keyboard-accessible but never appears as stray visible chrome until it
+      // actually receives focus.
+      if(!html.includes('data-v21-global')){
+        html=html.replace('</head>',`  <style data-v21-global>
+    .skip-link{position:fixed!important;z-index:9999!important;top:.75rem!important;left:.75rem!important;transform:translate3d(0,-180%,0)!important;opacity:0!important;pointer-events:none!important;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .2s ease!important}
+    .skip-link:focus,.skip-link:focus-visible{transform:translate3d(0,0,0)!important;opacity:1!important;pointer-events:auto!important}
+    @media(prefers-reduced-motion:reduce){.skip-link{transition:none!important}}
+  </style>\n</head>`);
+      }
+
       if(isAiDetail&&!html.includes('href="/v15-accessibility.css"')){
         html=html.replace('</head>','  <link rel="stylesheet" href="/v15-accessibility.css" data-v15-accessibility>\n</head>');
       }

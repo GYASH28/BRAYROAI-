@@ -65,7 +65,7 @@
     animation:v17HeroCopy linear both;
     animation-timeline:view(block);
     animation-range:cover 0% cover 92%;
-    will-change:translate,opacity;
+    will-change:translate;
   }
   .hero__subject{
     animation:v17HeroSubject linear both;
@@ -77,7 +77,7 @@
     animation:v17HeroWord linear both;
     animation-timeline:view(block);
     animation-range:cover 0% cover 100%;
-    will-change:translate,opacity;
+    will-change:translate;
   }
   .hero__grid,.hero__shade{
     animation:v17HeroAtmosphere linear both;
@@ -86,9 +86,9 @@
   }
 
   @keyframes v17HeroCopy{
-    0%,18%{translate:0 0;opacity:1}
-    55%{translate:0 -2.2vh;opacity:.94}
-    100%{translate:0 -7vh;opacity:.42}
+    0%,18%{translate:0 0}
+    55%{translate:0 -2.2vh}
+    100%{translate:0 -7vh}
   }
   @keyframes v17HeroSubject{
     0%,12%{translate:0 0;scale:1}
@@ -118,14 +118,14 @@
     animation:v17SectionLead linear both;
     animation-timeline:view(block);
     animation-range:entry 0% exit 100%;
-    will-change:translate,opacity;
+    will-change:translate;
   }
   @keyframes v17SectionLead{
-    0%{translate:0 5.5vh;opacity:.32}
-    24%{translate:0 1.2vh;opacity:.86}
-    43%,58%{translate:0 0;opacity:1}
-    82%{translate:0 -1.5vh;opacity:.9}
-    100%{translate:0 -4vh;opacity:.5}
+    0%{translate:0 5.5vh}
+    24%{translate:0 1.2vh}
+    43%,58%{translate:0 0}
+    82%{translate:0 -1.5vh}
+    100%{translate:0 -4vh}
   }
 
   /* Capabilities becomes a true scroll progression instead of a static pair of
@@ -141,7 +141,7 @@
     animation:v17StoryStep linear both;
     animation-timeline:view(block);
     animation-range:entry 4% exit 96%;
-    will-change:translate,opacity;
+    will-change:translate;
   }
   @keyframes v17StoryVisual{
     0%{translate:-2.2vw 3vh;scale:.965}
@@ -150,9 +150,9 @@
     100%{translate:2.4vw -4vh;scale:.99}
   }
   @keyframes v17StoryStep{
-    0%{translate:0 3.2vh;opacity:.38}
-    25%,56%{translate:0 0;opacity:1}
-    100%{translate:0 -2.5vh;opacity:.5}
+    0%{translate:0 3.2vh}
+    25%,56%{translate:0 0}
+    100%{translate:0 -2.5vh}
   }
 
   /* The editorial sequence is already sticky. Add slow opposing drift to make
@@ -161,7 +161,7 @@
     animation:v17EditorialGhost linear both;
     animation-timeline:view(block);
     animation-range:cover 0% cover 100%;
-    will-change:translate,opacity;
+    will-change:translate;
   }
   .editorial-sequence__frame{
     animation:v17EditorialFrame linear both;
@@ -200,9 +200,9 @@
     will-change:translate,rotate;
   }
   @keyframes v17CaseCopy{
-    0%{translate:0 3vh;opacity:.48}
-    30%,60%{translate:0 0;opacity:1}
-    100%{translate:0 -2vh;opacity:.6}
+    0%{translate:0 3vh}
+    30%,60%{translate:0 0}
+    100%{translate:0 -2vh}
   }
   @keyframes v17WorkCanvas{
     0%{translate:0 5vh;scale:.972}
@@ -225,19 +225,19 @@
     animation:v17Surface linear both;
     animation-timeline:view(block);
     animation-range:entry 0% exit 100%;
-    will-change:translate,opacity;
+    will-change:translate;
   }
   .v12-product-card:nth-child(even),
   .pricing-band:nth-child(even){animation-name:v17SurfaceReverse}
   @keyframes v17Surface{
-    0%{translate:-1.7vw 3.4vh;opacity:.42}
-    27%,58%{translate:0 0;opacity:1}
-    100%{translate:1.2vw -2.7vh;opacity:.62}
+    0%{translate:-1.7vw 3.4vh}
+    27%,58%{translate:0 0}
+    100%{translate:1.2vw -2.7vh}
   }
   @keyframes v17SurfaceReverse{
-    0%{translate:1.7vw 3.4vh;opacity:.42}
-    27%,58%{translate:0 0;opacity:1}
-    100%{translate:-1.2vw -2.7vh;opacity:.62}
+    0%{translate:1.7vw 3.4vh}
+    27%,58%{translate:0 0}
+    100%{translate:-1.2vw -2.7vh}
   }
 
   /* Founder portrait and close deliberately move slower than their copy to
@@ -277,6 +277,11 @@
     to{translate:-8vw 0}
   }
 }
+
+
+/* V17 accessibility refinement: selected process labels keep the orange identity
+   but use a darker print-orange on light paper to meet WCAG AA for normal text. */
+.ai-section--paper .process-tab[aria-selected="true"] b{color:#a83208}
 
 /* Small refinement pass: reduce obvious filler, preserve authored parts. */
 .editorial-sequence__footer span:last-child{opacity:.58}

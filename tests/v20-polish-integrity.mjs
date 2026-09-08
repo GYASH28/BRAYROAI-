@@ -33,6 +33,11 @@ const dataKeyframes=css.match(/@keyframes v20-data\{[^}]*\}[^}]*\}[^}]*\}[^}]*\}
 expect(dataKeyframes.includes('translate3d'),'V20 AI pulse must animate with transforms');
 expect(!/left\s*:/.test(dataKeyframes),'V20 AI pulse must not animate the layout property left');
 expect(vite.includes('/cinematic-v20.css')&&vite.includes('/cinematic-v20.js'),'Vite does not inject V20 assets');
+expect(vite.includes('data-v20-text-cycle aria-hidden="true"'),'hero text cycle must be built into initial HTML to avoid CLS');
+expect(vite.includes('data-v21-critical'),'critical intro performance style is missing');
+expect(vite.includes("html.replace(/\\s*<link rel=\"stylesheet\" href=\"\\/scrollcraft\\.css\">"),'homepage ScrollCraft stylesheet removal is missing');
+expect(vite.includes("html.replace(/\\s*<script src=\"\\/scrollcraft\\.js\""),'homepage ScrollCraft runtime removal is missing');
+expect(vite.includes('loading="eager" fetchpriority="high"'),'hero priority hints are missing from the production transform');
 expect(pkg.includes('node --check public/cinematic-v20.js'),'Syntax suite does not check V20 runtime');
 expect(pkg.includes('node tests/v20-polish-integrity.mjs'),'Integrity suite does not guard V20');
 expect(!vite.includes('data-v18-reel')&&!vite.includes('cinematicReel'),'V20 must not restore the removed cinematic reel');
@@ -42,4 +47,4 @@ expect(Buffer.byteLength(js)<24000,'V20 JS exceeds 24KB guardrail');
 expect(pw.includes('cinematic-v20'),'Playwright config must include V20 regression coverage');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V20 polish integrity OK: fluid spring motion, 21st-inspired components, reduced-motion protection, authored layers and bundle guardrails are intact.');
+console.log('V20 polish integrity OK: fluid spring motion, static hero cycle, tighter intro critical path, no homepage ScrollCraft, reduced-motion protection and bundle guardrails are intact.');

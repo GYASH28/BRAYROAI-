@@ -118,3 +118,22 @@ test('reduced motion keeps decorative motion static and core interactions usable
   await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
   await context.close();
 });
+
+test('final polish keeps homepage lean and skip links keyboard-only',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/',{waitUntil:'networkidle'});
+  await expect(page.locator('link[href="/scrollcraft.css"]')).toHaveCount(0);
+  await expect(page.locator('script[src="/scrollcraft.js"]')).toHaveCount(0);
+  await expect(page.locator('[data-v20-text-cycle]')).toHaveCount(1);
+  await expect(page.locator('img.hero__background').first()).toHaveAttribute('fetchpriority','high');
+
+  await page.goto('/founder',{waitUntil:'networkidle'});
+  const skip=page.locator('.skip-link');
+  await expect(skip).toHaveCount(1);
+  const hidden=await skip.evaluate(node=>({opacity:getComputedStyle(node).opacity,pointer:getComputedStyle(node).pointerEvents}));
+  expect(hidden.opacity).toBe('0');
+  expect(hidden.pointer).toBe('none');
+  await skip.focus();
+  await expect.poll(()=>skip.evaluate(node=>getComputedStyle(node).opacity)).toBe('1');
+  await expect.poll(()=>skip.evaluate(node=>getComputedStyle(node).pointerEvents)).toBe('auto');
+});

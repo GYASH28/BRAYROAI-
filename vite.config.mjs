@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 const googleFontsHref='https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
 
 const cinematicReel=`
-    <section class="scene v18-reel" data-v18-reel data-scene="cinematic-reel" aria-labelledby="v18-reel-title">
+    <section class="scene v18-reel" data-v18-reel aria-labelledby="v18-reel-title">
       <div class="v18-reel__sticky">
         <div class="v18-reel__stage">
           <figure class="v18-shot v18-shot--film" data-v18-shot>

@@ -74,6 +74,13 @@ const experienceTransform={
         html=html.replace('</body>','  <script src="/cinematic-v18.js" data-v18-cinematic></script>\n</body>');
       }
 
+      if(isHome&&!html.includes('href="/cinematic-v20.css"')){
+        html=html.replace('</head>','  <link rel="stylesheet" href="/cinematic-v20.css" data-v20-polish>\n</head>');
+      }
+      if(isHome&&!html.includes('src="/cinematic-v20.js"')){
+        html=html.replace('</body>','  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
+      }
+
       return html;
     }
   }

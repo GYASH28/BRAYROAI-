@@ -33,242 +33,72 @@ body.home-v20{
   letter-spacing:.1em;
   text-transform:uppercase;
 }
-.v20-scene-rail__label{
-  min-height:.7rem;
-  white-space:nowrap;
-  opacity:.76;
-  translate:0 var(--v20-rail-label-y,0px);
-  transition:opacity .25s ease;
-}
-.v20-scene-rail__track{
-  position:relative;
-  width:.2rem;
-  height:12.5rem;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  align-items:center;
-}
-.v20-scene-rail__track::before{
-  content:"";
-  position:absolute;
-  inset:0 auto 0 50%;
-  width:1px;
-  translate:-50% 0;
-  background:rgba(255,255,255,.12);
-}
-.v20-scene-rail__progress{
-  position:absolute;
-  top:0;
-  left:50%;
-  width:1px;
-  height:100%;
-  transform:translateX(-50%) scaleY(var(--v20-page,0));
-  transform-origin:top;
-  background:linear-gradient(180deg,var(--v20-orange),rgba(255,90,31,.25));
-  box-shadow:0 0 1.2rem rgba(255,90,31,.2);
-}
-.v20-scene-rail__dot{
-  position:relative;
-  z-index:2;
-  width:.34rem;
-  height:.34rem;
-  border:1px solid rgba(255,255,255,.28);
-  border-radius:50%;
-  background:#090a0c;
-  scale:.72;
-  transition:scale .36s var(--v20-ease),background .3s ease,border-color .3s ease,box-shadow .3s ease;
-}
-.v20-scene-rail__dot.is-active{
-  scale:1.25;
-  border-color:var(--v20-orange);
-  background:var(--v20-orange);
-  box-shadow:0 0 0 .24rem rgba(255,90,31,.11),0 0 1.2rem rgba(255,90,31,.22);
-}
+.v20-scene-rail__label{min-height:.7rem;white-space:nowrap;opacity:.76;translate:0 var(--v20-rail-label-y,0px);transition:opacity .25s ease}
+.v20-scene-rail__track{position:relative;width:.2rem;height:12.5rem;display:flex;flex-direction:column;justify-content:space-between;align-items:center}
+.v20-scene-rail__track::before{content:"";position:absolute;inset:0 auto 0 50%;width:1px;translate:-50% 0;background:rgba(255,255,255,.12)}
+.v20-scene-rail__progress{position:absolute;top:0;left:50%;width:1px;height:100%;transform:translateX(-50%) scaleY(var(--v20-page,0));transform-origin:top;background:linear-gradient(180deg,var(--v20-orange),rgba(255,90,31,.25));box-shadow:0 0 1.2rem rgba(255,90,31,.2)}
+.v20-scene-rail__dot{position:relative;z-index:2;width:.34rem;height:.34rem;border:1px solid rgba(255,255,255,.28);border-radius:50%;background:#090a0c;scale:.72;transition:scale .36s var(--v20-ease),background .3s ease,border-color .3s ease,box-shadow .3s ease}
+.v20-scene-rail__dot.is-active{scale:1.25;border-color:var(--v20-orange);background:var(--v20-orange);box-shadow:0 0 0 .24rem rgba(255,90,31,.11),0 0 1.2rem rgba(255,90,31,.22)}
 
 /* --------------------------------------------------------------------------
    Hero optical frame — a restrained lens / title-card language.
    -------------------------------------------------------------------------- */
 body.home-v20 .hero__stage{isolation:isolate}
-.v20-lens{
-  position:absolute;
-  z-index:4;
-  left:50%;
-  top:49%;
-  width:min(54vw,46rem);
-  aspect-ratio:1;
-  translate:calc(-50% + var(--v20-lens-x,0px)) calc(-50% + var(--v20-lens-y,0px));
-  scale:var(--v20-lens-scale,1);
-  pointer-events:none;
-  opacity:var(--v20-lens-o,.36);
-  will-change:transform,opacity;
-}
-.v20-lens__ring{
-  position:absolute;
-  inset:14%;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:50%;
-}
-.v20-lens__ring::before,.v20-lens__ring::after{
-  content:"";
-  position:absolute;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.07);
-}
-.v20-lens__ring::before{inset:-13%}
-.v20-lens__ring::after{inset:16%}
+.v20-lens{position:absolute;z-index:4;left:50%;top:49%;width:min(54vw,46rem);aspect-ratio:1;translate:calc(-50% + var(--v20-lens-x,0px)) calc(-50% + var(--v20-lens-y,0px));scale:var(--v20-lens-scale,1);pointer-events:none;opacity:var(--v20-lens-o,.36);will-change:transform,opacity}
+.v20-lens__ring{position:absolute;inset:14%;border:1px solid rgba(255,255,255,.14);border-radius:50%}
+.v20-lens__ring::before,.v20-lens__ring::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.07)}
+.v20-lens__ring::before{inset:-13%}.v20-lens__ring::after{inset:16%}
 .v20-lens__axis{position:absolute;inset:0}
-.v20-lens__axis::before,.v20-lens__axis::after{
-  content:"";
-  position:absolute;
-  left:50%;top:50%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);
-}
+.v20-lens__axis::before,.v20-lens__axis::after{content:"";position:absolute;left:50%;top:50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent)}
 .v20-lens__axis::before{width:100%;height:1px;translate:-50% -50%}
 .v20-lens__axis::after{width:1px;height:100%;translate:-50% -50%;background:linear-gradient(180deg,transparent,rgba(255,255,255,.13),transparent)}
-.v20-lens__tick{
-  position:absolute;
-  width:1.3rem;height:1.3rem;
-  border-color:rgba(255,255,255,.28);
-  border-style:solid;
-}
-.v20-lens__tick--a{left:6%;top:6%;border-width:1px 0 0 1px}
-.v20-lens__tick--b{right:6%;top:6%;border-width:1px 1px 0 0}
-.v20-lens__tick--c{right:6%;bottom:6%;border-width:0 1px 1px 0}
-.v20-lens__tick--d{left:6%;bottom:6%;border-width:0 0 1px 1px}
+.v20-lens__tick{position:absolute;width:1.3rem;height:1.3rem;border-color:rgba(255,255,255,.28);border-style:solid}
+.v20-lens__tick--a{left:6%;top:6%;border-width:1px 0 0 1px}.v20-lens__tick--b{right:6%;top:6%;border-width:1px 1px 0 0}.v20-lens__tick--c{right:6%;bottom:6%;border-width:0 1px 1px 0}.v20-lens__tick--d{left:6%;bottom:6%;border-width:0 0 1px 1px}
 
 /* --------------------------------------------------------------------------
    Capabilities signal — low-cost idle motion behind the existing playground.
    -------------------------------------------------------------------------- */
 body.home-v20 #services .play-scene__canvas{position:relative;isolation:isolate}
-.v20-signal-field{
-  position:absolute;
-  z-index:0;
-  inset:8%;
-  pointer-events:none;
-  opacity:.42;
-  overflow:hidden;
-}
-.v20-signal-field__orbit{
-  position:absolute;
-  left:50%;top:50%;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:50%;
-  translate:-50% -50%;
-  animation:v20-orbit 18s linear infinite;
-}
-.v20-signal-field__orbit:nth-child(1){width:64%;aspect-ratio:1}
-.v20-signal-field__orbit:nth-child(2){width:86%;aspect-ratio:1;animation-duration:27s;animation-direction:reverse;border-color:rgba(255,90,31,.1)}
-.v20-signal-field__orbit:nth-child(3){width:42%;aspect-ratio:1;animation-duration:13s}
-.v20-signal-field__orbit::after{
-  content:"";
-  position:absolute;
-  top:-.18rem;left:50%;
-  width:.34rem;height:.34rem;
-  border-radius:50%;
-  background:var(--v20-orange);
-  box-shadow:0 0 1rem rgba(255,90,31,.7);
-}
+.v20-signal-field{position:absolute;z-index:0;inset:8%;pointer-events:none;opacity:.42;overflow:hidden}
+.v20-signal-field__orbit{position:absolute;left:50%;top:50%;border:1px solid rgba(255,255,255,.08);border-radius:50%;translate:-50% -50%;animation:v20-orbit 18s linear infinite}
+.v20-signal-field__orbit:nth-child(1){width:64%;aspect-ratio:1}.v20-signal-field__orbit:nth-child(2){width:86%;aspect-ratio:1;animation-duration:27s;animation-direction:reverse;border-color:rgba(255,90,31,.1)}.v20-signal-field__orbit:nth-child(3){width:42%;aspect-ratio:1;animation-duration:13s}
+.v20-signal-field__orbit::after{content:"";position:absolute;top:-.18rem;left:50%;width:.34rem;height:.34rem;border-radius:50%;background:var(--v20-orange);box-shadow:0 0 1rem rgba(255,90,31,.7)}
 @keyframes v20-orbit{to{rotate:360deg}}
 
 /* --------------------------------------------------------------------------
    Editorial film gate — edge perforations and a scroll-positioned scan.
    -------------------------------------------------------------------------- */
 body.home-v20 .editorial-sequence__stage{isolation:isolate}
-.v20-film-gate{
-  position:absolute;
-  z-index:8;
-  inset:0;
-  pointer-events:none;
-  opacity:.32;
-  background:
-    radial-gradient(circle,rgba(255,255,255,.34) 0 1px,transparent 1.5px) 1rem 0/3px 1.15rem repeat-y,
-    radial-gradient(circle,rgba(255,255,255,.34) 0 1px,transparent 1.5px) calc(100% - 1rem) 0/3px 1.15rem repeat-y;
-}
-.v20-film-gate::after{
-  content:"";
-  position:absolute;
-  left:4%;right:4%;
-  top:var(--v20-film-scan,50%);
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,90,31,.55),rgba(255,255,255,.18),transparent);
-  box-shadow:0 0 1rem rgba(255,90,31,.18);
-  opacity:.58;
-}
+.v20-film-gate{position:absolute;z-index:8;inset:0;pointer-events:none;opacity:.32;background:radial-gradient(circle,rgba(255,255,255,.34) 0 1px,transparent 1.5px) 1rem 0/3px 1.15rem repeat-y,radial-gradient(circle,rgba(255,255,255,.34) 0 1px,transparent 1.5px) calc(100% - 1rem) 0/3px 1.15rem repeat-y}
+.v20-film-gate::after{content:"";position:absolute;left:4%;right:4%;top:var(--v20-film-scan,50%);height:1px;background:linear-gradient(90deg,transparent,rgba(255,90,31,.55),rgba(255,255,255,.18),transparent);box-shadow:0 0 1rem rgba(255,90,31,.18);opacity:.58}
 
 /* --------------------------------------------------------------------------
    Work aperture — frames existing proof rather than introducing new media.
    -------------------------------------------------------------------------- */
 body.home-v20 #work .work__canvas{position:relative;isolation:isolate}
-.v20-aperture{
-  position:absolute;
-  z-index:7;
-  inset:.72rem;
-  border:1px solid rgba(255,255,255,.08);
-  pointer-events:none;
-  overflow:hidden;
-}
-.v20-aperture::before{
-  content:"";
-  position:absolute;
-  width:32%;height:70%;
-  left:var(--v20-local-x,50%);top:var(--v20-local-y,50%);
-  translate:-50% -50%;
-  background:radial-gradient(circle,rgba(255,255,255,.11),rgba(255,90,31,.045) 36%,transparent 72%);
-  filter:blur(14px);
-  opacity:.58;
-}
+.v20-aperture{position:absolute;z-index:7;inset:.72rem;border:1px solid rgba(255,255,255,.08);pointer-events:none;overflow:hidden}
+.v20-aperture::before{content:"";position:absolute;width:32%;height:70%;left:var(--v20-local-x,50%);top:var(--v20-local-y,50%);translate:-50% -50%;background:radial-gradient(circle,rgba(255,255,255,.11),rgba(255,90,31,.045) 36%,transparent 72%);filter:blur(14px);opacity:.58}
 .v20-aperture i{position:absolute;width:1.35rem;height:1.35rem;border-color:rgba(255,255,255,.48);border-style:solid}
-.v20-aperture i:nth-child(1){left:-1px;top:-1px;border-width:1px 0 0 1px}
-.v20-aperture i:nth-child(2){right:-1px;top:-1px;border-width:1px 1px 0 0}
-.v20-aperture i:nth-child(3){right:-1px;bottom:-1px;border-width:0 1px 1px 0}
-.v20-aperture i:nth-child(4){left:-1px;bottom:-1px;border-width:0 0 1px 1px}
+.v20-aperture i:nth-child(1){left:-1px;top:-1px;border-width:1px 0 0 1px}.v20-aperture i:nth-child(2){right:-1px;top:-1px;border-width:1px 1px 0 0}.v20-aperture i:nth-child(3){right:-1px;bottom:-1px;border-width:0 1px 1px 0}.v20-aperture i:nth-child(4){left:-1px;bottom:-1px;border-width:0 0 1px 1px}
 
 /* --------------------------------------------------------------------------
    AI data paths — tiny animated system diagrams inside the current cards.
    -------------------------------------------------------------------------- */
 body.home-v20 #ai-systems .v12-product-card{position:relative;overflow:hidden;isolation:isolate}
 body.home-v20 #ai-systems .v12-product-card>*:not(.v20-data-path){position:relative;z-index:2}
-.v20-data-path{
-  position:absolute;
-  z-index:1;
-  top:4.35rem;
-  right:1.15rem;
-  width:min(10.5rem,34%);
-  height:4.8rem;
-  pointer-events:none;
-  opacity:.5;
-}
-.v20-data-path i{
-  position:absolute;
-  left:0;right:0;
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);
-  overflow:visible;
-}
-.v20-data-path i:nth-child(1){top:12%}
-.v20-data-path i:nth-child(2){top:49%;left:13%}
-.v20-data-path i:nth-child(3){top:84%;right:13%}
-.v20-data-path i::after{
-  content:"";
-  position:absolute;
-  top:-2px;left:0;
-  width:5px;height:5px;
-  border-radius:50%;
-  background:var(--v20-orange);
-  box-shadow:0 0 .65rem rgba(255,90,31,.65);
-  animation:v20-data 3.6s var(--v20-ease) infinite;
-}
-.v20-data-path i:nth-child(2)::after{animation-delay:-1.2s}
-.v20-data-path i:nth-child(3)::after{animation-delay:-2.4s}
+.v20-data-path{position:absolute;z-index:1;top:4.35rem;right:1.15rem;width:min(10.5rem,34%);height:4.8rem;pointer-events:none;opacity:.5}
+.v20-data-path i{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);overflow:visible}
+.v20-data-path i:nth-child(1){top:12%}.v20-data-path i:nth-child(2){top:49%;left:13%}.v20-data-path i:nth-child(3){top:84%;right:13%}
+.v20-data-path i::after{content:"";position:absolute;top:-2px;left:0;width:5px;height:5px;border-radius:50%;background:var(--v20-orange);box-shadow:0 0 .65rem rgba(255,90,31,.65);animation:v20-data 3.6s var(--v20-ease) infinite}
+.v20-data-path i:nth-child(2)::after{animation-delay:-1.2s}.v20-data-path i:nth-child(3)::after{animation-delay:-2.4s}
 @keyframes v20-data{0%{left:0;opacity:0}15%{opacity:1}82%{opacity:1}100%{left:calc(100% - 5px);opacity:0}}
 
 /* --------------------------------------------------------------------------
-   Spotlight surfaces — pointer follows the material, not the whole page.
+   Spotlight surfaces — dedicated layers avoid overriding authored pseudos.
    -------------------------------------------------------------------------- */
 body.home-v20 #ai-systems .v12-product-card::after,
-body.home-v20 #plans [data-v14-rate]::after,
-body.home-v20 #studio .founder-preview__portrait::after{
+body.home-v20 #studio .founder-preview__portrait::after,
+.v20-rate-light{
   content:"";
   position:absolute;
   z-index:1;
@@ -278,51 +108,26 @@ body.home-v20 #studio .founder-preview__portrait::after{
   opacity:var(--v20-spot-o,0);
   transition:opacity .32s ease;
 }
+body.home-v20 #plans [data-v14-rate]{position:relative;isolation:isolate}
+body.home-v20 #plans [data-v14-rate]>*:not(.v20-rate-light){position:relative;z-index:2}
+.v20-rate-light{z-index:1}
 body.home-v20 #studio .founder-preview__portrait{isolation:isolate}
 body.home-v20 #studio .founder-preview__portrait img,body.home-v20 #studio .founder-preview__portrait figcaption{position:relative;z-index:2}
 
 /* Founder scan is intentionally slow and nearly invisible. */
-.v20-portrait-scan{
-  position:absolute;
-  z-index:3;
-  left:0;right:0;
-  top:var(--v20-founder-scan,24%);
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),rgba(255,90,31,.28),transparent);
-  box-shadow:0 0 1.2rem rgba(255,255,255,.07);
-  pointer-events:none;
-  opacity:.45;
-}
+.v20-portrait-scan{position:absolute;z-index:3;left:0;right:0;top:var(--v20-founder-scan,24%);height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),rgba(255,90,31,.28),transparent);box-shadow:0 0 1.2rem rgba(255,255,255,.07);pointer-events:none;opacity:.45}
 
 /* --------------------------------------------------------------------------
    Magnetic controls — longhand translate composes with authored transforms.
    -------------------------------------------------------------------------- */
-body.home-v20 .primary-action.magnetic,
-body.home-v20 .site-nav__cta.magnetic,
-body.home-v20 .text-link.magnetic{
-  translate:var(--v20-mag-x,0px) var(--v20-mag-y,0px);
-  transition:translate .42s var(--v20-ease),background .25s ease,color .25s ease,border-color .25s ease;
-  will-change:transform;
-}
+body.home-v20 .primary-action.magnetic,body.home-v20 .site-nav__cta.magnetic,body.home-v20 .text-link.magnetic{translate:var(--v20-mag-x,0px) var(--v20-mag-y,0px);transition:translate .42s var(--v20-ease),background .25s ease,color .25s ease,border-color .25s ease;will-change:transform}
 
 /* Small velocity response ties idle components back to scrolling. */
-body.home-v20 #contact .close__orb{
-  filter:drop-shadow(0 0 calc(.45rem + var(--v19-speed,0) * 1.35rem) rgba(255,90,31,calc(.1 + var(--v19-speed,0) * .18)));
-}
-body.home-v20 #work .work__canvas{
-  box-shadow:0 2.8rem calc(5rem + var(--v19-speed,0) * 2rem) rgba(0,0,0,.22);
-}
+body.home-v20 #contact .close__orb{filter:drop-shadow(0 0 calc(.45rem + var(--v19-speed,0) * 1.35rem) rgba(255,90,31,calc(.1 + var(--v19-speed,0) * .18)))}
+body.home-v20 #work .work__canvas{box-shadow:0 2.8rem calc(5rem + var(--v19-speed,0) * 2rem) rgba(0,0,0,.22)}
 
-@media(max-width:1100px),(hover:none),(pointer:coarse){
-  .v20-scene-rail{display:none}
-}
-@media(max-width:760px){
-  .v20-lens{width:min(92vw,34rem);opacity:.22}
-  .v20-signal-field{inset:10% 4%;opacity:.28}
-  .v20-film-gate{opacity:.2}
-  .v20-aperture{inset:.42rem}
-  .v20-data-path{width:7rem;opacity:.34}
-}
+@media(max-width:1100px),(hover:none),(pointer:coarse){.v20-scene-rail{display:none}}
+@media(max-width:760px){.v20-lens{width:min(92vw,34rem);opacity:.22}.v20-signal-field{inset:10% 4%;opacity:.28}.v20-film-gate{opacity:.2}.v20-aperture{inset:.42rem}.v20-data-path{width:7rem;opacity:.34}}
 
 @media(prefers-reduced-motion:reduce){
   .v20-signal-field__orbit,.v20-data-path i::after{animation:none!important}

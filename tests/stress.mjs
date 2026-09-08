@@ -3,7 +3,7 @@ import { chromium } from '@playwright/test';
 const base=process.env.BASE_URL||'http://127.0.0.1:4173';
 const concurrency=Number(process.env.STRESS_CONCURRENCY||28);
 const total=Number(process.env.STRESS_REQUESTS||800);
-const routes=['/','/plans','/founder','/terms','/ai-workflow-audit','/company-second-brain','/commercial-cut.css','/commercial-cut.js','/direction-pass.css','/direction-pass.js','/motion-v4.css','/motion-v5.css','/motion-v5.js','/motion-v6.css','/motion-v6.js','/art-direction-v7.css','/art-direction-v7-contrast.css','/art-direction-v7.js','/work-showcase-v8.css','/work-showcase-v8.js','/art-direction-v9.css','/art-direction-v9.js','/continuity-v10.css','/continuity-v10.js','/useful-ux-v11.css','/useful-ux-v11.js','/brayro-v12.css','/brayro-v12.js','/brayro-v13.css','/brayro-v14.css','/brayro-v14-polish.css','/brayro-v14.js','/brayro-v15.css','/brayro-v15.js','/ai-service-pages.css','/ai-service-pages.js','/plans-page.css','/plans-page.js','/founder-page.css','/founder-page.js','/terms-page.css','/terms-page.js','/scrollcraft.css','/scrollcraft.js','/assets/hero-background.webp','/assets/yash-cutout.webp','/assets/about-yash.webp','/assets/fakhrimart-case-desktop.png','/assets/fakhrimart-case-mobile.png','/assets/brayroai-cinematic-opening.mp4'];
+const routes=['/','/plans','/founder','/terms','/ai-workflow-audit','/company-second-brain','/commercial-cut.css','/commercial-cut.js','/direction-pass.css','/direction-pass.js','/motion-v4.css','/motion-v5.css','/motion-v5.js','/motion-v6.css','/motion-v6.js','/art-direction-v7.css','/art-direction-v7-contrast.css','/art-direction-v7.js','/work-showcase-v8.css','/work-showcase-v8.js','/art-direction-v9.css','/art-direction-v9.js','/continuity-v10.css','/continuity-v10.js','/useful-ux-v11.css','/useful-ux-v11.js','/brayro-v12.css','/brayro-v12.js','/brayro-v13.css','/brayro-v14.css','/brayro-v14-polish.css','/brayro-v14.js','/brayro-v15.css','/brayro-v15.js','/experience-motion-v16.css','/experience-motion-v16.js','/cinematic-v18.css','/cinematic-v18.js','/cinematic-v20.css','/cinematic-v20.js','/ai-service-pages.css','/ai-service-pages.js','/plans-page.css','/plans-page.js','/founder-page.css','/founder-page.js','/terms-page.css','/terms-page.js','/scrollcraft.css','/scrollcraft.js','/assets/hero-background.webp','/assets/yash-cutout.webp','/assets/about-yash.webp','/assets/fakhrimart-case-desktop.png','/assets/fakhrimart-case-mobile.png','/assets/brayroai-cinematic-opening.mp4'];
 const failures=[];
 const timings=[];
 const assert=(condition,message)=>{if(!condition)failures.push(message)};
@@ -36,6 +36,7 @@ async function clear(page){
 async function waitHome(page){
   await page.waitForSelector('[data-v15-play] [data-v15-stage]');
   await page.waitForFunction(()=>document.body.classList.contains('v12-runtime-isolated'));
+  await page.waitForFunction(()=>document.body.classList.contains('home-v20'));
 }
 
 async function waitLegacy(page){
@@ -76,16 +77,26 @@ async function browserLoad(){
     await page.goto(`${base}/`,{waitUntil:'networkidle'});
     await clear(page);
     await waitHome(page);
-    assert(await page.locator('[data-scene]').count()===8,`V15 home scenes @${viewport.width}`);
+    assert(await page.locator('[data-scene]').count()===8,`V20 home scenes @${viewport.width}`);
+    assert(await page.locator('[data-v18-reel],.v18-reel').count()===0,`removed reel returned @${viewport.width}`);
     assert((await page.locator('#services').getAttribute('data-scene'))==='services',`V15 play scene mutated @${viewport.width}`);
     assert(await page.locator('[data-v15-control]').count()===4,`four play controls missing @${viewport.width}`);
     assert(await page.locator('[data-v14-frame]').count()===0,`retired film frames returned @${viewport.width}`);
     assert(await page.locator('[data-v12-project]').count()===3,`project index incomplete @${viewport.width}`);
     assert(await page.locator('#ai-systems .v12-product-card').count()===2,`AI products missing @${viewport.width}`);
     assert(await page.locator('#ai-systems [data-v15-ai-detail]').count()===2,`AI detail links missing @${viewport.width}`);
+    assert(await page.locator('[data-v20-lens]').count()===1,`V20 hero lens missing @${viewport.width}`);
+    assert(await page.locator('[data-v20-signal]').count()===1,`V20 capability signal missing @${viewport.width}`);
+    assert(await page.locator('[data-v20-film-gate]').count()===1,`V20 film gate missing @${viewport.width}`);
+    assert(await page.locator('[data-v20-aperture]').count()===1,`V20 work aperture missing @${viewport.width}`);
+    assert(await page.locator('[data-v20-data-path]').count()===2,`V20 AI paths missing @${viewport.width}`);
+    assert(await page.locator('[data-v20-rate-light]').count()===3,`V20 pricing lights missing @${viewport.width}`);
+    assert(await page.locator('[data-v20-portrait-scan]').count()===1,`V20 founder scan missing @${viewport.width}`);
     assert((await page.locator('#plans').textContent()).includes('₹25K–₹35K+'),'homepage premium one-time tier missing');
     await scrollStorm(page,2,18);
     assert((await page.locator('#services').getAttribute('data-scene'))==='services',`play scene changed after scroll storm @${viewport.width}`);
+    assert(await page.locator('[data-v20-rate-light]').count()===3,`V20 pricing lights changed after scroll storm @${viewport.width}`);
+    assert(await page.locator('[data-v20-scene-rail]').count()===1,`V20 scene rail DOM changed after scroll storm @${viewport.width}`);
   }
 
   await page.setViewportSize({width:1440,height:900});
@@ -102,6 +113,10 @@ async function browserLoad(){
   for(let i=0;i<31;i++)await workToggle.click();
   assert((await page.locator('[data-work-stage]').getAttribute('data-sc-verify-state'))==='work:mobile','client display lost final mobile state');
   assert((await page.locator('.work__mobile img').getAttribute('src'))==='/assets/fakhrimart-case-mobile.png','client mobile proof regressed');
+
+  await page.locator('#plans').scrollIntoViewIfNeeded();
+  const firstRate=page.locator('#plans [data-v14-rate]').first();
+  assert((await firstRate.evaluate(node=>getComputedStyle(node,'::after').content))!=='none','authored pricing pseudo artwork lost');
 
   await page.goto(`${base}/plans`,{waitUntil:'networkidle'});
   await clear(page);
@@ -154,4 +169,4 @@ const summary={httpRequests:total,concurrency,routes:routes.length,pages:6,failu
 console.log(JSON.stringify(summary,null,2));
 if(summary.p95Ms>2200)failures.push(`HTTP p95 ${summary.p95Ms}ms exceeds 2200ms`);
 if(failures.length){console.error(failures.slice(0,30).join('\n'));process.exit(1)}
-console.log('Stress test passed: V15 playground, AI detail pages, project showcase, pricing, Founder and Terms stayed coherent under load.');
+console.log('Stress test passed: V20 cinematic components, V15 playground, project showcase, pricing, AI detail pages, Founder and Terms stayed coherent under load.');

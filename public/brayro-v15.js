@@ -14,6 +14,9 @@
       if (!this.section) return;
       this.current = 0;
       this.touchX = 0;
+      this.pointerFrame = 0;
+      this.pointerTarget = { x:-100, y:-100, nx:0, ny:0, scale:0 };
+      this.pointerCurrent = { x:-100, y:-100, nx:0, ny:0, scale:0 };
       this.build();
       this.stage = this.section.querySelector('[data-v15-stage]');
       this.ghost = this.section.querySelector('[data-v15-ghost]');
@@ -67,9 +70,17 @@
       });
 
       if (fine && !reduced) {
-        this.stage.addEventListener('pointerenter', () => this.stage.style.setProperty('--v15-cs','1'));
-        this.stage.addEventListener('pointerleave', () => this.stage.style.setProperty('--v15-cs','0'));
-        this.stage.addEventListener('pointermove', event => this.pointer(event));
+        this.stage.addEventListener('pointerenter', () => {
+          this.pointerTarget.scale = 1;
+          this.schedulePointer();
+        });
+        this.stage.addEventListener('pointerleave', () => {
+          this.pointerTarget.scale = 0;
+          this.pointerTarget.nx = 0;
+          this.pointerTarget.ny = 0;
+          this.schedulePointer();
+        });
+        this.stage.addEventListener('pointermove', event => this.pointer(event), { passive:true });
       }
 
       this.stage.addEventListener('click', event => {
@@ -89,16 +100,40 @@
       const rect = this.stage.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      const nx = (x / rect.width - .5) * 2;
-      const ny = (y / rect.height - .5) * 2;
-      this.stage.style.setProperty('--v15-cx',`${x.toFixed(1)}px`);
-      this.stage.style.setProperty('--v15-cy',`${y.toFixed(1)}px`);
-      this.stage.style.setProperty('--v15-px',`${(nx*28).toFixed(1)}px`);
-      this.stage.style.setProperty('--v15-py',`${(ny*20).toFixed(1)}px`);
-      this.stage.style.setProperty('--v15-rot',`${(nx*1.8).toFixed(2)}deg`);
-      this.stage.style.setProperty('--v15-row-a',`${(nx*55).toFixed(1)}px`);
-      this.stage.style.setProperty('--v15-row-b',`${(nx*-72).toFixed(1)}px`);
-      this.stage.style.setProperty('--v15-row-c',`${(nx*38).toFixed(1)}px`);
+      this.pointerTarget.x = x;
+      this.pointerTarget.y = y;
+      this.pointerTarget.nx = (x / Math.max(rect.width,1) - .5) * 2;
+      this.pointerTarget.ny = (y / Math.max(rect.height,1) - .5) * 2;
+      this.pointerTarget.scale = 1;
+      this.schedulePointer();
+    }
+
+    schedulePointer() {
+      if (!this.pointerFrame) this.pointerFrame = requestAnimationFrame(() => this.tickPointer());
+    }
+
+    tickPointer() {
+      this.pointerFrame = 0;
+      const c = this.pointerCurrent;
+      const t = this.pointerTarget;
+      const posRate = .14;
+      const scaleRate = .2;
+      c.x += (t.x-c.x)*posRate;
+      c.y += (t.y-c.y)*posRate;
+      c.nx += (t.nx-c.nx)*.12;
+      c.ny += (t.ny-c.ny)*.12;
+      c.scale += (t.scale-c.scale)*scaleRate;
+      this.stage.style.setProperty('--v15-cx',`${c.x.toFixed(2)}px`);
+      this.stage.style.setProperty('--v15-cy',`${c.y.toFixed(2)}px`);
+      this.stage.style.setProperty('--v15-cs',c.scale.toFixed(4));
+      this.stage.style.setProperty('--v15-px',`${(c.nx*28).toFixed(2)}px`);
+      this.stage.style.setProperty('--v15-py',`${(c.ny*20).toFixed(2)}px`);
+      this.stage.style.setProperty('--v15-rot',`${(c.nx*1.55).toFixed(3)}deg`);
+      this.stage.style.setProperty('--v15-row-a',`${(c.nx*55).toFixed(2)}px`);
+      this.stage.style.setProperty('--v15-row-b',`${(c.nx*-72).toFixed(2)}px`);
+      this.stage.style.setProperty('--v15-row-c',`${(c.nx*38).toFixed(2)}px`);
+      const delta=Math.abs(t.x-c.x)+Math.abs(t.y-c.y)+Math.abs(t.nx-c.nx)*12+Math.abs(t.ny-c.ny)*12+Math.abs(t.scale-c.scale)*20;
+      if(delta>.12)this.schedulePointer();
     }
 
     set(index, animate = true) {
@@ -122,8 +157,16 @@
       });
       if (animate && !reduced) {
         const copy = this.section.querySelector('.play-scene__copy');
-        copy.animate([{opacity:.2,transform:'translateY(12px)'},{opacity:1,transform:'translateY(0)'}],{duration:420,easing:'cubic-bezier(.16,1,.3,1)'});
-        this.ghost.animate([{opacity:.22,transform:'translate(calc(-50% + var(--v15-px,0px)),calc(-50% + var(--v15-py,0px))) scale(.96)'},{opacity:1,transform:'translate(calc(-50% + var(--v15-px,0px)),calc(-50% + var(--v15-py,0px))) scale(1)'}],{duration:520,easing:'cubic-bezier(.16,1,.3,1)'});
+        copy.animate([
+          {opacity:.48,transform:'translate3d(0,16px,0) scale(.994)',filter:'blur(3px)'},
+          {opacity:1,transform:'translate3d(0,-2px,0) scale(1.002)',filter:'blur(0)'},
+          {opacity:1,transform:'translate3d(0,0,0) scale(1)',filter:'blur(0)'}
+        ],{duration:620,easing:'cubic-bezier(.22,1,.36,1)'});
+        this.ghost.animate([
+          {opacity:.12,scale:.955},
+          {opacity:1,scale:1.012,offset:.72},
+          {opacity:1,scale:1}
+        ],{duration:760,easing:'cubic-bezier(.22,1,.36,1)'});
       }
     }
   }

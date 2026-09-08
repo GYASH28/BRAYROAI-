@@ -5,52 +5,24 @@
    This layer only directs motion inside the existing homepage scenes.
    ========================================================================== */
 
-body.home-v19{
-  --v19-orange:#ff5a1f;
-  --v19-ease:cubic-bezier(.16,1,.3,1);
-}
+body.home-v19{--v19-orange:#ff5a1f;--v19-ease:cubic-bezier(.16,1,.3,1)}
+body.home-v19 main [data-scene]{--v19-p:.5;--v19-phase:0;--v19-focus:1}
 
-body.home-v19 main [data-scene]{
-  --v19-p:.5;
-  --v19-phase:0;
-  --v19-focus:1;
-}
-
-body.home-v19 .hero__background{
-  translate:var(--v19-hero-bg-x,0px) var(--v19-hero-bg-y,0px);
-  scale:var(--v19-hero-bg-scale,1.035);
-  transform-origin:center 42%;
-  will-change:transform;
-}
-body.home-v19 .hero__subject{
-  translate:var(--v19-hero-subject-x,0px) var(--v19-hero-subject-y,0px);
-  scale:var(--v19-hero-subject-scale,1);
-  transform-origin:center bottom;
-  will-change:transform;
-}
-body.home-v19 .hero__word{
-  translate:0 var(--v19-hero-word-y,0px);
-  scale:var(--v19-hero-word-scale,1);
-  transform-origin:center;
-  will-change:transform;
-}
+body.home-v19 .hero__background{translate:var(--v19-hero-bg-x,0px) var(--v19-hero-bg-y,0px);scale:var(--v19-hero-bg-scale,1.035);transform-origin:center 42%;will-change:transform}
+body.home-v19 .hero__subject{translate:var(--v19-hero-subject-x,0px) var(--v19-hero-subject-y,0px);scale:var(--v19-hero-subject-scale,1);transform-origin:center bottom;will-change:transform}
+body.home-v19 .hero__word{translate:0 var(--v19-hero-word-y,0px);scale:var(--v19-hero-word-scale,1);transform-origin:center;will-change:transform}
 body.home-v19 .hero__copy{translate:0 var(--v19-hero-copy-y,0px);will-change:transform}
-body.home-v19 .hero__grid{translate:0 var(--v19-hero-grid-y,0px);scale:calc(1 + (var(--v19-focus,1) * .008));will-change:transform}
+body.home-v19 .hero__grid{translate:0 var(--v19-hero-grid-y,0px);will-change:transform}
 body.home-v19 .hero__shade{opacity:calc(.74 - (var(--v19-focus,1) * .11))}
 
-body.home-v19 #services .play-scene__stage{
-  translate:0 var(--v19-services-y,0px);
-  scale:var(--v19-services-scale,1);
-  transform-origin:center;
-  will-change:transform;
-}
-body.home-v19 #services .play-scene__rings{rotate:var(--v19-services-rings-rot,0deg);scale:calc(.985 + (var(--v19-focus,1) * .015));will-change:transform}
+body.home-v19 #services .play-scene__stage{translate:0 var(--v19-services-y,0px);scale:var(--v19-services-scale,1);transform-origin:center;will-change:transform}
+body.home-v19 #services .play-scene__rings{rotate:var(--v19-services-rings-rot,0deg);will-change:transform}
 body.home-v19 #services .play-scene__ghost{translate:0 var(--v19-services-ghost-y,0px);will-change:transform}
 body.home-v19 #services .play-scene__copy{translate:0 var(--v19-services-copy-y,0px);will-change:transform}
 body.home-v19 #services .play-scene__controls{translate:0 var(--v19-services-controls-y,0px);will-change:transform}
-body.home-v19 #services .play-scene__ticker span:nth-child(1){translate:calc(var(--v19-phase,0) * 1.4rem) 0}
-body.home-v19 #services .play-scene__ticker span:nth-child(2){translate:calc(var(--v19-phase,0) * -1.8rem) 0}
-body.home-v19 #services .play-scene__ticker span:nth-child(3){translate:calc(var(--v19-phase,0) * 1rem) 0}
+body.home-v19 #services .play-scene__ticker span:nth-child(1){translate:var(--v19-ticker-a-x,0px) 0}
+body.home-v19 #services .play-scene__ticker span:nth-child(2){translate:var(--v19-ticker-b-x,0px) 0}
+body.home-v19 #services .play-scene__ticker span:nth-child(3){translate:var(--v19-ticker-c-x,0px) 0}
 
 body.home-v19 .editorial-sequence__frame{translate:0 var(--v19-film-frame-y,0px);scale:var(--v19-film-frame-scale,1);transform-origin:center;will-change:transform}
 body.home-v19 .editorial-sequence__ghost{translate:var(--v19-film-ghost-x,0px) var(--v19-film-ghost-y,0px);will-change:transform}
@@ -61,9 +33,8 @@ body.home-v19 .editorial-sequence__accent{translate:0 var(--v19-film-accent-y,0p
 body.home-v19 #work .v12-work-head{translate:0 var(--v19-work-head-y,0px);will-change:transform}
 body.home-v19 #work .v12-project-index{translate:0 var(--v19-work-index-y,0px);will-change:transform}
 body.home-v19 #work .work__desktop{translate:0 var(--v19-work-desktop-y,0px);rotate:var(--v19-work-tilt,0deg);will-change:transform}
-body.home-v19 #work .work__mobile{translate:0 var(--v19-work-mobile-y,0px);rotate:calc(var(--v19-work-tilt,0deg) * -.8);will-change:transform}
-body.home-v19 #work .work__desktop img,
-body.home-v19 #work .work__mobile img{scale:var(--v19-work-media-scale,1.01);transform-origin:center top;will-change:transform}
+body.home-v19 #work .work__mobile{translate:0 var(--v19-work-mobile-y,0px);rotate:var(--v19-work-mobile-tilt,0deg);will-change:transform}
+body.home-v19 #work .work__desktop img,body.home-v19 #work .work__mobile img{scale:var(--v19-work-media-scale,1.01);transform-origin:center top;will-change:transform}
 body.home-v19 #work .v12-project-row{transition:background .28s ease,border-color .28s ease,padding .48s var(--v19-ease)}
 body.home-v19 #work .v12-project-row:hover{padding-left:.55rem;padding-right:.55rem}
 
@@ -83,10 +54,10 @@ body.home-v19 #studio .section-heading{translate:0 var(--v19-founder-copy-y,0px)
 
 body.home-v19 #contact .close__copy{translate:0 var(--v19-contact-copy-y,0px);will-change:transform}
 body.home-v19 #contact .close__orb{translate:var(--v19-contact-orb-x,0px) var(--v19-contact-orb-y,0px);scale:var(--v19-contact-orb-scale,1);transform-origin:center;will-change:transform}
-body.home-v19 #contact .close__orb i:first-child{rotate:calc(var(--v19-phase,0) * 9deg)}
-body.home-v19 #contact .close__orb i:last-child{rotate:calc(var(--v19-phase,0) * -6deg)}
+body.home-v19 #contact .close__orb i:first-child{rotate:var(--v19-contact-orb-a-rot,0deg)}
+body.home-v19 #contact .close__orb i:last-child{rotate:var(--v19-contact-orb-b-rot,0deg)}
 
-body.home-v19 .site-nav__progress i{filter:drop-shadow(0 0 calc(.2rem + (var(--v19-speed,0) * .8rem)) rgba(255,90,31,.32))}
+body.home-v19 .site-nav__progress i{filter:drop-shadow(0 0 .35rem rgba(255,90,31,.3))}
 
 @media(max-width:760px){
   body.home-v19 #work .v12-project-row:hover{padding-left:0;padding-right:0}

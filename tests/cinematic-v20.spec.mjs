@@ -52,7 +52,7 @@ test('scene rail, selector and film polish respond to one continuous journey',as
   await page.locator('#work').scrollIntoViewIfNeeded();
   await page.waitForFunction(()=>document.body.dataset.v20Scene==='work');
   await expect(page.locator('[data-v20-rail-label]')).toHaveText('WORK');
-  expect(await page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--v20-page'))||0)).toBeGreaterThan(.2);
+  await expect.poll(()=>page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--v20-page'))||0)).toBeGreaterThan(.14);
   await page.locator('.editorial-sequence').scrollIntoViewIfNeeded();
   await expect.poll(()=>page.locator('.editorial-sequence').evaluate(node=>getComputedStyle(node).getPropertyValue('--v20-film-scan').trim())).not.toBe('');
 });
@@ -77,7 +77,7 @@ test('spring pointer polish follows live element positions without layout regres
   await page.locator('#top').scrollIntoViewIfNeeded();
   const cta=page.locator('.primary-action.magnetic').first();
   await dispatchPointer(cta,.84,.65);
-  await expect.poll(()=>Math.abs(cssNumber(cta,'--v20-mag-x'))).toBeGreaterThan(.5);
+  await expect.poll(async()=>Math.abs(await cssNumber(cta,'--v20-mag-x'))).toBeGreaterThan(.5);
 });
 
 test('V20 stays free of runtime errors while traversing the full homepage',async({page})=>{

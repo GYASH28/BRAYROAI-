@@ -46,9 +46,11 @@ const experienceTransform={
       }
 
       if(isHome){
+        // Keep typography layout-stable. The previous async stylesheet swap could
+        // reflow the bottom-anchored hero copy after first paint on mobile.
         html=html.replace(
           `<link href="${googleFontsHref}" rel="stylesheet">`,
-          `<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'">\n  <noscript><link rel="stylesheet" href="${googleFontsHref}"></noscript>`
+          `<link href="${googleFontsHref}" rel="stylesheet" data-layout-stable-fonts>`
         );
 
         // The homepage no longer mounts ScrollCraft. V19/V20 own its eight flow scenes,
@@ -58,10 +60,10 @@ const experienceTransform={
         html=html.replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/,'\n  ');
 
         // Safe commercial polish: keep the exact V20 hero/art direction and improve only
-        // the supporting sentence so a client understands the business value faster.
+        // the supporting sentence while preserving the original mobile rhythm.
         html=html.replace(
           'Distinctive websites, digital products and practical AI systems. Strategy through launch, directed as one complete production.',
-          'Distinctive websites, digital products and practical AI systems—built to make your business easier to understand, trust and use. Strategy through launch, directed as one complete production.'
+          'Distinctive websites, digital products and practical AI systems—built to make businesses easier to understand and trust. Strategy through launch, one connected production.'
         );
 
         // Strengthen proof without inventing metrics or introducing a new case-study layout.
@@ -114,22 +116,21 @@ const experienceTransform={
           '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" fetchpriority="high" alt="Yash Ganesh, founder of BRAYROAI.">'
         );
 
-        // Keep the opening sequence, but make it a crisp title-card rather than
-        // holding first paint hostage for nearly two seconds. The same shutter/
-        // scan language remains, only the pacing is tightened.
+        // Keep the same opening sequence and choreography; only trim dead time so
+        // the hero can become paint-eligible sooner on slower mobile profiles.
         if(!html.includes('data-v21-critical')){
           html=html.replace('</head>',`  <style data-v21-critical>
-    .opening-sequence{animation:openingAway 0s 1.08s both}
-    .opening-sequence__mark{animation-duration:.66s}
-    .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.74s;animation-delay:.24s}
-    .opening-sequence>span{animation-duration:.56s;animation-delay:.16s}
-    .site-nav{animation-duration:.46s;animation-delay:.58s}
+    .opening-sequence{animation:openingAway 0s .90s both}
+    .opening-sequence__mark{animation-duration:.60s}
+    .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.64s;animation-delay:.20s}
+    .opening-sequence>span{animation-duration:.50s;animation-delay:.13s}
+    .site-nav{animation-duration:.42s;animation-delay:.50s}
     @media(max-width:760px){
-      .opening-sequence{animation-delay:.92s}
-      .opening-sequence__mark{animation-duration:.58s}
-      .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.64s;animation-delay:.2s}
-      .opening-sequence>span{animation-duration:.48s;animation-delay:.12s}
-      .site-nav{animation-delay:.48s}
+      .opening-sequence{animation-delay:.80s}
+      .opening-sequence__mark{animation-duration:.54s}
+      .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.57s;animation-delay:.17s}
+      .opening-sequence>span{animation-duration:.43s;animation-delay:.10s}
+      .site-nav{animation-delay:.42s}
     }
   </style>\n</head>`);
         }

@@ -82,26 +82,22 @@
       this.samples=[];
       this.last=0;
       this.raf=0;
+      this.remaining=120;
       if(document.hidden)return;
       this.loop=timestamp=>{
-        if(this.last){
-          const delta=timestamp-this.last;
-          this.samples.push(delta);
-          if(this.samples.length>90)this.samples.shift();
-          if(this.samples.length===90){
-            const sorted=[...this.samples].sort((a,b)=>a-b);
-            const p90=sorted[Math.floor(sorted.length*.9)]||16.7;
-            root.dataset.frameHealth=p90>28?'strained':'smooth';
-          }
-        }
+        if(this.last)this.samples.push(timestamp-this.last);
         this.last=timestamp;
+        this.remaining-=1;
+        if(this.remaining<=0){
+          const sorted=[...this.samples].sort((a,b)=>a-b);
+          const p90=sorted[Math.floor(sorted.length*.9)]||16.7;
+          root.dataset.frameHealth=p90>28?'strained':'smooth';
+          this.raf=0;
+          return;
+        }
         this.raf=requestAnimationFrame(this.loop);
       };
       this.raf=requestAnimationFrame(this.loop);
-      document.addEventListener('visibilitychange',()=>{
-        if(document.hidden){cancelAnimationFrame(this.raf);this.raf=0;this.last=0}
-        else if(!this.raf)this.raf=requestAnimationFrame(this.loop);
-      });
     }
   }
 

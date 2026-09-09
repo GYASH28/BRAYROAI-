@@ -55,6 +55,19 @@ const experienceTransform={
         html=html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/,'\n  ');
         html=html.replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/,'\n  ');
 
+        html=html.replace(
+          '<section id="growth-engine" class="ig-section ig-demo"',
+          '<section id="growth-engine" class="scene ig-section ig-demo" data-sc-act="flow" data-scene="growth-engine"'
+        );
+        html=html.replace(
+          '<section id="brayro-os" class="ig-section"',
+          '<section id="brayro-os" class="scene ig-section" data-sc-act="flow" data-scene="brayro-os"'
+        );
+        html=html.replace(
+          '<section class="ig-section" aria-labelledby="process-title">',
+          '<section class="scene ig-section" data-sc-act="flow" data-scene="process" aria-labelledby="process-title">'
+        );
+
         if(!html.includes('data-v20-text-cycle')){
           const legacyMeta='<div class="v12-hero-meta" aria-label="BRAYROAI disciplines"><span>Web Experiences</span><span>Product Design</span><span>Frontend Engineering</span><span>AI Systems</span></div>';
           const growthMeta='<div class="v12-hero-meta" aria-label="BRAYROAI growth system"><span>Capture</span><span>Qualify</span><span>Follow up</span><span>Book + measure</span></div>';
@@ -153,6 +166,13 @@ const experienceTransform={
       }
       if(isHome&&!html.includes('src="/cinematic-v20.js"')){
         html=html.replace('</body>','  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
+      }
+
+      if(isHome&&!html.includes('href="/v21-cinematic-bridge.css"')){
+        html=html.replace('</head>','  <link rel="stylesheet" href="/v21-cinematic-bridge.css" data-v21-cinematic-bridge>\n</head>');
+      }
+      if(isHome&&!html.includes('src="/v21-cinematic-bridge.js"')){
+        html=html.replace('</body>','  <script src="/v21-cinematic-bridge.js" data-v21-cinematic-bridge></script>\n</body>');
       }
 
       return html;

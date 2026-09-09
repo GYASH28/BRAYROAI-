@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 
 const googleFontsHref='https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
+const siteOrigin='https://brayroai.vercel.app';
 
 const experienceTransform={
   name:'brayro-experience-transform',
@@ -11,6 +12,27 @@ const experienceTransform={
       const filename=context?.filename||'';
       const isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html');
       const isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html');
+      const routeMap=[
+        ['index.html','/'],['plans.html','/plans'],['founder.html','/founder'],['terms.html','/terms'],
+        ['audit.html','/audit'],['us.html','/us'],['uae.html','/uae'],['lab.html','/lab'],
+        ['fakhrimart.html','/work/fakhrimart'],['ai-workflow-audit.html','/ai-workflow-audit'],
+        ['company-second-brain.html','/company-second-brain']
+      ];
+      const route=(isHome?'/':routeMap.find(([file])=>filename.endsWith(`/${file}`)||filename.endsWith(file))?.[1])||null;
+      const escapeAttr=value=>String(value||'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+      const title=html.match(/<title>([^<]+)<\/title>/i)?.[1]?.trim();
+      const description=html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1]?.trim();
+      const canonical=route?`${siteOrigin}${route}`:null;
+      let metadata='';
+      if(canonical&&!html.includes('rel="canonical"')) metadata+=`  <link rel="canonical" href="${canonical}">\n`;
+      if(title&&!html.includes('property="og:title"')) metadata+=`  <meta property="og:title" content="${escapeAttr(title)}">\n`;
+      if(description&&!html.includes('property="og:description"')) metadata+=`  <meta property="og:description" content="${escapeAttr(description)}">\n`;
+      if(!html.includes('property="og:type"')) metadata+='  <meta property="og:type" content="website">\n';
+      if(!html.includes('property="og:site_name"')) metadata+='  <meta property="og:site_name" content="BRAYROAI">\n';
+      if(canonical&&!html.includes('property="og:url"')) metadata+=`  <meta property="og:url" content="${canonical}">\n`;
+      if(!html.includes('property="og:image"')) metadata+=`  <meta property="og:image" content="${siteOrigin}/assets/brayroai-installation-hero.webp">\n`;
+      if(!html.includes('name="twitter:card"')) metadata+='  <meta name="twitter:card" content="summary_large_image">\n';
+      if(metadata) html=html.replace('</head>',`${metadata}</head>`);
 
       if(!html.includes('data-v21-global')){
         html=html.replace('</head>',`  <style data-v21-global>
@@ -151,12 +173,12 @@ export default defineConfig({
         plans:resolve(process.cwd(),'plans.html'),
         founder:resolve(process.cwd(),'founder.html'),
         terms:resolve(process.cwd(),'terms.html'),
-        audit:resolve(process.cwd(),'audit.html'),
+        growthAudit:resolve(process.cwd(),'audit.html'),
         us:resolve(process.cwd(),'us.html'),
         uae:resolve(process.cwd(),'uae.html'),
         lab:resolve(process.cwd(),'lab.html'),
         fakhrimart:resolve(process.cwd(),'fakhrimart.html'),
-        aiWorkflowAudit:resolve(process.cwd(),'ai-workflow-audit.html'),
+        audit:resolve(process.cwd(),'ai-workflow-audit.html'),
         secondBrain:resolve(process.cwd(),'company-second-brain.html')
       }
     }

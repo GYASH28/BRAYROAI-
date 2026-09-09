@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: /(browser-v12|second-scene-regression|cinematic-v20)\.spec\.mjs/,
+  testMatch: /(v21-growth-browser|cinematic-v20)\.spec\.mjs/,
   timeout: 45_000,
   expect: { timeout: 8_000 },
   fullyParallel: true,

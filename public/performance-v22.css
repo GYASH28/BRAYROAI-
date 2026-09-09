@@ -1,0 +1,36 @@
+/* BRAYROAI V22 performance layer — preserve visible quality, stop invisible work. */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:v22-page-out .22s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:v22-page-in .36s cubic-bezier(.16,1,.3,1) both}
+@keyframes v22-page-out{to{opacity:0;transform:translate3d(0,-.35rem,0) scale(.998)}}
+@keyframes v22-page-in{from{opacity:0;transform:translate3d(0,.55rem,0) scale(.998)}to{opacity:1;transform:none}}
+
+/* Decorative layers are paint-contained so their updates do not invalidate large page regions. */
+.grain,.v20-lens,.v20-signal-field,.v20-film-gate,.v20-aperture,.v20-data-path,.v20-background-lines{contain:paint}
+
+/* Scenes outside a generous viewport margin keep their exact state but stop infinite decorative work. */
+[data-perf-active="false"] .v20-signal-field__orbit,
+[data-perf-active="false"] .v20-data-path i::after,
+[data-perf-active="false"] .v20-background-lines i,
+[data-perf-active="false"] .v12-signal-track,
+[data-perf-active="false"] .arch-arrow,
+[data-perf-active="false"] .arch-engine{animation-play-state:paused!important}
+
+[data-perf-active="false"] .v20-lens,
+[data-perf-active="false"] .v20-signal-field__orbit,
+[data-perf-active="false"] .v20-data-path i::after,
+[data-perf-active="false"] .v20-background-lines i,
+[data-perf-active="false"] [data-v16-reveal]{will-change:auto!important}
+
+html[data-page-hidden="true"] *,html[data-page-hidden="true"] *::before,html[data-page-hidden="true"] *::after{animation-play-state:paused!important}
+
+/* Keep touch devices free from hover-only compositing layers. The visible design is unchanged. */
+@media(hover:none),(pointer:coarse){
+  .v20-rate-light{display:none}
+  body.v16-motion [data-v16-surface]::after{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation:none!important}
+}

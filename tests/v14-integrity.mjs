@@ -9,6 +9,7 @@ const polish=read('public/brayro-v14-polish.css');
 const js=read('public/brayro-v14.js');
 const vite=read('vite.config.mjs');
 const plans=read('plans.html');
+const isV21=exists('tests/v21-growth-integrity.mjs');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 
@@ -26,10 +27,19 @@ expect(Buffer.byteLength(js)<18000,'V14 JS exceeds 18KB guardrail');
 expect(vite.includes('/brayro-v14.css')&&vite.includes('/brayro-v14-polish.css')&&vite.includes('/brayro-v14.js'),'V14 assets are not mounted by the Vite homepage transform');
 expect(exists('public/brayro-v14.css')&&exists('public/brayro-v14-polish.css')&&exists('public/brayro-v14.js'),'V14 public assets are missing');
 
-// The detailed pricing page is deliberately not redesigned by V14.
-expect((plans.match(/class="build-card/g)||[]).length===6,'Detailed /plans website cards must remain intact');
-expect((plans.match(/class="ai-plan-card/g)||[]).length===2,'Detailed /plans AI cards must remain intact');
-expect(plans.includes('Knowledge Care')&&plans.includes('From ₹2,999/mo'),'Detailed /plans content must remain intact');
+// V14 originally protected the detailed INR pricing page. V21 intentionally
+// replaces that commercial architecture, so preserve detail instead of stale prices.
+if(isV21){
+  expect((plans.match(/class="ig-offer/g)||[]).length>=3,'V21 /plans must keep detailed offer cards');
+  expect(plans.includes('Growth Engine')&&plans.includes('AI Operations')&&plans.includes('Custom Digital Systems'),'V21 /plans must explain all three commercial systems');
+  expect(plans.includes('From US$1,500')&&plans.includes('From US$2,500')&&plans.includes('US$3,000–$15,000+'),'V21 /plans must keep transparent international pricing ranges');
+  expect(plans.includes('WHAT CHANGES THE PRICE?')&&plans.includes('Third-party costs'),'V21 /plans must preserve scope and cost detail');
+  expect(!plans.includes('₹2,599')&&!plans.includes('₹17,999'),'V21 /plans must not restore retired low-ticket pricing');
+}else{
+  expect((plans.match(/class="build-card/g)||[]).length===6,'Detailed /plans website cards must remain intact');
+  expect((plans.match(/class="ai-plan-card/g)||[]).length===2,'Detailed /plans AI cards must remain intact');
+  expect(plans.includes('Knowledge Care')&&plans.includes('From ₹2,999/mo'),'Detailed /plans content must remain intact');
+}
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V14 integrity OK: cinematic film, three-choice rate card, no-glow AI offers, clean close, performance limits and untouched detailed pricing verified');
+console.log('V14 integrity OK: cinematic film, restrained AI, pricing detail, reduced motion and performance limits verified.');

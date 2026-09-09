@@ -80,7 +80,7 @@ test('selected work uses real proof and the cursor-following showcase layer',asy
   const client=work.locator('[data-v12-project]').first();
   await expect(client).toContainText('FakhriMart');
   await expect(client).toHaveAttribute('href','https://fakhriyarns.vercel.app/');
-  await client.hover();
+  await client.dispatchEvent('pointerenter');
   await expect(page.locator('[data-v12-project-preview]')).toHaveClass(/is-visible/);
   await expect(page.locator('[data-v12-project-preview] img')).toHaveAttribute('src','/assets/fakhrimart-case-desktop.png');
   await expect(work.locator('.v12-featured-case img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(1);

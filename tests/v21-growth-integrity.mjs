@@ -17,6 +17,8 @@ const privacy=read('privacy.html');
 const notFound=read('404.html');
 const css=read('public/international-growth.css');
 const js=read('public/international-growth.js');
+const bridgeCss=read('public/v21-cinematic-bridge.css');
+const bridgeJs=read('public/v21-cinematic-bridge.js');
 const vite=read('vite.config.mjs');
 const vercel=read('vercel.json');
 const pkg=read('package.json');
@@ -53,6 +55,14 @@ expect(!/transition\s*:\s*all/i.test(css),'Growth CSS contains prohibited transi
 expect(Buffer.byteLength(css)<50000,'Growth CSS exceeds 50KB guardrail');
 expect(Buffer.byteLength(js)<18000,'Growth JS exceeds 18KB guardrail');
 
+for(const token of ['fixSceneRailLabels','class SpringSpotlights','syncDemoPulse','data-v21-cinematic-bridge'])expect(bridgeJs.includes(token)||vite.includes(token),`V21 cinematic bridge missing ${token}`);
+for(const token of ['.v21-system-pulse','--v21-spot-x','@media(prefers-reduced-motion:reduce)'])expect(bridgeCss.includes(token),`V21 cinematic bridge CSS missing ${token}`);
+expect(!/transition\s*:\s*all/i.test(bridgeCss),'V21 cinematic bridge must not use transition: all');
+expect(Buffer.byteLength(bridgeCss)<10000,'V21 cinematic bridge CSS exceeds 10KB guardrail');
+expect(Buffer.byteLength(bridgeJs)<10000,'V21 cinematic bridge JS exceeds 10KB guardrail');
+expect(vite.includes('/v21-cinematic-bridge.css')&&vite.includes('/v21-cinematic-bridge.js'),'Vite does not inject the V21 cinematic bridge');
+for(const scene of ['growth-engine','brayro-os','process'])expect(vite.includes(`data-scene=\"${scene}\"`),`Vite production transform does not promote ${scene} into the V20 scene director`);
+
 for(const token of ["growthAudit:resolve(process.cwd(),'audit.html')","us:resolve(process.cwd(),'us.html')","uae:resolve(process.cwd(),'uae.html')","lab:resolve(process.cwd(),'lab.html')","fakhrimart:resolve(process.cwd(),'fakhrimart.html')","privacy:resolve(process.cwd(),'privacy.html')","notFound:resolve(process.cwd(),'404.html')"])expect(vite.includes(token),`Vite input missing ${token}`);
 expect(vite.includes("audit:resolve(process.cwd(),'ai-workflow-audit.html')"),'Legacy AI Workflow Audit Vite input was not preserved');
 for(const route of ['/audit','/us','/uae','/lab','/work/fakhrimart','/privacy'])expect(vercel.includes(route),`Vercel missing ${route} route`);
@@ -60,9 +70,10 @@ expect(vercel.includes('international-growth.css')&&vercel.includes('internation
 expect(vercel.includes("script-src 'self'"),'Strict first-party script CSP is not preserved');
 
 expect(pkg.includes('node --check public/international-growth.js'),'Syntax suite does not check the growth runtime');
+expect(pkg.includes('node --check public/v21-cinematic-bridge.js'),'Syntax suite does not check the V21 cinematic bridge');
 expect(pkg.includes('node tests/v21-growth-integrity.mjs'),'Integrity suite does not enforce V21 growth contracts');
 expect(robots.includes('Sitemap: https://brayroai.vercel.app/sitemap.xml'),'robots.txt does not advertise sitemap');
 for(const route of ['/audit','/us','/uae','/lab','/work/fakhrimart','/privacy'])expect(sitemap.includes(`https://brayroai.vercel.app${route}`),`Sitemap missing ${route}`);
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V21 growth integrity OK: positioning, proof, regional routes, privacy, 404, funnel telemetry, pricing and audit flow verified.');
+console.log('V21 growth integrity OK: positioning, proof, regional routes, cinematic bridge, privacy, funnel telemetry, pricing and audit flow verified.');

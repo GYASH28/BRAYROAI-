@@ -7,9 +7,10 @@
   const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
   const body = document.body;
   const path = location.pathname.replace(/\/$/,'') || '/';
+  const home = path === '/' || path.endsWith('/index.html');
 
   body.classList.add('v16-motion');
-  if (path === '/') body.classList.add('home-v16');
+  if (home) body.classList.add('home-v16');
   else if (path === '/plans' || path.endsWith('/plans.html')) body.classList.add('plans-v16');
   else if (path === '/founder' || path.endsWith('/founder.html')) body.classList.add('founder-v16');
   else if (path === '/terms' || path.endsWith('/terms.html')) body.classList.add('terms-v16');
@@ -17,12 +18,17 @@
 
   class PageCurtain {
     constructor() {
+      const nativeTransitions = typeof CSS !== 'undefined' && CSS.supports?.('view-transition-name: root');
+      if (nativeTransitions) {
+        body.classList.add('v16-native-transitions');
+        return;
+      }
       this.node = document.createElement('div');
       this.node.className = 'v16-page-transition is-entering';
       this.node.setAttribute('aria-hidden','true');
       this.node.innerHTML = '<i></i><i></i><i></i><i></i>';
       body.append(this.node);
-      if (!reduced) setTimeout(() => this.node.classList.remove('is-entering'), 980);
+      if (!reduced) setTimeout(() => this.node.classList.remove('is-entering'), 780);
       else this.node.classList.remove('is-entering');
       document.addEventListener('click', event => this.onClick(event));
     }
@@ -39,7 +45,7 @@
       event.preventDefault();
       this.node.classList.remove('is-entering');
       this.node.classList.add('is-leaving');
-      setTimeout(() => { location.href = url.href; }, 330);
+      setTimeout(() => { location.href = url.href; }, 250);
     }
   }
 
@@ -86,6 +92,8 @@
       this.frame = 0;
       this.lastY = scrollY;
       this.velocity = 0;
+      this.vh = innerHeight;
+      this.metrics = new Map();
       this.scenes.forEach((scene,index) => {
         scene.dataset.v16Scene = '';
         scene.dataset.v16Index = String(index);
@@ -96,9 +104,20 @@
           scene.prepend(line);
         }
       });
+      this.refreshMetrics();
       addEventListener('scroll', () => this.schedule(), {passive:true});
-      addEventListener('resize', () => this.schedule(), {passive:true});
+      addEventListener('resize', () => { this.refreshMetrics(); this.schedule(); }, {passive:true});
+      addEventListener('pageshow', () => { this.refreshMetrics(); this.schedule(); }, {passive:true});
+      document.fonts?.ready?.then(() => { this.refreshMetrics(); this.schedule(); });
       this.schedule();
+    }
+    refreshMetrics() {
+      this.vh = innerHeight;
+      const y = scrollY;
+      this.scenes.forEach(scene => {
+        const rect = scene.getBoundingClientRect();
+        this.metrics.set(scene,{top:rect.top + y,height:rect.height});
+      });
     }
     schedule() { if (!this.frame) this.frame = requestAnimationFrame(() => this.update()); }
     update() {
@@ -109,11 +128,15 @@
       document.documentElement.style.setProperty('--v16-scroll', String(y));
       document.documentElement.style.setProperty('--v16-velocity', this.velocity.toFixed(3));
       this.scenes.forEach((scene,index) => {
-        const rect = scene.getBoundingClientRect();
-        const center = rect.top + rect.height * .5;
-        const delta = (center - innerHeight * .5) / Math.max(innerHeight,1);
+        const metric = this.metrics.get(scene);
+        if (!metric) return;
+        const top = metric.top - y;
+        const bottom = top + metric.height;
+        if (bottom < -this.vh * .9 || top > this.vh * 1.9) return;
+        const center = top + metric.height * .5;
+        const delta = (center - this.vh * .5) / Math.max(this.vh,1);
         const focus = clamp(0, 1 - Math.abs(delta) * 1.15, 1);
-        const line = clamp(0, (innerHeight * .9 - rect.top) / Math.max(innerHeight * .7,1), 1);
+        const line = clamp(0, (this.vh * .9 - top) / Math.max(this.vh * .7,1), 1);
         const driftY = clamp(-100, delta * -52, 100);
         const driftX = clamp(-90, delta * (index % 2 ? 38 : -38), 90);
         scene.style.setProperty('--v16-focus', focus.toFixed(4));
@@ -121,7 +144,7 @@
         scene.style.setProperty('--v16-drift-y', driftY.toFixed(3));
         scene.style.setProperty('--v16-drift-x', driftX.toFixed(3));
         if (scene.matches('.hero,[data-scene="hero"],.plans-hero,.founder-hero,.ai-hero,.terms-hero')) {
-          const heroDepth = clamp(0, -rect.top / Math.max(innerHeight,1), 1);
+          const heroDepth = clamp(0, -top / Math.max(this.vh,1), 1);
           scene.style.setProperty('--v16-hero-depth', heroDepth.toFixed(4));
           scene.style.setProperty('--v16-hero-shift', (heroDepth * -18).toFixed(3));
         }
@@ -148,7 +171,9 @@
 
   class PointerFeedback {
     constructor() {
-      if (!fine || reduced) return;
+      // V20 owns homepage pointer polish. Do not run a second hidden cursor,
+      // magnet and surface-tracking system underneath it.
+      if (home || !fine || reduced) return;
       this.cursor = document.createElement('div');
       this.cursor.className = 'v16-cursor';
       this.cursor.setAttribute('aria-hidden','true');

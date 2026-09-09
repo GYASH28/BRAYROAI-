@@ -24,9 +24,6 @@ const experienceTransform={
       const isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html');
       const canonicalUrl=`${productionOrigin}${pagePathFor(filename)}`;
 
-      // Shared finish across every public page. The skip link remains fully
-      // keyboard-accessible but never appears as stray visible chrome until it
-      // actually receives focus.
       if(!html.includes('data-v21-global')){
         html=html.replace('</head>',`  <style data-v21-global>
     .skip-link{position:fixed!important;z-index:9999!important;top:.75rem!important;left:.75rem!important;transform:translate3d(0,-180%,0)!important;opacity:0!important;pointer-events:none!important;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .2s ease!important}
@@ -35,8 +32,6 @@ const experienceTransform={
   </style>\n</head>`);
       }
 
-      // Low-risk discoverability upgrade: canonical and share-image metadata only.
-      // This deliberately does not alter page structure, styling, routing or copy hierarchy.
       if(!html.includes('rel="canonical"')){
         html=html.replace('</head>',`  <link rel="canonical" href="${canonicalUrl}" data-safe-v20-meta>\n  <meta property="og:url" content="${canonicalUrl}">\n  <meta property="og:image" content="${productionOrigin}/assets/hero-background.webp">\n  <meta name="twitter:image" content="${productionOrigin}/assets/hero-background.webp">\n</head>`);
       }
@@ -46,27 +41,18 @@ const experienceTransform={
       }
 
       if(isHome){
-        // Keep typography layout-stable. The previous async stylesheet swap could
-        // reflow the bottom-anchored hero copy after first paint on mobile.
         html=html.replace(
           `<link href="${googleFontsHref}" rel="stylesheet">`,
           `<link href="${googleFontsHref}" rel="stylesheet" data-layout-stable-fonts>`
         );
 
-        // The homepage no longer mounts ScrollCraft. V19/V20 own its eight flow scenes,
-        // so avoid shipping legacy ScrollCraft CSS/JS on the critical path while
-        // preserving ScrollCraft on the dedicated pages that still use it.
         html=html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/,'\n  ');
         html=html.replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/,'\n  ');
 
-        // Safe commercial polish: keep the exact V20 hero/art direction and improve only
-        // the supporting sentence while preserving the original mobile rhythm.
         html=html.replace(
           'Distinctive websites, digital products and practical AI systems. Strategy through launch, directed as one complete production.',
           'Distinctive websites, digital products and practical AI systems—built to make businesses easier to understand and trust. Strategy through launch, one connected production.'
         );
-
-        // Strengthen proof without inventing metrics or introducing a new case-study layout.
         html=html.replace(
           'Move across the index. Real client work stays first; BRAYROAI lab entries show the interaction and system thinking behind the studio itself.',
           'Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.'
@@ -83,21 +69,15 @@ const experienceTransform={
           'A catalogue-led yarn website designed for confident browsing and direct enquiries across desktop and mobile.',
           'A live catalogue-led yarn website shaped around clear product browsing, responsive usability and direct enquiries across desktop and mobile.'
         );
-
-        // Keep the founder visual and headline; make the benefit of founder-led delivery clearer.
         html=html.replace(
           'Yash leads strategy, interface and implementation. The idea stays intact because it does not disappear between departments.',
           'Yash leads strategy, interface and implementation, so clients stay close to the person making the decisions instead of being passed between departments.'
         );
-
-        // Keep the existing contact scene and CTA. Add one practical reassurance line only.
         html=html.replace(
           'WhatsApp is fastest. A short project brief is ready in email if you need it.',
           'WhatsApp is fastest. Tell us what needs to improve and we will recommend the smallest sensible scope—not force a bigger package.'
         );
 
-        // Make the 21st-inspired hero text cycle part of initial HTML instead of
-        // injecting a layout-affecting node after first paint. This removes CLS.
         if(!html.includes('data-v20-text-cycle')){
           html=html.replace(
             '<div class="v12-hero-meta" aria-label="BRAYROAI disciplines"><span>Web Experiences</span><span>Product Design</span><span>Frontend Engineering</span><span>AI Systems</span></div>',
@@ -105,19 +85,15 @@ const experienceTransform={
           );
         }
 
-        // Make the two visible hero image layers explicit high-priority/eager
-        // resources. Duplicate URLs still coalesce to one network request.
         html=html.replaceAll(
           '<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">',
-          '<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" loading="eager" fetchpriority="high" alt="">'
+          '<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" loading="eager" fetchpriority="high" decoding="sync" alt="">'
         );
         html=html.replace(
           '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" alt="Yash Ganesh, founder of BRAYROAI.">',
-          '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" fetchpriority="high" alt="Yash Ganesh, founder of BRAYROAI.">'
+          '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" fetchpriority="high" decoding="sync" alt="Yash Ganesh, founder of BRAYROAI.">'
         );
 
-        // Keep the same opening sequence and choreography; only trim dead time so
-        // the hero can become paint-eligible sooner on slower mobile profiles.
         if(!html.includes('data-v21-critical')){
           html=html.replace('</head>',`  <style data-v21-critical>
     .opening-sequence{animation:openingAway 0s .90s both}
@@ -174,8 +150,6 @@ const experienceTransform={
       }
 
       if(isPlans){
-        // Plans remain exactly the same offers and prices. Only the framing becomes
-        // more useful for a client who is unsure which relationship fits.
         html=html.replace(
           'Use a monthly partnership for ongoing website attention, a one-time build for a complete launch, or a focused AI system when the work inside the company needs to become easier.',
           'Choose monthly support for ongoing website improvement, a one-time build for a complete launch, or a focused AI system for internal work. If you are unsure, start with the outcome you need and we will point you to the smallest sensible scope.'
@@ -201,6 +175,13 @@ const experienceTransform={
       }
       if(isHome&&!html.includes('src="/cinematic-v20.js"')){
         html=html.replace('</body>','  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
+      }
+
+      if(!html.includes('href="/performance-v22.css"')){
+        html=html.replace('</head>','  <link rel="stylesheet" href="/performance-v22.css" data-v22-performance>\n</head>');
+      }
+      if(!html.includes('src="/performance-v22.js"')){
+        html=html.replace('</body>','  <script src="/performance-v22.js" data-v22-performance></script>\n</body>');
       }
 
       return html;

@@ -14,7 +14,7 @@ const experienceTransform={
       const isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html');
       const routeMap=[
         ['index.html','/'],['plans.html','/plans'],['founder.html','/founder'],['terms.html','/terms'],
-        ['audit.html','/audit'],['us.html','/us'],['uae.html','/uae'],['lab.html','/lab'],
+        ['privacy.html','/privacy'],['audit.html','/audit'],['us.html','/us'],['uae.html','/uae'],['lab.html','/lab'],
         ['fakhrimart.html','/work/fakhrimart'],['ai-workflow-audit.html','/ai-workflow-audit'],
         ['company-second-brain.html','/company-second-brain']
       ];
@@ -173,6 +173,8 @@ export default defineConfig({
         plans:resolve(process.cwd(),'plans.html'),
         founder:resolve(process.cwd(),'founder.html'),
         terms:resolve(process.cwd(),'terms.html'),
+        privacy:resolve(process.cwd(),'privacy.html'),
+        notFound:resolve(process.cwd(),'404.html'),
         growthAudit:resolve(process.cwd(),'audit.html'),
         us:resolve(process.cwd(),'us.html'),
         uae:resolve(process.cwd(),'uae.html'),

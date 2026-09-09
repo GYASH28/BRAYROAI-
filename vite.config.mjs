@@ -87,11 +87,11 @@ const experienceTransform={
 
         html=html.replaceAll(
           '<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">',
-          '<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" loading="eager" decoding="sync" fetchpriority="high" alt="">'
+          '<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" loading="eager" fetchpriority="high" decoding="sync" alt="">'
         );
         html=html.replace(
           '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" alt="Yash Ganesh, founder of BRAYROAI.">',
-          '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" decoding="sync" fetchpriority="high" alt="Yash Ganesh, founder of BRAYROAI.">'
+          '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" fetchpriority="high" decoding="sync" alt="Yash Ganesh, founder of BRAYROAI.">'
         );
 
         if(!html.includes('data-v21-critical')){

@@ -2,6 +2,16 @@ import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 
 const googleFontsHref='https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
+const productionOrigin='https://brayroai.vercel.app';
+
+const pagePathFor=(filename='')=>{
+  if(filename.endsWith('/plans.html')) return '/plans';
+  if(filename.endsWith('/founder.html')) return '/founder';
+  if(filename.endsWith('/terms.html')) return '/terms';
+  if(filename.endsWith('/ai-workflow-audit.html')) return '/ai-workflow-audit';
+  if(filename.endsWith('/company-second-brain.html')) return '/company-second-brain';
+  return '/';
+};
 
 const experienceTransform={
   name:'brayro-experience-transform',
@@ -10,7 +20,9 @@ const experienceTransform={
     handler(html,context){
       const filename=context?.filename||'';
       const isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html');
+      const isPlans=filename.endsWith('/plans.html');
       const isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html');
+      const canonicalUrl=`${productionOrigin}${pagePathFor(filename)}`;
 
       // Shared finish across every public page. The skip link remains fully
       // keyboard-accessible but never appears as stray visible chrome until it
@@ -21,6 +33,12 @@ const experienceTransform={
     .skip-link:focus,.skip-link:focus-visible{transform:translate3d(0,0,0)!important;opacity:1!important;pointer-events:auto!important}
     @media(prefers-reduced-motion:reduce){.skip-link{transition:none!important}}
   </style>\n</head>`);
+      }
+
+      // Low-risk discoverability upgrade: canonical and share-image metadata only.
+      // This deliberately does not alter page structure, styling, routing or copy hierarchy.
+      if(!html.includes('rel="canonical"')){
+        html=html.replace('</head>',`  <link rel="canonical" href="${canonicalUrl}" data-safe-v20-meta>\n  <meta property="og:url" content="${canonicalUrl}">\n  <meta property="og:image" content="${productionOrigin}/assets/hero-background.webp">\n  <meta name="twitter:image" content="${productionOrigin}/assets/hero-background.webp">\n</head>`);
       }
 
       if(isAiDetail&&!html.includes('href="/v15-accessibility.css"')){
@@ -38,6 +56,43 @@ const experienceTransform={
         // preserving ScrollCraft on the dedicated pages that still use it.
         html=html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/,'\n  ');
         html=html.replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/,'\n  ');
+
+        // Safe commercial polish: keep the exact V20 hero/art direction and improve only
+        // the supporting sentence so a client understands the business value faster.
+        html=html.replace(
+          'Distinctive websites, digital products and practical AI systems. Strategy through launch, directed as one complete production.',
+          'Distinctive websites, digital products and practical AI systems—built to make your business easier to understand, trust and use. Strategy through launch, directed as one complete production.'
+        );
+
+        // Strengthen proof without inventing metrics or introducing a new case-study layout.
+        html=html.replace(
+          'Move across the index. Real client work stays first; BRAYROAI lab entries show the interaction and system thinking behind the studio itself.',
+          'Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.'
+        );
+        html=html.replace(
+          'Catalogue-led yarn website / responsive commerce enquiry experience',
+          'Verified client work / catalogue-led yarn website / responsive enquiry experience'
+        );
+        html=html.replace(
+          'A live business interface, not a fake case study.',
+          'A real client website, built for browsing and enquiries.'
+        );
+        html=html.replace(
+          'A catalogue-led yarn website designed for confident browsing and direct enquiries across desktop and mobile.',
+          'A live catalogue-led yarn website shaped around clear product browsing, responsive usability and direct enquiries across desktop and mobile.'
+        );
+
+        // Keep the founder visual and headline; make the benefit of founder-led delivery clearer.
+        html=html.replace(
+          'Yash leads strategy, interface and implementation. The idea stays intact because it does not disappear between departments.',
+          'Yash leads strategy, interface and implementation, so clients stay close to the person making the decisions instead of being passed between departments.'
+        );
+
+        // Keep the existing contact scene and CTA. Add one practical reassurance line only.
+        html=html.replace(
+          'WhatsApp is fastest. A short project brief is ready in email if you need it.',
+          'WhatsApp is fastest. Tell us what needs to improve and we will recommend the smallest sensible scope—not force a bigger package.'
+        );
 
         // Make the 21st-inspired hero text cycle part of initial HTML instead of
         // injecting a layout-affecting node after first paint. This removes CLS.
@@ -115,6 +170,15 @@ const experienceTransform={
             '<script src="/brayro-v14.js"></script>\n  <script src="/brayro-v15.js"></script>'
           );
         }
+      }
+
+      if(isPlans){
+        // Plans remain exactly the same offers and prices. Only the framing becomes
+        // more useful for a client who is unsure which relationship fits.
+        html=html.replace(
+          'Use a monthly partnership for ongoing website attention, a one-time build for a complete launch, or a focused AI system when the work inside the company needs to become easier.',
+          'Choose monthly support for ongoing website improvement, a one-time build for a complete launch, or a focused AI system for internal work. If you are unsure, start with the outcome you need and we will point you to the smallest sensible scope.'
+        );
       }
 
       if(!html.includes('href="/experience-motion-v16.css"')){

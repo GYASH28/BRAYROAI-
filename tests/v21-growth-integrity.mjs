@@ -13,6 +13,8 @@ const uae=read('uae.html');
 const lab=read('lab.html');
 const audit=read('audit.html');
 const caseStudy=read('fakhrimart.html');
+const privacy=read('privacy.html');
+const notFound=read('404.html');
 const css=read('public/international-growth.css');
 const js=read('public/international-growth.js');
 const vite=read('vite.config.mjs');
@@ -29,7 +31,7 @@ expect(home.includes('Built in India')&&home.includes('Pune, India'),'Internatio
 expect(!home.includes('₹2,599')&&!home.includes('₹17,999'),'Retired low-ticket website pricing leaked into the primary homepage funnel');
 expect(!home.includes('world-class solutions')&&!home.includes('10x your growth'),'Homepage contains generic growth hype');
 
-for(const [file,label] of [['us.html','US'],['uae.html','UAE'],['lab.html','Lab'],['audit.html','Audit'],['fakhrimart.html','FakhriMart case study']])expect(exists(file),`${label} page missing`);
+for(const [file,label] of [['us.html','US'],['uae.html','UAE'],['lab.html','Lab'],['audit.html','Audit'],['fakhrimart.html','FakhriMart case study'],['privacy.html','Privacy'],['404.html','404']])expect(exists(file),`${label} page missing`);
 expect(us.includes('Founder-led from Pune, India')||us.includes('founder-led from Pune, India'),'US page does not clearly disclose the operating base');
 expect(us.includes('From US$1,500')&&us.includes('Book an AI Growth Audit'),'US page is missing localized pricing or audit CTA');
 expect(uae.includes('WhatsApp')&&uae.includes('does not claim a Dubai office'),'UAE page is missing WhatsApp-first flow or location honesty');
@@ -37,6 +39,8 @@ expect(lab.includes('I RUN A BUSINESS')&&lab.includes('I BUILD / SELL SYSTEMS'),
 expect(audit.includes('data-ig-audit-form')&&audit.includes('Likely implementation budget')&&audit.includes('Work email'),'Audit qualification flow is incomplete');
 expect(caseStudy.includes('VERIFIED CLIENT WORK / FAKHRIMART')&&caseStudy.includes('Proof without invented metrics'),'Dedicated case study does not preserve proof honesty');
 expect(caseStudy.includes('fakhrimart-case-desktop.png')&&caseStudy.includes('fakhrimart-case-mobile.png'),'Dedicated case study is missing real desktop/mobile evidence');
+expect(privacy.includes('does not send form contents into those events')&&privacy.includes('Nothing is represented as stored in a BRAYROAI database'),'Privacy page does not describe the current implementation honestly');
+expect(notFound.includes('This page missed the pipeline.')&&notFound.includes('noindex'),'404 page is missing its useful route recovery or noindex policy');
 
 expect(plans.includes('Growth Engine')&&plans.includes('From US$1,500'),'Plans page was not migrated to the international offer architecture');
 expect(!plans.includes('₹2,599')&&!plans.includes('₹17,999'),'Legacy low-ticket website plan pricing remains public on /plans');
@@ -49,16 +53,16 @@ expect(!/transition\s*:\s*all/i.test(css),'Growth CSS contains prohibited transi
 expect(Buffer.byteLength(css)<50000,'Growth CSS exceeds 50KB guardrail');
 expect(Buffer.byteLength(js)<18000,'Growth JS exceeds 18KB guardrail');
 
-for(const token of ["growthAudit:resolve(process.cwd(),'audit.html')","us:resolve(process.cwd(),'us.html')","uae:resolve(process.cwd(),'uae.html')","lab:resolve(process.cwd(),'lab.html')","fakhrimart:resolve(process.cwd(),'fakhrimart.html')"])expect(vite.includes(token),`Vite input missing ${token}`);
+for(const token of ["growthAudit:resolve(process.cwd(),'audit.html')","us:resolve(process.cwd(),'us.html')","uae:resolve(process.cwd(),'uae.html')","lab:resolve(process.cwd(),'lab.html')","fakhrimart:resolve(process.cwd(),'fakhrimart.html')","privacy:resolve(process.cwd(),'privacy.html')","notFound:resolve(process.cwd(),'404.html')"])expect(vite.includes(token),`Vite input missing ${token}`);
 expect(vite.includes("audit:resolve(process.cwd(),'ai-workflow-audit.html')"),'Legacy AI Workflow Audit Vite input was not preserved');
-for(const route of ['/audit','/us','/uae','/lab','/work/fakhrimart'])expect(vercel.includes(route),`Vercel missing ${route} route`);
+for(const route of ['/audit','/us','/uae','/lab','/work/fakhrimart','/privacy'])expect(vercel.includes(route),`Vercel missing ${route} route`);
 expect(vercel.includes('international-growth.css')&&vercel.includes('international-growth.js'),'Vercel asset cache policy missing growth assets');
 expect(vercel.includes("script-src 'self'"),'Strict first-party script CSP is not preserved');
 
 expect(pkg.includes('node --check public/international-growth.js'),'Syntax suite does not check the growth runtime');
 expect(pkg.includes('node tests/v21-growth-integrity.mjs'),'Integrity suite does not enforce V21 growth contracts');
 expect(robots.includes('Sitemap: https://brayroai.vercel.app/sitemap.xml'),'robots.txt does not advertise sitemap');
-for(const route of ['/audit','/us','/uae','/lab','/work/fakhrimart'])expect(sitemap.includes(`https://brayroai.vercel.app${route}`),`Sitemap missing ${route}`);
+for(const route of ['/audit','/us','/uae','/lab','/work/fakhrimart','/privacy'])expect(sitemap.includes(`https://brayroai.vercel.app${route}`),`Sitemap missing ${route}`);
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V21 growth integrity OK: positioning, proof, regional routes, funnel telemetry, pricing and audit flow verified.');
+console.log('V21 growth integrity OK: positioning, proof, regional routes, privacy, 404, funnel telemetry, pricing and audit flow verified.');

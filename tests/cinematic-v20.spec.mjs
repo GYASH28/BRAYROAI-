@@ -11,115 +11,108 @@ const openHome=async page=>{
   await page.goto('/',{waitUntil:'networkidle'});
   await clearOpening(page);
   await page.waitForFunction(()=>document.body.classList.contains('home-v20'));
+  await page.waitForFunction(()=>document.documentElement.dataset.v21CinematicBridge==='true');
 };
 
-const cssNumber=async(locator,name)=>Number.parseFloat(await locator.evaluate((node,name)=>getComputedStyle(node).getPropertyValue(name)||'0',name))||0;
-const dispatchPointer=async(locator,x=.7,y=.3)=>locator.evaluate((node,{x,y})=>{
-  const rect=node.getBoundingClientRect();
-  const init={bubbles:true,clientX:rect.left+rect.width*x,clientY:rect.top+rect.height*y,pointerType:'mouse'};
-  node.dispatchEvent(new PointerEvent('pointerenter',init));
-  node.dispatchEvent(new PointerEvent('pointermove',init));
-},{x,y});
+const expectNoHorizontalOverflow=async page=>{
+  const metrics=await page.evaluate(()=>({
+    doc:document.documentElement.scrollWidth,
+    viewport:document.documentElement.clientWidth,
+    body:document.body.scrollWidth
+  }));
+  expect(Math.max(metrics.doc,metrics.body)).toBeLessThanOrEqual(metrics.viewport+2);
+};
 
-test('V20 adds cinematic components without adding homepage sections',async({page})=>{
+test('V20 cinematic runtime is bridged onto eight V21 commercial scenes',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await openHome(page);
+
   await expect(page.locator('[data-scene]')).toHaveCount(8);
-  await expect(page.locator('[data-v18-reel],.v18-reel')).toHaveCount(0);
+  for(const scene of ['hero','services','growth-engine','brayro-os','work','process','founder','contact']){
+    await expect(page.locator(`[data-scene="${scene}"]`)).toHaveCount(1);
+  }
+
+  await expect(page.locator('link[href="/cinematic-v20.css"]')).toHaveCount(1);
+  await expect(page.locator('script[src="/cinematic-v20.js"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/v21-cinematic-bridge.css"]')).toHaveCount(1);
+  await expect(page.locator('script[src="/v21-cinematic-bridge.js"]')).toHaveCount(1);
+  await expect(page.locator('[data-v20-scene-rail]')).toHaveCount(1);
+  await expect(page.locator('[data-v20-rail-dot]')).toHaveCount(8);
   await expect(page.locator('[data-v20-lens]')).toHaveCount(1);
   await expect(page.locator('[data-v20-text-cycle]')).toHaveCount(1);
-  await expect(page.locator('[data-v20-signal]')).toHaveCount(1);
-  await expect(page.locator('[data-v20-selector]')).toHaveCount(1);
-  await expect(page.locator('[data-v20-film-gate]')).toHaveCount(1);
-  await expect(page.locator('[data-v20-aperture]')).toHaveCount(1);
-  await expect(page.locator('[data-v20-data-path]')).toHaveCount(2);
-  await expect(page.locator('[data-v20-rate-light]')).toHaveCount(3);
-  await expect(page.locator('[data-v20-portrait-scan]')).toHaveCount(1);
-  await expect(page.locator('[data-v20-lines]')).toHaveCount(1);
-  await expect(page.locator('[data-v20-button-shine]')).toHaveCount(2);
-  await expect(page.locator('[data-v20-scene-rail]')).toHaveCount(1);
+  await expect(page.locator('#services [data-v20-signal]')).toHaveCount(1);
+  await expect(page.locator('[data-ig-demo] .v21-system-pulse')).toHaveCount(1);
 });
 
-test('scene rail, selector and film polish respond to one continuous journey',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});
-  await openHome(page);
-  await page.locator('#services').scrollIntoViewIfNeeded();
-  const selector=page.locator('[data-v20-selector]');
-  const before=await selector.evaluate(node=>getComputedStyle(node).transform);
-  await page.locator('[data-v15-control="2"]').click();
-  await expect(page.locator('#services')).toHaveAttribute('data-play-state','build');
-  await expect.poll(()=>selector.evaluate(node=>getComputedStyle(node).transform)).not.toBe(before);
-  await page.locator('#work').scrollIntoViewIfNeeded();
-  await page.waitForFunction(()=>document.body.dataset.v20Scene==='work');
-  await expect(page.locator('[data-v20-rail-label]')).toHaveText('WORK');
-  await expect.poll(()=>page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--v20-page'))||0)).toBeGreaterThan(.14);
-  await page.locator('.editorial-sequence').scrollIntoViewIfNeeded();
-  await expect.poll(()=>page.locator('.editorial-sequence').evaluate(node=>getComputedStyle(node).getPropertyValue('--v20-film-scan').trim())).not.toBe('');
-});
-
-test('spring pointer polish follows live element positions without layout regression',async({page})=>{
+test('scene rail follows the V21 Growth Engine, OS, proof and delivery chapters',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await openHome(page);
 
-  const card=page.locator('#ai-systems .v12-product-card').first();
-  await card.scrollIntoViewIfNeeded();
-  await dispatchPointer(card,.72,.28);
-  await expect.poll(()=>cssNumber(card,'--v20-spot-o')).toBeGreaterThan(.55);
-  await expect.poll(()=>cssNumber(card,'--v20-local-x')).toBeGreaterThan(55);
-
-  const rate=page.locator('#plans [data-v14-rate]').first();
-  await rate.scrollIntoViewIfNeeded();
-  await dispatchPointer(rate,.7,.35);
-  await expect(rate.locator('[data-v20-rate-light]')).toHaveCount(1);
-  await expect.poll(()=>cssNumber(rate,'--v20-spot-o')).toBeGreaterThan(.55);
-  expect(await rate.evaluate(node=>getComputedStyle(node,'::after').content)).not.toBe('none');
-
-  await page.locator('#top').scrollIntoViewIfNeeded();
-  const cta=page.locator('.primary-action.magnetic').first();
-  await dispatchPointer(cta,.84,.65);
-  await expect.poll(async()=>Math.abs(await cssNumber(cta,'--v20-mag-x'))).toBeGreaterThan(.5);
+  for(const [selector,label] of [
+    ['#growth-engine','GROWTH ENGINE'],
+    ['#brayro-os','BRAYRO OS'],
+    ['#work','WORK'],
+    ['[data-scene="process"]','PROCESS'],
+    ['#studio','FOUNDER'],
+    ['#contact','CONTACT']
+  ]){
+    await page.locator(selector).scrollIntoViewIfNeeded();
+    await expect.poll(()=>page.evaluate(()=>document.body.dataset.v20Scene||'')).not.toBe('');
+    await expect.poll(()=>page.locator('[data-v20-rail-label]').textContent()).toBe(label);
+  }
 });
 
-test('V20 stays free of runtime errors while traversing the full homepage',async({page})=>{
+test('V21 bridge gives new growth-system surfaces spring spotlight feedback',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await openHome(page);
+  const demo=page.locator('[data-ig-demo]');
+  await demo.scrollIntoViewIfNeeded();
+  const box=await demo.boundingBox();
+  expect(box).not.toBeNull();
+  await page.mouse.move(box.x+box.width*.72,box.y+Math.min(box.height*.35,260));
+  await expect.poll(()=>demo.evaluate(node=>Number.parseFloat(getComputedStyle(node).getPropertyValue('--v21-spot-o'))||0)).toBeGreaterThan(.45);
+  await expect.poll(()=>demo.evaluate(node=>Number.parseFloat(getComputedStyle(node).getPropertyValue('--v21-spot-x'))||0)).toBeGreaterThan(55);
+
+  await page.locator('[data-ig-next]').click();
+  await expect(page.locator('[data-ig-demo] .v21-system-pulse')).toHaveAttribute('data-state','moving');
+});
+
+test('V20 + V21 runtime stays error-free through the core commercial journey',async({page})=>{
   const errors=[];
   page.on('pageerror',error=>errors.push(error.message));
   page.on('console',msg=>{if(msg.type()==='error')errors.push(msg.text())});
   await page.setViewportSize({width:1440,height:900});
   await openHome(page);
-  for(const selector of ['#top','#services','.editorial-sequence','#work','#ai-systems','#plans','#studio','#contact']){
+  for(const selector of ['#top','#services','#growth-engine','#brayro-os','#work','[data-scene="process"]','#studio','#contact']){
     await page.locator(selector).scrollIntoViewIfNeeded();
     await page.waitForTimeout(100);
   }
+  await page.locator('#growth-engine [data-ig-next]').click();
   expect(errors).toEqual([]);
 });
 
-test('V20 overlays do not create horizontal overflow across key viewports',async({page})=>{
+test('cinematic bridge creates no horizontal overflow across key viewports',async({page})=>{
   for(const [width,height] of [[320,720],[390,844],[768,1024],[1440,900],[1920,1080]]){
     await page.setViewportSize({width,height});
     await openHome(page);
-    expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth),`${width}x${height}`).toBeLessThanOrEqual(1);
+    await expectNoHorizontalOverflow(page);
   }
 });
 
-test('reduced motion keeps decorative motion static and core interactions usable',async({browser})=>{
+test('reduced motion keeps V21 cinematic bridge static and core controls usable',async({browser})=>{
   const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});
   const page=await context.newPage();
   await openHome(page);
   await expect(page.locator('[data-scene]')).toHaveCount(8);
-  await expect(page.locator('[data-v20-lines]')).toHaveCount(1);
-  await expect(page.locator('[data-v20-rate-light]')).toHaveCount(3);
-  expect(await page.locator('.v20-signal-field__orbit').first().evaluate(node=>getComputedStyle(node).animationName)).toBe('none');
-  expect(await page.locator('.v20-data-path i').first().evaluate(node=>getComputedStyle(node,'::after').animationName)).toBe('none');
-  expect(await page.locator('.v20-background-lines i').first().evaluate(node=>getComputedStyle(node).animationName)).toBe('none');
-  await page.locator('#services [data-v15-control="3"]').click();
-  await expect(page.locator('#services')).toHaveAttribute('data-play-state','ai');
-  await page.locator('#contact').scrollIntoViewIfNeeded();
-  await page.locator('[data-project-type="ai"]').click();
-  await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
+  await expect(page.locator('#services [data-v20-signal]')).toHaveCount(1);
+  await expect(page.locator('[data-ig-demo] .v21-system-pulse')).toHaveCount(1);
+  expect(await page.locator('.v21-system-pulse i').first().evaluate(node=>getComputedStyle(node).animationName)).toBe('none');
+  await page.locator('#growth-engine [data-ig-play]').click();
+  await expect(page.locator('#growth-engine [data-ig-progress]')).toContainText('STEP 02');
   await context.close();
 });
 
-test('final polish keeps homepage lean and skip links keyboard-only',async({page})=>{
+test('homepage remains lean and skip links stay keyboard-only',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/',{waitUntil:'networkidle'});
   await expect(page.locator('link[href="/scrollcraft.css"]')).toHaveCount(0);

@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /outbound-fresh/
+
+Sitemap: https://brayroai.vercel.app/sitemap.xml

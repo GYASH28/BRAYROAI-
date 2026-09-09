@@ -28,9 +28,13 @@ test('V20 cinematic runtime is bridged onto eight V21 commercial scenes',async({
   await openHome(page);
 
   await expect(page.locator('[data-scene]')).toHaveCount(8);
-  for(const scene of ['hero','services','growth-engine','brayro-os','work','process','founder','contact']){
+  for(const scene of ['hero','growth-services','growth-engine','brayro-os','work','process','founder','contact']){
     await expect(page.locator(`[data-scene="${scene}"]`)).toHaveCount(1);
   }
+  await expect(page.locator('#services')).toContainText('BRAYRO GROWTH ENGINE');
+  await expect(page.locator('#services')).not.toHaveAttribute('data-v15-play','');
+  await expect(page.locator('#services')).not.toHaveAttribute('data-v14-reel','');
+  await expect(page.locator('#services')).not.toHaveAttribute('data-v13-ledger','');
 
   await expect(page.locator('link[href="/cinematic-v20.css"]')).toHaveCount(1);
   await expect(page.locator('script[src="/cinematic-v20.js"]')).toHaveCount(1);
@@ -44,11 +48,12 @@ test('V20 cinematic runtime is bridged onto eight V21 commercial scenes',async({
   await expect(page.locator('[data-ig-demo] .v21-system-pulse')).toHaveCount(1);
 });
 
-test('scene rail follows the V21 Growth Engine, OS, proof and delivery chapters',async({page})=>{
+test('scene rail follows the V21 solutions, Growth Engine, OS, proof and delivery chapters',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await openHome(page);
 
   for(const [selector,label] of [
+    ['#services','SOLUTIONS'],
     ['#growth-engine','GROWTH ENGINE'],
     ['#brayro-os','BRAYRO OS'],
     ['#work','WORK'],

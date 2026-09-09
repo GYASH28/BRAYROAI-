@@ -40,11 +40,14 @@ for(const rejected of ['Turn missed enquiries into booked customers','BRAYRO Gro
 }
 
 // This pass is intentionally limited to deterministic supporting-copy and metadata polish.
-requireText(vite,'built to make your business easier to understand, trust and use','safe hero support copy');
+requireText(vite,'built to make businesses easier to understand and trust','safe hero support copy');
 requireText(vite,'A real client website, built for browsing and enquiries.','safe proof copy');
 requireText(vite,'smallest sensible scope—not force a bigger package','safe contact reassurance');
 requireText(vite,'rel="canonical"','canonical metadata');
 requireText(vite,'data-safe-v20-meta','safe metadata marker');
+requireText(vite,'data-layout-stable-fonts','layout-stable hero typography');
+requireText(vite,'.opening-sequence{animation:openingAway 0s .90s both}','crisper desktop opening');
+requireText(vite,'.opening-sequence{animation-delay:.80s}','crisper mobile opening');
 
 // V18/V20 cinematic layers must remain mounted exactly as the current production architecture expects.
 requireText(vite,'/cinematic-v18.css','V18 cinematic CSS');
@@ -52,4 +55,4 @@ requireText(vite,'/cinematic-v18.js','V18 cinematic JS');
 requireText(vite,'/cinematic-v20.css','V20 cinematic CSS');
 requireText(vite,'/cinematic-v20.js','V20 cinematic JS');
 
-console.log('Safe V20 polish integrity passed: visual structure and pricing preserved; only scoped copy/metadata refinements are allowed.');
+console.log('Safe V20 polish integrity passed: visual structure and pricing preserved; only scoped copy/metadata/performance refinements are allowed.');

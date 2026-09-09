@@ -2,6 +2,16 @@ import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 
 const googleFontsHref='https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
+const productionOrigin='https://brayroai.vercel.app';
+
+const pagePathFor=(filename='')=>{
+  if(filename.endsWith('/plans.html')) return '/plans';
+  if(filename.endsWith('/founder.html')) return '/founder';
+  if(filename.endsWith('/terms.html')) return '/terms';
+  if(filename.endsWith('/ai-workflow-audit.html')) return '/ai-workflow-audit';
+  if(filename.endsWith('/company-second-brain.html')) return '/company-second-brain';
+  return '/';
+};
 
 const experienceTransform={
   name:'brayro-experience-transform',
@@ -10,7 +20,9 @@ const experienceTransform={
     handler(html,context){
       const filename=context?.filename||'';
       const isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html');
+      const isPlans=filename.endsWith('/plans.html');
       const isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html');
+      const canonicalUrl=`${productionOrigin}${pagePathFor(filename)}`;
 
       // Shared finish across every public page. The skip link remains fully
       // keyboard-accessible but never appears as stray visible chrome until it
@@ -23,14 +35,22 @@ const experienceTransform={
   </style>\n</head>`);
       }
 
+      // Low-risk discoverability upgrade: canonical and share-image metadata only.
+      // This deliberately does not alter page structure, styling, routing or copy hierarchy.
+      if(!html.includes('rel="canonical"')){
+        html=html.replace('</head>',`  <link rel="canonical" href="${canonicalUrl}" data-safe-v20-meta>\n  <meta property="og:url" content="${canonicalUrl}">\n  <meta property="og:image" content="${productionOrigin}/assets/hero-background.webp">\n  <meta name="twitter:image" content="${productionOrigin}/assets/hero-background.webp">\n</head>`);
+      }
+
       if(isAiDetail&&!html.includes('href="/v15-accessibility.css"')){
         html=html.replace('</head>','  <link rel="stylesheet" href="/v15-accessibility.css" data-v15-accessibility>\n</head>');
       }
 
       if(isHome){
+        // Keep typography layout-stable. The previous async stylesheet swap could
+        // reflow the bottom-anchored hero copy after first paint on mobile.
         html=html.replace(
           `<link href="${googleFontsHref}" rel="stylesheet">`,
-          `<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'">\n  <noscript><link rel="stylesheet" href="${googleFontsHref}"></noscript>`
+          `<link href="${googleFontsHref}" rel="stylesheet" data-layout-stable-fonts>`
         );
 
         // The homepage no longer mounts ScrollCraft. V19/V20 own its eight flow scenes,
@@ -38,6 +58,43 @@ const experienceTransform={
         // preserving ScrollCraft on the dedicated pages that still use it.
         html=html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/,'\n  ');
         html=html.replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/,'\n  ');
+
+        // Safe commercial polish: keep the exact V20 hero/art direction and improve only
+        // the supporting sentence while preserving the original mobile rhythm.
+        html=html.replace(
+          'Distinctive websites, digital products and practical AI systems. Strategy through launch, directed as one complete production.',
+          'Distinctive websites, digital products and practical AI systems—built to make businesses easier to understand and trust. Strategy through launch, one connected production.'
+        );
+
+        // Strengthen proof without inventing metrics or introducing a new case-study layout.
+        html=html.replace(
+          'Move across the index. Real client work stays first; BRAYROAI lab entries show the interaction and system thinking behind the studio itself.',
+          'Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.'
+        );
+        html=html.replace(
+          'Catalogue-led yarn website / responsive commerce enquiry experience',
+          'Verified client work / catalogue-led yarn website / responsive enquiry experience'
+        );
+        html=html.replace(
+          'A live business interface, not a fake case study.',
+          'A real client website, built for browsing and enquiries.'
+        );
+        html=html.replace(
+          'A catalogue-led yarn website designed for confident browsing and direct enquiries across desktop and mobile.',
+          'A live catalogue-led yarn website shaped around clear product browsing, responsive usability and direct enquiries across desktop and mobile.'
+        );
+
+        // Keep the founder visual and headline; make the benefit of founder-led delivery clearer.
+        html=html.replace(
+          'Yash leads strategy, interface and implementation. The idea stays intact because it does not disappear between departments.',
+          'Yash leads strategy, interface and implementation, so clients stay close to the person making the decisions instead of being passed between departments.'
+        );
+
+        // Keep the existing contact scene and CTA. Add one practical reassurance line only.
+        html=html.replace(
+          'WhatsApp is fastest. A short project brief is ready in email if you need it.',
+          'WhatsApp is fastest. Tell us what needs to improve and we will recommend the smallest sensible scope—not force a bigger package.'
+        );
 
         // Make the 21st-inspired hero text cycle part of initial HTML instead of
         // injecting a layout-affecting node after first paint. This removes CLS.
@@ -59,22 +116,21 @@ const experienceTransform={
           '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" fetchpriority="high" alt="Yash Ganesh, founder of BRAYROAI.">'
         );
 
-        // Keep the opening sequence, but make it a crisp title-card rather than
-        // holding first paint hostage for nearly two seconds. The same shutter/
-        // scan language remains, only the pacing is tightened.
+        // Keep the same opening sequence and choreography; only trim dead time so
+        // the hero can become paint-eligible sooner on slower mobile profiles.
         if(!html.includes('data-v21-critical')){
           html=html.replace('</head>',`  <style data-v21-critical>
-    .opening-sequence{animation:openingAway 0s 1.08s both}
-    .opening-sequence__mark{animation-duration:.66s}
-    .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.74s;animation-delay:.24s}
-    .opening-sequence>span{animation-duration:.56s;animation-delay:.16s}
-    .site-nav{animation-duration:.46s;animation-delay:.58s}
+    .opening-sequence{animation:openingAway 0s .90s both}
+    .opening-sequence__mark{animation-duration:.60s}
+    .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.64s;animation-delay:.20s}
+    .opening-sequence>span{animation-duration:.50s;animation-delay:.13s}
+    .site-nav{animation-duration:.42s;animation-delay:.50s}
     @media(max-width:760px){
-      .opening-sequence{animation-delay:.92s}
-      .opening-sequence__mark{animation-duration:.58s}
-      .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.64s;animation-delay:.2s}
-      .opening-sequence>span{animation-duration:.48s;animation-delay:.12s}
-      .site-nav{animation-delay:.48s}
+      .opening-sequence{animation-delay:.80s}
+      .opening-sequence__mark{animation-duration:.54s}
+      .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.57s;animation-delay:.17s}
+      .opening-sequence>span{animation-duration:.43s;animation-delay:.10s}
+      .site-nav{animation-delay:.42s}
     }
   </style>\n</head>`);
         }
@@ -115,6 +171,15 @@ const experienceTransform={
             '<script src="/brayro-v14.js"></script>\n  <script src="/brayro-v15.js"></script>'
           );
         }
+      }
+
+      if(isPlans){
+        // Plans remain exactly the same offers and prices. Only the framing becomes
+        // more useful for a client who is unsure which relationship fits.
+        html=html.replace(
+          'Use a monthly partnership for ongoing website attention, a one-time build for a complete launch, or a focused AI system when the work inside the company needs to become easier.',
+          'Choose monthly support for ongoing website improvement, a one-time build for a complete launch, or a focused AI system for internal work. If you are unsure, start with the outcome you need and we will point you to the smallest sensible scope.'
+        );
       }
 
       if(!html.includes('href="/experience-motion-v16.css"')){

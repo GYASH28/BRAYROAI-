@@ -51,7 +51,7 @@ jobs:
           test "$STATE" = "success"; test -n "$PROD_URL"
           echo "PROD_URL=$PROD_URL" >> "$GITHUB_ENV"
           HTTP_CODE=$(curl -L -sS --max-time 25 -o /tmp/brayroai-prod-home.html -w '%{http_code}' "$PROD_URL/" || true)
-          if [ "$HTTP_CODE" = "200" ] && grep -q 'BRAYROAI' /tmp/brayroai-prod-home.html && grep -q 'Digital, designed' /tmp/brayroai-prod-home.html; then
+          if [ "$HTTP_CODE" = "200" ] && grep -q 'BRAYROAI' /tmp/brayroai-prod-home.html && grep -q 'Turn missed enquiries' /tmp/brayroai-prod-home.html; then
             echo "QA_URL=$PROD_URL" >> "$GITHUB_ENV"; echo "QA_MODE=vercel-public" >> "$GITHUB_ENV"
           else
             echo "QA_URL=http://127.0.0.1:4173" >> "$GITHUB_ENV"; echo "QA_MODE=vercel-protected-local-build" >> "$GITHUB_ENV"
@@ -61,10 +61,21 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-production-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'BRAYROAI'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Turn missed enquiries'; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-production-preview.log; exit 1
+      - name: Verify critical V21 routes
+        run: |
+          curl -fsS "$QA_URL/" | grep -q 'BRAYRO GROWTH ENGINE'
+          curl -fsS "$QA_URL/audit" | grep -q 'Find the highest-value leak'
+          curl -fsS "$QA_URL/us" | grep -q 'US service businesses'
+          curl -fsS "$QA_URL/uae" | grep -q 'UAE enquiries'
+          curl -fsS "$QA_URL/plans" | grep -q 'Pay for a connected outcome'
+          curl -fsS "$QA_URL/work/fakhrimart" | grep -q 'VERIFIED CLIENT WORK'
+          curl -fsS "$QA_URL/privacy" | grep -q 'Know what happens to the information you share'
+          curl -fsS "$QA_URL/ai-workflow-audit" | grep -q 'AI WORKFLOW AUDIT'
+          curl -fsS "$QA_URL/company-second-brain" | grep -q 'COMPANY SECOND BRAIN'
       - name: Production-equivalent concurrent load test
         env:
           BASE_URL: ${{ env.QA_URL }}

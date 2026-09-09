@@ -4,6 +4,33 @@ import { resolve } from 'node:path';
 const googleFontsHref='https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
 const siteOrigin='https://brayroai.vercel.app';
 
+const cleanRouteMap=new Map([
+  ['/plans','/plans.html'],['/founder','/founder.html'],['/terms','/terms.html'],['/privacy','/privacy.html'],
+  ['/audit','/audit.html'],['/us','/us.html'],['/uae','/uae.html'],['/lab','/lab.html'],
+  ['/work/fakhrimart','/fakhrimart.html'],['/case-studies/fakhrimart','/fakhrimart.html'],
+  ['/ai-workflow-audit','/ai-workflow-audit.html'],['/company-second-brain','/company-second-brain.html']
+]);
+
+const cleanRouteParity={
+  name:'brayro-clean-route-parity',
+  configureServer(server){
+    server.middlewares.use((req,_res,next)=>{
+      const [pathname,query='']=String(req.url||'/').split('?');
+      const target=cleanRouteMap.get(pathname.replace(/\/$/,''));
+      if(target)req.url=query?`${target}?${query}`:target;
+      next();
+    });
+  },
+  configurePreviewServer(server){
+    server.middlewares.use((req,_res,next)=>{
+      const [pathname,query='']=String(req.url||'/').split('?');
+      const target=cleanRouteMap.get(pathname.replace(/\/$/,''));
+      if(target)req.url=query?`${target}?${query}`:target;
+      next();
+    });
+  }
+};
+
 const experienceTransform={
   name:'brayro-experience-transform',
   transformIndexHtml:{
@@ -55,6 +82,9 @@ const experienceTransform={
         html=html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/,'\n  ');
         html=html.replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/,'\n  ');
 
+        // Give the V21 commercial capability scene a new identity so the preserved
+        // V12/V14/V15 capability runtimes cannot replace its markup after load.
+        html=html.replace('id="services" class="scene v12-capabilities" data-sc-act="flow" data-scene="services"','id="services" class="scene v12-capabilities" data-sc-act="flow" data-scene="growth-services"');
         html=html.replace(
           '<section id="growth-engine" class="ig-section ig-demo"',
           '<section id="growth-engine" class="scene ig-section ig-demo" data-sc-act="flow" data-scene="growth-engine"'
@@ -182,7 +212,7 @@ const experienceTransform={
 
 export default defineConfig({
   publicDir:'public',
-  plugins:[experienceTransform],
+  plugins:[cleanRouteParity,experienceTransform],
   build:{
     outDir:'dist',
     emptyOutDir:true,

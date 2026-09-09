@@ -12,6 +12,7 @@
     {"source":"/plans","destination":"/plans.html"},
     {"source":"/founder","destination":"/founder.html"},
     {"source":"/terms","destination":"/terms.html"},
+    {"source":"/privacy","destination":"/privacy.html"},
     {"source":"/audit","destination":"/audit.html"},
     {"source":"/us","destination":"/us.html"},
     {"source":"/uae","destination":"/uae.html"},

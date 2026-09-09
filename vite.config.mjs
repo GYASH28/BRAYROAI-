@@ -52,6 +52,11 @@ const experienceTransform={
           '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" fetchpriority="high" alt="Yash Ganesh, founder of BRAYROAI.">'
         );
 
+        html=html.replace(
+          '<a class="text-link magnetic" data-cursor-label="LIVE ↗" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">Visit the live website <span>↗</span></a>',
+          '<a class="text-link magnetic" data-cursor-label="CASE ↗" href="/work/fakhrimart">Read the verified case study <span>↗</span></a>'
+        );
+
         if(!html.includes('data-v21-critical')){
           html=html.replace('</head>',`  <style data-v21-critical>
     .opening-sequence{animation:openingAway 0s 1.08s both}
@@ -150,6 +155,7 @@ export default defineConfig({
         us:resolve(process.cwd(),'us.html'),
         uae:resolve(process.cwd(),'uae.html'),
         lab:resolve(process.cwd(),'lab.html'),
+        fakhrimart:resolve(process.cwd(),'fakhrimart.html'),
         aiWorkflowAudit:resolve(process.cwd(),'ai-workflow-audit.html'),
         secondBrain:resolve(process.cwd(),'company-second-brain.html')
       }

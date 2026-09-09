@@ -29,7 +29,9 @@
       this.pageCurrent = 0;
       this.pageTarget = 0;
       this.scenes = [];
+      this.metrics = new Map();
       this.collectScenes();
+      this.refreshMetrics();
       this.bind();
       this.schedule(true);
     }
@@ -38,16 +40,26 @@
       this.scenes = [...document.querySelectorAll('main [data-scene]')].map((scene,index) => ({scene,index,key:scene.dataset.scene || `scene-${index}`,current:.5,target:.5,focus:0,targetFocus:0}));
     }
 
+    refreshMetrics(){
+      this.vh=innerHeight;
+      this.vw=innerWidth;
+      const y=scrollY;
+      this.scenes.forEach(record=>{
+        const rect=record.scene.getBoundingClientRect();
+        this.metrics.set(record.scene,{top:rect.top+y,height:rect.height});
+      });
+    }
+
     bind(){
       addEventListener('scroll',() => this.schedule(),{passive:true});
-      addEventListener('resize',() => {this.vh=innerHeight;this.vw=innerWidth;this.collectScenes();this.schedule(true)},{passive:true});
-      addEventListener('pageshow',() => this.schedule(true),{passive:true});
-      document.fonts?.ready?.then(() => this.schedule(true));
+      addEventListener('resize',() => {this.collectScenes();this.refreshMetrics();this.schedule(true)},{passive:true});
+      addEventListener('pageshow',() => {this.refreshMetrics();this.schedule(true)},{passive:true});
+      document.fonts?.ready?.then(() => {this.refreshMetrics();this.schedule(true)});
     }
 
     schedule(force=false){if(force)this.force=true;if(!this.frame)this.frame=requestAnimationFrame(()=>this.tick())}
-    sceneProgress(rect){return clamp01((this.vh-rect.top)/Math.max(rect.height+this.vh,1))}
-    sceneFocus(rect){const center=rect.top+rect.height*.5;const distance=Math.abs(center-this.vh*.5);return clamp01(1-distance/Math.max(this.vh*.88,1))}
+    sceneProgress(top,height){return clamp01((this.vh-top)/Math.max(height+this.vh,1))}
+    sceneFocus(top,height){const center=top+height*.5;const distance=Math.abs(center-this.vh*.5);return clamp01(1-distance/Math.max(this.vh*.88,1))}
     set(scene,name,value){scene.style.setProperty(name,value)}
 
     paintHero(scene,phase,focus){
@@ -138,10 +150,16 @@
       this.set(scene,'--v19-contact-orb-b-rot',deg(phase*-6*amp));
     }
 
-    paintScene(record,force){
-      const rect=record.scene.getBoundingClientRect();
-      record.target=this.sceneProgress(rect);
-      record.targetFocus=this.sceneFocus(rect);
+    paintScene(record,force,y){
+      const metric=this.metrics.get(record.scene);
+      if(!metric)return 0;
+      const top=metric.top-y;
+      const bottom=top+metric.height;
+      // Keep the current and adjacent scenes alive, but stop spending CPU/GPU
+      // updating scenes that are several viewports away.
+      if(!force&&(bottom < -this.vh*1.15 || top > this.vh*2.15))return 0;
+      record.target=this.sceneProgress(top,metric.height);
+      record.targetFocus=this.sceneFocus(top,metric.height);
       const rate=reduced||force?1:(compact?.16:.105);
       record.current=lerp(record.current,record.target,rate);
       record.focus=lerp(record.focus,record.targetFocus,reduced||force?1:(compact?.18:.125));
@@ -178,7 +196,7 @@
       const force=!!this.force;
       this.force=false;
       let unsettled=Math.abs(this.pageCurrent-this.pageTarget);
-      this.scenes.forEach(record=>{unsettled+=this.paintScene(record,force)});
+      this.scenes.forEach(record=>{unsettled+=this.paintScene(record,force,y)});
       const stillMoving=Math.abs(delta)>.01||Math.abs(this.velocity)>.08||this.speed>.012||unsettled>.0025;
       if(!reduced&&stillMoving)this.schedule();
     }

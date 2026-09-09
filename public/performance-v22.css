@@ -24,12 +24,6 @@
 
 html[data-page-hidden="true"] *,html[data-page-hidden="true"] *::before,html[data-page-hidden="true"] *::after{animation-play-state:paused!important}
 
-/* Keep touch devices free from hover-only compositing layers. The visible design is unchanged. */
-@media(hover:none),(pointer:coarse){
-  .v20-rate-light{display:none}
-  body.v16-motion [data-v16-surface]::after{display:none}
-}
-
 @media(prefers-reduced-motion:reduce){
   @view-transition{navigation:auto}
   ::view-transition-old(root),::view-transition-new(root){animation:none!important}

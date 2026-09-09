@@ -84,7 +84,7 @@ async function browserLoad(){
       assert(await page.locator(`[data-scene="${scene}"]`).count()===1,`${scene} scene missing @${viewport.width}`);
     }
     assert(await page.locator('#services').getAttribute('data-scene')==='growth-services',`V21 solutions scene identity regressed @${viewport.width}`);
-    assert(!(await page.locator('#services').hasAttribute?.('data-v15-play')),`V15 capability runtime hijacked V21 @${viewport.width}`);
+    assert(await page.locator('#services').getAttribute('data-v15-play')===null,`V15 capability runtime hijacked V21 @${viewport.width}`);
     assert(await page.locator('[data-v20-lens]').count()===1,`V20 hero lens missing @${viewport.width}`);
     assert(await page.locator('#services [data-v20-signal]').count()===1,`V21 solution signal missing @${viewport.width}`);
     assert(await page.locator('[data-v20-scene-rail]').count()===1,`scene rail missing @${viewport.width}`);
@@ -167,12 +167,14 @@ async function browserLoad(){
 
   // Legacy detail products remain available as explicitly preserved routes.
   await page.goto(`${base}/ai-workflow-audit`,{waitUntil:'networkidle'});
-  assert((await page.locator('main').textContent()).includes('AI Workflow Audit'),'Legacy AI Workflow Audit route missing');
+  assert(await page.locator('body.ai-detail--audit').count()===1,'Legacy AI Workflow Audit route missing');
+  assert(await page.locator('[data-process-lab]').count()===1,'Legacy AI Workflow Audit lab missing');
   assert(await page.locator('[data-process-tab]').count()===5,'Legacy audit process incomplete');
   await page.locator('[data-process-tab]').last().click();
 
   await page.goto(`${base}/company-second-brain`,{waitUntil:'networkidle'});
-  assert((await page.locator('main').textContent()).includes('Company Second Brain'),'Legacy Second Brain route missing');
+  assert(await page.locator('body.ai-detail--brain').count()===1,'Legacy Second Brain route missing');
+  assert(await page.locator('[data-architecture]').count()===1,'Legacy Second Brain architecture missing');
   assert(await page.locator('[data-arch-node]').count()===5,'Second Brain architecture sources incomplete');
   await page.locator('[data-arch-node="whatsapp"]').click();
   assert((await page.locator('[data-arch-status]').textContent()).includes('WhatsApp'),'Second Brain integration interaction failed');

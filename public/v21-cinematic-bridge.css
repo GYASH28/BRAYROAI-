@@ -1,0 +1,22 @@
+/* BRAYROAI V21 — bridge the V20 cinematic language onto the growth-system DOM. */
+body.home-v20 #services .v12-story__visual{position:relative;isolation:isolate;overflow:hidden}
+body.home-v20 #services .v12-story__visual>.v20-signal-field{z-index:0;opacity:.3}
+body.home-v20 #services .v12-story__visual>*:not(.v20-signal-field){position:relative;z-index:1}
+body.home-v20 #services .v20-signal-field__orbit{border-color:rgba(255,255,255,.1)}
+body.home-v20 #services .v20-signal-field__orbit:nth-child(2){border-color:rgba(255,90,31,.18)}
+
+body.home-v20 [data-ig-demo],body.home-v20 .ig-flow-panel--active,body.home-v20 .ig-os-window,body.home-v20 .v12-featured-case,body.home-v20 .ig-calculator{position:relative;isolation:isolate}
+body.home-v20 [data-ig-demo]::after,body.home-v20 .ig-flow-panel--active::after,body.home-v20 .ig-os-window::after,body.home-v20 .v12-featured-case::after,body.home-v20 .ig-calculator::after{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;background:radial-gradient(circle at var(--v21-spot-x,50%) var(--v21-spot-y,50%),rgba(255,255,255,.075),rgba(255,90,31,.032) 24%,transparent 58%);opacity:var(--v21-spot-o,0);will-change:opacity}
+body.home-v20 [data-ig-demo]>* ,body.home-v20 .ig-flow-panel--active>* ,body.home-v20 .ig-os-window>* ,body.home-v20 .v12-featured-case>* ,body.home-v20 .ig-calculator>*{position:relative;z-index:1}
+
+.v21-system-pulse{position:absolute!important;z-index:0!important;inset:0;overflow:hidden;pointer-events:none;opacity:.28}
+.v21-system-pulse i{position:absolute;left:-15%;width:130%;height:1px;background:linear-gradient(90deg,transparent,rgba(62,123,255,.12),rgba(255,90,31,.32),rgba(255,255,255,.1),transparent);transform:translate3d(-12%,0,0);animation:v21-system-pulse 4.8s cubic-bezier(.16,1,.3,1) infinite;will-change:transform,opacity}
+.v21-system-pulse i:nth-child(1){top:26%}.v21-system-pulse i:nth-child(2){top:50%;animation-delay:-1.6s}.v21-system-pulse i:nth-child(3){top:74%;animation-delay:-3.2s}
+.v21-system-pulse[data-state="ready"] i{animation-play-state:paused;opacity:.3}.v21-system-pulse[data-state="moving"] i{animation-duration:3.4s}
+@keyframes v21-system-pulse{0%{transform:translate3d(-12%,0,0);opacity:.15}45%{opacity:.65}100%{transform:translate3d(18%,0,0);opacity:.12}}
+
+body.home-v20 .ig-demo-shell,body.home-v20 .ig-os-window{box-shadow:0 2.4rem 6rem rgba(0,0,0,.2)}
+body.home-v20 .ig-demo-shell:focus-within{box-shadow:0 2.4rem 6rem rgba(0,0,0,.24),0 0 0 1px rgba(62,123,255,.28)}
+
+@media(max-width:900px){.v20-scene-rail{display:none}.v21-system-pulse{opacity:.18}}
+@media(prefers-reduced-motion:reduce){.v21-system-pulse i{animation:none}.v21-system-pulse{opacity:.14}body.home-v20 [data-ig-demo]::after,body.home-v20 .ig-flow-panel--active::after,body.home-v20 .ig-os-window::after,body.home-v20 .v12-featured-case::after,body.home-v20 .ig-calculator::after{display:none}}

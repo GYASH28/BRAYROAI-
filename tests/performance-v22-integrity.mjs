@@ -37,7 +37,7 @@ requireText(v20,"root.style.getPropertyValue('--v19-speed')",'V20 inline speed r
 forbid(v20,"getComputedStyle(root).getPropertyValue('--v19-speed')",'V20 computed-style hot path');
 
 // Adaptive layer: offscreen animation pausing, image scheduling, network-aware prefetch and bounded frame sampling.
-for(const text of ['data.perfActive','IntersectionObserver','image.loading=\'lazy\'','link.rel=\'prefetch\'','saveData','this.remaining=120'])requireText(perf,text,'V22 scheduler');
+for(const text of ['dataset.perfActive','IntersectionObserver','image.loading=\'lazy\'','link.rel=\'prefetch\'','saveData','this.remaining=120'])requireText(perf,text,'V22 scheduler');
 requireText(perfCss,'@view-transition{navigation:auto}','cross-document view transitions');
 requireText(perfCss,'animation-play-state:paused!important','offscreen animation pause');
 forbid(perfCss,'transition: all','performance CSS');

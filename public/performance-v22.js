@@ -62,7 +62,7 @@
       if(this.prefetched.has(href))return;
       this.prefetched.add(href);
       const link=document.createElement('link');
-      link.rel='prefetch';link.href=href;link.as='document';
+      link.rel='prefetch';link.href=href;
       document.head.append(link);
     }
   }
@@ -77,27 +77,19 @@
     }
   }
 
-  class FrameHealth {
+  class PassiveHealth {
     constructor(){
-      this.samples=[];
-      this.last=0;
-      this.raf=0;
-      this.remaining=120;
-      if(document.hidden)return;
-      this.loop=timestamp=>{
-        if(this.last)this.samples.push(timestamp-this.last);
-        this.last=timestamp;
-        this.remaining-=1;
-        if(this.remaining<=0){
-          const sorted=[...this.samples].sort((a,b)=>a-b);
-          const p90=sorted[Math.floor(sorted.length*.9)]||16.7;
-          root.dataset.frameHealth=p90>28?'strained':'smooth';
-          this.raf=0;
-          return;
-        }
-        this.raf=requestAnimationFrame(this.loop);
-      };
-      this.raf=requestAnimationFrame(this.loop);
+      root.dataset.frameHealth='smooth';
+      if(!('PerformanceObserver' in window))return;
+      try{
+        let longTasks=0;
+        this.observer=new PerformanceObserver(list=>{
+          longTasks+=list.getEntries().length;
+          if(longTasks>2)root.dataset.frameHealth='strained';
+        });
+        this.observer.observe({type:'longtask',buffered:true});
+        setTimeout(()=>this.observer?.disconnect(),2500);
+      }catch{}
     }
   }
 
@@ -105,5 +97,5 @@
   new ImageScheduler();
   new InternalPrefetch();
   new PageState();
-  new FrameHealth();
+  new PassiveHealth();
 })();

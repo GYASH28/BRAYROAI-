@@ -5,6 +5,12 @@
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  function track(event, detail = {}) {
+    const safe = { event, path: window.location.pathname, ...detail };
+    window.dispatchEvent(new CustomEvent('brayro:analytics', { detail: safe }));
+    if (Array.isArray(window.dataLayer)) window.dataLayer.push(safe);
+  }
+
   const scenarios = {
     realEstate: {
       label: 'Real estate enquiry',
@@ -67,6 +73,7 @@
     let key = select?.value || 'realEstate';
     let step = 0;
     let timer = null;
+    let started = false;
 
     function renderScenario(reset = true) {
       const scenario = scenarios[key] || scenarios.realEstate;
@@ -88,6 +95,13 @@
       $$('[data-ig-event]', root).forEach((el, index) => el.classList.toggle('is-active', index <= step));
       pipeline.forEach((el, index) => el.classList.toggle('is-active', index === Math.min(Math.floor(step / 2), pipeline.length - 1)));
       if (progress) progress.textContent = `STEP ${String(step + 1).padStart(2, '0')} / ${String(scenario.events.length).padStart(2, '0')}`;
+      if (step === scenario.events.length - 1) track('growth_demo_completed', { scenario: key });
+    }
+
+    function markStarted() {
+      if (started) return;
+      started = true;
+      track('growth_demo_started', { scenario: key });
     }
 
     function stop() {
@@ -97,6 +111,7 @@
     }
 
     function advance(direction = 1) {
+      markStarted();
       const max = scenarios[key].events.length - 1;
       step = Math.max(0, Math.min(max, step + direction));
       renderStep();
@@ -106,11 +121,14 @@
     select?.addEventListener('change', () => {
       stop();
       key = select.value;
+      started = false;
       renderScenario(true);
+      track('growth_demo_scenario', { scenario: key });
     });
     prev?.addEventListener('click', () => { stop(); advance(-1); });
     next?.addEventListener('click', () => { stop(); advance(1); });
     play?.addEventListener('click', () => {
+      markStarted();
       if (timer) return stop();
       if (step >= scenarios[key].events.length - 1) step = 0;
       if (play) play.textContent = 'Pause';
@@ -134,6 +152,7 @@
     const revenue = $('[data-ig-revenue-opportunity]', root);
     const admin = $('[data-ig-admin-cost]', root);
     const hours = $('[data-ig-hours-recoverable]', root);
+    let tracked = false;
 
     const number = (input, fallback = 0) => {
       const value = Number.parseFloat(input?.value || '');
@@ -157,7 +176,13 @@
       if (hours) hours.textContent = `${recoverable.toFixed(1)} hrs / mo`;
     }
 
-    Object.values(fields).forEach(input => input?.addEventListener('input', render));
+    Object.values(fields).forEach(input => input?.addEventListener('input', () => {
+      if (!tracked) {
+        tracked = true;
+        track('opportunity_calculator_used');
+      }
+      render();
+    }));
     render();
   }
 
@@ -172,17 +197,50 @@
     const summary = $('[data-ig-audit-summary]', form);
     const email = $('[data-ig-audit-email]', form);
     const whatsapp = $('[data-ig-audit-whatsapp]', form);
+    const status = document.createElement('p');
+    status.className = 'sr-only';
+    status.setAttribute('aria-live', 'polite');
+    form.append(status);
     let index = 0;
     let goal = '';
+    let started = false;
+
+    function announce(message) {
+      status.textContent = '';
+      window.setTimeout(() => { status.textContent = message; }, 10);
+    }
 
     function render() {
       steps.forEach((step, i) => step.classList.toggle('is-active', i === index));
       if (progress) progress.textContent = `STEP ${index + 1} / ${steps.length}`;
       if (back) back.hidden = index === 0;
       if (next) next.textContent = index === steps.length - 1 ? 'Prepare request' : 'Continue';
+      const heading = $('h2', steps[index]);
+      if (heading && index > 0) heading.setAttribute('tabindex', '-1');
+    }
+
+    function validateCurrentStep() {
+      if (index === 0 && !goal) {
+        announce('Choose one priority before continuing.');
+        choices[0]?.focus();
+        return false;
+      }
+      const required = $$('input[required],select[required],textarea[required]', steps[index]);
+      const invalid = required.find(field => !field.checkValidity());
+      if (invalid) {
+        announce('Please complete the required fields before continuing.');
+        invalid.reportValidity();
+        invalid.focus();
+        return false;
+      }
+      return true;
     }
 
     choices.forEach(button => button.addEventListener('click', () => {
+      if (!started) {
+        started = true;
+        track('audit_started');
+      }
       choices.forEach(item => item.classList.remove('is-selected'));
       button.classList.add('is-selected');
       goal = button.dataset.igChoice || button.textContent.trim();
@@ -190,33 +248,41 @@
       choices.filter(item => item !== button).forEach(item => item.setAttribute('aria-pressed', 'false'));
     }));
 
-    back?.addEventListener('click', () => { index = Math.max(0, index - 1); render(); });
+    back?.addEventListener('click', () => {
+      index = Math.max(0, index - 1);
+      render();
+      $('h2', steps[index])?.focus();
+    });
+
     next?.addEventListener('click', () => {
-      if (index === 0 && !goal) {
-        choices[0]?.focus();
-        return;
-      }
+      if (!validateCurrentStep()) return;
       if (index < steps.length - 1) {
+        track('audit_step_completed', { step: index + 1 });
         index += 1;
         render();
+        $('h2', steps[index])?.focus();
         return;
       }
 
       const data = new FormData(form);
-      const name = data.get('name') || 'there';
-      const company = data.get('company') || 'your company';
+      const name = data.get('name') || 'Not provided';
+      const workEmail = data.get('email') || 'Not provided';
+      const company = data.get('company') || 'Not provided';
       const website = data.get('website') || 'Not provided';
       const region = data.get('region') || 'Global';
       const budget = data.get('budget') || 'Not sure yet';
       const notes = data.get('notes') || 'No additional notes';
-      const text = `Hi Yash, I want a BRAYROAI AI Growth Audit.\n\nName: ${name}\nCompany: ${company}\nWebsite: ${website}\nRegion: ${region}\nPriority: ${goal}\nBudget: ${budget}\nNotes: ${notes}`;
+      const text = `Hi Yash, I want a BRAYROAI AI Growth Audit.\n\nName: ${name}\nWork email: ${workEmail}\nCompany: ${company}\nWebsite: ${website}\nRegion: ${region}\nPriority: ${goal}\nBudget: ${budget}\nNotes: ${notes}`;
       const subject = `BRAYROAI AI Growth Audit — ${company}`;
       if (summary) summary.textContent = `Priority: ${goal} · Region: ${region} · Budget: ${budget}`;
       if (email) email.href = `mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
       if (whatsapp) whatsapp.href = `https://wa.me/919175524637?text=${encodeURIComponent(text)}`;
       form.dataset.ready = 'true';
+      announce('Your request is ready. Choose email or WhatsApp to send it.');
+      track('audit_prepared');
     });
 
+    form.addEventListener('submit', event => event.preventDefault());
     render();
   }
 
@@ -228,6 +294,23 @@
       const base = link.dataset.igWhatsappContext || 'I want to discuss a BRAYROAI Growth Engine.';
       link.href = `https://wa.me/919175524637?text=${encodeURIComponent(`${base} Region: ${region}.`)}`;
     });
+  }
+
+  function initCtaTracking() {
+    document.addEventListener('click', event => {
+      const link = event.target.closest('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      let name = '';
+      if (href === '/audit' || href.startsWith('/audit?')) name = 'audit_cta_clicked';
+      else if (href.includes('wa.me/')) name = 'whatsapp_clicked';
+      else if (href.startsWith('mailto:')) name = 'email_clicked';
+      else if (href.startsWith('/work/fakhrimart')) name = 'case_study_opened';
+      else if (href === '/us' || href.startsWith('/us?')) name = 'us_page_clicked';
+      else if (href === '/uae' || href.startsWith('/uae?')) name = 'uae_page_clicked';
+      else if (href.includes('fakhriyarns.vercel.app')) name = 'verified_client_site_clicked';
+      if (name) track(name);
+    }, { passive: true });
   }
 
   function initReveal() {
@@ -251,5 +334,6 @@
   initCalculator();
   initAuditForm();
   initRegionAwareLinks();
+  initCtaTracking();
   initReveal();
 })();

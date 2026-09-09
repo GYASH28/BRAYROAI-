@@ -15,13 +15,28 @@ const openPage=async(page,route='/')=>{
   await clearOpening(page);
 };
 
-const expectNoHorizontalOverflow=async page=>{
-  const metrics=await page.evaluate(()=>({
-    doc:document.documentElement.scrollWidth,
-    viewport:document.documentElement.clientWidth,
-    body:document.body.scrollWidth
-  }));
-  expect(Math.max(metrics.doc,metrics.body)).toBeLessThanOrEqual(metrics.viewport+2);
+const expectNoHorizontalOverflow=async(page,label='page')=>{
+  const metrics=await page.evaluate(()=>{
+    const viewport=document.documentElement.clientWidth;
+    const offenders=[...document.querySelectorAll('body *')].map(node=>{
+      const rect=node.getBoundingClientRect();
+      return {
+        tag:node.tagName.toLowerCase(),
+        id:node.id||'',
+        cls:typeof node.className==='string'?node.className.slice(0,120):'',
+        left:Math.round(rect.left*10)/10,
+        right:Math.round(rect.right*10)/10,
+        width:Math.round(rect.width*10)/10
+      };
+    }).filter(item=>item.width>0&&(item.right>viewport+2||item.left< -2)).sort((a,b)=>Math.max(b.right-viewport,-b.left)-Math.max(a.right-viewport,-a.left)).slice(0,8);
+    return {
+      doc:document.documentElement.scrollWidth,
+      viewport,
+      body:document.body.scrollWidth,
+      offenders
+    };
+  });
+  expect(Math.max(metrics.doc,metrics.body),`${label}: viewport=${metrics.viewport}, offenders=${JSON.stringify(metrics.offenders)}`).toBeLessThanOrEqual(metrics.viewport+2);
 };
 
 test('V21 homepage combines growth positioning with V20 cinematic assets',async({page})=>{
@@ -33,9 +48,9 @@ test('V21 homepage combines growth positioning with V20 cinematic assets',async(
   await expect(page.locator('link[href="/cinematic-v18.css"]')).toHaveCount(1);
   await expect(page.locator('link[href="/cinematic-v20.css"]')).toHaveCount(1);
   await expect(page.locator('link[href="/international-growth.css"]')).toHaveCount(1);
-  await expect(page.locator('.ig-proof-bar')).toContainText('Pune, India');
+  await expect(page.getByLabel('BRAYROAI credibility')).toContainText('Pune, India');
   await expect(page.getByRole('link',{name:/Book an AI Growth Audit/i}).first()).toBeVisible();
-  await expectNoHorizontalOverflow(page);
+  await expectNoHorizontalOverflow(page,'homepage desktop');
 });
 
 test('Growth Engine demo and illustrative calculator remain interactive',async({page})=>{
@@ -117,7 +132,7 @@ test('V21 mobile buyer journeys have no horizontal overflow',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   for(const route of ['/','/audit','/us','/uae','/plans','/lab','/work/fakhrimart']){
     await openPage(page,route);
-    await expectNoHorizontalOverflow(page);
+    await expectNoHorizontalOverflow(page,route);
   }
 });
 

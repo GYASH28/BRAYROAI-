@@ -29,7 +29,7 @@
     const label=document.querySelector('[data-v20-rail-label]');
     if(!label)return;
     const labels={
-      hero:'OPEN',services:'SOLUTIONS','growth-engine':'GROWTH ENGINE','brayro-os':'BRAYRO OS',work:'WORK',process:'PROCESS',founder:'FOUNDER',contact:'CONTACT'
+      hero:'OPEN','growth-services':'SOLUTIONS','growth-engine':'GROWTH ENGINE','brayro-os':'BRAYRO OS',work:'WORK',process:'PROCESS',founder:'FOUNDER',contact:'CONTACT'
     };
     const paint=()=>{
       const key=document.body.dataset.v20Scene||'hero';

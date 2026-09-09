@@ -80,16 +80,18 @@ async function browserLoad(){
     await waitHome(page);
 
     assert(await page.locator('[data-scene]').count()===8,`eight V21 cinematic scenes @${viewport.width}`);
-    for(const scene of ['hero','services','growth-engine','brayro-os','work','process','founder','contact']){
+    for(const scene of ['hero','growth-services','growth-engine','brayro-os','work','process','founder','contact']){
       assert(await page.locator(`[data-scene="${scene}"]`).count()===1,`${scene} scene missing @${viewport.width}`);
     }
+    assert(await page.locator('#services').getAttribute('data-scene')==='growth-services',`V21 solutions scene identity regressed @${viewport.width}`);
+    assert(!(await page.locator('#services').hasAttribute?.('data-v15-play')),`V15 capability runtime hijacked V21 @${viewport.width}`);
     assert(await page.locator('[data-v20-lens]').count()===1,`V20 hero lens missing @${viewport.width}`);
     assert(await page.locator('#services [data-v20-signal]').count()===1,`V21 solution signal missing @${viewport.width}`);
     assert(await page.locator('[data-v20-scene-rail]').count()===1,`scene rail missing @${viewport.width}`);
     assert(await page.locator('[data-v20-rail-dot]').count()===8,`scene rail dot count @${viewport.width}`);
     assert(await page.locator('[data-ig-demo] .v21-system-pulse').count()===1,`Growth Engine pulse missing @${viewport.width}`);
     assert(await page.locator('[data-v12-project]').count()===3,`project index incomplete @${viewport.width}`);
-    assert((await page.locator('body').textContent()).includes('BRAYRO GROWTH ENGINE'),`Growth Engine offer missing @${viewport.width}`);
+    assert((await page.locator('#services').textContent()).includes('BRAYRO GROWTH ENGINE'),`Growth Engine offer missing @${viewport.width}`);
     assert(!(await page.locator('body').textContent()).includes('₹2,599'),`retired low-ticket pricing returned @${viewport.width}`);
     await noOverflow(page,`home@${viewport.width}`);
     await scrollStorm(page,2,18);

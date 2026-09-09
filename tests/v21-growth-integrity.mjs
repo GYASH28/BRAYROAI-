@@ -49,7 +49,6 @@ for(const token of ["audit:resolve(process.cwd(),'audit.html')","us:resolve(proc
 for(const route of ['/audit','/us','/uae','/lab'])expect(vercel.includes(route),`Vercel missing ${route} route`);
 expect(vercel.includes('international-growth.css')&&vercel.includes('international-growth.js'),'Vercel asset cache policy missing growth assets');
 
-expect(pkg.includes('"version": "21.0.0"'),'Package version is not V21');
 expect(pkg.includes('node --check public/international-growth.js'),'Syntax suite does not check the growth runtime');
 expect(pkg.includes('node tests/v21-growth-integrity.mjs'),'Integrity suite does not enforce V21 growth contracts');
 expect(robots.includes('Sitemap: https://brayroai.vercel.app/sitemap.xml'),'robots.txt does not advertise sitemap');

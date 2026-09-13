@@ -2,298 +2,88 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
-const productionOrigin = 'https://brayroai.vercel.app';
-const googleFontsHref = 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
-const buildCommit = (process.env.VERCEL_GIT_COMMIT_SHA || process.env.GITHUB_SHA || 'local').trim();
+const productionOrigin='https://brayroai.vercel.app';
+const googleFontsHref='https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
+const buildCommit=(process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA||'local').trim();
 
-const cleanRouteMap = Object.freeze({
-  '/plans': '/plans.html',
-  '/founder': '/founder.html',
-  '/terms': '/terms.html',
-  '/ai-workflow-audit': '/ai-workflow-audit.html',
-  '/company-second-brain': '/company-second-brain.html',
-  '/clients': '/clients.html',
-  '/clients/fakhrimart': '/fakhrimart-case-study.html'
-});
+const cleanRouteMap=Object.freeze({'/plans':'/plans.html','/founder':'/founder.html','/terms':'/terms.html','/ai-workflow-audit':'/ai-workflow-audit.html','/company-second-brain':'/company-second-brain.html','/clients':'/clients.html','/clients/fakhrimart':'/fakhrimart-case-study.html'});
 
-// The homepage grew through many visual passes. Keep those source files modular,
-// but ship them as one ordered stylesheet so the browser does not pay for a
-// waterfall of render-blocking CSS requests.
-const homeStyleFiles = Object.freeze([
-  'commercial-cut.css',
-  'latest-refinements.css',
-  'premium-polish.css',
-  'direction-pass.css',
-  'motion-v4.css',
-  'motion-v5.css',
-  'contact-priority.css',
-  'visual-finish.css',
-  'brayro-v12.css',
-  'brayro-v13.css',
-  'brayro-v14.css',
-  'brayro-v14-polish.css',
-  'brayro-v15.css',
-  'v15-accessibility.css',
-  'experience-motion-v16.css',
-  'cinematic-v18.css',
-  'cinematic-v20.css'
+// Keep source passes modular in the repo, but ship one ordered homepage sheet.
+// V5 is intentionally absent: its homepage runtime exits immediately beneath V15,
+// so its home-only CSS/JS is stripped instead of downloaded and parsed.
+const homeStyleFiles=Object.freeze([
+  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css'
 ]);
+const readHomeStyles=()=>homeStyleFiles.map(file=>`/* ${file} */\n${readFileSync(resolve(process.cwd(),'public',file),'utf8')}`).join('\n\n');
 
-const readHomeStyles = () => homeStyleFiles
-  .map((file) => `/* ${file} */\n${readFileSync(resolve(process.cwd(), 'public', file), 'utf8')}`)
-  .join('\n\n');
+const normalisePath=(url='/')=>{const parsed=new URL(url,'http://brayro.local');return{parsed,pathname:parsed.pathname.length>1?parsed.pathname.replace(/\/$/,''):parsed.pathname}};
+const mountCleanRoutes=server=>{server.middlewares.use((req,_res,next)=>{if(!req.url)return next();const{parsed,pathname}=normalisePath(req.url),target=cleanRouteMap[pathname];if(target)req.url=`${target}${parsed.search}`;next()})};
+const serveHomeStyleBundle=server=>{server.middlewares.use((req,res,next)=>{if(!req.url)return next();const{pathname}=normalisePath(req.url);if(pathname!=='/assets/brayro-home.css')return next();res.statusCode=200;res.setHeader('Content-Type','text/css; charset=utf-8');res.setHeader('Cache-Control','no-cache');res.end(readHomeStyles())})};
+const pagePathFor=(filename='')=>filename.endsWith('/plans.html')?'/plans':filename.endsWith('/founder.html')?'/founder':filename.endsWith('/terms.html')?'/terms':filename.endsWith('/ai-workflow-audit.html')?'/ai-workflow-audit':filename.endsWith('/company-second-brain.html')?'/company-second-brain':filename.endsWith('/clients.html')?'/clients':filename.endsWith('/fakhrimart-case-study.html')?'/clients/fakhrimart':'/';
+const injectBefore=(html,marker,value)=>html.replace(marker,`${value}\n${marker}`);
+const optimiseFonts=html=>{const blocking=`<link href="${googleFontsHref}" rel="stylesheet">`;if(!html.includes(blocking))return html;const nonBlocking=`<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'" data-layout-stable-fonts>\n  <noscript><link href="${googleFontsHref}" rel="stylesheet"></noscript>`;return html.replace(blocking,nonBlocking)};
+const removeHomepageStyleLinks=html=>{let next=html;for(const file of homeStyleFiles){const escaped=file.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');next=next.replace(new RegExp(`\\s*<link rel="stylesheet" href="/${escaped}"(?: [^>]*)?>\\s*`,'g'),'\n  ')}return next};
 
-const normalisePath = (url = '/') => {
-  const parsed = new URL(url, 'http://brayro.local');
-  return {
-    parsed,
-    pathname: parsed.pathname.length > 1 ? parsed.pathname.replace(/\/$/, '') : parsed.pathname
-  };
-};
+const experienceTransform={
+  name:'brayro-experience-transform',
+  configureServer(server){mountCleanRoutes(server);serveHomeStyleBundle(server)},
+  configurePreviewServer:mountCleanRoutes,
+  generateBundle(){this.emitFile({type:'asset',fileName:'assets/brayro-home.css',source:readHomeStyles()})},
+  transformIndexHtml:{order:'pre',handler(html,context){
+    const filename=context?.filename||'',isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html'),isPlans=filename.endsWith('/plans.html'),isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html'),isFakhriCase=filename.endsWith('/fakhrimart-case-study.html'),canonicalUrl=`${productionOrigin}${pagePathFor(filename)}`,shareImage=isFakhriCase?`${productionOrigin}/assets/fakhrimart-case-desktop.png`:`${productionOrigin}/assets/hero-background.webp`;
+    html=optimiseFonts(html);
 
-const mountCleanRoutes = (server) => {
-  server.middlewares.use((req, _res, next) => {
-    if (!req.url) return next();
-    const { parsed, pathname } = normalisePath(req.url);
-    const target = cleanRouteMap[pathname];
-    if (target) req.url = `${target}${parsed.search}`;
-    next();
-  });
-};
-
-const serveHomeStyleBundle = (server) => {
-  server.middlewares.use((req, res, next) => {
-    if (!req.url) return next();
-    const { pathname } = normalisePath(req.url);
-    if (pathname !== '/assets/brayro-home.css') return next();
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/css; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.end(readHomeStyles());
-  });
-};
-
-const pagePathFor = (filename = '') => {
-  if (filename.endsWith('/plans.html')) return '/plans';
-  if (filename.endsWith('/founder.html')) return '/founder';
-  if (filename.endsWith('/terms.html')) return '/terms';
-  if (filename.endsWith('/ai-workflow-audit.html')) return '/ai-workflow-audit';
-  if (filename.endsWith('/company-second-brain.html')) return '/company-second-brain';
-  if (filename.endsWith('/clients.html')) return '/clients';
-  if (filename.endsWith('/fakhrimart-case-study.html')) return '/clients/fakhrimart';
-  return '/';
-};
-
-const injectBefore = (html, marker, value) => html.replace(marker, `${value}\n${marker}`);
-
-const optimiseFonts = (html) => {
-  const blocking = `<link href="${googleFontsHref}" rel="stylesheet">`;
-  if (!html.includes(blocking)) return html;
-  const nonBlocking = `<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'" data-layout-stable-fonts>\n  <noscript><link href="${googleFontsHref}" rel="stylesheet"></noscript>`;
-  return html.replace(blocking, nonBlocking);
-};
-
-const removeHomepageStyleLinks = (html) => {
-  let next = html;
-  for (const file of homeStyleFiles) {
-    const escaped = file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    next = next.replace(new RegExp(`\\s*<link rel="stylesheet" href="/${escaped}"(?: [^>]*)?>\\s*`, 'g'), '\n  ');
-  }
-  return next;
-};
-
-const experienceTransform = {
-  name: 'brayro-experience-transform',
-  configureServer(server) {
-    mountCleanRoutes(server);
-    serveHomeStyleBundle(server);
-  },
-  configurePreviewServer: mountCleanRoutes,
-  generateBundle() {
-    this.emitFile({
-      type: 'asset',
-      fileName: 'assets/brayro-home.css',
-      source: readHomeStyles()
-    });
-  },
-  transformIndexHtml: {
-    order: 'pre',
-    handler(html, context) {
-      const filename = context?.filename || '';
-      const isHome = context?.path === '/' || context?.path === '/index.html' || filename.endsWith('/index.html');
-      const isPlans = filename.endsWith('/plans.html');
-      const isAiDetail = filename.endsWith('/ai-workflow-audit.html') || filename.endsWith('/company-second-brain.html');
-      const isFakhriCase = filename.endsWith('/fakhrimart-case-study.html');
-      const canonicalUrl = `${productionOrigin}${pagePathFor(filename)}`;
-      const shareImage = isFakhriCase ? `${productionOrigin}/assets/fakhrimart-case-desktop.png` : `${productionOrigin}/assets/hero-background.webp`;
-
-      html = optimiseFonts(html);
-
-      if (!html.includes('data-v21-global')) {
-        html = injectBefore(html, '</head>', `  <style data-v21-global>
+    if(!html.includes('data-v21-global'))html=injectBefore(html,'</head>',`  <style data-v21-global>
     .skip-link{position:fixed!important;z-index:9999!important;top:.75rem!important;left:.75rem!important;transform:translate3d(0,-180%,0)!important;opacity:0!important;pointer-events:none!important;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .2s ease!important}
     .skip-link:focus,.skip-link:focus-visible{transform:translate3d(0,0,0)!important;opacity:1!important;pointer-events:auto!important}
     @media(prefers-reduced-motion:reduce){.skip-link{transition:none!important}}
   </style>`);
-      }
+    if(!html.includes('name="x-brayro-commit"'))html=injectBefore(html,'</head>',`  <meta name="x-brayro-commit" content="${buildCommit}">`);
+    if(!html.includes('rel="canonical"'))html=injectBefore(html,'</head>',`  <link rel="canonical" href="${canonicalUrl}" data-safe-v20-meta>\n  <meta property="og:url" content="${canonicalUrl}">\n  <meta property="og:image" content="${shareImage}">\n  <meta name="twitter:image" content="${shareImage}">`);
+    if(isAiDetail&&!html.includes('href="/v15-accessibility.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/v15-accessibility.css" data-v15-accessibility>');
 
-      if (!html.includes('name="x-brayro-commit"')) {
-        html = injectBefore(html, '</head>', `  <meta name="x-brayro-commit" content="${buildCommit}">`);
-      }
+    if(isHome){
+      html=html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/g,'\n  ').replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/g,'\n  ').replace(/\s*<link rel="stylesheet" href="\/motion-v5\.css">\s*/g,'\n  ').replace(/\s*<script src="\/motion-v5\.js"><\/script>\s*/g,'\n  ');
+      html=html.replace(/\s*<div class="v12-cursor"[^>]*>[^<]*<\/div>\s*/g,'\n  ');
+      html=removeHomepageStyleLinks(html);
+      if(!html.includes('data-brayro-home-styles'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/assets/brayro-home.css" data-brayro-home-styles data-brayro-v13>');
 
-      if (!html.includes('rel="canonical"')) {
-        html = injectBefore(html, '</head>', `  <link rel="canonical" href="${canonicalUrl}" data-safe-v20-meta>\n  <meta property="og:url" content="${canonicalUrl}">\n  <meta property="og:image" content="${shareImage}">\n  <meta name="twitter:image" content="${shareImage}">`);
-      }
+      html=html.replace('Distinctive websites, digital products and practical AI systems. Strategy through launch, directed as one complete production.','Distinctive websites, digital products and practical AI systems—built to make businesses easier to understand and trust. Strategy through launch, one connected production.');
+      html=html.replace('Move across the index. Real client work stays first; BRAYROAI lab entries show the interaction and system thinking behind the studio itself.','Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.');
+      html=html.replace('Catalogue-led yarn website / responsive commerce enquiry experience','Verified client work / catalogue-led yarn website / responsive enquiry experience');
+      html=html.replace('A live business interface, not a fake case study.','A real client website, built for browsing and enquiries.');
+      html=html.replace('A catalogue-led yarn website designed for confident browsing and direct enquiries across desktop and mobile.','A live catalogue-led yarn website shaped around clear product browsing, responsive usability and direct enquiries across desktop and mobile.');
+      html=html.replace('Yash leads strategy, interface and implementation. The idea stays intact because it does not disappear between departments.','Yash leads strategy, interface and implementation, so clients stay close to the person making the decisions instead of being passed between departments.');
+      html=html.replace('WhatsApp is fastest. A short project brief is ready in email if you need it.','WhatsApp is fastest. Tell us what needs to improve and we will recommend the smallest sensible scope—not force a bigger package.');
+      html=html.replace('<a href="#work">Work</a>','<a href="/clients">Clients</a>').replace('<a href="#work">Work <span>02</span></a>','<a href="/clients">Clients <span>02</span></a>');
 
-      if (isAiDetail && !html.includes('href="/v15-accessibility.css"')) {
-        html = injectBefore(html, '</head>', '  <link rel="stylesheet" href="/v15-accessibility.css" data-v15-accessibility>');
-      }
+      if(!html.includes('data-client-archive-link'))html=html.replace('Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.</p>','Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together. <a data-client-archive-link class="text-link" href="/clients">Explore all client work ↗</a></p>');
+      if(!html.includes('data-fakhri-case-link'))html=html.replace('<a class="text-link magnetic" data-cursor-label="LIVE ↗" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">','<a data-fakhri-case-link class="text-link magnetic" data-cursor-label="CASE ↗" href="/clients/fakhrimart">Read the case study <span>↗</span></a><a class="text-link magnetic" data-cursor-label="LIVE ↗" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">');
+      if(!html.includes('data-v20-text-cycle'))html=html.replace('<div class="v12-hero-meta" aria-label="BRAYROAI disciplines"><span>Web Experiences</span><span>Product Design</span><span>Frontend Engineering</span><span>AI Systems</span></div>','<div class="v12-hero-meta" aria-label="BRAYROAI disciplines"><span>Web Experiences</span><span>Product Design</span><span>Frontend Engineering</span><span>AI Systems</span></div>\n          <div class="v20-text-cycle" data-v20-text-cycle aria-hidden="true"><span>BUILT FOR</span><strong><i data-v20-cycle-word>BRANDS</i><b aria-hidden="true"></b></strong></div>');
 
-      if (isHome) {
-        html = html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/g, '\n  ');
-        html = html.replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/g, '\n  ');
-        html = removeHomepageStyleLinks(html);
+      html=html.replaceAll('<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">','<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" loading="eager" fetchpriority="high" alt="">');
+      html=html.replace('<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" alt="Yash Ganesh, founder of BRAYROAI.">','<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" fetchpriority="high" alt="Yash Ganesh, founder of BRAYROAI.">');
 
-        if (!html.includes('data-brayro-home-styles')) {
-          html = injectBefore(html, '</head>', '  <link rel="stylesheet" href="/assets/brayro-home.css" data-brayro-home-styles data-brayro-v13>');
-        }
-
-        html = html.replace(
-          'Distinctive websites, digital products and practical AI systems. Strategy through launch, directed as one complete production.',
-          'Distinctive websites, digital products and practical AI systems—built to make businesses easier to understand and trust. Strategy through launch, one connected production.'
-        );
-        html = html.replace(
-          'Move across the index. Real client work stays first; BRAYROAI lab entries show the interaction and system thinking behind the studio itself.',
-          'Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.'
-        );
-        html = html.replace(
-          'Catalogue-led yarn website / responsive commerce enquiry experience',
-          'Verified client work / catalogue-led yarn website / responsive enquiry experience'
-        );
-        html = html.replace(
-          'A live business interface, not a fake case study.',
-          'A real client website, built for browsing and enquiries.'
-        );
-        html = html.replace(
-          'A catalogue-led yarn website designed for confident browsing and direct enquiries across desktop and mobile.',
-          'A live catalogue-led yarn website shaped around clear product browsing, responsive usability and direct enquiries across desktop and mobile.'
-        );
-        html = html.replace(
-          'Yash leads strategy, interface and implementation. The idea stays intact because it does not disappear between departments.',
-          'Yash leads strategy, interface and implementation, so clients stay close to the person making the decisions instead of being passed between departments.'
-        );
-        html = html.replace(
-          'WhatsApp is fastest. A short project brief is ready in email if you need it.',
-          'WhatsApp is fastest. Tell us what needs to improve and we will recommend the smallest sensible scope—not force a bigger package.'
-        );
-
-        html = html.replace('<a href="#work">Work</a>', '<a href="/clients">Clients</a>');
-        html = html.replace('<a href="#work">Work <span>02</span></a>', '<a href="/clients">Clients <span>02</span></a>');
-
-        if (!html.includes('data-client-archive-link')) {
-          html = html.replace(
-            'Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.</p>',
-            'Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together. <a data-client-archive-link class="text-link" href="/clients">Explore all client work ↗</a></p>'
-          );
-        }
-
-        if (!html.includes('data-fakhri-case-link')) {
-          html = html.replace(
-            '<a class="text-link magnetic" data-cursor-label="LIVE ↗" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">',
-            '<a data-fakhri-case-link class="text-link magnetic" data-cursor-label="CASE ↗" href="/clients/fakhrimart">Read the case study <span>↗</span></a><a class="text-link magnetic" data-cursor-label="LIVE ↗" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">'
-          );
-        }
-
-        if (!html.includes('data-v20-text-cycle')) {
-          html = html.replace(
-            '<div class="v12-hero-meta" aria-label="BRAYROAI disciplines"><span>Web Experiences</span><span>Product Design</span><span>Frontend Engineering</span><span>AI Systems</span></div>',
-            '<div class="v12-hero-meta" aria-label="BRAYROAI disciplines"><span>Web Experiences</span><span>Product Design</span><span>Frontend Engineering</span><span>AI Systems</span></div>\n          <div class="v20-text-cycle" data-v20-text-cycle aria-hidden="true"><span>BUILT FOR</span><strong><i data-v20-cycle-word>BRANDS</i><b aria-hidden="true"></b></strong></div>'
-          );
-        }
-
-        html = html.replaceAll(
-          '<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">',
-          '<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" loading="eager" fetchpriority="high" alt="">'
-        );
-        html = html.replace(
-          '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" alt="Yash Ganesh, founder of BRAYROAI.">',
-          '<img class="hero__subject" src="/assets/yash-cutout.webp" width="900" height="697" loading="eager" fetchpriority="high" alt="Yash Ganesh, founder of BRAYROAI.">'
-        );
-
-        if (!html.includes('data-v21-critical')) {
-          html = injectBefore(html, '</head>', `  <style data-v21-critical>
-    .opening-sequence{animation:openingAway 0s .90s both}
-    .opening-sequence__mark{animation-duration:.60s}
-    .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.64s;animation-delay:.20s}
-    .opening-sequence>span{animation-duration:.50s;animation-delay:.13s}
-    .site-nav{animation-duration:.42s;animation-delay:.50s}
-    @media(max-width:760px){
-      .opening-sequence{animation-delay:.80s}
-      .opening-sequence__mark{animation-duration:.54s}
-      .opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.57s;animation-delay:.17s}
-      .opening-sequence>span{animation-duration:.43s;animation-delay:.10s}
-      .site-nav{animation-delay:.42s}
-    }
+      if(!html.includes('data-v21-critical'))html=injectBefore(html,'</head>',`  <style data-v21-critical>
+    .opening-sequence{animation:openingAway 0s .90s both}.opening-sequence__mark{animation-duration:.60s}.opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.64s;animation-delay:.20s}.opening-sequence>span{animation-duration:.50s;animation-delay:.13s}.site-nav{animation-duration:.42s;animation-delay:.50s}
+    @media(max-width:760px){.opening-sequence{animation-delay:.80s}.opening-sequence__mark{animation-duration:.54s}.opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.57s;animation-delay:.17s}.opening-sequence>span{animation-duration:.43s;animation-delay:.10s}.site-nav{animation-delay:.42s}}
   </style>`);
-        }
 
-        html = html.replace(
-          '<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img src="/assets/fakhrimart-case-desktop.png" alt=""></div>',
-          '<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img alt=""></div>'
-        );
-
-        if (!html.includes('src="/brayro-v14.js"')) {
-          html = html.replace('<script src="/brayro-v12.js"></script>', '<script src="/brayro-v12.js"></script>\n  <script src="/brayro-v14.js"></script>');
-        }
-        if (!html.includes('src="/brayro-v15.js"')) {
-          html = html.replace('<script src="/brayro-v14.js"></script>', '<script src="/brayro-v14.js"></script>\n  <script src="/brayro-v15.js"></script>');
-        }
-      }
-
-      if (isPlans) {
-        html = html.replace(
-          'Use a monthly partnership for ongoing website attention, a one-time build for a complete launch, or a focused AI system when the work inside the company needs to become easier.',
-          'Choose monthly support for ongoing website improvement, a one-time build for a complete launch, or a focused AI system for internal work. If you are unsure, start with the outcome you need and we will point you to the smallest sensible scope.'
-        );
-      }
-
-      if (!isHome && !html.includes('href="/experience-motion-v16.css"')) {
-        html = injectBefore(html, '</head>', '  <link rel="stylesheet" href="/experience-motion-v16.css" data-v16-motion>');
-      }
-      if (!html.includes('src="/experience-motion-v16.js"')) {
-        html = html.replace('</body>', '  <script src="/experience-motion-v16.js" data-v16-motion></script>\n</body>');
-      }
-
-      if (isHome && !html.includes('src="/cinematic-v18.js"')) {
-        html = html.replace('</body>', '  <script src="/cinematic-v18.js" data-v18-cinematic></script>\n</body>');
-      }
-      if (isHome && !html.includes('src="/cinematic-v20.js"')) {
-        html = html.replace('</body>', '  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
-      }
-
-      return html;
+      html=html.replace('<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img src="/assets/fakhrimart-case-desktop.png" alt=""></div>','<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img alt=""></div>');
+      if(!html.includes('src="/brayro-v14.js"'))html=html.replace('<script src="/brayro-v12.js"></script>','<script src="/brayro-v12.js"></script>\n  <script src="/brayro-v14.js"></script>');
+      if(!html.includes('src="/brayro-v15.js"'))html=html.replace('<script src="/brayro-v14.js"></script>','<script src="/brayro-v14.js"></script>\n  <script src="/brayro-v15.js"></script>');
     }
-  }
+
+    if(isPlans)html=html.replace('Use a monthly partnership for ongoing website attention, a one-time build for a complete launch, or a focused AI system when the work inside the company needs to become easier.','Choose monthly support for ongoing website improvement, a one-time build for a complete launch, or a focused AI system for internal work. If you are unsure, start with the outcome you need and we will point you to the smallest sensible scope.');
+
+    if(!isHome&&!html.includes('href="/experience-motion-v16.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/experience-motion-v16.css" data-v16-motion>');
+    if(!isHome&&!html.includes('href="/brayro-cursor-v22.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/brayro-cursor-v22.css" data-v22-cursor>');
+    if(!html.includes('src="/experience-motion-v16.js"'))html=html.replace('</body>','  <script src="/experience-motion-v16.js" data-v16-motion></script>\n</body>');
+    if(isHome&&!html.includes('src="/cinematic-v18.js"'))html=html.replace('</body>','  <script src="/cinematic-v18.js" data-v18-cinematic></script>\n</body>');
+    if(isHome&&!html.includes('src="/cinematic-v20.js"'))html=html.replace('</body>','  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
+    if(!html.includes('src="/brayro-cursor-v22.js"'))html=html.replace('</body>','  <script src="/brayro-cursor-v22.js" data-v22-cursor></script>\n</body>');
+    return html;
+  }}
 };
 
-export default defineConfig({
-  publicDir: 'public',
-  plugins: [experienceTransform],
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    assetsInlineLimit: 4096,
-    rollupOptions: {
-      input: {
-        home: resolve(process.cwd(), 'index.html'),
-        plans: resolve(process.cwd(), 'plans.html'),
-        founder: resolve(process.cwd(), 'founder.html'),
-        terms: resolve(process.cwd(), 'terms.html'),
-        audit: resolve(process.cwd(), 'ai-workflow-audit.html'),
-        secondBrain: resolve(process.cwd(), 'company-second-brain.html'),
-        clients: resolve(process.cwd(), 'clients.html'),
-        fakhrimartCase: resolve(process.cwd(), 'fakhrimart-case-study.html')
-      }
-    }
-  }
-});
+export default defineConfig({publicDir:'public',plugins:[experienceTransform],build:{outDir:'dist',emptyOutDir:true,assetsInlineLimit:4096,rollupOptions:{input:{home:resolve(process.cwd(),'index.html'),plans:resolve(process.cwd(),'plans.html'),founder:resolve(process.cwd(),'founder.html'),terms:resolve(process.cwd(),'terms.html'),audit:resolve(process.cwd(),'ai-workflow-audit.html'),secondBrain:resolve(process.cwd(),'company-second-brain.html'),clients:resolve(process.cwd(),'clients.html'),fakhrimartCase:resolve(process.cwd(),'fakhrimart-case-study.html')}}}});

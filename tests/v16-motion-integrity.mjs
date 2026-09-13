@@ -20,8 +20,9 @@ expect(css.includes('.method__image img'),'Founder method parallax missing');
 expect(css.includes('#work .v12-featured-case img'),'Homepage work depth missing');
 expect(!/transition\s*:\s*all/i.test(css),'V16 must not use transition: all');
 expect(js.includes("matchMedia('(prefers-reduced-motion: reduce)')"),'V16 JS reduced-motion guard missing');
-expect(vite.includes('/experience-motion-v16.css')&&vite.includes('/experience-motion-v16.js'),'Vite does not inject V16 motion assets');
-expect(vite.includes("html=html.replace('</head>'")&&vite.includes("html=html.replace('</body>'"),'V16 assets are not mounted for every HTML entry');
+expect(vite.includes("'experience-motion-v16.css'")&&vite.includes('/experience-motion-v16.js'),'Vite does not own V16 motion assets');
+expect(vite.includes("if (!isHome && !html.includes('href=\"/experience-motion-v16.css\"'))"),'V16 secondary-page CSS mount missing');
+expect(vite.includes("fileName: 'assets/brayro-home.css'"),'V16 homepage CSS is not included in the consolidated bundle architecture');
 expect(pkg.includes('"version": "16.0.0"'),'package version is not V16');
 expect(pkg.includes('node --check public/experience-motion-v16.js'),'syntax suite does not check V16 runtime');
 expect(pkg.includes('node tests/v16-motion-integrity.mjs'),'integrity suite does not guard V16 motion');
@@ -29,4 +30,4 @@ expect(Buffer.byteLength(css)<30000,'V16 CSS exceeds 30KB guardrail');
 expect(Buffer.byteLength(js)<26000,'V16 JS exceeds 26KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V16 motion integrity OK: page-specific choreography, pointer feedback, transitions and reduced-motion protections verified.');
+console.log('V16 motion integrity OK: page-specific choreography, bundled homepage CSS, secondary-page mounts and reduced-motion protections verified.');

@@ -27,8 +27,7 @@ function parseBody(req){
   return body&&typeof body==='object'&&!Array.isArray(body)?body:null;
 }
 function safeContext(input={}){
-  const pageKey=clean(input.pageKey).slice(0,30);const pathname=clean(input.pathname).slice(0,120);const section=clean(input.section).slice(0,100);const pageTitle=clean(input.pageTitle).slice(0,140);const recentRaeAction=clean(input.recentRaeAction).slice(0,120);
-  return{pageKey,pathname,section,pageTitle,recentRaeAction};
+  return{pageKey:clean(input.pageKey).slice(0,30),pathname:clean(input.pathname).slice(0,120),section:clean(input.section).slice(0,100),pageTitle:clean(input.pageTitle).slice(0,140),recentRaeAction:clean(input.recentRaeAction).slice(0,120)};
 }
 function safeSession(input={}){
   const profile=input?.profile&&typeof input.profile==='object'?input.profile:{};
@@ -91,18 +90,34 @@ function providerConfig(){
   return{provider:'',key:'',model:''};
 }
 
+const planCard=plan=>plan?{type:'plan',eyebrow:'CURRENT VERIFIED PLAN',title:plan.name,copy:plan.summary||plan.kind||'',price:plan.price,action:{name:plan.id==='ai-workflow-audit'?'navigateToRoute':plan.id==='company-second-brain'?'navigateToRoute':'showPlan',args:plan.id==='ai-workflow-audit'?{route:'/ai-workflow-audit'}:plan.id==='company-second-brain'?{route:'/company-second-brain'}:{planId:plan.id},label:'View this option'}}:null;
+function matchedPlan(lower){
+  const all=[...RAE_KNOWLEDGE.websitePlans,...RAE_KNOWLEDGE.aiOffers];
+  if(/workflow audit|ai audit/.test(lower))return all.find(plan=>plan.id==='ai-workflow-audit');
+  if(/second brain|company brain/.test(lower))return all.find(plan=>plan.id==='company-second-brain');
+  if(/2[,\s]?599|starter partnership|cheapest.*monthly/.test(lower))return all.find(plan=>plan.id==='monthly-starter');
+  if(/3[,\s]?999|growth partnership/.test(lower))return all.find(plan=>plan.id==='monthly-growth');
+  if(/5[,\s]?999|studio partnership/.test(lower))return all.find(plan=>plan.id==='monthly-studio');
+  if(/17[,\s]?999|business experience/.test(lower))return all.find(plan=>plan.id==='business-experience');
+  if(/25\s?k|35\s?k|premium experience/.test(lower))return all.find(plan=>plan.id==='premium-experience');
+  if(/9[,\s]?999|launch website/.test(lower)&&!/audit/.test(lower))return all.find(plan=>plan.id==='launch-website');
+  return null;
+}
 function buildMeta(message,context,session){
-  const lower=message.toLowerCase();const quick=[];const actions=[];let card=null;let emotion='neutral';
-  if(/fakhri|case stud|client work|portfolio/.test(lower)){
+  const lower=message.toLowerCase(),quick=[],actions=[];let card=null,emotion='neutral';const exactPlan=matchedPlan(lower);
+  if(exactPlan){card=planCard(exactPlan);quick.push('What does it include?','Is there a smaller option?','Show relevant work');emotion='positive';}
+  else if(/fakhri|case stud|client work|portfolio/.test(lower)){
     card={type:'case',eyebrow:'VERIFIED CLIENT WORK',title:'FakhriMart',copy:RAE_KNOWLEDGE.verifiedWork[0].summary,action:{name:'openProject',args:{name:'fakhrimart'},label:'View case study'}};quick.push('Can you build something similar?','Show me the process');emotion='positive';
   }else if(/price|pricing|plan|budget|cost|package/.test(lower)){
     actions.push({name:'navigateToRoute',args:{route:'/plans'},label:'View plans'});quick.push('Which plan fits me?','What does the ₹9,999 build include?','Audit or Second Brain?');
   }else if(/start a project|hire|work with|project idea|need a website|build me|redesign my/.test(lower)){
     const profile=session.profile||{};const brief=[`Project: ${clean(profile.goal||message).slice(0,260)}`,profile.business?`Business: ${profile.business}`:'',profile.timeline?`Timeline: ${profile.timeline}`:'',profile.budget?`Budget: ${profile.budget}`:''].filter(Boolean).join('\n');
     card={type:'project',eyebrow:'PROJECT HANDOFF',title:'A useful starting brief',copy:'Edit this before you continue. Rae will never auto-open WhatsApp.',brief};quick.push('Which plan sounds closest?','Show relevant work');emotion='curious';
-  }else if(/workflow|automation|second brain|knowledge/.test(lower)){quick.push('Audit or Second Brain?','What would the first step be?','Show AI plans');actions.push({name:'navigateToRoute',args:{route:'/plans'},label:'Compare AI options'});}
+  }else if(/workflow|automation|second brain|knowledge/.test(lower)){
+    quick.push('Audit or Second Brain?','What would the first step be?','Show AI plans');actions.push({name:'navigateToRoute',args:{route:'/plans'},label:'Compare AI options'});
+  }
   if(!quick.length)quick.push('Show relevant work','Compare plans','What should I do next?');
-  if(context.pageKey==='case'&&!actions.some(item=>item.name==='openProject'))quick.splice(0,0,'Can you build something similar?');
+  if(context.pageKey==='case'&&!quick.includes('Can you build something similar?'))quick.unshift('Can you build something similar?');
   return{quickReplies:[...new Set(quick)].slice(0,4),actions:actions.slice(0,3),card,emotion};
 }
 
@@ -118,8 +133,7 @@ async function pumpGemini(upstream,res){
 async function openProviderStream(config,{message,history,context,session,signal}){
   const system=systemPrompt(context,session);
   if(config.provider==='gemini'){
-    const contents=[];for(const item of history){contents.push({role:item.role==='assistant'?'model':'user',parts:[{text:item.text}]})}
-    contents.push({role:'user',parts:[{text:message}]});
+    const contents=[];for(const item of history)contents.push({role:item.role==='assistant'?'model':'user',parts:[{text:item.text}]});contents.push({role:'user',parts:[{text:message}]});
     return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(config.model)}:streamGenerateContent?alt=sse`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':config.key},body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents,generationConfig:{temperature:.72,topP:.9,maxOutputTokens:420}}),signal});
   }
   const messages=[{role:'system',content:system},...history.map(item=>({role:item.role==='assistant'?'assistant':'user',content:item.text})),{role:'user',content:message}];
@@ -132,21 +146,19 @@ export default async function handler(req,res){
   const body=parseBody(req);if(!body)return sendJson(res,400,{error:'Invalid JSON request.',code:'invalid_request'});
   const message=clean(body.message).slice(0,MAX_MESSAGE);if(!message)return sendJson(res,400,{error:'Message required.',code:'message_required'});
   const history=safeHistory(body.history),context=safeContext(body.context),session=safeSession(body.session),config=providerConfig();
+  if(history.at(-1)?.role==='user'&&history.at(-1)?.text===message)history.pop();
   if(!config.provider||!config.key)return sendJson(res,503,{error:'Rae AI is not configured on this deployment.',code:'provider_not_configured'});
   if(!config.model)return sendJson(res,503,{error:'Rae AI model is not configured.',code:'model_not_configured'});
 
-  res.statusCode=200;res.setHeader('Content-Type','text/event-stream; charset=utf-8');res.setHeader('Cache-Control','no-store, no-cache, max-age=0, must-revalidate');res.setHeader('Connection','keep-alive');res.setHeader('X-Accel-Buffering','no');res.flushHeaders?.();
-  sse(res,'state',{state:'thinking'});
+  res.statusCode=200;res.setHeader('Content-Type','text/event-stream; charset=utf-8');res.setHeader('Cache-Control','no-store, no-cache, max-age=0, must-revalidate');res.setHeader('Connection','keep-alive');res.setHeader('X-Accel-Buffering','no');res.flushHeaders?.();sse(res,'state',{state:'thinking'});
 
-  const controller=new AbortController();const timer=setTimeout(()=>controller.abort('timeout'),PROVIDER_TIMEOUT);const close=()=>controller.abort('client_closed');req.on?.('close',close);
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort('timeout'),PROVIDER_TIMEOUT),close=()=>controller.abort('client_closed');res.on?.('close',close);
   try{
     const upstream=await openProviderStream(config,{message,history,context,session,signal:controller.signal});
     if(!upstream.ok||!upstream.body){const detail=await upstream.text().catch(()=> '');console.error('Rae provider error',config.provider,upstream.status,detail.slice(0,300));sse(res,'error',{code:'provider_unavailable',message:'Rae’s AI connection is unavailable right now.'});return res.end()}
-    sse(res,'state',{state:'speaking'});
-    if(config.provider==='gemini')await pumpGemini(upstream,res);else await pumpOpenAI(upstream,res);
+    sse(res,'state',{state:'speaking'});if(config.provider==='gemini')await pumpGemini(upstream,res);else await pumpOpenAI(upstream,res);
     const meta=buildMeta(message,context,session);sse(res,'meta',meta);sse(res,'done',{finishReason:'stop',emotion:meta.emotion,provider:config.provider,promptVersion:PROMPT_VERSION});res.end();
   }catch(error){
-    if(res.writableEnded)return;
-    const timeout=controller.signal.aborted&&controller.signal.reason==='timeout';console.error('Rae stream failed',error?.name||error);sse(res,'error',{code:timeout?'timeout':'provider_unavailable',message:timeout?'Rae’s response timed out.':'Rae lost the AI connection.'});res.end();
-  }finally{clearTimeout(timer);req.off?.('close',close)}
+    if(res.writableEnded)return;const timeout=controller.signal.aborted&&controller.signal.reason==='timeout';console.error('Rae stream failed',error?.name||error);sse(res,'error',{code:timeout?'timeout':'provider_unavailable',message:timeout?'Rae’s response timed out.':'Rae lost the AI connection.'});res.end();
+  }finally{clearTimeout(timer);res.off?.('close',close)}
 }

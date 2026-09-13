@@ -15,7 +15,10 @@ const plansJs=read('public/plans-page.js');
 const vercel=read('vercel.json');
 
 for(const token of ['class PlayfulCapabilities','PLAYGROUND 02','data-v15-control','MOVE / HOVER / CLICK','ON MOBILE: TAP OR SWIPE'])expect(v15js.includes(token),`V15 playful scene missing ${token}`);
-for(const token of ['#services.play-scene','.play-scene__cursor','.play-scene__ticker','.play-scene__controls','@media(prefers-reduced-motion:reduce)'])expect(v15css.includes(token),`V15 CSS missing ${token}`);
+for(const token of ['#services.play-scene','.play-scene__ticker','.play-scene__controls','@media(prefers-reduced-motion:reduce)'])expect(v15css.includes(token),`V15 CSS missing ${token}`);
+expect(!v15css.includes('.play-scene__cursor'),'retired V15 capability cursor CSS still ships');
+expect(!v15js.includes('data-v15-cursor'),'retired V15 capability cursor DOM still ships');
+expect(v15js.includes('schedulePointer()')&&v15js.includes('tickPointer()'),'V15 lightweight capability parallax spring is missing');
 expect(!v15js.includes('CAPABILITY FILM'),'V15 must not restore the retired cinematic capability film');
 expect(!/shader|neural|robot imagery/i.test(v15css),'V15 visual layer must avoid generic AI visual language');
 
@@ -30,15 +33,15 @@ for(const token of ['.process-lab','.architecture','.scope-table','.faq','.ai-ct
 expect(/audit\s*:\s*resolve\(process\.cwd\(\),\s*['"]ai-workflow-audit\.html['"]\)/.test(vite),'Vite input missing audit page');
 expect(/secondBrain\s*:\s*resolve\(process\.cwd\(\),\s*['"]company-second-brain\.html['"]\)/.test(vite),'Vite input missing Second Brain page');
 expect(vite.includes("'brayro-v15.css'")&&vite.includes('/brayro-v15.js'),'Homepage V15 assets are not owned by the Vite build');
-expect(vite.includes("fileName: 'assets/brayro-home.css'"),'V15 CSS is not assigned to the consolidated homepage stylesheet');
+expect(vite.includes("fileName:'assets/brayro-home.css'")||vite.includes("fileName: 'assets/brayro-home.css'"),'V15 CSS is not assigned to the consolidated homepage stylesheet');
 expect(vercel.includes('/ai-workflow-audit')&&vercel.includes('/company-second-brain'),'Vercel routes missing AI detail pages');
 expect(plansJs.includes("href:'/ai-workflow-audit'")&&plansJs.includes("href:'/company-second-brain'"),'Plans page does not expose AI detail links');
 expect(v15js.includes("href:'/ai-workflow-audit'")&&v15js.includes("href:'/company-second-brain'"),'Homepage AI offers do not expose detail links');
 
 expect(Buffer.byteLength(v15js)<18000,'V15 JS exceeds 18KB guardrail');
-expect(Buffer.byteLength(v15css)<18000,'V15 CSS exceeds 18KB guardrail');
+expect(Buffer.byteLength(v15css)<16000,'V15 CSS exceeds 16KB guardrail after cursor removal');
 expect(Buffer.byteLength(serviceJs)<12000,'AI service JS exceeds 12KB guardrail');
 expect(Buffer.byteLength(serviceCss)<26000,'AI service CSS exceeds 26KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V15 integrity OK: detailed AI pages, production routing, service links, playful second scene and bundled homepage CSS verified.');
+console.log('V15 integrity OK: AI pages and playful capability scene remain while the duplicate capability cursor stays retired.');

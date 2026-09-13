@@ -26,7 +26,8 @@ expect(vercel.includes('{"source":"/case-studies/fakhrimart","destination":"/cli
 expect(vercel.includes('client-work.css|client-work.js'),'Client work assets missing from Vercel cache policy');
 
 expect(!/\b\d+%\b/.test(fakhri),'FakhriMart case study contains an unverified percentage claim');
-expect(!/testimonial/i.test(fakhri),'FakhriMart case study should not invent a testimonial');
+expect(!fakhri.includes('class="client-testimonial"'),'FakhriMart case study contains an unsupported testimonial component');
+expect(fakhri.includes('No fabricated conversion uplift, revenue percentage or customer testimonial.'),'No-fake-proof statement is missing');
 expect(js.includes("matchMedia('(prefers-reduced-motion: reduce)')"),'Client runtime missing reduced-motion handling');
 expect(Buffer.byteLength(js)<10000,'Client work JS exceeds 10KB guardrail');
 expect(Buffer.byteLength(css)<26000,'Client work CSS exceeds 26KB guardrail');

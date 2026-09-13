@@ -148,7 +148,8 @@ async function browserLoad(){
   assert((await page.locator('[data-arch-status]').textContent()).includes('WhatsApp'),'Second Brain integration interaction failed');
 
   await page.goto(`${base}/founder`,{waitUntil:'networkidle'});await clearOpening(page);await waitLegacy(page);
-  const choices=page.locator('[data-principle]');for(let i=0;i<12;i++)await choices.nth(i%3).click();
+  const choices=page.locator('[data-principle]');
+  for(let i=0;i<12;i++)await choices.nth(i%3).click({force:true});
   assert((await page.locator('[data-principle-stage]').getAttribute('data-sc-verify-state'))==='principle:use','founder principle state');
 
   await page.goto(`${base}/terms`,{waitUntil:'networkidle'});await waitLegacy(page);

@@ -27,9 +27,10 @@ expect(audit.includes('/ai-service-pages.js')&&brain.includes('/ai-service-pages
 for(const token of ['class ProcessLab','class ArchitectureLab','class FAQAccordion'])expect(serviceJs.includes(token),`AI service runtime missing ${token}`);
 for(const token of ['.process-lab','.architecture','.scope-table','.faq','.ai-cta'])expect(serviceCss.includes(token),`AI service CSS missing ${token}`);
 
-expect(vite.includes("audit:resolve(process.cwd(),'ai-workflow-audit.html')"),'Vite input missing audit page');
-expect(vite.includes("secondBrain:resolve(process.cwd(),'company-second-brain.html')"),'Vite input missing Second Brain page');
-expect(vite.includes('/brayro-v15.css')&&vite.includes('/brayro-v15.js'),'Homepage V15 assets are not mounted');
+expect(/audit\s*:\s*resolve\(process\.cwd\(\),\s*['"]ai-workflow-audit\.html['"]\)/.test(vite),'Vite input missing audit page');
+expect(/secondBrain\s*:\s*resolve\(process\.cwd\(\),\s*['"]company-second-brain\.html['"]\)/.test(vite),'Vite input missing Second Brain page');
+expect(vite.includes("'brayro-v15.css'")&&vite.includes('/brayro-v15.js'),'Homepage V15 assets are not owned by the Vite build');
+expect(vite.includes("fileName: 'assets/brayro-home.css'"),'V15 CSS is not assigned to the consolidated homepage stylesheet');
 expect(vercel.includes('/ai-workflow-audit')&&vercel.includes('/company-second-brain'),'Vercel routes missing AI detail pages');
 expect(plansJs.includes("href:'/ai-workflow-audit'")&&plansJs.includes("href:'/company-second-brain'"),'Plans page does not expose AI detail links');
 expect(v15js.includes("href:'/ai-workflow-audit'")&&v15js.includes("href:'/company-second-brain'"),'Homepage AI offers do not expose detail links');
@@ -40,4 +41,4 @@ expect(Buffer.byteLength(serviceJs)<12000,'AI service JS exceeds 12KB guardrail'
 expect(Buffer.byteLength(serviceCss)<26000,'AI service CSS exceeds 26KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V15 integrity OK: two detailed AI pages, production routing, service detail links and playful second scene verified.');
+console.log('V15 integrity OK: detailed AI pages, production routing, service links, playful second scene and bundled homepage CSS verified.');

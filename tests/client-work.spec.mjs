@@ -33,7 +33,7 @@ test('FakhriMart case study exposes evidence, live project and technical story',
   await expect(page.locator('h1')).toContainText('Fakhri');
   await expect(page.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(4);
   const body=await page.locator('body').textContent();
-  for(const text of ['Not a fake ecommerce store.','CATALOGUE ARCHITECTURE','ENQUIRY FLOW','React 19','React Router 8','No fabricated conversion uplift'])expect(body).toContain(text);
+  for(const text of ['Not a fake ecommerce store.','CATALOGUE ARCHITECTURE','04 / CONVERSION','From browsing to a useful enquiry.','React 19','React Router 8','No fabricated conversion uplift'])expect(body).toContain(text);
   await expect(page.locator('img[src="/assets/fakhrimart-case-desktop.png"]')).toHaveCount(2);
   await expect(page.locator('img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(2);
 });

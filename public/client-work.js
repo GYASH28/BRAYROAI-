@@ -23,6 +23,15 @@
   const qs = (s, root = document) => root.querySelector(s);
   const qsa = (s, root = document) => [...root.querySelectorAll(s)];
 
+  const ensureAccessibilityStyles = () => {
+    if (document.querySelector('link[data-client-accessibility]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/client-work-accessibility.css';
+    link.dataset.clientAccessibility = '';
+    document.head.append(link);
+  };
+
   class ClientArchive {
     constructor() {
       this.grid = qs('[data-client-grid]');
@@ -135,6 +144,7 @@
     }
   }
 
+  ensureAccessibilityStyles();
   new ClientArchive();
   new Reveal();
   new Progress();

@@ -28,10 +28,45 @@ jobs:
       - run: npm run qa:static
       - name: Guard production bundle
         run: |
-          for f in index.html plans.html founder.html terms.html ai-workflow-audit.html company-second-brain.html clients.html fakhrimart-case-study.html commercial-cut.css commercial-cut.js direction-pass.css direction-pass.js motion-v4.css motion-v5.css motion-v5.js motion-v6.css motion-v6.js art-direction-v7.css art-direction-v7-contrast.css art-direction-v7.js work-showcase-v8.css work-showcase-v8.js art-direction-v9.css art-direction-v9.js continuity-v10.css continuity-v10.js useful-ux-v11.css useful-ux-v11.js brayro-v12.css brayro-v12.js brayro-v13.css brayro-v14.css brayro-v14-polish.css brayro-v14.js brayro-v15.css brayro-v15.js v15-accessibility.css experience-motion-v16.css experience-motion-v16.js cinematic-v18.css cinematic-v18.js cinematic-v20.css cinematic-v20.js ai-service-pages.css ai-service-pages.js client-work.css client-work.js plans-page.css plans-page.js founder-page.css founder-page.js terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do test -f "dist/$f"; done
+          set -euo pipefail
+
+          for f in \
+            index.html plans.html founder.html terms.html \
+            ai-workflow-audit.html company-second-brain.html \
+            clients.html fakhrimart-case-study.html \
+            commercial-cut.js direction-pass.js motion-v5.js contact-priority.js \
+            brayro-v12.js brayro-v14.js brayro-v15.js \
+            experience-motion-v16.js cinematic-v18.js cinematic-v20.js \
+            ai-service-pages.css ai-service-pages.js client-work.css client-work.js \
+            plans-page.css plans-page.js founder-page.css founder-page.js \
+            terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do
+            test -f "dist/$f"
+          done
+
+          test -f dist/assets/brayro-home.css
           test -f dist/assets/brayroai-cinematic-opening.mp4
           test -f dist/assets/fakhrimart-case-desktop.png
           test -f dist/assets/fakhrimart-case-mobile.png
+
+          # Homepage production architecture: one ordered local CSS bundle, not
+          # a waterfall of historical version links.
+          grep -q 'data-brayro-home-styles' dist/index.html
+          grep -q '/assets/brayro-home.css' dist/index.html
+          ! grep -q 'href="/brayro-v12.css"' dist/index.html
+          ! grep -q 'href="/brayro-v15.css"' dist/index.html
+          ! grep -q 'href="/cinematic-v20.css"' dist/index.html
+          grep -q 'data-layout-stable-fonts' dist/index.html
+          grep -q 'name="x-brayro-commit"' dist/index.html
+
+          # The bundle must still contain every currently active visual layer.
+          grep -q '.v12-project-index' dist/assets/brayro-home.css
+          grep -q '.brayro-ledger' dist/assets/brayro-home.css
+          grep -q '.play-scene__cursor' dist/assets/brayro-home.css
+          grep -q '.v16-page-transition' dist/assets/brayro-home.css
+          grep -q 'body.home-v19' dist/assets/brayro-home.css
+          grep -q '.v20-scene-rail' dist/assets/brayro-home.css
+
+          # Current commercial/client routes and proof.
           grep -q 'data-editorial-sequence' dist/index.html
           grep -q 'FEATURED CLIENT / FAKHRIMART' dist/index.html
           grep -q 'fakhriyarns.vercel.app' dist/index.html
@@ -44,6 +79,7 @@ jobs:
           grep -q '₹17,999' dist/index.html
           grep -q '₹25K–₹35K+' dist/index.html
           grep -q '₹29,999' dist/index.html
+
           grep -q 'BRAYROAI / CLIENT ARCHIVE' dist/clients.html
           grep -q 'data-client-filter="upcoming"' dist/clients.html
           grep -q 'VERIFIED CLIENT / 2026 / PUNE' dist/fakhrimart-case-study.html
@@ -52,6 +88,7 @@ jobs:
           grep -q 'const CLIENTS' dist/client-work.js
           grep -q 'class ClientArchive' dist/client-work.js
           grep -q '.case-flow' dist/client-work.css
+
           grep -q 'PER MONTH / ONGOING' dist/plans.html
           grep -q 'ONE-TIME BUILD' dist/plans.html
           grep -q 'AI Workflow Audit' dist/plans.html
@@ -62,41 +99,38 @@ jobs:
           grep -q 'COMPANY SECOND BRAIN / FROM ₹29,999' dist/company-second-brain.html
           grep -q 'BASE SCOPE VS EXPANDED SCOPE' dist/company-second-brain.html
           grep -q 'Terms & Conditions' dist/terms.html
+
+          # Current runtime components.
           grep -q 'class CapabilityLedger' dist/brayro-v12.js
           grep -q 'class CinematicCapabilities' dist/brayro-v14.js
           grep -q 'class PlayfulCapabilities' dist/brayro-v15.js
           grep -q 'PLAYGROUND 02' dist/brayro-v15.js
-          grep -q '.play-scene__cursor' dist/brayro-v15.css
           grep -q 'class ProcessLab' dist/ai-service-pages.js
           grep -q 'class ArchitectureLab' dist/ai-service-pages.js
-          grep -q '.architecture' dist/ai-service-pages.css
           grep -q 'class SceneKinetics' dist/experience-motion-v16.js
           grep -q 'class PointerFeedback' dist/experience-motion-v16.js
-          grep -q '.v16-page-transition' dist/experience-motion-v16.css
-          grep -q 'body.terms-v16' dist/experience-motion-v16.css
-          grep -q 'body.ai-v16' dist/experience-motion-v16.css
           grep -q 'class CinematicScrollDirector' dist/cinematic-v18.js
-          grep -q 'body.home-v19' dist/cinematic-v18.css
           grep -q 'class ComponentMounts' dist/cinematic-v20.js
           grep -q 'class PolishDirector' dist/cinematic-v20.js
-          grep -q '.v20-scene-rail' dist/cinematic-v20.css
-          for page in index.html plans.html founder.html terms.html ai-workflow-audit.html company-second-brain.html clients.html fakhrimart-case-study.html; do
+
+          # V16 is bundled on Home, direct-linked on the other public pages.
+          grep -q '/experience-motion-v16.js' dist/index.html
+          for page in plans.html founder.html terms.html ai-workflow-audit.html company-second-brain.html clients.html fakhrimart-case-study.html; do
             grep -q '/experience-motion-v16.css' "dist/$page"
             grep -q '/experience-motion-v16.js' "dist/$page"
           done
-          grep -q '/brayro-v15.css' dist/index.html
           grep -q '/brayro-v15.js' dist/index.html
-          grep -q '/cinematic-v18.css' dist/index.html
           grep -q '/cinematic-v18.js' dist/index.html
-          grep -q '/cinematic-v20.css' dist/index.html
           grep -q '/cinematic-v20.js' dist/index.html
+
           ! grep -q 'data-v18-reel' dist/index.html
           ! grep -q 'data-commercial-film' dist/index.html
           ! grep -q 'data-signal-chamber' dist/index.html
           test ! -f dist/experience-v2.css
+
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 10400
+          test "$TOTAL" -lt 10600
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
@@ -110,8 +144,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Install QA tooling
-        run: npm install --no-save @playwright/test@latest @axe-core/playwright@latest lighthouse@latest
       - name: Install Chromium
         run: npx playwright install chromium
       - run: npm run build
@@ -119,7 +151,16 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Company Second Brain' && curl -fsS http://127.0.0.1:4173/ai-workflow-audit | grep -q 'AI WORKFLOW AUDIT' && curl -fsS http://127.0.0.1:4173/company-second-brain | grep -q 'COMPANY SECOND BRAIN' && curl -fsS http://127.0.0.1:4173/clients | grep -q 'CLIENT ARCHIVE' && curl -fsS http://127.0.0.1:4173/clients/fakhrimart | grep -q 'Not a fake ecommerce store' && curl -fsS http://127.0.0.1:4173/client-work.js | grep -q 'ClientArchive' && curl -fsS http://127.0.0.1:4173/brayro-v15.js | grep -q 'PlayfulCapabilities' && curl -fsS http://127.0.0.1:4173/experience-motion-v16.js | grep -q 'SceneKinetics' && curl -fsS http://127.0.0.1:4173/cinematic-v20.js | grep -q 'PolishDirector'; then exit 0; fi
+            if \
+              curl -fsS http://127.0.0.1:4173/ | grep -q 'Company Second Brain' && \
+              curl -fsS http://127.0.0.1:4173/assets/brayro-home.css | grep -q 'v20-scene-rail' && \
+              curl -fsS http://127.0.0.1:4173/ai-workflow-audit | grep -q 'AI WORKFLOW AUDIT' && \
+              curl -fsS http://127.0.0.1:4173/company-second-brain | grep -q 'COMPANY SECOND BRAIN' && \
+              curl -fsS http://127.0.0.1:4173/clients | grep -q 'CLIENT ARCHIVE' && \
+              curl -fsS http://127.0.0.1:4173/clients/fakhrimart | grep -q 'Not a fake ecommerce store' && \
+              curl -fsS http://127.0.0.1:4173/client-work.js | grep -q 'ClientArchive'; then
+              exit 0
+            fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log

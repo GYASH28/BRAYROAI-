@@ -24,8 +24,8 @@ expect(a11yCss.includes(':focus-visible'),'Client CTA keyboard focus treatment i
 // both clean-route middleware and canonical/build-input ownership.
 expect(/['"]\/clients['"]\s*:\s*['"]\/clients\.html['"]/.test(vite),'Vite clean route missing /clients');
 expect(/['"]\/clients\/fakhrimart['"]\s*:\s*['"]\/fakhrimart-case-study\.html['"]/.test(vite),'Vite clean route missing FakhriMart case study');
-expect(/clients\.html['"]\)\)\s*return\s*['"]\/clients['"]/.test(vite),'Vite canonical path missing /clients');
-expect(/fakhrimart-case-study\.html['"]\)\)\s*return\s*['"]\/clients\/fakhrimart['"]/.test(vite),'Vite canonical path missing FakhriMart case study');
+expect(/filename\.endsWith\(\s*['"]\/clients\.html['"]\s*\)\s*\?\s*['"]\/clients['"]/.test(vite)||/clients\.html['"]\)\)\s*return\s*['"]\/clients['"]/.test(vite),'Vite canonical path missing /clients');
+expect(/filename\.endsWith\(\s*['"]\/fakhrimart-case-study\.html['"]\s*\)\s*\?\s*['"]\/clients\/fakhrimart['"]/.test(vite)||/fakhrimart-case-study\.html['"]\)\)\s*return\s*['"]\/clients\/fakhrimart['"]/.test(vite),'Vite canonical path missing FakhriMart case study');
 expect(/clients\s*:\s*resolve\(process\.cwd\(\),\s*['"]clients\.html['"]\)/.test(vite),'Vite input missing clients archive');
 expect(/fakhrimartCase\s*:\s*resolve\(process\.cwd\(\),\s*['"]fakhrimart-case-study\.html['"]\)/.test(vite),'Vite input missing FakhriMart case study');
 expect(vite.includes('data-client-archive-link')&&vite.includes('data-fakhri-case-link'),'Homepage does not expose client publishing routes');

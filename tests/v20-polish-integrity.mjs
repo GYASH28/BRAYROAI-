@@ -32,7 +32,8 @@ expect(v15js.includes('schedulePointer()')&&v15js.includes('tickPointer()'),'cap
 const dataKeyframes=css.match(/@keyframes v20-data\{[^}]*\}[^}]*\}[^}]*\}[^}]*\}/)?.[0]||'';
 expect(dataKeyframes.includes('translate3d'),'V20 AI pulse must animate with transforms');
 expect(!/left\s*:/.test(dataKeyframes),'V20 AI pulse must not animate the layout property left');
-expect(vite.includes('/cinematic-v20.css')&&vite.includes('/cinematic-v20.js'),'Vite does not inject V20 assets');
+expect(vite.includes("'cinematic-v20.css'")&&vite.includes('/cinematic-v20.js'),'Vite does not own V20 assets');
+expect(vite.includes("fileName: 'assets/brayro-home.css'"),'Vite does not emit the consolidated homepage stylesheet');
 expect(vite.includes('data-v20-text-cycle aria-hidden="true"'),'hero text cycle must be built into initial HTML to avoid CLS');
 expect(vite.includes('data-v21-critical'),'critical intro performance style is missing');
 expect(vite.includes("html.replace(/\\s*<link rel=\"stylesheet\" href=\"\\/scrollcraft\\.css\">"),'homepage ScrollCraft stylesheet removal is missing');
@@ -47,4 +48,4 @@ expect(Buffer.byteLength(js)<24000,'V20 JS exceeds 24KB guardrail');
 expect(pw.includes('cinematic-v20'),'Playwright config must include V20 regression coverage');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V20 polish integrity OK: fluid spring motion, static hero cycle, tighter intro critical path, no homepage ScrollCraft, reduced-motion protection and bundle guardrails are intact.');
+console.log('V20 polish integrity OK: fluid spring motion, static hero cycle, consolidated CSS, no homepage ScrollCraft, reduced-motion protection and bundle guardrails are intact.');

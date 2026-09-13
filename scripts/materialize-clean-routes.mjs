@@ -3,11 +3,11 @@ import { dirname, resolve } from 'node:path';
 
 const root = resolve(process.cwd(), 'dist');
 const routes = [
-  ['plans.html', 'plans/index.html', 'Website plans'],
-  ['founder.html', 'founder/index.html', 'Founder'],
-  ['terms.html', 'terms/index.html', 'Terms'],
-  ['ai-workflow-audit.html', 'ai-workflow-audit/index.html', 'AI Workflow Audit'],
-  ['company-second-brain.html', 'company-second-brain/index.html', 'Company Second Brain'],
+  ['plans.html', 'plans/index.html', 'BRAYROAI'],
+  ['founder.html', 'founder/index.html', 'BRAYROAI'],
+  ['terms.html', 'terms/index.html', 'BRAYROAI'],
+  ['ai-workflow-audit.html', 'ai-workflow-audit/index.html', 'BRAYROAI'],
+  ['company-second-brain.html', 'company-second-brain/index.html', 'BRAYROAI'],
   ['clients.html', 'clients/index.html', 'CLIENT ARCHIVE'],
   ['fakhrimart-case-study.html', 'clients/fakhrimart/index.html', 'Not a fake ecommerce store.']
 ];

@@ -16,8 +16,11 @@ test('client archive renders verified work and future status filters',async({pag
   await page.goto('/clients',{waitUntil:'networkidle'});
   await expect(page.locator('h1')).toContainText('Client work');
   await expect(page.locator('[data-client-card]')).toHaveCount(1);
-  await expect(page.locator('[data-client-card]')).toContainText('FakhriMart');
-  await expect(page.locator('[data-client-card] a[href="/clients/fakhrimart"]')).toHaveCount(2);
+  const card=page.locator('[data-client-card]');
+  await expect(card).toContainText('FakhriMart');
+  await expect(card.locator('.client-card__media[href="/clients/fakhrimart"]')).toHaveCount(1);
+  await expect(card.locator('h2 a[href="/clients/fakhrimart"]')).toHaveCount(1);
+  await expect(card.locator('.client-card__actions a[href="/clients/fakhrimart"]')).toHaveCount(1);
   await page.locator('[data-client-filter="upcoming"]').click();
   await expect(page.locator('[data-client-card]:visible')).toHaveCount(0);
   await expect(page.locator('[data-client-count]')).toHaveText('0 projects');
@@ -29,7 +32,7 @@ test('FakhriMart case study exposes evidence, live project and technical story',
   await page.goto('/clients/fakhrimart',{waitUntil:'networkidle'});
   await expect(page.locator('h1')).toContainText('Fakhri');
   await expect(page.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(4);
-  const body=await page.locator('body').innerText();
+  const body=await page.locator('body').textContent();
   for(const text of ['Not a fake ecommerce store.','CATALOGUE ARCHITECTURE','ENQUIRY FLOW','React 19','React Router 8','No fabricated conversion uplift'])expect(body).toContain(text);
   await expect(page.locator('img[src="/assets/fakhrimart-case-desktop.png"]')).toHaveCount(2);
   await expect(page.locator('img[src="/assets/fakhrimart-case-mobile.png"]')).toHaveCount(2);

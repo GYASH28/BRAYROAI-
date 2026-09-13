@@ -32,7 +32,7 @@ expect(vite.includes('data-client-archive-link')&&vite.includes('data-fakhri-cas
 expect(vercel.includes('{"source":"/clients","destination":"/clients.html"}'),'Vercel /clients rewrite missing');
 expect(vercel.includes('{"source":"/clients/fakhrimart","destination":"/fakhrimart-case-study.html"}'),'Vercel FakhriMart rewrite missing');
 expect(vercel.includes('{"source":"/case-studies/fakhrimart","destination":"/clients/fakhrimart"'),'Legacy FakhriMart case route does not redirect to new case study');
-expect(vercel.includes('client-work.css|client-work.js'),'Client work assets missing from Vercel cache policy');
+for(const asset of ['client-work.css','client-work-accessibility.css','client-work.js'])expect(vercel.includes(asset),`Client work cache policy missing ${asset}`);
 expect(materializer.includes("['clients.html', 'clients/index.html'")&&materializer.includes("['fakhrimart-case-study.html', 'clients/fakhrimart/index.html'"),'Physical clean-route materialization is missing');
 expect(pkg.includes('scripts/materialize-clean-routes.mjs')&&pkg.includes('tests/dist-integrity.mjs'),'Build does not materialize and verify clean static routes');
 

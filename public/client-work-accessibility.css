@@ -1,0 +1,3 @@
+/* Client work accessibility fixes kept separate from the visual system. */
+.client-close__action{color:var(--cw-ink)!important}
+.client-close__action:focus-visible{outline:3px solid var(--cw-bone);outline-offset:4px}

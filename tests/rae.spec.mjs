@@ -1,163 +1,97 @@
-import { test, expect } from '@playwright/test';
+import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const openRae=async(page,route='/')=>{
-  await page.goto(route,{waitUntil:'networkidle'});
+const sse=(type,data)=>`event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
+const defaultEvents=[
+  ['state',{state:'thinking'}],['state',{state:'speaking'}],['delta',{text:'BRAYROAI can help with '}],['delta',{text:'websites, products and practical AI systems.'}],['meta',{quickReplies:['Show relevant work','Compare plans'],emotion:'positive'}],['done',{finishReason:'stop',emotion:'positive'}]
+];
+
+async function mockAI(page,{events=defaultEvents,delay=35,failFirst=false,status=200}={}){
+  await page.addInitScript(({events,delay,failFirst,status})=>{
+    const original=window.fetch.bind(window);window.__raeApiCalls=0;
+    window.fetch=async(input,init={})=>{
+      const url=typeof input==='string'?input:input?.url||'';if(!url.includes('/api/rae-chat'))return original(input,init);
+      window.__raeApiCalls+=1;
+      if((failFirst&&window.__raeApiCalls===1)||status!==200)return new Response(JSON.stringify({error:'temporary failure',code:'provider_unavailable'}),{status:status===200?503:status,headers:{'Content-Type':'application/json'}});
+      const encoder=new TextEncoder();let index=0,timer;
+      const stream=new ReadableStream({start(controller){
+        const push=()=>{if(init.signal?.aborted){try{controller.error(new DOMException('Aborted','AbortError'))}catch{}return}if(index>=events.length){controller.close();return}const [type,data]=events[index++];controller.enqueue(encoder.encode(`event: ${type}\ndata: ${JSON.stringify(data)}\n\n`));timer=setTimeout(push,delay)};push();
+        init.signal?.addEventListener('abort',()=>{clearTimeout(timer);try{controller.error(new DOMException('Aborted','AbortError'))}catch{}},{once:true});
+      }});
+      return new Response(stream,{status:200,headers:{'Content-Type':'text/event-stream; charset=utf-8'}});
+    };
+  },{events,delay,failFirst,status});
+}
+
+async function loadRae(page,route='/'){
+  await page.goto(route,{waitUntil:'domcontentloaded'});
   await expect(page.locator('[data-rae-root]')).toHaveCount(1);
-  await page.locator('[data-rae-toggle]').click();
-  await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false');
-};
+  const shell=page.locator('[data-rae-shell]');if(await shell.count())await shell.hover();
+  await expect(page.locator('[data-rae-toggle]')).toHaveCount(1,{timeout:8000});
+}
+async function openRae(page,route='/'){
+  await loadRae(page,route);await page.locator('[data-rae-toggle]').click();await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false');
+}
 const serious=results=>results.violations.filter(item=>['serious','critical'].includes(item.impact));
 
 for(const [route,pageName] of [['/','home'],['/plans','plans'],['/founder','founder'],['/terms','terms'],['/ai-workflow-audit','ai'],['/company-second-brain','ai'],['/clients','clients'],['/clients/fakhrimart','case']]){
-  test(`Rae mounts once on ${route} with the right visual personality`,async({page})=>{
-    await page.goto(route,{waitUntil:'networkidle'});
-    await expect(page.locator('[data-rae-root]')).toHaveCount(1);
-    await expect(page.locator('body')).toHaveAttribute('data-rae-page',pageName);
-    await expect(page.locator('[data-rae-toggle]')).toHaveAttribute('aria-expanded','false');
-  });
+  test(`Rae mounts once and becomes page-aware on ${route}`,async({page})=>{await loadRae(page,route);await expect(page.locator('body')).toHaveAttribute('data-rae-page',pageName);await expect(page.locator('[data-rae-toggle]')).toHaveAttribute('aria-label','Chat with Rae, BRAYROAI AI assistant')});
 }
 
-test('Rae answers pricing locally without waking Gemini',async({page})=>{
-  let apiCalls=0;
-  await page.route('**/api/rae',async route=>{apiCalls+=1;await route.abort()});
-  await openRae(page,'/plans');
-  await page.locator('[data-rae-input]').fill('How much is a website?');
-  await page.locator('[data-rae-form]').press('Enter');
-  const feed=page.locator('[data-rae-feed]');
-  await expect(feed).toContainText('₹2,599');
-  await expect(feed).toContainText('₹9,999');
-  expect(apiCalls).toBe(0);
+test('free-text conversation uses the real streaming transport and renders progressively',async({page})=>{
+  await mockAI(page,{delay:120});await openRae(page,'/');
+  await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');
+  await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','thinking');
+  await expect(page.locator('[data-rae-feed]')).toContainText('BRAYROAI can help with');
+  await expect(page.locator('[data-rae-feed]')).not.toContainText('practical AI systems.');
+  await expect(page.locator('[data-rae-feed]')).toContainText('practical AI systems.',{timeout:3000});
+  await expect(page.locator('[data-rae-stop]')).toBeHidden();expect(await page.evaluate(()=>window.__raeApiCalls)).toBe(1);
 });
 
-test('Rae reasons about a restaurant locally before Gemini',async({page})=>{
-  let apiCalls=0;
-  await page.route('**/api/rae',async route=>{apiCalls+=1;await route.abort()});
-  await openRae(page,'/');
-  await page.locator('[data-rae-input]').fill('How could BRAYROAI improve my restaurant business and help me get more bookings?');
-  await page.locator('[data-rae-form]').press('Enter');
-  const feed=page.locator('[data-rae-feed]');
-  await expect(feed).toContainText('menu');
-  await expect(feed).toContainText('booking');
-  expect(apiCalls).toBe(0);
+test('Rae can stop an in-flight streamed answer immediately',async({page})=>{
+  const events=[['state',{state:'thinking'}],['delta',{text:'First useful thought. '}],['delta',{text:'This should never arrive after stop.'}],['done',{finishReason:'stop'}]];
+  await mockAI(page,{events,delay:650});await openRae(page,'/');await page.locator('[data-rae-input]').fill('Think through my project');await page.locator('[data-rae-form]').press('Enter');
+  await expect(page.locator('[data-rae-feed]')).toContainText('First useful thought.');await page.locator('[data-rae-stop]').click();await expect(page.locator('[data-rae-feed]')).toContainText('Stopped');await page.waitForTimeout(850);await expect(page.locator('[data-rae-feed]')).not.toContainText('never arrive after stop');
 });
 
-test('Rae remembers project context for the visit and uses it conversationally',async({page})=>{
-  let apiCalls=0;
-  await page.route('**/api/rae',async route=>{apiCalls+=1;await route.abort()});
-  await openRae(page,'/');
-  await page.locator('[data-rae-input]').fill('I run a restaurant and my budget is around 15k. I need more bookings.');
-  await page.locator('[data-rae-form]').press('Enter');
-  await expect(page.locator('[data-rae-feed]')).toContainText('restaurant');
-  await page.locator('[data-rae-input]').fill('What do you remember about me?');
-  await page.locator('[data-rae-form]').press('Enter');
-  const feed=page.locator('[data-rae-feed]');
-  await expect(feed).toContainText('restaurant business');
-  await expect(feed).toContainText('15k');
-  await expect(feed).toContainText('more useful enquiries');
-  expect(apiCalls).toBe(0);
+test('Rae retries after provider failure without losing the transcript',async({page})=>{
+  await mockAI(page,{failFirst:true,delay:20});await openRae(page,'/');await page.locator('[data-rae-input]').fill('Help me choose what to build');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-feed]')).toContainText('lost the connection');await page.locator('[data-rae-retry]').click();await expect(page.locator('[data-rae-feed]')).toContainText('websites, products and practical AI systems.');expect(await page.evaluate(()=>window.__raeApiCalls)).toBe(2);
 });
 
-test('Rae recommends the smallest sensible website route locally',async({page})=>{
-  let apiCalls=0;
-  await page.route('**/api/rae',async route=>{apiCalls+=1;await route.abort()});
-  await openRae(page,'/plans');
-  await page.locator('[data-rae-input]').fill('I already have a website and want to improve it. Which plan would you choose?');
-  await page.locator('[data-rae-form]').press('Enter');
-  const feed=page.locator('[data-rae-feed]');
-  await expect(feed).toContainText('not jump straight to a full rebuild');
-  await expect(feed).toContainText('₹2,599');
-  expect(apiCalls).toBe(0);
+test('server metadata can render verified case UI and safe allowlisted actions',async({page})=>{
+  const events=[['delta',{text:'FakhriMart is the clearest verified client example.'}],['meta',{card:{type:'case',eyebrow:'VERIFIED CLIENT WORK',title:'FakhriMart',copy:'A catalogue-led craft experience.',action:{name:'openProject',args:{name:'fakhrimart'},label:'View case study'}},quickReplies:['Can you build something similar?'],emotion:'positive'}],['done',{finishReason:'stop'}]];
+  await mockAI(page,{events});await openRae(page,'/clients');await page.locator('[data-rae-input]').fill('Show me FakhriMart');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('.rae-card--case')).toContainText('FakhriMart');await expect(page.locator('[data-rae-action="openProject"]')).toHaveCount(1);
 });
 
-test('Rae knows the live client case and can route visitors to it',async({page})=>{
-  await openRae(page,'/clients');
-  await page.locator('[data-rae-input]').fill('Show me real work');
-  await page.locator('[data-rae-form]').press('Enter');
-  await expect(page.locator('[data-rae-feed]')).toContainText('FakhriMart');
-  await expect(page.locator('[data-rae-feed] a[href="/clients/fakhrimart"]')).toHaveCount(1);
+test('project handoff is editable and never auto-opens WhatsApp',async({page})=>{
+  const events=[['delta',{text:'That sounds like real project intent. I would keep the next step small.'}],['meta',{card:{type:'project',eyebrow:'PROJECT HANDOFF',title:'A useful starting brief',copy:'Edit this before continuing.',brief:'Project: Redesign my restaurant booking journey'},emotion:'curious'}],['done',{finishReason:'stop'}]];
+  await mockAI(page,{events});await openRae(page,'/');let opened=0;await page.exposeFunction('__opened',()=>opened++);await page.evaluate(()=>{const original=window.open;window.open=(...args)=>{window.__opened(args[0]);return null};window.__originalOpen=original});await page.locator('[data-rae-input]').fill('I want to start a project for my restaurant');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('.rae-card--project')).toBeVisible();expect(opened).toBe(0);await page.locator('.rae-card__brief').fill('Project: Better restaurant booking experience');await page.locator('.rae-card__cta').click();expect(opened).toBe(1);
 });
 
-test('Rae stays playful and visibly expressive instead of sounding like a support bot',async({page})=>{
-  await openRae(page,'/');
-  await page.locator('[data-rae-input]').fill('Tell me a joke');
-  await page.locator('[data-rae-form]').press('Enter');
-  const feed=page.locator('[data-rae-feed]');
-  await expect(feed).toContainText(/Agency joke|raise|logo bigger|synergy|landing page|Git diff/);
-  const text=(await feed.innerText()).toLowerCase();
-  expect(text).not.toContain('how may i assist');
-  expect(text).not.toContain('as an ai');
-  await expect.poll(async()=>page.locator('.rae-avatar').first().getAttribute('data-action')).toMatch(/celebrate|talk|idle/);
+test('model HTML is rendered as inert text, never executable markup',async({page})=>{
+  const events=[['delta',{text:'<script>window.__raeXss=1</script><img src=x onerror=alert(1)> safe text'}],['done',{finishReason:'stop'}]];await mockAI(page,{events});await openRae(page,'/');await page.locator('[data-rae-input]').fill('test safety');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-feed]')).toContainText('<script>window.__raeXss=1</script>');expect(await page.locator('[data-rae-feed] script').count()).toBe(0);expect(await page.locator('[data-rae-feed] img').count()).toBe(0);expect(await page.evaluate(()=>window.__raeXss||0)).toBe(0);
 });
 
-test('Rae uses Gemini only for genuinely complex business reasoning and passes buddy context',async({page})=>{
-  let apiCalls=0;
-  await page.route('**/api/rae',async route=>{
-    apiCalls+=1;
-    const body=route.request().postDataJSON();
-    expect(body.page).toBe('home');
-    expect(body.message).toContain('Compare');
-    expect(body.profile.businessType).toBe('restaurant');
-    await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({reply:'I would test the booking journey first, then compare lead qualification automation against staff time saved. Bigger system later; cleaner evidence first.'})});
-  });
-  await openRae(page,'/');
-  await page.locator('[data-rae-input]').fill('Compare two approaches for my restaurant business: redesigning the booking journey versus automating lead qualification, and tell me the trade-offs.');
-  await page.locator('[data-rae-form]').press('Enter');
-  await expect(page.locator('[data-rae-feed]')).toContainText('cleaner evidence first');
-  expect(apiCalls).toBe(1);
+test('keyboard open/close restores focus and Escape works',async({page})=>{
+  await mockAI(page);await loadRae(page,'/plans');await page.locator('[data-rae-toggle]').focus();await page.keyboard.press('Enter');await expect(page.locator('[data-rae-input]')).toBeFocused();await page.keyboard.press('Escape');await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','true');await expect(page.locator('[data-rae-toggle]')).toBeFocused();
 });
 
-test('Rae refuses unrelated world trivia locally instead of wasting Gemini',async({page})=>{
-  let apiCalls=0;
-  await page.route('**/api/rae',async route=>{apiCalls+=1;await route.abort()});
-  await openRae(page,'/');
-  await page.locator('[data-rae-input]').fill('What is the weather in Tokyo and who won the football match yesterday?');
-  await page.locator('[data-rae-form]').press('Enter');
-  await expect(page.locator('[data-rae-feed]')).toContainText(/outside my useful lane|Windows error sound|Rephrase/);
-  expect(apiCalls).toBe(0);
+test('Rae has no serious accessibility violations while open',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Axe audit runs once in Chromium');await mockAI(page);await openRae(page,'/plans');const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(serious(results)).toEqual([]);
 });
 
-test('Rae fails gracefully when deep mode is unavailable',async({page})=>{
-  await page.route('**/api/rae',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'not configured'})}));
-  await openRae(page,'/');
-  await page.locator('[data-rae-input]').fill('Compare multiple strategies and prioritise a roadmap for automating customer qualification across my service business, including the trade-offs.');
-  await page.locator('[data-rae-form]').press('Enter');
-  await expect(page.locator('[data-rae-feed]')).toContainText('tea break');
-  await expect(page.locator('[data-rae-feed] a[href*="wa.me"]')).toHaveCount(1);
+for(const width of [320,390,768,1440,1920])test(`Rae has no horizontal overflow and remains usable at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:width<500?844:900});await mockAI(page);await openRae(page,'/');const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);expect(overflow).toBeLessThanOrEqual(1);await expect(page.locator('[data-rae-input]')).toBeVisible();await expect(page.locator('[data-rae-close]')).toBeVisible();
 });
 
-test('Rae open panel has no serious accessibility violations',async({page,browserName})=>{
-  test.skip(browserName!=='chromium','Axe open-state audit runs once in Chromium');
-  await openRae(page,'/plans');
-  await page.locator('[data-rae-input]').fill('Which plan fits me?');
-  await page.locator('[data-rae-form]').press('Enter');
-  const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();
-  expect(serious(results)).toEqual([]);
+test('Rae respects reduced motion while all chat functionality remains',async({browser})=>{
+  const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});const page=await context.newPage();await mockAI(page);await openRae(page,'/terms');const animation=await page.locator('.rae-character__body').first().evaluate(node=>getComputedStyle(node).animationName);expect(animation).toBe('none');await page.locator('[data-rae-input]').fill('Explain this page');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-feed]')).toContainText('BRAYROAI can help with');await context.close();
 });
 
-test('Rae launcher avoids another fixed bottom-right icon and does not duplicate itself over the open panel',async({page})=>{
-  await page.goto('/',{waitUntil:'networkidle'});
-  await page.evaluate(()=>{
-    const fake=document.createElement('button');fake.id='collision-probe';fake.textContent='fixed';
-    Object.assign(fake.style,{position:'fixed',right:'12px',bottom:'12px',width:'68px',height:'68px',zIndex:'99999'});
-    document.body.append(fake);dispatchEvent(new Event('resize'));
-  });
-  await page.waitForTimeout(320);
-  const lift=await page.locator('[data-rae-root]').evaluate(node=>getComputedStyle(node).getPropertyValue('--rae-collision-lift').trim());
-  expect(parseFloat(lift)).toBeGreaterThan(0);
-  await page.locator('[data-rae-toggle]').click();
-  await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false');
-  await expect(page.locator('[data-rae-toggle]')).toHaveCSS('visibility','hidden');
+test('launcher dynamically lifts above another fixed bottom-right control',async({page})=>{
+  await loadRae(page,'/');await page.evaluate(()=>{const fake=document.createElement('button');fake.id='collision-probe';fake.textContent='fixed';Object.assign(fake.style,{position:'fixed',right:'12px',bottom:'12px',width:'72px',height:'72px',zIndex:'99999'});document.body.append(fake);dispatchEvent(new Event('resize'))});await page.waitForTimeout(250);const lift=await page.locator('[data-rae-root]').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--rae-collision-lift'))||0);expect(lift).toBeGreaterThan(0);
 });
 
-test('Rae respects reduced motion and keeps the native interface usable',async({browser})=>{
-  const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});
-  const page=await context.newPage();
-  await openRae(page,'/terms');
-  const animation=await page.locator('.rae-avatar__spark').first().evaluate(node=>getComputedStyle(node).animationName);
-  expect(animation).toBe('none');
-  await page.locator('[data-rae-input]').fill('Give me the human version');
-  await page.locator('[data-rae-form]').press('Enter');
-  await expect(page.locator('[data-rae-feed]')).toContainText('Human version');
-  await context.close();
+test('provider unavailable leaves Rae as an honest deterministic site guide',async({page})=>{
+  await mockAI(page,{status:503});await openRae(page,'/');await page.locator('[data-rae-input]').fill('Can you advise me?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-feed]')).toContainText('not configured');await expect(page.locator('[data-rae-suggestions]')).toContainText('Show plans');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','offline');
 });

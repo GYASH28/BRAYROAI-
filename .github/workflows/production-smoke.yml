@@ -7,13 +7,18 @@ on:
 
 permissions:
   contents: read
-  deployments: read
+
+concurrency:
+  group: brayroai-production-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   production-smoke:
     name: Production deployment + browser + load + Lighthouse
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      PROD_URL: https://brayroai.vercel.app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,70 +26,71 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Install production QA tooling
-        run: npm install --no-save @playwright/test@latest @axe-core/playwright@latest lighthouse@latest
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Build exact merged source
         run: npm run build
-      - name: Resolve and verify this commit's Vercel Production deployment
-        env:
-          GH_TOKEN: ${{ github.token }}
+
+      - name: Verify canonical Vercel serves this exact commit
+        id: production
         run: |
           set -euo pipefail
-          DEPLOYMENT_ID=""
-          for i in {1..36}; do
-            DEPLOYMENT_ID=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments?environment=Production&per_page=20" | jq -r --arg sha "$GITHUB_SHA" '[.[] | select(.sha==$sha and .environment=="Production")][0].id // empty')
-            if [ -n "$DEPLOYMENT_ID" ]; then break; fi
+          mkdir -p artifacts
+          DEPLOYED_COMMIT=""
+          HTTP_CODE="000"
+
+          # Vercel's GitHub deployment-status integration is not guaranteed to
+          # create a GitHub Deployments record. Verify the actual canonical URL
+          # instead. Vite injects x-brayro-commit from VERCEL_GIT_COMMIT_SHA.
+          for i in {1..24}; do
+            HTTP_CODE=$(curl -L -sS --max-time 25 -o /tmp/brayroai-prod-home.html -w '%{http_code}' "$PROD_URL/" || true)
+            if [ "$HTTP_CODE" = "200" ]; then
+              DEPLOYED_COMMIT=$(grep -o 'name="x-brayro-commit" content="[^"]*"' /tmp/brayroai-prod-home.html | sed -E 's/.*content="([^"]*)"/\1/' | head -n1 || true)
+              echo "Observed production commit: ${DEPLOYED_COMMIT:-missing} (wanted $GITHUB_SHA)"
+              if [ "$DEPLOYED_COMMIT" = "$GITHUB_SHA" ]; then
+                break
+              fi
+            else
+              echo "Production HTTP status: $HTTP_CODE"
+            fi
             sleep 10
           done
-          test -n "$DEPLOYMENT_ID"
-          STATE=""; PROD_URL=""
-          for i in {1..36}; do
-            STATUS=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments/${DEPLOYMENT_ID}/statuses?per_page=10")
-            STATE=$(printf '%s' "$STATUS" | jq -r '.[0].state // empty')
-            PROD_URL=$(printf '%s' "$STATUS" | jq -r '.[0].environment_url // empty')
-            if [ "$STATE" = "success" ]; then break; fi
-            if [ "$STATE" = "failure" ] || [ "$STATE" = "error" ]; then exit 1; fi
-            sleep 10
-          done
-          test "$STATE" = "success"; test -n "$PROD_URL"
-          echo "PROD_URL=$PROD_URL" >> "$GITHUB_ENV"
-          HTTP_CODE=$(curl -L -sS --max-time 25 -o /tmp/brayroai-prod-home.html -w '%{http_code}' "$PROD_URL/" || true)
-          if [ "$HTTP_CODE" = "200" ] && grep -q 'BRAYROAI' /tmp/brayroai-prod-home.html && grep -q 'Digital, designed' /tmp/brayroai-prod-home.html; then
-            echo "QA_URL=$PROD_URL" >> "$GITHUB_ENV"; echo "QA_MODE=vercel-public" >> "$GITHUB_ENV"
-          else
-            echo "QA_URL=http://127.0.0.1:4173" >> "$GITHUB_ENV"; echo "QA_MODE=vercel-protected-local-build" >> "$GITHUB_ENV"
-          fi
-      - name: Start exact production build when Vercel is protected
-        if: env.QA_MODE == 'vercel-protected-local-build'
-        run: |
-          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-production-preview.log 2>&1 &
-          for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'BRAYROAI'; then exit 0; fi
-            sleep 1
-          done
-          cat /tmp/brayroai-production-preview.log; exit 1
-      - name: Production-equivalent concurrent load test
+
+          printf 'commit=%s\nproduction_url=%s\nhttp_code=%s\ndeployed_commit=%s\n' \
+            "$GITHUB_SHA" "$PROD_URL" "$HTTP_CODE" "${DEPLOYED_COMMIT:-missing}" \
+            > artifacts/deployment-verification.txt
+
+          test "$HTTP_CODE" = "200"
+          test "$DEPLOYED_COMMIT" = "$GITHUB_SHA"
+          grep -q 'BRAYROAI' /tmp/brayroai-prod-home.html
+          grep -q 'Digital, designed' /tmp/brayroai-prod-home.html
+          curl -fsSL "$PROD_URL/clients" | grep -q 'CLIENT ARCHIVE'
+          curl -fsSL "$PROD_URL/clients/fakhrimart" | grep -q 'Not a fake ecommerce store'
+
+      - name: Production concurrent load test
         env:
-          BASE_URL: ${{ env.QA_URL }}
+          BASE_URL: https://brayroai.vercel.app
           STRESS_REQUESTS: 360
           STRESS_CONCURRENCY: 20
         run: npm run test:stress
-      - name: Production-equivalent browser and accessibility suite
+
+      - name: Production browser and accessibility suite
         env:
-          BASE_URL: ${{ env.QA_URL }}
+          BASE_URL: https://brayroai.vercel.app
         run: npx playwright test
-      - name: Production-equivalent Lighthouse mobile audit
+
+      - name: Production Lighthouse mobile audit
         run: |
           mkdir -p artifacts/production-lighthouse
-          npx lighthouse "$QA_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
+          npx lighthouse "$PROD_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
           node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json
-      - name: Record deployment verification
-        if: always()
+
+      - name: Record failed deployment lookup context
+        if: failure() && steps.production.outcome == 'failure'
         run: |
-          mkdir -p artifacts
-          printf 'commit=%s\nproduction_url=%s\nqa_url=%s\nqa_mode=%s\n' "$GITHUB_SHA" "${PROD_URL:-unresolved}" "${QA_URL:-unresolved}" "${QA_MODE:-unresolved}" > artifacts/deployment-verification.txt
+          echo 'Canonical Vercel did not serve the exact GitHub SHA within the deployment window.' >> artifacts/deployment-verification.txt
+          echo 'Check the BRAYROAI Vercel project Git connection/domain assignment before treating production as current.' >> artifacts/deployment-verification.txt
+
       - name: Upload production QA evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -93,6 +99,5 @@ jobs:
           path: |
             artifacts/
             test-results/
-            /tmp/brayroai-production-preview.log
           if-no-files-found: ignore
           retention-days: 14

@@ -4,6 +4,27 @@ import { resolve } from 'node:path';
 const googleFontsHref='https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional';
 const productionOrigin='https://brayroai.vercel.app';
 
+const cleanRouteMap=Object.freeze({
+  '/plans':'/plans.html',
+  '/founder':'/founder.html',
+  '/terms':'/terms.html',
+  '/ai-workflow-audit':'/ai-workflow-audit.html',
+  '/company-second-brain':'/company-second-brain.html',
+  '/clients':'/clients.html',
+  '/clients/fakhrimart':'/fakhrimart-case-study.html'
+});
+
+const mountCleanRoutes=server=>{
+  server.middlewares.use((req,_res,next)=>{
+    if(!req.url)return next();
+    const parsed=new URL(req.url,'http://brayro.local');
+    const pathname=parsed.pathname.length>1?parsed.pathname.replace(/\/$/,''):parsed.pathname;
+    const target=cleanRouteMap[pathname];
+    if(target)req.url=`${target}${parsed.search}`;
+    next();
+  });
+};
+
 const pagePathFor=(filename='')=>{
   if(filename.endsWith('/plans.html')) return '/plans';
   if(filename.endsWith('/founder.html')) return '/founder';
@@ -17,6 +38,8 @@ const pagePathFor=(filename='')=>{
 
 const experienceTransform={
   name:'brayro-experience-transform',
+  configureServer:mountCleanRoutes,
+  configurePreviewServer:mountCleanRoutes,
   transformIndexHtml:{
     order:'pre',
     handler(html,context){
@@ -81,7 +104,6 @@ const experienceTransform={
           'WhatsApp is fastest. Tell us what needs to improve and we will recommend the smallest sensible scope—not force a bigger package.'
         );
 
-        // Make verified client work discoverable without replacing the live-project proof link.
         html=html.replace(
           '<a href="#work">Work</a>',
           '<a href="/clients">Clients</a>'
@@ -92,8 +114,8 @@ const experienceTransform={
         );
         if(!html.includes('data-client-archive-link')){
           html=html.replace(
-            '<p data-v12-reveal data-delay="1">Move across the index. Real client work stays first; BRAYROAI lab entries show the interaction and system thinking behind the studio itself.</p>',
-            '<p data-v12-reveal data-delay="1">Move across the index. Real client work stays first; BRAYROAI lab entries show the interaction and system thinking behind the studio itself. <a data-client-archive-link class="text-link" href="/clients">Explore all client work ↗</a></p>'
+            'Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.</p>',
+            'Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together. <a data-client-archive-link class="text-link" href="/clients">Explore all client work ↗</a></p>'
           );
         }
         if(!html.includes('data-fakhri-case-link')){

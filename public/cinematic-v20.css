@@ -54,3 +54,16 @@ body.home-v20 .primary-action.magnetic,body.home-v20 .site-nav__cta.magnetic,bod
 @media(max-width:1100px),(hover:none),(pointer:coarse){.v20-scene-rail{display:none}}
 @media(max-width:760px){.v20-lens{width:min(92vw,34rem);opacity:.22}.v20-text-cycle{font-size:.48rem;margin-top:.65rem}.v20-signal-field{inset:10% 4%;opacity:.25}.v20-film-gate{opacity:.2}.v20-aperture{inset:.42rem}.v20-data-path{width:7rem;opacity:.34}.v20-data-path i{--v20-data-travel:5.7rem}.v20-data-path i:nth-child(2),.v20-data-path i:nth-child(3){--v20-data-travel:4.5rem}.v20-background-lines{opacity:.18}}
 @media(prefers-reduced-motion:reduce){.v20-signal-field__orbit,.v20-data-path i::after,.v20-background-lines i{animation:none!important}.v20-lens{translate:-50% -50%!important;scale:1!important;opacity:.18!important}.v20-film-gate::after{top:50%!important}.v20-portrait-scan{top:28%!important}.v20-selector-indicator{transition:none!important}.v20-button-shine{display:none}body.home-v20 .primary-action.magnetic,body.home-v20 .site-nav__cta.magnetic,body.home-v20 .text-link.magnetic,body.home-v20 .close__action.magnetic{translate:0 0!important;transition:none!important}}
+
+/* Initial-render performance: keep the mobile hero geometry stable while
+   display fonts activate, and skip layout/paint work for deep sections until
+   they approach the viewport. The sections remain fully interactive once
+   revealed, while the first paint stays focused on the hero. */
+@media(max-width:760px){body.home-v20 .hero__copy{height:clamp(29.8125rem,58svh,31.5rem)}}
+@supports(content-visibility:auto){
+  body.home-v20 #work,
+  body.home-v20 #ai-systems,
+  body.home-v20 #plans,
+  body.home-v20 #studio,
+  body.home-v20 #contact{content-visibility:auto;contain-intrinsic-size:auto 1000px}
+}

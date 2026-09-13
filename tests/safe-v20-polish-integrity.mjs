@@ -49,10 +49,12 @@ requireText(vite,'data-layout-stable-fonts','layout-stable hero typography');
 requireText(vite,'.opening-sequence{animation:openingAway 0s .90s both}','crisper desktop opening');
 requireText(vite,'.opening-sequence{animation-delay:.80s}','crisper mobile opening');
 
-// V18/V20 cinematic layers must remain mounted exactly as the current production architecture expects.
-requireText(vite,'/cinematic-v18.css','V18 cinematic CSS');
+// V18/V20 CSS now ships inside the ordered homepage bundle; the JS layers
+// remain direct runtime scripts. Assert ownership rather than old link syntax.
+requireText(vite,"'cinematic-v18.css'",'V18 cinematic CSS bundle source');
 requireText(vite,'/cinematic-v18.js','V18 cinematic JS');
-requireText(vite,'/cinematic-v20.css','V20 cinematic CSS');
+requireText(vite,"'cinematic-v20.css'",'V20 cinematic CSS bundle source');
 requireText(vite,'/cinematic-v20.js','V20 cinematic JS');
+requireText(vite,"fileName: 'assets/brayro-home.css'",'homepage CSS bundle output');
 
-console.log('Safe V20 polish integrity passed: visual structure and pricing preserved; only scoped copy/metadata/performance refinements are allowed.');
+console.log('Safe V20 polish integrity passed: visual structure and pricing preserved; scoped copy, metadata and production bundling remain intact.');

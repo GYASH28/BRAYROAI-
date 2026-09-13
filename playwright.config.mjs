@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: /(browser-v12|second-scene-regression|cinematic-v20|client-work)\.spec\.mjs/,
+  testMatch: /(browser-v12|second-scene-regression|cinematic-v20|client-work|rae)\.spec\.mjs/,
   timeout: 45_000,
   expect: { timeout: 8_000 },
   fullyParallel: true,
@@ -15,6 +15,7 @@ export default defineConfig({
     video: 'retain-on-failure'
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } }
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox-smoke', testMatch: /(cinematic-v20|rae)\.spec\.mjs/, use: { ...devices['Desktop Firefox'] } }
   ]
 });

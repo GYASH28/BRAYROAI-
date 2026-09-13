@@ -8,7 +8,7 @@ const css=read('public/brayro-cursor-v22.css');
 const vite=read('vite.config.mjs');
 const pw=read('playwright.config.mjs');
 
-for(const token of ['v22CursorMounted','data.v22CursorPage','setMode','resolveTarget','paintReactiveSurface','paintMagnet','requestAnimationFrame'])expect(js.includes(token),`V22 cursor runtime missing ${token}`);
+for(const token of ['v22CursorMounted','dataset.v22CursorPage','setMode','resolveTarget','paintSurface','paintMagnet','requestAnimationFrame'])expect(js.includes(token),`V22 cursor runtime missing ${token}`);
 for(const token of ['.v22-cursor','.v22-cursor__dot','.v22-cursor__echo','is-action','is-media','is-control','is-reading','data-v22-cursor-page="plans"','data-v22-cursor-page="case"'])expect(css.includes(token),`V22 cursor CSS missing ${token}`);
 expect(js.includes("matchMedia('(prefers-reduced-motion: reduce)')")&&js.includes("matchMedia('(hover:hover) and (pointer:fine)')"),'V22 cursor input/reduced-motion guards missing');
 expect(!/mix-blend-mode|backdrop-filter/i.test(css),'V22 cursor must avoid Firefox-expensive compositing effects');

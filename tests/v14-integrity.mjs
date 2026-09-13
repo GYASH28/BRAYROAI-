@@ -23,7 +23,8 @@ expect(!/transition\s*:\s*all/i.test(css+polish),'V14 contains prohibited transi
 expect(Buffer.byteLength(css)<26000,'V14 CSS exceeds 26KB guardrail');
 expect(Buffer.byteLength(polish)<9000,'V14 finishing CSS exceeds 9KB guardrail');
 expect(Buffer.byteLength(js)<18000,'V14 JS exceeds 18KB guardrail');
-expect(vite.includes('/brayro-v14.css')&&vite.includes('/brayro-v14-polish.css')&&vite.includes('/brayro-v14.js'),'V14 assets are not mounted by the Vite homepage transform');
+expect(vite.includes("'brayro-v14.css'")&&vite.includes("'brayro-v14-polish.css'")&&vite.includes('/brayro-v14.js'),'V14 assets are not owned by the Vite homepage build');
+expect(vite.includes("fileName: 'assets/brayro-home.css'"),'V14 CSS is not assigned to the consolidated homepage stylesheet');
 expect(exists('public/brayro-v14.css')&&exists('public/brayro-v14-polish.css')&&exists('public/brayro-v14.js'),'V14 public assets are missing');
 
 // The detailed pricing page is deliberately not redesigned by V14.
@@ -32,4 +33,4 @@ expect((plans.match(/class="ai-plan-card/g)||[]).length===2,'Detailed /plans AI 
 expect(plans.includes('Knowledge Care')&&plans.includes('From ₹2,999/mo'),'Detailed /plans content must remain intact');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V14 integrity OK: cinematic film, three-choice rate card, no-glow AI offers, clean close, performance limits and untouched detailed pricing verified');
+console.log('V14 integrity OK: cinematic film, three-choice rate card, bundled CSS, no-glow AI offers and untouched detailed pricing verified');

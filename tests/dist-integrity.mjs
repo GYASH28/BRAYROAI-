@@ -22,6 +22,10 @@ for (const [file, canonicalPath] of checks) {
   const html = readFileSync(full, 'utf8');
   expect(html.includes(`rel="canonical" href="https://brayroai.vercel.app${canonicalPath}"`), `${file} has the wrong canonical route`);
   expect(html.includes('name="x-brayro-commit"'), `${file} is missing build commit metadata`);
+  expect(html.includes('/rae.css'), `${file} is missing Rae CSS`);
+  expect(html.includes('/rae.js'), `${file} is missing Rae runtime`);
+  expect(html.includes('/brayro-cursor-v22.css'), `${file} is missing V22 cursor CSS`);
+  expect(html.includes('/brayro-cursor-v22.js'), `${file} is missing V22 cursor runtime`);
 }
 
 const fakhri = resolve(root, 'clients/fakhrimart/index.html');
@@ -35,13 +39,26 @@ const home = resolve(root, 'index.html');
 if (existsSync(home)) {
   const html = readFileSync(home, 'utf8');
   expect(html.includes('href="/assets/brayro-home.css"'), 'Homepage is missing the consolidated stylesheet');
-  for (const legacy of ['/brayro-v12.css', '/brayro-v14.css', '/brayro-v15.css']) {
-    expect(!html.includes(`href="${legacy}"`), `Homepage still renders legacy stylesheet link ${legacy}`);
+  expect(html.includes('/rae.js'), 'Homepage is missing Rae runtime');
+  expect(html.includes('/brayro-cursor-v22.js'), 'Homepage is missing V22 cursor runtime');
+  for (const legacy of ['/brayro-v12.css', '/brayro-v14.css', '/brayro-v15.css', '/rae.css', '/brayro-cursor-v22.css']) {
+    expect(!html.includes(`href="${legacy}"`), `Homepage should bundle stylesheet instead of direct-linking ${legacy}`);
   }
+  const bundle = resolve(root, 'assets/brayro-home.css');
+  expect(existsSync(bundle), 'Homepage stylesheet bundle missing');
+  if (existsSync(bundle)) {
+    const css = readFileSync(bundle, 'utf8');
+    expect(css.includes('.rae-root'), 'Homepage bundle is missing Rae styles');
+    expect(css.includes('.v22-cursor'), 'Homepage bundle is missing V22 cursor styles');
+  }
+}
+
+for (const file of ['rae.js','rae.css','brayro-cursor-v22.js','brayro-cursor-v22.css']) {
+  expect(existsSync(resolve(root,file)), `Missing production companion asset: ${file}`);
 }
 
 if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
-console.log('Dist integrity passed: clean static routes, canonical metadata and consolidated homepage CSS are present.');
+console.log('Dist integrity passed: clean routes, canonical metadata, consolidated homepage CSS, Rae and V22 cursor are present.');

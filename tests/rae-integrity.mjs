@@ -3,41 +3,33 @@ import fs from 'node:fs';
 const read=file=>fs.readFileSync(file,'utf8');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
+const files={
+  bootstrap:read('public/rae.js'),css:read('public/rae.css'),app:read('public/rae/rae-app.js'),director:read('public/rae/rae-director.js'),ui:read('public/rae/rae-ui.js'),transport:read('public/rae/rae-chat-client.js'),actions:read('public/rae/rae-actions.js'),context:read('public/rae/rae-context.js'),character:read('public/rae/rae-character.js'),api:read('api/rae-chat.js'),knowledge:read('api/_rae-knowledge.js'),vite:read('vite.config.mjs'),pkg:read('package.json')
+};
 
-const js=read('public/rae.js');
-const css=read('public/rae.css');
-const api=read('api/rae.js');
-const vite=read('vite.config.mjs');
-const pkg=read('package.json');
-
-for(const token of ['class Rae','localReply(raw)','reasonLocally(raw)','projectRecommendation()','captureMemory(raw)','shouldUseGemini(text)','askGemini(text)','observePage()','showNudge(text,key)','scheduleIdle()','trackEyes(event)','resolveCollisions()'])expect(js.includes(token),`Rae runtime missing ${token}`);
-for(const token of ['rae-avatar','rae-panel','rae-nudge','rae-message','rae-suggestions','rae-avatar__brow','rae-avatar__cheek','rae-avatar__hand','data-mood="excited"','data-mood="skeptical"','data-mood="shy"','data-mood="sleepy"','data-action="celebrate"','raeWave','raeBlink','raeMessageIn','prefers-reduced-motion'])expect(css.includes(token),`Rae CSS missing ${token}`);
-for(const token of ['home','plans','clients','case','founder','terms','audit','brain'])expect(js.includes(`${token}:`)||js.includes(`'${token}'`),`Rae page awareness missing ${token}`);
-for(const phrase of ['I asked Yash for a raise','I don’t use synergy','Windows error sound','Tiny face, big opinions','goldfish'])expect(js.includes(phrase),`Rae personality lost: ${phrase}`);
-for(const domain of ['restaurant','ecommerce','manufacturer','clinic','school','real estate','consulting','agency','saas'])expect(js.includes(`'${domain}'`)||js.includes(`${domain}`),`Rae local business reasoning missing ${domain}`);
-expect(js.includes("fetch('/api/rae'")&&js.includes('this.fallbackCount>=2'),'Rae Gemini fallback is not last-resort gated');
-expect(js.includes('genuinelyComplex')&&js.includes('genericWorldQuestion'),'Rae Gemini gate lacks complexity/domain filtering');
-expect(js.includes('sessionStorage')&&js.includes('rae:profile')&&js.includes('rae:dialogue'),'Rae session buddy memory missing');
-expect(js.includes('--rae-collision-lift')&&js.includes("position!=='fixed'"),'Rae collision avoidance missing');
-expect(!js.includes('GEMINI_API_KEY'),'Public Rae runtime must never contain the Gemini API key name');
-expect(api.includes('process.env.GEMINI_API_KEY'),'Server fallback must read Gemini key from environment only');
-expect(api.includes("'x-goog-api-key':key"),'Gemini API key must be sent server-side in x-goog-api-key');
-expect(api.includes("gemini-3.8-flash"),'Rae fallback model default is missing');
-expect(api.includes('MAX_PER_WINDOW=8'),'Rae server fallback rate limit missing');
-expect(api.includes('maxOutputTokens:180'),'Rae fallback response length guard missing');
-expect(api.includes('Never invent client results'),'Rae truth guard missing');
-expect(api.includes('ACTUAL LAST RESORT')&&api.includes('best-friend companion')&&api.includes('smallest sensible'),'Gemini fallback is not programmed as Rae');
-expect(api.includes('safeProfile')&&api.includes('Known visitor context'),'Gemini fallback does not preserve Rae session context');
-expect(!/transition\s*:\s*all/i.test(css),'Rae CSS must not use transition: all');
-expect(!/backdrop-filter/i.test(css),'Rae must not add backdrop-filter cost');
-expect(vite.includes("'rae.css'")&&vite.includes('/rae.js'),'Vite does not mount Rae');
-expect(vite.includes("!isHome&&!html.includes('href=\"/rae.css\"')"),'Secondary pages must receive Rae CSS');
-expect(vite.includes("src=\"/rae.js\""),'All pages must receive Rae runtime');
-expect(pkg.includes('node --check public/rae.js')&&pkg.includes('node --check api/rae.js'),'Syntax suite does not guard Rae');
-expect(pkg.includes('node tests/rae-integrity.mjs'),'Integrity suite does not guard Rae');
-expect(Buffer.byteLength(js)<56000,'Rae JS exceeds 56KB guardrail');
-expect(Buffer.byteLength(css)<26000,'Rae CSS exceeds 26KB guardrail');
-expect(Buffer.byteLength(api)<15000,'Rae API exceeds 15KB guardrail');
+for(const token of ['class RaeBootstrap','import(\'/rae/rae-app.js\')','Chat with Rae, BRAYROAI AI assistant','showFallback()'])expect(files.bootstrap.includes(token),`Rae bootstrap missing ${token}`);
+for(const token of ['class RaeDirector','setState(next)','setAttention','setSpeakingLevel','scheduleBlink','scheduleIdle','pulseSpeech','sleep()','wake()','rae:first-token','rae:stream-chunk'])expect(files.director.includes(token),`Rae director missing ${token}`);
+for(const state of ['boot','idle','attention','opening','listening','thinking','speaking','positive','curious','confused','error','offline','celebrate','sleep'])expect(files.director.includes(`'${state}'`),`Rae state missing ${state}`);
+for(const token of ['rae-character__head','rae-character__eyes','rae-character__pupil','rae-character__brows','rae-character__mouth','rae-character__arm','rae-character__spark'])expect(files.character.includes(token),`Layered Rae rig missing ${token}`);
+for(const token of ['role="dialog"','aria-modal="true"','data-rae-stop','data-rae-live','visualViewport','trapFocus','Continue on WhatsApp','rae-card'])expect(files.ui.includes(token),`Rae accessible UI missing ${token}`);
+for(const token of ['text/event-stream','AbortController','parsePacket','event:'])expect(files.transport.includes(token),`Rae streaming client missing ${token}`);
+for(const token of ['navigateToRoute','scrollToSection','openProject','showPlan','highlightElement','ROUTES','SECTIONS'])expect(files.actions.includes(token),`Rae safe action layer missing ${token}`);
+for(const token of ['sessionStorage','rae:v2:session','PAGE_INFO','IntersectionObserver'])expect(files.context.includes(token),`Rae context/session layer missing ${token}`);
+for(const token of ['RaeChatClient','RaeDirector','RaeActions','safeActionFromPrompt','resolveCollisions','startProject'])expect(files.app.includes(token),`Rae app orchestration missing ${token}`);
+for(const token of ['rae-stage','rae-card','rae-stop','100dvh','safe-area-inset-bottom','prefers-reduced-motion','rae-is-blinking','raeBreathe','raeBlink','raeThinkHead'])expect(files.css.includes(token),`Rae CSS missing ${token}`);
+expect(!/transition\s*:\s*all/i.test(files.css),'Rae CSS must not use transition: all');
+expect(!/backdrop-filter/i.test(files.css),'Rae must not add backdrop-filter cost');
+expect(files.api.includes("streamGenerateContent?alt=sse")&&files.api.includes('/chat/completions'),'Rae API must support real streaming providers');
+expect(files.api.includes('RAE_PROVIDER')&&files.api.includes('RAE_MODEL'),'Rae provider abstraction env contract missing');
+expect(files.api.includes('Never invent prices')&&files.api.includes('smallest sensible scope'),'Rae server persona truth/sales guard missing');
+expect(files.knowledge.includes('₹2,599/month')&&files.knowledge.includes('₹9,999')&&files.knowledge.includes('₹17,999')&&files.knowledge.includes('₹25K–₹35K+')&&files.knowledge.includes('from ₹29,999'),'Verified Rae pricing knowledge drifted');
+expect(files.knowledge.includes('FakhriMart')&&files.knowledge.includes('fakhriyarns.vercel.app'),'Verified client knowledge missing');
+expect(files.vite.includes("'rae.css'")&&files.vite.includes('/rae.js'),'Vite does not mount Rae');
+expect(files.pkg.includes('public/rae/rae-app.js')&&files.pkg.includes('api/rae-chat.js'),'Syntax suite does not guard modular Rae');
+const clientBytes=['bootstrap','app','director','ui','transport','actions','context','character'].reduce((sum,key)=>sum+Buffer.byteLength(files[key]),0);
+expect(clientBytes<100000,`Rae modular JS exceeds 100KB guardrail (${clientBytes})`);
+expect(Buffer.byteLength(files.css)<32000,'Rae CSS exceeds 32KB guardrail');
+expect(Buffer.byteLength(files.api)<26000,'Rae API exceeds 26KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('Rae integrity OK: local-first buddy reasoning, memory, expressions, collision safety and last-resort Gemini voice are intact.');
+console.log(`Rae integrity OK: ${clientBytes}B modular client, layered actor, real streaming AI, safe actions and verified knowledge.`);

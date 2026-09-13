@@ -21,9 +21,8 @@ const openPage=async(page,route='/')=>{
 test('V15 homepage owns eight scenes and mounts the playful layer over the isolated legacy runtime',async({page})=>{
   await openPage(page);
   await expect(page.locator('[data-scene]')).toHaveCount(8);
-  await expect(page.locator('link[href="/brayro-v12.css"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/brayro-v14.css"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/brayro-v15.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/brayro-home.css"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/brayro-v12.css"],link[href="/brayro-v14.css"],link[href="/brayro-v15.css"]')).toHaveCount(0);
   await expect(page.locator('script[src="/brayro-v12.js"]')).toHaveCount(1);
   await expect(page.locator('script[src="/brayro-v14.js"]')).toHaveCount(1);
   await expect(page.locator('script[src="/brayro-v15.js"]')).toHaveCount(1);

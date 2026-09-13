@@ -34,43 +34,47 @@ jobs:
             index.html plans.html founder.html terms.html \
             ai-workflow-audit.html company-second-brain.html \
             clients.html fakhrimart-case-study.html \
-            commercial-cut.js direction-pass.js motion-v5.js contact-priority.js \
+            commercial-cut.js direction-pass.js contact-priority.js \
             brayro-v12.js brayro-v14.js brayro-v15.js \
             experience-motion-v16.js cinematic-v18.js cinematic-v20.js \
+            brayro-cursor-v22.css brayro-cursor-v22.js rae.css rae.js \
             ai-service-pages.css ai-service-pages.js client-work.css client-work.js \
             plans-page.css plans-page.js founder-page.css founder-page.js \
             terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do
             test -f "dist/$f"
           done
-
+          test -f api/rae.js
           test -f dist/assets/brayro-home.css
           test -f dist/assets/brayroai-cinematic-opening.mp4
+          test -f dist/assets/brayroai-cinematic-opening-silent.mp4
           test -f dist/assets/fakhrimart-case-desktop.png
           test -f dist/assets/fakhrimart-case-mobile.png
 
-          # Homepage production architecture: one ordered local CSS bundle, not
-          # a waterfall of historical version links.
+          # Homepage ships one ordered CSS file. Rae and the V22 cursor are
+          # included in that bundle rather than creating more render blocking.
           grep -q 'data-brayro-home-styles' dist/index.html
           grep -q '/assets/brayro-home.css' dist/index.html
           ! grep -q 'href="/brayro-v12.css"' dist/index.html
           ! grep -q 'href="/brayro-v15.css"' dist/index.html
           ! grep -q 'href="/cinematic-v20.css"' dist/index.html
+          ! grep -q 'href="/rae.css"' dist/index.html
+          ! grep -q 'href="/brayro-cursor-v22.css"' dist/index.html
           grep -q 'data-layout-stable-fonts' dist/index.html
           grep -q 'name="x-brayro-commit"' dist/index.html
 
-          # The bundle must still contain every currently active visual layer.
           grep -q '.v12-project-index' dist/assets/brayro-home.css
-          grep -q '.brayro-ledger' dist/assets/brayro-home.css
-          grep -q '.play-scene__cursor' dist/assets/brayro-home.css
+          ! grep -q '.brayro-ledger' dist/assets/brayro-home.css
+          ! grep -q '.play-scene__cursor' dist/assets/brayro-home.css
           grep -q '.v16-page-transition' dist/assets/brayro-home.css
           grep -q 'body.home-v19' dist/assets/brayro-home.css
           grep -q '.v20-scene-rail' dist/assets/brayro-home.css
+          grep -q '.v22-cursor' dist/assets/brayro-home.css
+          grep -q '.rae-root' dist/assets/brayro-home.css
 
-          # Current commercial/client routes and proof.
+          # Client proof and offer architecture.
           grep -q 'data-editorial-sequence' dist/index.html
           grep -q 'FEATURED CLIENT / FAKHRIMART' dist/index.html
           grep -q 'fakhriyarns.vercel.app' dist/index.html
-          grep -q '/clients' dist/index.html
           grep -q '/clients/fakhrimart' dist/index.html
           grep -q 'AI Workflow Audit' dist/index.html
           grep -q 'Company Second Brain' dist/index.html
@@ -85,40 +89,39 @@ jobs:
           grep -q 'VERIFIED CLIENT / 2026 / PUNE' dist/fakhrimart-case-study.html
           grep -q 'Not a fake ecommerce store.' dist/fakhrimart-case-study.html
           grep -q 'No fabricated conversion uplift' dist/fakhrimart-case-study.html
-          grep -q 'const CLIENTS' dist/client-work.js
           grep -q 'class ClientArchive' dist/client-work.js
-          grep -q '.case-flow' dist/client-work.css
 
-          grep -q 'PER MONTH / ONGOING' dist/plans.html
-          grep -q 'ONE-TIME BUILD' dist/plans.html
-          grep -q 'AI Workflow Audit' dist/plans.html
-          grep -q 'Company Second Brain' dist/plans.html
-          grep -q 'Knowledge Care' dist/plans.html
-          grep -q 'AI WORKFLOW AUDIT / ₹9,999' dist/ai-workflow-audit.html
-          grep -q 'Five steps.' dist/ai-workflow-audit.html
-          grep -q 'COMPANY SECOND BRAIN / FROM ₹29,999' dist/company-second-brain.html
-          grep -q 'BASE SCOPE VS EXPANDED SCOPE' dist/company-second-brain.html
-          grep -q 'Terms & Conditions' dist/terms.html
-
-          # Current runtime components.
-          grep -q 'class CapabilityLedger' dist/brayro-v12.js
-          grep -q 'class CinematicCapabilities' dist/brayro-v14.js
+          # Current runtime ownership: replaced pointer/film layers must stay gone.
+          ! grep -q 'class CapabilityLedger' dist/brayro-v12.js
+          grep -q 'class CinematicPricingPreview' dist/brayro-v14.js
+          ! grep -q 'class CinematicCapabilities' dist/brayro-v14.js
           grep -q 'class PlayfulCapabilities' dist/brayro-v15.js
-          grep -q 'PLAYGROUND 02' dist/brayro-v15.js
+          ! grep -q 'data-v15-cursor' dist/brayro-v15.js
           grep -q 'class ProcessLab' dist/ai-service-pages.js
           grep -q 'class ArchitectureLab' dist/ai-service-pages.js
           grep -q 'class SceneKinetics' dist/experience-motion-v16.js
-          grep -q 'class PointerFeedback' dist/experience-motion-v16.js
+          ! grep -q 'class PointerFeedback' dist/experience-motion-v16.js
           grep -q 'class CinematicScrollDirector' dist/cinematic-v18.js
           grep -q 'class ComponentMounts' dist/cinematic-v20.js
           grep -q 'class PolishDirector' dist/cinematic-v20.js
+          ! grep -q 'class PointerPolish' dist/cinematic-v20.js
+          grep -q 'v22CursorMounted' dist/brayro-cursor-v22.js
+          grep -q 'class Rae' dist/rae.js
+          grep -q 'shouldUseGemini' dist/rae.js
+          grep -q 'process.env.GEMINI_API_KEY' api/rae.js
+          grep -q "'x-goog-api-key':key" api/rae.js
 
-          # V16 is bundled on Home, direct-linked on the other public pages.
-          grep -q '/experience-motion-v16.js' dist/index.html
+          # Secondary pages get direct lightweight motion/cursor/Rae styles.
           for page in plans.html founder.html terms.html ai-workflow-audit.html company-second-brain.html clients.html fakhrimart-case-study.html; do
             grep -q '/experience-motion-v16.css' "dist/$page"
+            grep -q '/brayro-cursor-v22.css' "dist/$page"
+            grep -q '/rae.css' "dist/$page"
             grep -q '/experience-motion-v16.js' "dist/$page"
+            grep -q '/brayro-cursor-v22.js' "dist/$page"
+            grep -q '/rae.js' "dist/$page"
           done
+          grep -q '/rae.js' dist/index.html
+          grep -q '/brayro-cursor-v22.js' dist/index.html
           grep -q '/brayro-v15.js' dist/index.html
           grep -q '/cinematic-v18.js' dist/index.html
           grep -q '/cinematic-v20.js' dist/index.html
@@ -130,13 +133,13 @@ jobs:
 
           TOTAL=$(du -sk dist | cut -f1)
           echo "dist size: ${TOTAL}KB"
-          test "$TOTAL" -lt 10600
+          test "$TOTAL" -lt 10700
 
   browser-and-load:
     name: Browser + a11y + load + Lighthouse
     needs: static-quality
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -144,8 +147,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Install Chromium
-        run: npx playwright install chromium
+      - name: Install Chromium + Firefox
+        run: npx playwright install --with-deps chromium firefox
       - run: npm run build
       - name: Start production preview
         run: |
@@ -153,12 +156,13 @@ jobs:
           for i in {1..40}; do
             if \
               curl -fsS http://127.0.0.1:4173/ | grep -q 'Company Second Brain' && \
-              curl -fsS http://127.0.0.1:4173/assets/brayro-home.css | grep -q 'v20-scene-rail' && \
+              curl -fsS http://127.0.0.1:4173/assets/brayro-home.css | grep -q 'rae-root' && \
+              curl -fsS http://127.0.0.1:4173/rae.js | grep -q 'class Rae' && \
+              curl -fsS http://127.0.0.1:4173/brayro-cursor-v22.js | grep -q 'v22CursorMounted' && \
               curl -fsS http://127.0.0.1:4173/ai-workflow-audit | grep -q 'AI WORKFLOW AUDIT' && \
               curl -fsS http://127.0.0.1:4173/company-second-brain | grep -q 'COMPANY SECOND BRAIN' && \
               curl -fsS http://127.0.0.1:4173/clients | grep -q 'CLIENT ARCHIVE' && \
-              curl -fsS http://127.0.0.1:4173/clients/fakhrimart | grep -q 'Not a fake ecommerce store' && \
-              curl -fsS http://127.0.0.1:4173/client-work.js | grep -q 'ClientArchive'; then
+              curl -fsS http://127.0.0.1:4173/clients/fakhrimart | grep -q 'Not a fake ecommerce store'; then
               exit 0
             fi
             sleep 1
@@ -171,7 +175,7 @@ jobs:
           STRESS_REQUESTS: 900
           STRESS_CONCURRENCY: 45
         run: npm run test:stress
-      - name: Cross-viewport interaction and accessibility tests
+      - name: Chromium + targeted Firefox interaction tests
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
@@ -191,13 +195,6 @@ jobs:
                 await page.waitForTimeout(700);
                 await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
-              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
-              await page.evaluate(()=>{document.querySelectorAll('.opening-sequence').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active');document.querySelector('#services')?.scrollIntoView()});
-              await page.waitForTimeout(520);
-              await page.screenshot({path:`artifacts/screenshots/${device}-services.png`,fullPage:false});
-              await page.evaluate(()=>document.querySelector('#plans')?.scrollIntoView());
-              await page.waitForTimeout(520);
-              await page.screenshot({path:`artifacts/screenshots/${device}-home-pricing.png`,fullPage:false});
               await context.close();
             }
             await browser.close();

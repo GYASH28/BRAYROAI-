@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const openRae=async(page,route='/')=>{
   await page.goto(route,{waitUntil:'networkidle'});
@@ -6,6 +7,7 @@ const openRae=async(page,route='/')=>{
   await page.locator('[data-rae-toggle]').click();
   await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false');
 };
+const serious=results=>results.violations.filter(item=>['serious','critical'].includes(item.impact));
 
 for(const [route,pageName] of [['/','home'],['/plans','plans'],['/founder','founder'],['/terms','terms'],['/ai-workflow-audit','ai'],['/company-second-brain','ai'],['/clients','clients'],['/clients/fakhrimart','case']]){
   test(`Rae mounts once on ${route} with the right visual personality`,async({page})=>{
@@ -70,6 +72,15 @@ test('Rae fails gracefully when deep mode is unavailable',async({page})=>{
   await page.locator('[data-rae-form]').press('Enter');
   await expect(page.locator('[data-rae-feed]')).toContainText('tea break');
   await expect(page.locator('[data-rae-feed] a[href*="wa.me"]')).toHaveCount(1);
+});
+
+test('Rae open panel has no serious accessibility violations',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Axe open-state audit runs once in Chromium');
+  await openRae(page,'/plans');
+  await page.locator('[data-rae-input]').fill('Which plan fits me?');
+  await page.locator('[data-rae-form]').press('Enter');
+  const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();
+  expect(serious(results)).toEqual([]);
 });
 
 test('Rae respects reduced motion and keeps the native interface usable',async({browser})=>{

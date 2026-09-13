@@ -12,7 +12,7 @@ const cleanRouteMap=Object.freeze({'/plans':'/plans.html','/founder':'/founder.h
 // V5 is intentionally absent: its homepage runtime exits immediately beneath V15,
 // so its home-only CSS/JS is stripped instead of downloaded and parsed.
 const homeStyleFiles=Object.freeze([
-  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css'
+  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css','rae.css'
 ]);
 const readHomeStyles=()=>homeStyleFiles.map(file=>`/* ${file} */\n${readFileSync(resolve(process.cwd(),'public',file),'utf8')}`).join('\n\n');
 
@@ -78,10 +78,12 @@ const experienceTransform={
 
     if(!isHome&&!html.includes('href="/experience-motion-v16.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/experience-motion-v16.css" data-v16-motion>');
     if(!isHome&&!html.includes('href="/brayro-cursor-v22.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/brayro-cursor-v22.css" data-v22-cursor>');
+    if(!isHome&&!html.includes('href="/rae.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/rae.css" data-rae-style>');
     if(!html.includes('src="/experience-motion-v16.js"'))html=html.replace('</body>','  <script src="/experience-motion-v16.js" data-v16-motion></script>\n</body>');
     if(isHome&&!html.includes('src="/cinematic-v18.js"'))html=html.replace('</body>','  <script src="/cinematic-v18.js" data-v18-cinematic></script>\n</body>');
     if(isHome&&!html.includes('src="/cinematic-v20.js"'))html=html.replace('</body>','  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
     if(!html.includes('src="/brayro-cursor-v22.js"'))html=html.replace('</body>','  <script src="/brayro-cursor-v22.js" data-v22-cursor></script>\n</body>');
+    if(!html.includes('src="/rae.js"'))html=html.replace('</body>','  <script src="/rae.js" data-rae></script>\n</body>');
     return html;
   }}
 };

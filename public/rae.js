@@ -17,7 +17,8 @@
       this.button.addEventListener('touchstart',()=>this.ensure(false),{once:true,passive:true});
     }
     deferLoad(){
-      const load=()=>this.ensure(false);
+      if(navigator.connection?.saveData)return;
+      const load=()=>{if(document.hidden){document.addEventListener('visibilitychange',()=>{if(!document.hidden)this.ensure(false)},{once:true});return}this.ensure(false)};
       if('requestIdleCallback'in window)this.idle=requestIdleCallback(load,{timeout:5500});else this.idle=setTimeout(load,4200);
     }
     async ensure(openAfter=false){

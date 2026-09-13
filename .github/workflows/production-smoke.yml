@@ -39,9 +39,8 @@ jobs:
           DEPLOYED_COMMIT=""
           HTTP_CODE="000"
 
-          # Vercel's GitHub deployment-status integration is not guaranteed to
-          # create a GitHub Deployments record. Verify the actual canonical URL
-          # instead. Vite injects x-brayro-commit from VERCEL_GIT_COMMIT_SHA.
+          # Verify the actual canonical deployment, not merely a GitHub status.
+          # Vite injects x-brayro-commit from VERCEL_GIT_COMMIT_SHA.
           for i in {1..24}; do
             HTTP_CODE=$(curl -L -sS --max-time 25 -o /tmp/brayroai-prod-home.html -w '%{http_code}' "$PROD_URL/" || true)
             if [ "$HTTP_CODE" = "200" ]; then
@@ -64,8 +63,15 @@ jobs:
           test "$DEPLOYED_COMMIT" = "$GITHUB_SHA"
           grep -q 'BRAYROAI' /tmp/brayroai-prod-home.html
           grep -q 'Digital, designed' /tmp/brayroai-prod-home.html
-          curl -fsSL "$PROD_URL/clients" | grep -q 'CLIENT ARCHIVE'
-          curl -fsSL "$PROD_URL/clients/fakhrimart" | grep -q 'Not a fake ecommerce store'
+
+          # Write route responses to files before grepping. With pipefail,
+          # `curl | grep -q` can report curl 23 after grep exits early even
+          # when the requested content is present.
+          curl -fsSL --max-time 25 "$PROD_URL/clients" -o /tmp/brayroai-prod-clients.html
+          grep -q 'CLIENT ARCHIVE' /tmp/brayroai-prod-clients.html
+          curl -fsSL --max-time 25 "$PROD_URL/clients/fakhrimart" -o /tmp/brayroai-prod-fakhrimart.html
+          grep -q 'Not a fake ecommerce store' /tmp/brayroai-prod-fakhrimart.html
+          echo 'Production exact-SHA and clean client routes verified.'
 
       - name: Production concurrent load test
         env:
@@ -85,11 +91,11 @@ jobs:
           npx lighthouse "$PROD_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
           node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json
 
-      - name: Record failed deployment lookup context
+      - name: Record failed production verification context
         if: failure() && steps.production.outcome == 'failure'
         run: |
-          echo 'Canonical Vercel did not serve the exact GitHub SHA within the deployment window.' >> artifacts/deployment-verification.txt
-          echo 'Check the BRAYROAI Vercel project Git connection/domain assignment before treating production as current.' >> artifacts/deployment-verification.txt
+          echo 'Canonical production verification failed for this GitHub SHA or one of the required clean routes.' >> artifacts/deployment-verification.txt
+          echo 'Inspect the exact-SHA marker and /clients + /clients/fakhrimart responses before treating production as current.' >> artifacts/deployment-verification.txt
 
       - name: Upload production QA evidence
         if: always()

@@ -73,9 +73,14 @@ export default async function handler(req,res){
   const section=String(body.section||'').slice(0,80);
   const history=Array.isArray(body.history)?body.history.slice(-6):[];
   const contents=[];
-  for(const item of history){
+  for(let index=0;index<history.length;index+=1){
+    const item=history[index];
     const role=item?.role==='model'?'model':'user';
     const text=String(item?.text||'').trim().slice(0,700);
+    // The browser persists the submitted message before deciding whether it needs
+    // Gemini. Do not repeat that same message once as history and again as the
+    // page-aware current question.
+    if(index===history.length-1&&role==='user'&&text===message)continue;
     if(text)contents.push({role,parts:[{text}]});
   }
   contents.push({role:'user',parts:[{text:`Current website page: ${page}${section?` / section: ${section}`:''}\nVisitor question: ${message}`} ]});

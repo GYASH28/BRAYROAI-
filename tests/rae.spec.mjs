@@ -23,7 +23,17 @@ async function mockAI(page,{events=defaultEvents,delay=35,failFirst=false,status
 }
 
 async function loadRae(page,route='/'){
-  await page.goto(route,{waitUntil:'domcontentloaded'});await expect(page.locator('[data-rae-root]')).toHaveCount(1);const shell=page.locator('[data-rae-shell]');if(await shell.count())await shell.hover();await expect(page.locator('[data-rae-toggle]')).toHaveCount(1,{timeout:8000});
+  await page.goto(route,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('[data-rae-root]')).toHaveCount(1);
+  // The tiny bootstrap button is intentionally replaced by the full Rae app.
+  // Dispatch the wake event synchronously instead of asking Playwright to hover a node
+  // that may detach halfway through actionability checks.
+  await page.evaluate(()=>{
+    const shell=document.querySelector('[data-rae-shell]');
+    if(shell)shell.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true,pointerType:'mouse'}));
+  });
+  await expect(page.locator('[data-rae-toggle]')).toHaveCount(1,{timeout:8000});
+  await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-app-ready','true',{timeout:8000});
 }
 async function openRae(page,route='/'){await loadRae(page,route);await page.locator('[data-rae-toggle]').click();await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false')}
 const serious=results=>results.violations.filter(item=>['serious','critical'].includes(item.impact));
@@ -33,7 +43,9 @@ for(const [route,pageName] of [['/','home'],['/plans','plans'],['/founder','foun
 }
 
 test('free-text conversation uses the real streaming transport and renders progressively',async({page})=>{
-  await mockAI(page,{delay:120});await openRae(page,'/');await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','thinking');await expect(page.locator('[data-rae-feed]')).toContainText('BRAYROAI can help with');await expect(page.locator('[data-rae-feed]')).not.toContainText('practical AI systems.');await expect(page.locator('[data-rae-feed]')).toContainText('practical AI systems.',{timeout:3000});await expect(page.locator('[data-rae-stop]')).toBeHidden();expect(await page.evaluate(()=>window.__raeApiCalls)).toBe(1);
+  await mockAI(page,{delay:120});await openRae(page,'/');await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','thinking');
+  const reply=page.locator('.rae-message[data-who="rae"] .rae-message__bubble').last();
+  await expect(reply).toContainText('BRAYROAI can help with');await expect(reply).not.toContainText('practical AI systems.');await expect(reply).toContainText('practical AI systems.',{timeout:3000});await expect(page.locator('[data-rae-stop]')).toBeHidden();expect(await page.evaluate(()=>window.__raeApiCalls)).toBe(1);
 });
 
 test('Rae can stop an in-flight streamed answer immediately',async({page})=>{
@@ -62,6 +74,11 @@ test('model HTML is rendered as inert text, never executable markup',async({page
 
 test('keyboard open/close restores focus and Escape works',async({page})=>{
   await mockAI(page);await loadRae(page,'/plans');await page.locator('[data-rae-toggle]').focus();await page.keyboard.press('Enter');await expect(page.locator('[data-rae-input]')).toBeFocused();await page.keyboard.press('Escape');await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','true');await expect(page.locator('[data-rae-toggle]')).toBeFocused();
+});
+
+test('all Rae V3 emotional states are addressable without breaking the rig',async({page})=>{
+  await loadRae(page,'/');const states=['idle','attention','opening','listening','thinking','speaking','positive','curious','confused','surprised','playful','proud','shy','skeptical','laughing','wink','error','offline','celebrate','sleep'];
+  for(const state of states){await page.evaluate(value=>window.__BRAYRO_RAE__.director.setState(value),state);await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state',state);await expect(page.locator('.rae-character[data-rae-rig="v3"]').first()).toHaveAttribute('data-state',state)}
 });
 
 test('Rae has no serious accessibility violations while open',async({page,browserName})=>{

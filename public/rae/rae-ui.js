@@ -12,13 +12,13 @@ export class RaeUI{
     this.root.innerHTML=`
       <button class="rae-presence" type="button" data-rae-toggle aria-expanded="false" aria-controls="rae-panel" aria-label="Chat with Rae, BRAYROAI AI assistant">
         <span class="rae-presence__actor">${characterMarkup('launcher')}</span>
-        <span class="rae-presence__copy"><strong>Rae</strong><small>BRAYROAI AI guide</small></span><i class="rae-presence__ping" aria-hidden="true"></i>
+        <span class="rae-presence__copy"><strong>Rae</strong><small>BRAYROAI companion</small></span><i class="rae-presence__ping" aria-hidden="true"></i>
       </button>
       <button class="rae-nudge" data-rae-nudge type="button" aria-label="Open Rae suggestion"><span data-rae-nudge-copy></span><i aria-hidden="true">×</i></button>
       <section class="rae-panel" id="rae-panel" data-rae-panel role="dialog" aria-modal="true" aria-label="Chat with Rae" aria-hidden="true">
         <header class="rae-panel__head">
           <div class="rae-panel__mini">${characterMarkup('header')}</div>
-          <div class="rae-panel__identity"><strong>Rae</strong><span>BRAYROAI AI guide</span></div>
+          <div class="rae-panel__identity"><strong>Rae</strong><span>BRAYROAI companion</span></div>
           <span class="rae-panel__status" data-rae-status>READY</span>
           <button class="rae-icon-button" type="button" data-rae-close aria-label="Close Rae">×</button>
         </header>
@@ -34,7 +34,7 @@ export class RaeUI{
           <button class="rae-send" type="submit" data-rae-send aria-label="Send message to Rae">↗</button>
           <button class="rae-stop" type="button" data-rae-stop aria-label="Stop Rae response" hidden>■</button>
         </form>
-        <div class="rae-panel__foot"><span>AI guide · verified BRAYROAI context</span><button type="button" data-rae-clear>Clear chat</button></div>
+        <div class="rae-panel__foot"><span>AI companion · verified BRAYROAI context</span><button type="button" data-rae-clear>Clear chat</button></div>
         <div class="rae-sr-status" data-rae-live role="status" aria-live="polite"></div>
       </section>`;
     this.toggle=this.root.querySelector('[data-rae-toggle]');this.panel=this.root.querySelector('[data-rae-panel]');this.feed=this.root.querySelector('[data-rae-feed]');this.input=this.root.querySelector('[data-rae-input]');this.status=this.root.querySelector('[data-rae-status]');this.chips=this.root.querySelector('[data-rae-suggestions]');this.stage=this.root.querySelector('[data-rae-stage]');this.live=this.root.querySelector('[data-rae-live]');this.jump=this.root.querySelector('[data-rae-jump]');
@@ -65,7 +65,7 @@ export class RaeUI{
   }
   focusComposer(){
     clearTimeout(this.focusTimer);const focus=()=>{if(this.open&&!this.generating&&this.input?.isConnected&&!this.input.disabled)this.input.focus({preventScroll:true})};
-    focus();queueMicrotask(focus);requestAnimationFrame(()=>{focus();this.focusTimer=setTimeout(focus,120)});
+    focus();queueMicrotask(focus);requestAnimationFrame(()=>{focus();this.focusTimer=setTimeout(focus,280)});
   }
   setOpen(value){
     this.open=Boolean(value);if(this.open)this.lastFocused=document.activeElement;

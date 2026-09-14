@@ -5,8 +5,8 @@ const safeText=value=>clean(value).slice(0,5000);
 
 export class RaeUI{
   constructor(root,{pageInfo,onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear}={}){
-    this.root=root;this.pageInfo=pageInfo;this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;this.focusTimer=0;
-    this.build();this.bind();this.renderStarter();
+    this.root=root;this.pageInfo=pageInfo;this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;this.resizeHandler=null;this.focusTimer=0;
+    this.build();this.syncLauncherPosition(false);this.bind();this.renderStarter();
   }
   build(){
     this.root.innerHTML=`
@@ -57,7 +57,8 @@ export class RaeUI{
     this.feed.addEventListener('scroll',()=>{const gap=this.feed.scrollHeight-this.feed.scrollTop-this.feed.clientHeight;this.lastUserNearBottom=gap<90;this.jump.hidden=this.lastUserNearBottom},{passive:true});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&this.open){event.preventDefault();this.setOpen(false)}});
     this.panel.addEventListener('keydown',event=>this.trapFocus(event));
-    if(window.visualViewport){this.visualViewportHandler=()=>{this.root.style.setProperty('--rae-vv-height',`${visualViewport.height}px`);this.root.toggleAttribute('data-keyboard',visualViewport.height<innerHeight*.78)};visualViewport.addEventListener('resize',this.visualViewportHandler);this.visualViewportHandler()}
+    this.resizeHandler=()=>this.syncLauncherPosition(this.open);addEventListener('resize',this.resizeHandler,{passive:true});
+    if(window.visualViewport){this.visualViewportHandler=()=>{this.root.style.setProperty('--rae-vv-height',`${visualViewport.height}px`);this.root.toggleAttribute('data-keyboard',visualViewport.height<innerHeight*.78);this.syncLauncherPosition(this.open)};visualViewport.addEventListener('resize',this.visualViewportHandler);this.visualViewportHandler()}
   }
   trapFocus(event){
     if(event.key!=='Tab')return;const focusable=[...this.panel.querySelectorAll('button:not([hidden]),textarea,a[href],[tabindex="0"]')].filter(node=>!node.disabled&&node.offsetParent!==null);if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
@@ -73,8 +74,13 @@ export class RaeUI{
     if(compact&&next)this.panel.style.transition='scale .34s var(--rae-ease), translate .34s var(--rae-ease), visibility 0s';
     else this.panel.style.removeProperty('transition');
   }
+  syncLauncherPosition(nextOpen=this.open){
+    const compact=matchMedia('(max-width:700px)').matches;
+    if(compact&&!nextOpen)this.root.style.bottom='calc(max(2rem,env(safe-area-inset-bottom)) + var(--rae-collision-lift))';
+    else this.root.style.removeProperty('bottom');
+  }
   setOpen(value){
-    const next=Boolean(value);this.preparePanelTransition(next);this.open=next;if(this.open)this.lastFocused=document.activeElement;
+    const next=Boolean(value);this.preparePanelTransition(next);this.syncLauncherPosition(next);this.open=next;if(this.open)this.lastFocused=document.activeElement;
     this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));document.body.classList.toggle('rae-dialog-open',this.open);
     this.handlers.onOpenChange?.(this.open);
     if(this.open)this.focusComposer();else{const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;this.settleFocus(target,false)}
@@ -111,5 +117,5 @@ export class RaeUI{
   scrollLatest(force=false){if(!force&&!this.lastUserNearBottom)return;requestAnimationFrame(()=>{this.feed.scrollTop=this.feed.scrollHeight;this.jump.hidden=true;this.lastUserNearBottom=true})}
   resizeComposer(){this.input.style.height='auto';this.input.style.height=`${Math.min(128,Math.max(42,this.input.scrollHeight))}px`}
   showNudge(text){const node=this.root.querySelector('[data-rae-nudge-copy]');if(node)node.textContent=safeText(text);this.root.classList.add('has-nudge');setTimeout(()=>this.root.classList.remove('has-nudge'),7000)}
-  destroy(){clearTimeout(this.focusTimer);this.panel.style.removeProperty('transition');if(this.visualViewportHandler)visualViewport?.removeEventListener('resize',this.visualViewportHandler);document.body.classList.remove('rae-dialog-open')}
+  destroy(){clearTimeout(this.focusTimer);this.panel.style.removeProperty('transition');this.root.style.removeProperty('bottom');if(this.resizeHandler)removeEventListener('resize',this.resizeHandler);if(this.visualViewportHandler)visualViewport?.removeEventListener('resize',this.visualViewportHandler);document.body.classList.remove('rae-dialog-open')}
 }

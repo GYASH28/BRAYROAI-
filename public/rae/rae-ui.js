@@ -71,7 +71,10 @@ export class RaeUI{
     this.open=Boolean(value);if(this.open)this.lastFocused=document.activeElement;
     this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));document.body.classList.toggle('rae-dialog-open',this.open);
     this.handlers.onOpenChange?.(this.open);
-    if(this.open)this.focusComposer();else{clearTimeout(this.focusTimer);const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;requestAnimationFrame(()=>target?.focus({preventScroll:true}))}
+    if(this.open)this.focusComposer();else{
+      clearTimeout(this.focusTimer);const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;const restore=()=>{if(!this.open&&target?.isConnected)target.focus({preventScroll:true})};
+      requestAnimationFrame(()=>{restore();this.focusTimer=setTimeout(restore,240)});
+    }
   }
   renderStarter(){
     const wrap=document.createElement('article');wrap.className='rae-welcome';const title=document.createElement('strong');title.textContent='Ask me the useful version.';const copy=document.createElement('p');copy.textContent=`You’re on ${this.pageInfo?.label||'BRAYROAI'}. ${this.pageInfo?.summary||''}`;wrap.append(title,copy);this.feed.append(wrap);this.setChips(this.pageInfo?.chips||[]);

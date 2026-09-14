@@ -1,6 +1,7 @@
 /* REAL RAE V3 — production 2.5D character skin based on Concept 1.
    This file is lazy-loaded only when the full Rae app wakes. The character uses
    layered SVG + compositor-friendly transforms; there is no canvas/WebGL loop. */
+.rae-root [hidden]{display:none!important}
 .rae-character[data-rae-rig="v3"]{overflow:visible;filter:none;transform-origin:50% 82%;isolation:isolate}
 .rae-character[data-rae-rig="v3"] *{vector-effect:non-scaling-stroke}
 .rae-character[data-rae-rig="v3"] .rae-character__shadow{fill:rgba(0,0,0,.2);transform-origin:50% 50%;transition:opacity .32s ease,transform .42s var(--rae-ease)}

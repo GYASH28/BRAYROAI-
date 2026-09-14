@@ -7,9 +7,9 @@
 
   class RaeBootstrap{
     constructor(){
-      this.loading=null;this.app=null;this.root=document.createElement('section');
+      this.loading=null;this.app=null;this.idle=0;this.preloadTimer=0;this.root=document.createElement('section');
       this.root.className='rae-root rae-root--shell';this.root.dataset.raeRoot='';this.root.setAttribute('aria-label','Rae, BRAYROAI AI assistant');
-      this.root.innerHTML=`<button class="rae-presence rae-presence--shell" type="button" data-rae-shell aria-label="Chat with Rae, BRAYROAI AI assistant" aria-expanded="false">${shellCharacter()}<span class="rae-presence__copy"><strong>Rae</strong><small>BRAYROAI AI guide</small></span></button>`;
+      this.root.innerHTML=`<button class="rae-presence rae-presence--shell" type="button" data-rae-shell aria-label="Chat with Rae, BRAYROAI AI assistant" aria-expanded="false">${shellCharacter()}<span class="rae-presence__copy"><strong>Rae</strong><small>BRAYROAI companion</small></span></button>`;
       document.body.append(this.root);this.button=this.root.querySelector('[data-rae-shell]');this.bind();this.deferLoad();
     }
     bind(){
@@ -21,9 +21,16 @@
     deferLoad(){
       if(navigator.connection?.saveData)return;
       const load=()=>{if(document.hidden){document.addEventListener('visibilitychange',()=>{if(!document.hidden)this.ensure(false)},{once:true});return}this.ensure(false)};
-      if('requestIdleCallback'in window)this.idle=requestIdleCallback(load,{timeout:5500});else this.idle=setTimeout(load,4200);
+      const warm=()=>{this.preloadTimer=0;if(this.app||this.loading)return;if('requestIdleCallback'in window)this.idle=requestIdleCallback(load,{timeout:1800});else this.idle=setTimeout(load,1000)};
+      const schedule=()=>{if(this.app||this.loading)return;this.preloadTimer=setTimeout(warm,1800)};
+      if(document.readyState==='complete')schedule();else addEventListener('load',schedule,{once:true});
+    }
+    cancelPreload(){
+      if(this.preloadTimer){clearTimeout(this.preloadTimer);this.preloadTimer=0}
+      if(this.idle){if('cancelIdleCallback'in window)cancelIdleCallback(this.idle);else clearTimeout(this.idle);this.idle=0}
     }
     async ensure(openAfter=false){
+      this.cancelPreload();
       if(this.app){if(openAfter)this.app.ui.setOpen(true);return this.app}
       if(!this.loading){
         this.root.dataset.loading='true';

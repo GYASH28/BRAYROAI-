@@ -10,7 +10,7 @@ const vercel = read('vercel.json');
 
 assert.match(bootstrap, /\/rae\/rae\.css/);
 assert.match(bootstrap, /\/rae\/rae\.js/);
-assert.match(js, /data-state/);
+assert.match(js, /dataset\.state/);
 assert.match(js, /SpeechRecognition/);
 assert.match(js, /\/api\/rae-chat/);
 assert.match(js, /prefers-reduced-motion/);

@@ -51,6 +51,7 @@ export class RaeUI{
       const chip=event.target.closest('[data-rae-prompt]');if(chip)return this.submit(chip.dataset.raePrompt||'');
       const action=event.target.closest('[data-rae-action]');if(action)return this.handlers.onAction?.(action.dataset.raeAction,JSON.parse(action.dataset.raeArgs||'{}'),action);
     });
+    this.toggle.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!this.open){event.preventDefault();event.stopPropagation();this.setOpen(true)}});
     this.root.querySelector('[data-rae-form]').addEventListener('submit',event=>{event.preventDefault();this.submit(this.input.value)});
     this.input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();this.submit(this.input.value)}});
     this.input.addEventListener('input',()=>this.resizeComposer());this.input.addEventListener('focus',()=>this.handlers.onFocus?.());
@@ -64,7 +65,7 @@ export class RaeUI{
   }
   focusComposer(){
     clearTimeout(this.focusTimer);const focus=()=>{if(this.open&&!this.generating&&this.input?.isConnected&&!this.input.disabled)this.input.focus({preventScroll:true})};
-    queueMicrotask(focus);requestAnimationFrame(()=>{focus();this.focusTimer=setTimeout(focus,90)});
+    focus();queueMicrotask(focus);requestAnimationFrame(()=>{focus();this.focusTimer=setTimeout(focus,120)});
   }
   setOpen(value){
     this.open=Boolean(value);if(this.open)this.lastFocused=document.activeElement;

@@ -4,7 +4,7 @@ const read=file=>fs.readFileSync(file,'utf8');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 const files={
-  bootstrap:read('public/rae.js'),css:read('public/rae.css'),app:read('public/rae/rae-app.js'),director:read('public/rae/rae-director.js'),ui:read('public/rae/rae-ui.js'),transport:read('public/rae/rae-chat-client.js'),actions:read('public/rae/rae-actions.js'),context:read('public/rae/rae-context.js'),character:read('public/rae/rae-character.js'),api:read('api/rae-chat.js'),knowledge:read('api/_rae-knowledge.js'),vite:read('vite.config.mjs'),pkg:read('package.json')
+  bootstrap:read('public/rae.js'),css:read('public/rae.css'),app:read('public/rae/rae-app.js'),director:read('public/rae/rae-director.js'),ui:read('public/rae/rae-ui.js'),transport:read('public/rae/rae-chat-client.js'),actions:read('public/rae/rae-actions.js'),context:read('public/rae/rae-context.js'),character:read('public/rae/rae-character.js'),contactCss:read('public/contact-priority.css'),contactJs:read('public/contact-priority.js'),api:read('api/rae-chat.js'),knowledge:read('api/_rae-knowledge.js'),vite:read('vite.config.mjs'),pkg:read('package.json')
 };
 
 for(const token of ['class RaeBootstrap','import(\'/rae/rae-app.js\')','Chat with Rae, BRAYROAI AI assistant','showFallback()'])expect(files.bootstrap.includes(token),`Rae bootstrap missing ${token}`);
@@ -15,8 +15,10 @@ for(const token of ['role="dialog"','aria-modal="true"','data-rae-stop','data-ra
 for(const token of ['text/event-stream','AbortController','parsePacket','event:'])expect(files.transport.includes(token),`Rae streaming client missing ${token}`);
 for(const token of ['navigateToRoute','scrollToSection','openProject','showPlan','highlightElement','ROUTES','SECTIONS'])expect(files.actions.includes(token),`Rae safe action layer missing ${token}`);
 for(const token of ['sessionStorage','rae:v2:session','PAGE_INFO','IntersectionObserver'])expect(files.context.includes(token),`Rae context/session layer missing ${token}`);
-for(const token of ['RaeChatClient','RaeDirector','RaeActions','safeActionFromPrompt','resolveCollisions','startProject'])expect(files.app.includes(token),`Rae app orchestration missing ${token}`);
+for(const token of ['RaeChatClient','RaeDirector','RaeActions','safeActionFromPrompt','resolveCollisions','startProject','installCollisionObservers','data-rae-avoid','rae-conversation-open'])expect(files.app.includes(token),`Rae app orchestration missing ${token}`);
 for(const token of ['rae-stage','rae-card','rae-stop','100dvh','safe-area-inset-bottom','prefers-reduced-motion','rae-is-blinking','raeBreathe','raeBlink','raeThinkHead'])expect(files.css.includes(token),`Rae CSS missing ${token}`);
+expect(files.contactJs.includes("dock.dataset.raeAvoid='contact-dock'")&&files.contactJs.includes('brayro:contact-dock-ready'),'Contact dock must announce itself to Rae collision management');
+expect(files.contactCss.includes('body.rae-conversation-open .brayro-contact-dock')&&files.contactCss.includes('pointer-events:none'),'Contact dock must visually yield the bottom-right corner while Rae is open');
 expect(!/transition\s*:\s*all/i.test(files.css),'Rae CSS must not use transition: all');
 expect(!/backdrop-filter/i.test(files.css),'Rae must not add backdrop-filter cost');
 expect(files.api.includes("streamGenerateContent?alt=sse")&&files.api.includes('/chat/completions'),'Rae API must support real streaming providers');
@@ -32,4 +34,4 @@ expect(Buffer.byteLength(files.css)<32000,'Rae CSS exceeds 32KB guardrail');
 expect(Buffer.byteLength(files.api)<26000,'Rae API exceeds 26KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Rae integrity OK: ${clientBytes}B modular client, layered actor, real streaming AI, safe actions and verified knowledge.`);
+console.log(`Rae integrity OK: ${clientBytes}B modular client, layered actor, real streaming AI, safe actions, contact-dock clearance and verified knowledge.`);

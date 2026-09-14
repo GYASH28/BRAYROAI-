@@ -10,7 +10,7 @@ const isCoarse=()=>matchMedia('(pointer:coarse)').matches;
 class RaeApp{
   constructor(root){
     this.root=root;this.pageKey=getPageKey();this.session=new RaeSession();this.pageContext=new RaePageContext(section=>this.onSection(section));this.actions=new RaeActions(this.session);this.client=new RaeChatClient('/api/rae-chat');this.pendingMeta={};this.lastPrompt='';this.firstToken=false;this.collisionFrame=0;this.collisionObserver=null;this.collisionResizeObserver=null;this.nudgeTimer=0;this.thinkTimer=0;this.slowTimer=0;this.inerted=[];
-    this.ui=new RaeUI(root,{pageInfo:PAGE_INFO[this.pageKey]||PAGE_INFO.default,onSend:text=>this.send(text),onStop:()=>this.stop(),onRetry:()=>this.retry(),onAction:(name,args,element)=>this.action(name,args,element),onOpenChange:open=>this.openChanged(open),onFocus:()=>emitRae('rae:user-focus')});
+    this.ui=new RaeUI(root,{pageInfo:PAGE_INFO[this.pageKey]||PAGE_INFO.default,onSend:text=>this.send(text),onStop:()=>this.stop(),onRetry:()=>this.retry(),onAction:(name,args,element)=>this.action(name,args,element),onOpenChange:open=>this.openChanged(open),onFocus:()=>emitRae('rae:user-focus'),onClear:()=>this.clearChat()});
     this.director=new RaeDirector(root);this.ui.restore(this.session.history());this.pageContext.start();this.bind();this.applyDeferredPlanHighlight();this.installCollisionObservers();this.resolveCollisions();this.scheduleNudge();emitRae('rae:boot');
   }
   bind(){
@@ -56,6 +56,9 @@ class RaeApp{
     if(type==='error'){const error=new Error(data?.message||'Rae AI unavailable');error.code=data?.code||'provider_error';throw error}
   }
   clearLatencyTimers(){clearTimeout(this.thinkTimer);clearTimeout(this.slowTimer);this.thinkTimer=0;this.slowTimer=0}
+  clearChat(){
+    this.clearLatencyTimers();if(this.ui.generating)this.client.abort('user');this.session.clear();this.client.lastRequest=null;this.lastPrompt='';this.pendingMeta={};this.firstToken=false;this.ui.setGenerating(false,navigator.onLine?'READY':'OFFLINE');this.ui.setStage('I’m Rae.','I can explain the site, compare options and think through your project with you.');emitRae(navigator.onLine?'rae:stream-abort':'rae:offline');
+  }
   stop(){this.clearLatencyTimers();this.client.abort('user');this.ui.setGenerating(false,'READY');this.ui.markStopped();emitRae('rae:stream-abort')}
   retry(){if(!this.lastPrompt||this.ui.generating)return;this.send(this.lastPrompt,{retry:true})}
   async action(name,args={},element){

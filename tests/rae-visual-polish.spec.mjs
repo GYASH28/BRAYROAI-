@@ -14,6 +14,7 @@ for(const width of [320,390])test(`Rae mobile stage remains composed at ${width}
   await page.setViewportSize({width,height:844});await openRae(page);
   const panel=page.locator('[data-rae-panel]'),character=page.locator('.rae-stage .rae-character--stage'),copy=page.locator('.rae-stage__copy');
   await expect(panel).toHaveCSS('opacity','1');
+  const transitionProperties=await panel.evaluate(node=>getComputedStyle(node).transitionProperty);expect(transitionProperties).not.toContain('opacity');
   const [charBox,copyBox,panelBox]=await Promise.all([character.boundingBox(),copy.boundingBox(),panel.boundingBox()]);
   expect(charBox).not.toBeNull();expect(copyBox).not.toBeNull();expect(panelBox).not.toBeNull();
   expect(panelBox.x).toBeGreaterThanOrEqual(-1);expect(panelBox.x+panelBox.width).toBeLessThanOrEqual(width+1);

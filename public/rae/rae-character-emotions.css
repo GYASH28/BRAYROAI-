@@ -1,0 +1,48 @@
+/* Rae V3 extended social expressions. */
+.rae-character[data-rae-rig="v3"][data-state="surprised"] .rae-character__head-wrap{transform:translateY(-4px) scale(1.025)}
+.rae-character[data-rae-rig="v3"][data-state="surprised"] .rae-character__eye-white{transform:scale(1.2)}
+.rae-character[data-rae-rig="v3"][data-state="surprised"] .rae-character__pupil{transform:translate(var(--rae-gaze-x),var(--rae-gaze-y)) scale(.82)}
+.rae-character[data-rae-rig="v3"][data-state="surprised"] .rae-character__mouth{transform:translateY(2px) scale(.5,1.65)}
+.rae-character[data-rae-rig="v3"][data-state="surprised"] .rae-character__ear-ring-light{animation:raeV3SurpriseFlash .55s ease-out}
+
+.rae-character[data-rae-rig="v3"][data-state="playful"] .rae-character__head-wrap{transform:translateX(var(--rae-head-x)) rotate(calc(var(--rae-head-r) + 7deg)) translateY(-2px)}
+.rae-character[data-rae-rig="v3"][data-state="playful"] .rae-character__eye--r{transform:scaleY(.18)}
+.rae-character[data-rae-rig="v3"][data-state="playful"] .rae-character__mouth{transform:translate(3px,2px) rotate(-7deg) scaleX(1.25)}
+.rae-character[data-rae-rig="v3"][data-state="playful"] .rae-character__arm--l{transform:translate(7px,-8px) rotate(17deg)}
+.rae-character[data-rae-rig="v3"][data-state="playful"] .rae-character__cheek{opacity:.62}
+
+.rae-character[data-rae-rig="v3"][data-state="proud"] .rae-character__body{transform:translateY(-2px) scale(1.015)}
+.rae-character[data-rae-rig="v3"][data-state="proud"] .rae-character__head-wrap{transform:translateY(-3px) rotate(-2deg)}
+.rae-character[data-rae-rig="v3"][data-state="proud"] .rae-character__eye-white{transform:scaleY(.72) scaleX(1.06)}
+.rae-character[data-rae-rig="v3"][data-state="proud"] .rae-character__mouth{transform:translateY(2px) scaleX(1.32)}
+.rae-character[data-rae-rig="v3"][data-state="proud"] .rae-character__chest-light{animation:raeV3ProudGlow .9s ease-in-out 2}
+
+.rae-character[data-rae-rig="v3"][data-state="shy"] .rae-character__head-wrap{transform:translate(-3px,3px) rotate(-6deg)}
+.rae-character[data-rae-rig="v3"][data-state="shy"] .rae-character__pupil{transform:translate(-3px,3px)}
+.rae-character[data-rae-rig="v3"][data-state="shy"] .rae-character__cheek{opacity:.9;transform:scale(1.24)}
+.rae-character[data-rae-rig="v3"][data-state="shy"] .rae-character__mouth{transform:translateY(1px) scaleX(.72)}
+
+.rae-character[data-rae-rig="v3"][data-state="skeptical"] .rae-character__head-wrap{transform:translateX(var(--rae-head-x)) rotate(calc(var(--rae-head-r) - 5deg))}
+.rae-character[data-rae-rig="v3"][data-state="skeptical"] .rae-character__eye--l{transform:scaleY(.58)}
+.rae-character[data-rae-rig="v3"][data-state="skeptical"] .rae-character__brow--l{transform:translateY(3px) rotate(8deg)}
+.rae-character[data-rae-rig="v3"][data-state="skeptical"] .rae-character__brow--r{transform:translateY(-3px) rotate(-4deg)}
+.rae-character[data-rae-rig="v3"][data-state="skeptical"] .rae-character__mouth{transform:translate(4px,1px) rotate(-6deg) scaleX(.72)}
+
+.rae-character[data-rae-rig="v3"][data-state="laughing"]{animation:raeV3LaughBody .48s ease-in-out 3}
+.rae-character[data-rae-rig="v3"][data-state="laughing"] .rae-character__eye-white{transform:scaleY(.2) scaleX(1.18)}
+.rae-character[data-rae-rig="v3"][data-state="laughing"] .rae-character__pupil{opacity:0}
+.rae-character[data-rae-rig="v3"][data-state="laughing"] .rae-character__mouth{transform:translateY(4px) scale(1.35,1.75)}
+.rae-character[data-rae-rig="v3"][data-state="laughing"] .rae-character__cheek{opacity:.85;transform:scale(1.24)}
+
+.rae-character[data-rae-rig="v3"][data-state="wink"] .rae-character__eye--r{transform:scaleY(.08)}
+.rae-character[data-rae-rig="v3"][data-state="wink"] .rae-character__head-wrap{transform:translateX(var(--rae-head-x)) rotate(calc(var(--rae-head-r) + 5deg))}
+.rae-character[data-rae-rig="v3"][data-state="wink"] .rae-character__mouth{transform:translate(2px,2px) rotate(-5deg) scaleX(1.18)}
+.rae-character[data-rae-rig="v3"][data-state="wink"] .rae-character__spark{animation:raeV3SparkNotice .62s var(--rae-ease)}
+
+.rae-root[data-rae-idle="look-up"] .rae-character[data-rae-rig="v3"]{--rae-gaze-y:-4px}
+.rae-root[data-rae-idle="look-up"] .rae-character[data-rae-rig="v3"] .rae-character__head-wrap{transform:translateY(-2px) rotate(-2deg)}
+
+@keyframes raeV3SurpriseFlash{0%{opacity:.4;transform:scale(.85)}45%{opacity:1;transform:scale(1.15)}100%{opacity:.86;transform:scale(1)}}
+@keyframes raeV3ProudGlow{0%,100%{opacity:.62}50%{opacity:1;transform:scaleX(1.18)}}
+@keyframes raeV3LaughBody{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px) rotate(1deg)}}
+@media(prefers-reduced-motion:reduce){.rae-character[data-rae-rig="v3"][data-state="surprised"],.rae-character[data-rae-rig="v3"][data-state="playful"],.rae-character[data-rae-rig="v3"][data-state="proud"],.rae-character[data-rae-rig="v3"][data-state="shy"],.rae-character[data-rae-rig="v3"][data-state="skeptical"],.rae-character[data-rae-rig="v3"][data-state="laughing"],.rae-character[data-rae-rig="v3"][data-state="wink"]{animation:none!important}}

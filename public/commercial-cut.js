@@ -1,5 +1,3 @@
-document.body.classList.add('js');
-
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
 const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));

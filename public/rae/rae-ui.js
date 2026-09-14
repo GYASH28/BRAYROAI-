@@ -5,7 +5,7 @@ const safeText=value=>clean(value).slice(0,5000);
 
 export class RaeUI{
   constructor(root,{pageInfo,onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear}={}){
-    this.root=root;this.pageInfo=pageInfo;this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;
+    this.root=root;this.pageInfo=pageInfo;this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;this.focusTimer=0;
     this.build();this.bind();this.renderStarter();
   }
   build(){
@@ -62,11 +62,15 @@ export class RaeUI{
   trapFocus(event){
     if(event.key!=='Tab')return;const focusable=[...this.panel.querySelectorAll('button:not([hidden]),textarea,a[href],[tabindex="0"]')].filter(node=>!node.disabled&&node.offsetParent!==null);if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
   }
+  focusComposer(){
+    clearTimeout(this.focusTimer);const focus=()=>{if(this.open&&!this.generating&&this.input?.isConnected&&!this.input.disabled)this.input.focus({preventScroll:true})};
+    queueMicrotask(focus);requestAnimationFrame(()=>{focus();this.focusTimer=setTimeout(focus,90)});
+  }
   setOpen(value){
     this.open=Boolean(value);if(this.open)this.lastFocused=document.activeElement;
     this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));document.body.classList.toggle('rae-dialog-open',this.open);
     this.handlers.onOpenChange?.(this.open);
-    if(this.open)setTimeout(()=>this.input.focus({preventScroll:true}),90);else{const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;setTimeout(()=>target?.focus({preventScroll:true}),20)}
+    if(this.open)this.focusComposer();else{clearTimeout(this.focusTimer);const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;requestAnimationFrame(()=>target?.focus({preventScroll:true}))}
   }
   renderStarter(){
     const wrap=document.createElement('article');wrap.className='rae-welcome';const title=document.createElement('strong');title.textContent='Ask me the useful version.';const copy=document.createElement('p');copy.textContent=`You’re on ${this.pageInfo?.label||'BRAYROAI'}. ${this.pageInfo?.summary||''}`;wrap.append(title,copy);this.feed.append(wrap);this.setChips(this.pageInfo?.chips||[]);
@@ -100,5 +104,5 @@ export class RaeUI{
   scrollLatest(force=false){if(!force&&!this.lastUserNearBottom)return;requestAnimationFrame(()=>{this.feed.scrollTop=this.feed.scrollHeight;this.jump.hidden=true;this.lastUserNearBottom=true})}
   resizeComposer(){this.input.style.height='auto';this.input.style.height=`${Math.min(128,Math.max(42,this.input.scrollHeight))}px`}
   showNudge(text){const node=this.root.querySelector('[data-rae-nudge-copy]');if(node)node.textContent=safeText(text);this.root.classList.add('has-nudge');setTimeout(()=>this.root.classList.remove('has-nudge'),7000)}
-  destroy(){if(this.visualViewportHandler)visualViewport?.removeEventListener('resize',this.visualViewportHandler);document.body.classList.remove('rae-dialog-open')}
+  destroy(){clearTimeout(this.focusTimer);if(this.visualViewportHandler)visualViewport?.removeEventListener('resize',this.visualViewportHandler);document.body.classList.remove('rae-dialog-open')}
 }

@@ -4,8 +4,8 @@ const clean=value=>String(value??'').replace(/\u0000/g,'').trim();
 const safeText=value=>clean(value).slice(0,5000);
 
 export class RaeUI{
-  constructor(root,{pageInfo,onSend,onStop,onRetry,onAction,onOpenChange,onFocus}={}){
-    this.root=root;this.pageInfo=pageInfo;this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;
+  constructor(root,{pageInfo,onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear}={}){
+    this.root=root;this.pageInfo=pageInfo;this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;
     this.build();this.bind();this.renderStarter();
   }
   build(){
@@ -46,7 +46,7 @@ export class RaeUI{
       if(event.target.closest('[data-rae-nudge]'))return this.setOpen(true);
       if(event.target.closest('[data-rae-stop]'))return this.handlers.onStop?.();
       if(event.target.closest('[data-rae-retry]'))return this.handlers.onRetry?.();
-      if(event.target.closest('[data-rae-clear]')){this.feed.replaceChildren();this.renderStarter();return}
+      if(event.target.closest('[data-rae-clear]')){this.handlers.onClear?.();this.resetConversation();return}
       if(event.target.closest('[data-rae-jump]'))return this.scrollLatest(true);
       const chip=event.target.closest('[data-rae-prompt]');if(chip)return this.submit(chip.dataset.raePrompt||'');
       const action=event.target.closest('[data-rae-action]');if(action)return this.handlers.onAction?.(action.dataset.raeAction,JSON.parse(action.dataset.raeArgs||'{}'),action);
@@ -72,6 +72,7 @@ export class RaeUI{
     const wrap=document.createElement('article');wrap.className='rae-welcome';const title=document.createElement('strong');title.textContent='Ask me the useful version.';const copy=document.createElement('p');copy.textContent=`You’re on ${this.pageInfo?.label||'BRAYROAI'}. ${this.pageInfo?.summary||''}`;wrap.append(title,copy);this.feed.append(wrap);this.setChips(this.pageInfo?.chips||[]);
   }
   restore(messages=[]){for(const message of messages.slice(-8))this.addMessage(message.role,message.text,{announce:false})}
+  resetConversation(){this.feed.replaceChildren();this.streamNode=null;this.lastUserNearBottom=true;this.input.value='';this.resizeComposer();this.renderStarter();this.live.textContent='Chat cleared.'}
   submit(value){const text=clean(value);if(!text||this.generating)return;this.input.value='';this.resizeComposer();this.handlers.onSend?.(text)}
   setChips(items=[]){this.chips.replaceChildren();for(const label of items.slice(0,4)){const button=document.createElement('button');button.type='button';button.className='rae-chip';button.dataset.raePrompt=label;button.textContent=label;this.chips.append(button)}}
   addMessage(role,text,{actions=[],card=null,announce=true,partial=false}={}){

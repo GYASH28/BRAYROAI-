@@ -40,20 +40,26 @@
     <button class="rae-launcher" type="button" data-rae-launch aria-label="Open Rae, BRAYROAI studio guide" aria-expanded="false">
       <span class="rae-character" aria-hidden="true">
         <svg viewBox="0 0 96 96" role="img">
-          <ellipse class="rae-shadow" cx="48" cy="88" rx="25" ry="5"/>
-          <circle class="rae-halo" cx="48" cy="47" r="38"/>
-          <path class="rae-arm rae-arm--left" d="M29 61c-7 3-10 8-11 14"/>
-          <path class="rae-arm rae-arm--right" d="M67 61c7 3 10 8 11 14"/>
-          <path class="rae-shell-shape" d="M25 35c0-13 10-23 23-23s23 10 23 23v25c0 13-10 23-23 23S25 73 25 60V35Z"/>
-          <path class="rae-shell-shape" d="M37 13 42 7h12l5 6"/>
-          <circle class="rae-signal" cx="48" cy="8" r="3.2"/>
-          <path class="rae-accent" d="M25 42h5v14h-5zM66 42h5v14h-5z"/>
-          <rect class="rae-face" x="31" y="29" width="34" height="34" rx="15"/>
-          <ellipse class="rae-cheek" cx="36.5" cy="51.5" rx="3.8" ry="2.2"/><ellipse class="rae-cheek" cx="59.5" cy="51.5" rx="3.8" ry="2.2"/>
-          <ellipse class="rae-eye" cx="40" cy="43" rx="3.2" ry="4.1"/><ellipse class="rae-eye" cx="56" cy="43" rx="3.2" ry="4.1"/>
-          <circle class="rae-pupil" cx="40" cy="42.6" r="1.15"/><circle class="rae-pupil" cx="56" cy="42.6" r="1.15"/>
-          <path class="rae-mouth" d="M43 54c3 2 7 2 10 0"/>
-          <path class="rae-accent" d="M39 72h18l-3 6H42l-3-6Z"/>
+          <ellipse class="rae-shadow" cx="48" cy="88" rx="23" ry="4"/>
+          <path class="rae-halo" d="M17 50c1-21 14-35 31-37 18-2 32 10 34 28"/>
+          <path d="M80 47c0 18-13 33-30 36" fill="none" stroke="rgba(255,107,44,.5)" stroke-width="1.4" stroke-linecap="round"/>
+          <circle class="rae-signal" cx="18" cy="48" r="2.6"/>
+          <circle class="rae-accent" cx="79" cy="45" r="2"/>
+          <path class="rae-shell-shape" d="M30 25c7-13 24-17 35-8 11 9 13 27 8 43-5 15-17 24-31 21-13-3-22-14-21-29 1-11 3-20 9-27Z"/>
+          <path class="rae-face" d="M31 35c4-8 13-12 23-11 10 1 17 8 18 18 1 12-6 23-17 27-10 4-21 1-27-8-6-8-5-18 3-26Z"/>
+          <path class="rae-eye" d="M34 44c2-4 6-5 9-2 2 2 2 7-1 9-4 3-10-2-8-7Z"/><path class="rae-eye" d="M55 41c4-2 8 0 9 4 1 3-2 7-5 7-5 0-7-8-4-11Z"/>
+          <circle class="rae-pupil" cx="39.5" cy="45.5" r="1.35"/><circle class="rae-pupil" cx="59.2" cy="46" r="1.35"/>
+          <ellipse class="rae-cheek" cx="31.5" cy="55" rx="3.4" ry="1.8"/>
+          <path class="rae-mouth" d="M41 57c4 3 9 3 13-1"/>
+          <path class="rae-arm rae-arm--left" d="M29 55c-6 0-10 5-11 11"/>
+          <circle class="rae-face" cx="17.5" cy="68" r="3"/>
+          <path class="rae-arm rae-arm--right" d="M69 55c6-1 10-5 12-11"/>
+          <path d="M78 39c3-2 5-1 6 1" fill="none" stroke="#f3f0ea" stroke-width="2.7" stroke-linecap="round"/>
+          <path class="rae-accent" d="M42 72c5 2 10 2 15-1l-3 8c-5 2-10 2-15 0l3-7Z"/>
+          <path class="rae-signal" d="M45 14c0-4 2-7 5-9 1 4 0 7-2 10Z"/>
+          <path class="rae-accent" d="M54 15c1-5 5-8 9-8-1 4-4 7-8 9Z"/>
+          <path d="M28 31c-5 2-8 6-9 10" fill="none" stroke="#3e7bff" stroke-width="2.4" stroke-linecap="round" opacity=".7"/>
+          <path d="M66 28c4 2 7 5 8 9" fill="none" stroke="#ff6b2c" stroke-width="2.4" stroke-linecap="round" opacity=".72"/>
         </svg>
       </span>
     </button>

@@ -19,7 +19,7 @@ for(const token of ['data-state="surprised"','data-state="playful"','data-state=
 expect(files.director.includes('/rae/rae-character-emotions.css'),'Rae director must lazy-load the extended emotion skin');
 expect(!/<canvas|THREE\.|WebGLRenderingContext|requestAnimationFrame\s*\([^)]*render/i.test(files.character),'Detailed Rae executable rig must remain SVG/CSS rather than a permanent canvas/WebGL render loop');
 for(const token of ['role="dialog"','aria-modal="true"','data-rae-stop','data-rae-live','visualViewport','trapFocus','Continue on WhatsApp','rae-card'])expect(files.ui.includes(token),`Rae accessible UI missing ${token}`);
-expect(files.ui.includes('setTimeout(focus,280)')&&files.ui.includes('setTimeout(restore,240)'),'Rae dialog focus must account for open/close visibility transitions');
+expect(files.ui.includes('settleFocus(target,expectOpen)')&&files.ui.includes('const delays=[0,72,180,360,620]')&&files.ui.includes('this.settleFocus(this.input,true)')&&files.ui.includes('this.settleFocus(target,false)'),'Rae dialog focus must settle across open/close visibility and native-button timing');
 for(const token of ['text/event-stream','AbortController','parsePacket','event:'])expect(files.transport.includes(token),`Rae streaming client missing ${token}`);
 for(const token of ['navigateToRoute','scrollToSection','openProject','showPlan','highlightElement','ROUTES','SECTIONS'])expect(files.actions.includes(token),`Rae safe action layer missing ${token}`);
 for(const token of ['sessionStorage','rae:v2:session','PAGE_INFO','IntersectionObserver'])expect(files.context.includes(token),`Rae context/session layer missing ${token}`);

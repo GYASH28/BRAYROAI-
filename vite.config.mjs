@@ -12,9 +12,12 @@ const cleanRouteMap=Object.freeze({'/plans':'/plans.html','/founder':'/founder.h
 // V5 is intentionally absent: its homepage runtime exits immediately beneath V15,
 // so its home-only CSS/JS is stripped instead of downloaded and parsed.
 const homeStyleFiles=Object.freeze([
-  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css','rae.css'
+  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css','rae.css','home-performance.css'
 ]);
 const readHomeStyles=()=>homeStyleFiles.map(file=>`/* ${file} */\n${readFileSync(resolve(process.cwd(),'public',file),'utf8')}`).join('\n\n');
+// The homepage sheet is emitted manually, so it bypasses Vite's normal CSS optimizer.
+// Compact comments and whitespace at build time while keeping source files readable.
+const buildHomeStyles=()=>readHomeStyles().replace(/\/\*[\s\S]*?\*\//g,'').replace(/\s+/g,' ').trim();
 
 const normalisePath=(url='/')=>{const parsed=new URL(url,'http://brayro.local');return{parsed,pathname:parsed.pathname.length>1?parsed.pathname.replace(/\/$/,''):parsed.pathname}};
 const mountCleanRoutes=server=>{server.middlewares.use((req,_res,next)=>{if(!req.url)return next();const{parsed,pathname}=normalisePath(req.url),target=cleanRouteMap[pathname];if(target)req.url=`${target}${parsed.search}`;next()})};
@@ -28,7 +31,7 @@ const experienceTransform={
   name:'brayro-experience-transform',
   configureServer(server){mountCleanRoutes(server);serveHomeStyleBundle(server)},
   configurePreviewServer:mountCleanRoutes,
-  generateBundle(){this.emitFile({type:'asset',fileName:'assets/brayro-home.css',source:readHomeStyles()})},
+  generateBundle(){this.emitFile({type:'asset',fileName:'assets/brayro-home.css',source:buildHomeStyles()})},
   transformIndexHtml:{order:'pre',handler(html,context){
     const filename=context?.filename||'',isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html'),isPlans=filename.endsWith('/plans.html'),isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html'),isFakhriCase=filename.endsWith('/fakhrimart-case-study.html'),canonicalUrl=`${productionOrigin}${pagePathFor(filename)}`,shareImage=isFakhriCase?`${productionOrigin}/assets/fakhrimart-case-desktop.png`:`${productionOrigin}/assets/hero-background.webp`;
     html=optimiseFonts(html);

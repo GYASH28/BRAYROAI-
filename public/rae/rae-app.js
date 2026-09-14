@@ -9,17 +9,17 @@ const isCoarse=()=>matchMedia('(pointer:coarse)').matches;
 
 class RaeApp{
   constructor(root){
-    this.root=root;this.pageKey=getPageKey();this.session=new RaeSession();this.pageContext=new RaePageContext(section=>this.onSection(section));this.actions=new RaeActions(this.session);this.client=new RaeChatClient('/api/rae-chat');this.pendingMeta={};this.lastPrompt='';this.firstToken=false;this.collisionFrame=0;this.nudgeTimer=0;this.thinkTimer=0;this.slowTimer=0;this.inerted=[];
+    this.root=root;this.pageKey=getPageKey();this.session=new RaeSession();this.pageContext=new RaePageContext(section=>this.onSection(section));this.actions=new RaeActions(this.session);this.client=new RaeChatClient('/api/rae-chat');this.pendingMeta={};this.lastPrompt='';this.firstToken=false;this.collisionFrame=0;this.collisionObserver=null;this.collisionResizeObserver=null;this.nudgeTimer=0;this.thinkTimer=0;this.slowTimer=0;this.inerted=[];
     this.ui=new RaeUI(root,{pageInfo:PAGE_INFO[this.pageKey]||PAGE_INFO.default,onSend:text=>this.send(text),onStop:()=>this.stop(),onRetry:()=>this.retry(),onAction:(name,args,element)=>this.action(name,args,element),onOpenChange:open=>this.openChanged(open),onFocus:()=>emitRae('rae:user-focus')});
-    this.director=new RaeDirector(root);this.ui.restore(this.session.history());this.pageContext.start();this.bind();this.applyDeferredPlanHighlight();this.resolveCollisions();this.scheduleNudge();emitRae('rae:boot');
+    this.director=new RaeDirector(root);this.ui.restore(this.session.history());this.pageContext.start();this.bind();this.applyDeferredPlanHighlight();this.installCollisionObservers();this.resolveCollisions();this.scheduleNudge();emitRae('rae:boot');
   }
   bind(){
-    this.onPointer=event=>this.director.pointer(event);this.onResize=()=>this.queueCollision();this.onOnline=()=>{this.ui.setStatus('READY');emitRae('rae:wake')};this.onOffline=()=>{this.ui.setStatus('OFFLINE');emitRae('rae:offline')};
+    this.onPointer=event=>this.director.pointer(event);this.onResize=()=>this.queueCollision();this.onOnline=()=>{this.ui.setStatus('READY');emitRae('rae:wake')};this.onOffline=()=>{this.ui.setStatus('OFFLINE');emitRae('rae:offline')};this.onDockReady=()=>this.refreshCollisionTargets();
     if(!isCoarse())addEventListener('pointermove',this.onPointer,{passive:true});else this.root.querySelector('[data-rae-toggle]')?.addEventListener('pointerdown',()=>this.director.touchReact(),{passive:true});
-    addEventListener('resize',this.onResize,{passive:true});addEventListener('online',this.onOnline);addEventListener('offline',this.onOffline);this.root.querySelector('[data-rae-toggle]')?.addEventListener('mouseenter',()=>emitRae('rae:user-focus'));if(!navigator.onLine)this.onOffline();
+    addEventListener('resize',this.onResize,{passive:true});addEventListener('online',this.onOnline);addEventListener('offline',this.onOffline);document.addEventListener('brayro:contact-dock-ready',this.onDockReady);this.root.querySelector('[data-rae-toggle]')?.addEventListener('mouseenter',()=>emitRae('rae:user-focus'));if(!navigator.onLine)this.onOffline();
   }
   openChanged(open){
-    this.setBackgroundInert(open);emitRae(open?'rae:opened':'rae:closed');this.resolveCollisions();if(open){this.root.classList.remove('has-nudge');setTimeout(()=>{if(this.ui.open&&this.director.state==='opening')this.director.setState('idle')},620)}
+    document.body.classList.toggle('rae-conversation-open',open);this.setBackgroundInert(open);emitRae(open?'rae:opened':'rae:closed');this.resolveCollisions();if(open){this.root.classList.remove('has-nudge');setTimeout(()=>{if(this.ui.open&&this.director.state==='opening')this.director.setState('idle')},620)}
   }
   setBackgroundInert(open){
     if(open){this.inerted=[];for(const node of document.body.children){if(node===this.root||!(node instanceof HTMLElement))continue;this.inerted.push([node,node.inert]);node.inert=true}}
@@ -69,12 +69,22 @@ class RaeApp{
   maybeNudge(text,key){try{if(sessionStorage.getItem('rae:v2:nudge-shown'))return;sessionStorage.setItem('rae:v2:nudge-shown',key)}catch{}if(this.ui.open)return;this.ui.showNudge(text);this.director.setState('curious')}
   applyDeferredPlanHighlight(){if(this.pageKey!=='plans')return;let plan='';try{plan=sessionStorage.getItem('rae:plan-highlight')||'';sessionStorage.removeItem('rae:plan-highlight')}catch{}if(plan)setTimeout(()=>this.actions.showPlan(plan).catch(()=>{}),700)}
   queueCollision(){if(this.collisionFrame)return;this.collisionFrame=requestAnimationFrame(()=>{this.collisionFrame=0;this.resolveCollisions()})}
-  resolveCollisions(){
-    this.root.style.setProperty('--rae-collision-lift','0px');if(this.ui.open)return;const rae=this.root.querySelector('[data-rae-toggle]');if(!rae)return;const rect=rae.getBoundingClientRect();let lift=0;
-    for(const node of document.querySelectorAll('a,button,[role="button"]')){if(this.root.contains(node)||node.offsetParent===null)continue;const style=getComputedStyle(node);if(!['fixed','sticky'].includes(style.position))continue;const other=node.getBoundingClientRect(),overlap=rect.left<other.right+10&&rect.right>other.left-10&&rect.top<other.bottom+10&&rect.bottom>other.top-10;if(overlap&&other.bottom>innerHeight*.55)lift=Math.max(lift,other.height+18)}
-    this.root.style.setProperty('--rae-collision-lift',`${Math.min(180,lift)}px`);
+  installCollisionObservers(){
+    if('MutationObserver'in window){this.collisionObserver=new MutationObserver(records=>{for(const record of records){const nodes=[...record.addedNodes,...record.removedNodes];if(nodes.some(node=>node instanceof HTMLElement&&!this.root.contains(node))){this.refreshCollisionTargets();break}}});this.collisionObserver.observe(document.body,{childList:true,subtree:true})}
+    if('ResizeObserver'in window)this.collisionResizeObserver=new ResizeObserver(()=>this.queueCollision());this.refreshCollisionTargets();
   }
-  destroy(){clearTimeout(this.nudgeTimer);this.clearLatencyTimers();this.setBackgroundInert(false);this.client.abort('destroy');this.director.dispose();this.pageContext.dispose();this.ui.destroy();if(!isCoarse())removeEventListener('pointermove',this.onPointer);removeEventListener('resize',this.onResize);removeEventListener('online',this.onOnline);removeEventListener('offline',this.onOffline)}
+  refreshCollisionTargets(){
+    this.collisionResizeObserver?.disconnect();if(this.collisionResizeObserver){for(const node of document.querySelectorAll('.brayro-contact-dock,[data-rae-avoid]'))this.collisionResizeObserver.observe(node)}this.queueCollision();
+  }
+  resolveCollisions(){
+    this.root.style.setProperty('--rae-collision-lift','0px');this.root.dataset.raeClearance='base';if(this.ui.open)return;const rae=this.root.querySelector('[data-rae-toggle]');if(!rae)return;const rect=rae.getBoundingClientRect(),gap=14;let lift=0;
+    const candidates=new Set(document.querySelectorAll('.brayro-contact-dock,[data-rae-avoid],a,button,[role="button"],nav,aside'));
+    for(const node of candidates){
+      if(!(node instanceof HTMLElement)||this.root.contains(node)||node.offsetParent===null)continue;const style=getComputedStyle(node);if(!['fixed','sticky'].includes(style.position)||style.visibility==='hidden'||style.display==='none'||Number(style.opacity)===0)continue;const other=node.getBoundingClientRect();if(other.width<1||other.height<1||other.bottom<=innerHeight*.55)continue;const horizontal=rect.left<other.right+gap&&rect.right>other.left-gap;if(!horizontal)continue;const threatened=other.top<rect.bottom+gap&&other.bottom>rect.top-gap;if(!threatened)continue;lift=Math.max(lift,rect.bottom-other.top+gap);
+    }
+    lift=Math.max(0,Math.min(260,lift));this.root.style.setProperty('--rae-collision-lift',`${Math.ceil(lift)}px`);this.root.dataset.raeClearance=lift>0?'lifted':'base';
+  }
+  destroy(){clearTimeout(this.nudgeTimer);this.clearLatencyTimers();document.body.classList.remove('rae-conversation-open');this.setBackgroundInert(false);this.client.abort('destroy');this.director.dispose();this.pageContext.dispose();this.ui.destroy();this.collisionObserver?.disconnect();this.collisionResizeObserver?.disconnect();if(this.collisionFrame)cancelAnimationFrame(this.collisionFrame);if(!isCoarse())removeEventListener('pointermove',this.onPointer);removeEventListener('resize',this.onResize);removeEventListener('online',this.onOnline);removeEventListener('offline',this.onOffline);document.removeEventListener('brayro:contact-dock-ready',this.onDockReady)}
 }
 
 export function mountRae(root=document.querySelector('[data-rae-root]')){if(!root||root.dataset.raeAppReady)return null;root.dataset.raeAppReady='true';const app=new RaeApp(root);window.__BRAYRO_RAE__=app;return app}

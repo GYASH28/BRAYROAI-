@@ -9,6 +9,7 @@ const files={
 
 for(const token of ['class RaeBootstrap','import(\'/rae/rae-app.js\')','Chat with Rae, BRAYROAI AI assistant','showFallback()'])expect(files.bootstrap.includes(token),`Rae bootstrap missing ${token}`);
 expect(files.bootstrap.includes('shellCharacter')&&files.bootstrap.includes('linearGradient id="rs"')&&files.bootstrap.includes('stroke="#ff6a20"'),'Rae bootstrap launcher must visually match the production ivory/visor/orange character');
+expect(files.bootstrap.includes('BRAYROAI companion')&&files.bootstrap.includes('cancelPreload()')&&files.bootstrap.includes("addEventListener('load',schedule")&&files.bootstrap.includes('requestIdleCallback(load,{timeout:1800})'),'Rae bootstrap must keep the companion label and defer idle warmup past the critical hero paint while preserving instant interaction loading');
 for(const token of ['class RaeDirector','setState(next)','setAttention','setSpeakingLevel','scheduleBlink','scheduleIdle','pulseSpeech','sleep()','wake()','rae:first-token','rae:stream-chunk','mountEmotionSkin'])expect(files.director.includes(token),`Rae director missing ${token}`);
 for(const state of ['boot','idle','attention','opening','listening','thinking','speaking','positive','curious','confused','surprised','playful','proud','shy','skeptical','laughing','wink','error','offline','celebrate','sleep'])expect(files.director.includes(`'${state}'`),`Rae state missing ${state}`);
 for(const token of ["confused:'confused'","surprised:'surprised'","playful:'playful'","proud:'proud'","skeptical:'skeptical'","laughing:'laughing'","wink:'wink'"])expect(files.director.includes(token),`Rae emotion bridge missing ${token}`);
@@ -46,4 +47,4 @@ expect(Buffer.byteLength(files.emotionCss)<18000,'Rae emotion/presentation skin 
 expect(Buffer.byteLength(files.api)<26000,'Rae API exceeds 26KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Rae integrity OK: ${clientBytes}B modular client, detailed V3 ivory/visor character rig, V4 presentation polish, 21 emotional states, real streaming AI, safe actions, contact-dock clearance and verified knowledge.`);
+console.log(`Rae integrity OK: ${clientBytes}B modular client, detailed V3 ivory/visor character rig, V4 presentation polish, deferred warmup, 21 emotional states, real streaming AI, safe actions, contact-dock clearance and verified knowledge.`);

@@ -16,6 +16,7 @@ for(const token of ['data-rae-rig="v3"','rae-character__head','rae-character__vi
 for(const token of ['ensureRaeCharacterSkin','/rae/rae-character-v2.css','linearGradient','radialGradient','rae-character__shoulder-shell','rae-character__calf-panel'])expect(files.character.includes(token),`Rae production character construction missing ${token}`);
 for(const token of ['data-rae-rig="v3"','raeV3Breathe','raeV3ThinkHead','raeV3Wave','raeV3ListenPulse','raeV3SpeakingArm','raeV3Celebrate','data-state="thinking"','data-state="speaking"','data-state="sleep"','prefers-reduced-motion'])expect(files.characterCss.includes(token),`Rae character skin missing ${token}`);
 for(const token of ['data-state="surprised"','data-state="playful"','data-state="proud"','data-state="shy"','data-state="skeptical"','data-state="laughing"','data-state="wink"','raeV3SurpriseFlash','raeV3ProudGlow','raeV3LaughBody'])expect(files.emotionCss.includes(token),`Rae extended emotion skin missing ${token}`);
+for(const token of ['Rae V4 completion pass','BRAYROAI / PROJECT COMPANION','body.rae-dialog-open::after','width:100vw','opacity:1;scale:1;translate:0 0'])expect(files.emotionCss.includes(token),`Rae V4 presentation contract missing ${token}`);
 expect(files.director.includes('/rae/rae-character-emotions.css'),'Rae director must lazy-load the extended emotion skin');
 expect(!/<canvas|THREE\.|WebGLRenderingContext|requestAnimationFrame\s*\([^)]*render/i.test(files.character),'Detailed Rae executable rig must remain SVG/CSS rather than a permanent canvas/WebGL render loop');
 for(const token of ['role="dialog"','aria-modal="true"','data-rae-stop','data-rae-live','visualViewport','trapFocus','Continue on WhatsApp','rae-card'])expect(files.ui.includes(token),`Rae accessible UI missing ${token}`);
@@ -41,8 +42,8 @@ const clientBytes=['bootstrap','app','director','ui','transport','actions','cont
 expect(clientBytes<118000,`Rae modular JS exceeds 118KB guardrail (${clientBytes})`);
 expect(Buffer.byteLength(files.css)<32000,'Rae base CSS exceeds 32KB guardrail');
 expect(Buffer.byteLength(files.characterCss)<26000,'Rae character skin exceeds 26KB guardrail');
-expect(Buffer.byteLength(files.emotionCss)<12000,'Rae emotion skin exceeds 12KB guardrail');
+expect(Buffer.byteLength(files.emotionCss)<18000,'Rae emotion/presentation skin exceeds 18KB lazy-load guardrail');
 expect(Buffer.byteLength(files.api)<26000,'Rae API exceeds 26KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Rae integrity OK: ${clientBytes}B modular client, detailed V3 ivory/visor character rig, 21 emotional states, real streaming AI, safe actions, contact-dock clearance and verified knowledge.`);
+console.log(`Rae integrity OK: ${clientBytes}B modular client, detailed V3 ivory/visor character rig, V4 presentation polish, 21 emotional states, real streaming AI, safe actions, contact-dock clearance and verified knowledge.`);

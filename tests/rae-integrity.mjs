@@ -20,7 +20,7 @@ for(const token of ['data-rae-rig="v3"','raeV3Breathe','raeV3ThinkHead','raeV3Wa
 for(const token of ['data-state="surprised"','data-state="playful"','data-state="proud"','data-state="shy"','data-state="skeptical"','data-state="laughing"','data-state="wink"','raeV3SurpriseFlash','raeV3ProudGlow','raeV3LaughBody'])expect(files.emotionCss.includes(token),`Rae extended emotion skin missing ${token}`);
 for(const token of ['Rae V4 completion pass','BRAYROAI / PROJECT COMPANION','body.rae-dialog-open::after','width:100vw','opacity:1;scale:1;translate:0 0'])expect(files.emotionCss.includes(token),`Rae V4 presentation contract missing ${token}`);
 for(const token of ['Rae V5','data-rae-empty','rae-welcome__actions','raeV5StatusPulse','raeV5StageThink'])expect(files.polishCss.includes(token),`Rae V5 visual polish missing ${token}`);
-for(const token of ['mountRaePolish','rae-welcome__prompt','MutationObserver','data.raeEmpty'])expect(files.polishJs.includes(token),`Rae V5 interaction polish missing ${token}`);
+for(const token of ['mountRaePolish','rae-welcome__prompt','MutationObserver','feed.dataset.raeEmpty'])expect(files.polishJs.includes(token),`Rae V5 interaction polish missing ${token}`);
 expect(files.director.includes('/rae/rae-character-emotions.css'),'Rae director must lazy-load the extended emotion skin');
 expect(!/<canvas|THREE\.|WebGLRenderingContext|requestAnimationFrame\s*\([^)]*render/i.test(files.character),'Detailed Rae executable rig must remain SVG/CSS rather than a permanent canvas/WebGL render loop');
 for(const token of ['role="dialog"','aria-modal="true"','data-rae-stop','data-rae-live','visualViewport','trapFocus','Continue on WhatsApp','rae-card'])expect(files.ui.includes(token),`Rae accessible UI missing ${token}`);

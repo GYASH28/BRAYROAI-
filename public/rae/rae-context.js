@@ -36,6 +36,7 @@ export class RaeSession{
   }
   read(){try{return JSON.parse(sessionStorage.getItem(this.key)||'null')}catch{return null}}
   save(){try{sessionStorage.setItem(this.key,JSON.stringify(this.state))}catch{}}
+  clear(){this.state={messages:[],summary:'',profile:{},recentAction:'',createdAt:Date.now()};try{sessionStorage.removeItem(this.key)}catch{}this.save()}
   add(role,text){
     const item={role:role==='assistant'?'assistant':'user',text:clean(text).slice(0,1400)};
     if(!item.text)return;

@@ -22,8 +22,15 @@ export function mountRaePolish(root,app){
     if(!feed)return;const hasMessage=Boolean(feed.querySelector('.rae-message'));feed.dataset.raeEmpty=String(!hasMessage);
     if(hasMessage)feed.querySelector('.rae-welcome')?.remove();else enhanceStarter();
   };
+  const onRecovery=event=>{
+    const attempt=Math.max(2,Number(event.detail?.attempt)||2);root.dataset.raeRecovering='true';
+    if(status)status.textContent='RECONNECTING';
+    app?.ui?.setStage?.('Switching connection…',attempt>2?'The first backups were busy too. I’m trying one last AI route instead of dropping your question.':'That AI route is busy. I’m trying a backup connection and keeping your question intact.');
+    clearTimeout(root.__raeRecoveryTimer);root.__raeRecoveryTimer=setTimeout(()=>root.removeAttribute('data-rae-recovering'),5000);
+  };
   enhanceStarter();
   const observer=feed?new MutationObserver(syncConversation):null;observer?.observe(feed,{childList:true,subtree:false});
   const statusObserver=status?new MutationObserver(()=>{if(status.textContent==='READY')status.textContent='ONLINE'}):null;statusObserver?.observe(status,{childList:true,characterData:true,subtree:true});
-  return()=>{observer?.disconnect();statusObserver?.disconnect();root.removeAttribute('data-rae-polish')};
+  document.addEventListener('rae:provider-recovery',onRecovery);
+  return()=>{observer?.disconnect();statusObserver?.disconnect();document.removeEventListener('rae:provider-recovery',onRecovery);clearTimeout(root.__raeRecoveryTimer);root.removeAttribute('data-rae-polish');root.removeAttribute('data-rae-recovering')};
 }

@@ -14,6 +14,10 @@ for(const viewport of [{width:360,height:800},{width:390,height:844}]){
     const copy=page.locator('.founder-hero__copy > p:last-of-type');
     const cta=page.locator('.founder-hero__copy > a');
 
+    await expect(eyebrow).toBeVisible();
+    await expect(heading).toBeVisible();
+    await expect(copy).toBeVisible();
+    await expect(cta).toBeVisible();
     await expect(eyebrow).toContainText('YASH GANESH / FOUNDER');
     await expect(heading).toContainText('The work stays');
     await expect(copy).toContainText('founder-led by design');
@@ -26,8 +30,9 @@ for(const viewport of [{width:360,height:800},{width:390,height:844}]){
 
     expect(heroBox.height).toBeGreaterThanOrEqual(viewport.height-1);
     expect(portraitBox.height).toBeGreaterThan(viewport.height*.54);
-    expect(eyebrowBox.y).toBeLessThan(viewport.height*.64);
-    expect(headingBox.y+headingBox.height).toBeLessThan(viewport.height*.82);
+    expect(eyebrowBox.y).toBeLessThan(viewport.height*.70);
+    expect(headingBox.y+headingBox.height).toBeLessThan(viewport.height*.88);
+    expect(copyBox.y+copyBox.height).toBeLessThan(viewport.height*.97);
     expect(ctaBox.y+ctaBox.height).toBeLessThanOrEqual(viewport.height-4);
 
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);

@@ -1,0 +1,25 @@
+/* BRAYROAI / Founder V24 completion pass.
+   A late, intentionally small layer for the mobile first fold: keep the portrait cinematic,
+   but make the founder identity, point of view and next step visible before the first scroll. */
+@media (max-width:600px){
+  body .founder-hero{min-height:100svh;height:max(46rem,100svh)}
+  body .founder-hero__portrait{inset:0 0 38%}
+  body .founder-hero__image{object-position:58% 24%;transform:scale(1.02);scale:1!important;translate:0 0!important}
+  body .founder-hero__shade{background:linear-gradient(180deg,rgba(5,6,8,.12) 0,rgba(5,6,8,.02) 28%,rgba(5,6,8,.28) 45%,rgba(5,6,8,.9) 61%,#050608 82%)}
+  body .founder-hero__word{top:13%;right:-4vw;font-size:34vw;color:rgba(255,255,255,.05)}
+  body .founder-hero__copy{top:45%;right:0;bottom:0;left:0;width:auto;display:flex;flex-direction:column;justify-content:flex-end;transform:none;padding:4rem 1rem calc(2.8rem + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,rgba(5,6,8,.66) 18%,rgba(5,6,8,.96) 52%,#050608 100%);text-shadow:0 3px 24px rgba(0,0,0,.55)}
+  body .founder-hero__copy .eyebrow{display:block!important;margin:0 0 .52rem;color:rgba(255,255,255,.7);font-size:.56rem;line-height:1.25;animation:none!important;opacity:1!important;transform:none!important}
+  body .founder-hero__copy h1{max-width:9.4ch;margin:0;font-size:clamp(2.35rem,10.7vw,3.3rem);line-height:.88;letter-spacing:-.072em}
+  body .founder-hero__copy h1 span{opacity:1!important;transform:none!important;animation:none!important;overflow:visible}
+  body .founder-hero__copy>p:last-of-type{display:block!important;max-width:31rem;margin:.72rem 0 0;color:rgba(255,255,255,.76);font-size:.75rem;line-height:1.46;animation:none!important;opacity:1!important;transform:none!important}
+  body .founder-hero__copy>a{display:inline-flex!important;align-self:flex-start;margin-top:.76rem;padding-bottom:.34rem;gap:1.15rem;font-size:.62rem;animation:none!important;opacity:1!important;transform:none!important}
+  body .founder-hero__reveal{display:none}
+  body .founder-hero__note{display:none}
+}
+@media (max-width:360px){
+  body .founder-hero__copy{top:44%;padding-right:.82rem;padding-left:.82rem;padding-bottom:calc(2.5rem + env(safe-area-inset-bottom))}
+  body .founder-hero__copy h1{font-size:clamp(2.18rem,10.4vw,2.85rem);max-width:9.6ch}
+  body .founder-hero__copy>p:last-of-type{font-size:.7rem;line-height:1.42}
+  body .founder-hero__copy>a{margin-top:.62rem}
+}
+@media (prefers-reduced-motion:reduce){body .founder-hero__copy h1 span{animation:none!important;opacity:1!important;transform:none!important}}

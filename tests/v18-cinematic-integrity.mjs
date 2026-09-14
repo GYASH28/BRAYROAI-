@@ -28,7 +28,7 @@ expect(css.includes('@media(prefers-reduced-motion:reduce)'),'Reduced-motion fal
 expect(!/transition\s*:\s*all/i.test(css),'Cinematic CSS must not use transition: all');
 expect(js.includes("matchMedia('(prefers-reduced-motion: reduce)')"),'Reduced-motion JS guard missing');
 expect(vite.includes("'cinematic-v18.css'")&&vite.includes('/cinematic-v18.js'),'Vite does not own the cinematic motion assets');
-expect(vite.includes("fileName: 'assets/brayro-home.css'"),'Cinematic CSS is not assigned to the production homepage bundle');
+expect(vite.includes("fileName:'assets/brayro-home.css'")||vite.includes("fileName: 'assets/brayro-home.css'"),'Cinematic CSS is not assigned to the production homepage bundle');
 expect(!vite.includes('data-v18-reel'),'Homepage build must not inject a V18 reel or extra section');
 expect(!vite.includes('cinematicReel'),'Homepage build still contains the removed cinematic reel template');
 expect(!css.includes('.v18-reel')&&!css.includes('.v18-shot'),'Removed reel CSS is still present');

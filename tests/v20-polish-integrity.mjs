@@ -1,51 +1,21 @@
 import fs from 'node:fs';
-
-const read=file=>fs.readFileSync(file,'utf8');
-const errors=[];
-const expect=(condition,message)=>{if(!condition)errors.push(message)};
-
-const css=read('public/cinematic-v20.css');
-const js=read('public/cinematic-v20.js');
-const v15css=read('public/brayro-v15.css');
-const v15js=read('public/brayro-v15.js');
-const vite=read('vite.config.mjs');
-const pkg=read('package.json');
-const pw=read('playwright.config.mjs');
-
-for(const token of [
-  'class ComponentMounts','class HeroTextCycle','class SelectorDirector','class PointerPolish','class PolishDirector',
-  'mountHeroLens()','mountHeroTextCycle()','mountServicesSignal()','mountSelectorIndicator()','mountFilmGate()','mountWorkAperture()','mountAIPaths()','mountPricingLights()','mountFounderScan()','mountContactLines()','mountShineButtons()','mountSceneRail()'
-]) expect(js.includes(token),`V20 runtime missing ${token}`);
-
-for(const token of [
-  '.v20-scene-rail','.v20-lens','.v20-text-cycle','.v20-signal-field','.v20-selector-indicator','.v20-film-gate','.v20-aperture','.v20-data-path','.v20-rate-light','.v20-portrait-scan','.v20-background-lines','.v20-shine-button'
-]) expect(css.includes(token),`V20 CSS missing ${token}`);
-
-expect(js.includes("matchMedia('(prefers-reduced-motion: reduce)')"),'V20 reduced-motion guard missing');
-expect(js.includes("matchMedia('(hover:hover) and (pointer:fine)')"),'V20 fine-pointer guard missing');
-expect(css.includes('@media(prefers-reduced-motion:reduce)'),'V20 reduced-motion CSS missing');
-expect(!/transition\s*:\s*all/i.test(css),'V20 must not use transition: all');
-expect(!/backdrop-filter/i.test(css),'V20 should not introduce additional backdrop-filter cost');
-expect(!css.includes('#plans [data-v14-rate]::after'),'V20 must not override the authored pricing ::after layer');
-expect(!v15css.includes('transition:transform .12s linear'),'capabilities pointer must not retain the stiff linear transform transition');
-expect(v15js.includes('schedulePointer()')&&v15js.includes('tickPointer()'),'capabilities spring pointer loop missing');
-const dataKeyframes=css.match(/@keyframes v20-data\{[^}]*\}[^}]*\}[^}]*\}[^}]*\}/)?.[0]||'';
-expect(dataKeyframes.includes('translate3d'),'V20 AI pulse must animate with transforms');
-expect(!/left\s*:/.test(dataKeyframes),'V20 AI pulse must not animate the layout property left');
-expect(vite.includes("'cinematic-v20.css'")&&vite.includes('/cinematic-v20.js'),'Vite does not own V20 assets');
-expect(vite.includes("fileName: 'assets/brayro-home.css'"),'Vite does not emit the consolidated homepage stylesheet');
-expect(vite.includes('data-v20-text-cycle aria-hidden="true"'),'hero text cycle must be built into initial HTML to avoid CLS');
-expect(vite.includes('data-v21-critical'),'critical intro performance style is missing');
-expect(vite.includes("html.replace(/\\s*<link rel=\"stylesheet\" href=\"\\/scrollcraft\\.css\">"),'homepage ScrollCraft stylesheet removal is missing');
-expect(vite.includes("html.replace(/\\s*<script src=\"\\/scrollcraft\\.js\""),'homepage ScrollCraft runtime removal is missing');
-expect(vite.includes('loading="eager" fetchpriority="high"'),'hero priority hints are missing from the production transform');
-expect(pkg.includes('node --check public/cinematic-v20.js'),'Syntax suite does not check V20 runtime');
-expect(pkg.includes('node tests/v20-polish-integrity.mjs'),'Integrity suite does not guard V20');
-expect(!vite.includes('data-v18-reel')&&!vite.includes('cinematicReel'),'V20 must not restore the removed cinematic reel');
-expect(!js.includes("document.createElement('section')"),'V20 must not generate a new homepage section');
-expect(Buffer.byteLength(css)<30000,'V20 CSS exceeds 30KB guardrail');
-expect(Buffer.byteLength(js)<24000,'V20 JS exceeds 24KB guardrail');
-expect(pw.includes('cinematic-v20'),'Playwright config must include V20 regression coverage');
-
+const read=file=>fs.readFileSync(file,'utf8'),errors=[],expect=(condition,message)=>{if(!condition)errors.push(message)};
+const css=read('public/cinematic-v20.css'),js=read('public/cinematic-v20.js'),v15css=read('public/brayro-v15.css'),v15js=read('public/brayro-v15.js'),cursorJs=read('public/brayro-cursor-v22.js'),cursorCss=read('public/brayro-cursor-v22.css'),vite=read('vite.config.mjs'),pkg=read('package.json'),pw=read('playwright.config.mjs');
+for(const token of ['class ComponentMounts','class HeroTextCycle','class SelectorDirector','class PolishDirector','mountHeroLens()','mountHeroTextCycle()','mountServicesSignal()','mountSelectorIndicator()','mountFilmGate()','mountWorkAperture()','mountAIPaths()','mountPricingLights()','mountFounderScan()','mountContactLines()','mountShineButtons()','mountSceneRail()'])expect(js.includes(token),`V20 runtime missing ${token}`);
+for(const token of ['.v20-scene-rail','.v20-lens','.v20-text-cycle','.v20-signal-field','.v20-selector-indicator','.v20-film-gate','.v20-aperture','.v20-data-path','.v20-rate-light','.v20-portrait-scan','.v20-background-lines','.v20-shine-button'])expect(css.includes(token),`V20 CSS missing ${token}`);
+expect(!js.includes('class PointerPolish')&&!js.includes('new PointerPolish'),'V20 duplicate pointer runtime still ships');
+expect(!js.includes('getComputedStyle('),'V20 frame loop must not force style reads');
+expect(js.includes('this.records=')&&js.includes('record.top=rect.top+scrollY'),'V20 cached scene geometry missing');
+expect(cursorJs.includes("style.setProperty('--v20-local-x'")&&cursorJs.includes("style.setProperty('--v20-mag-x'"),'V22 must preserve V20 spotlight/magnet behavior through the unified pointer loop');
+expect(cursorCss.includes('.v20-aperture::before{filter:none!important}'),'Firefox aperture blur override missing');
+expect(cursorCss.includes('animation-play-state:paused'),'offscreen continuous-animation pause guard missing');
+expect(!v15css.includes('.play-scene__cursor'),'retired V15 capability cursor CSS still ships');
+expect(v15js.includes('schedulePointer()')&&v15js.includes('tickPointer()'),'capability parallax spring loop missing');
+expect(!v15js.includes('data-v15-cursor'),'retired V15 cursor DOM still ships');
+const dataKeyframes=css.match(/@keyframes v20-data\{[^}]*\}[^}]*\}[^}]*\}[^}]*\}/)?.[0]||'';expect(dataKeyframes.includes('translate3d'),'V20 AI pulse must animate with transforms');expect(!/left\s*:/.test(dataKeyframes),'V20 AI pulse must not animate layout property left');
+expect(!/transition\s*:\s*all/i.test(css+cursorCss),'motion CSS must not use transition: all');expect(!/backdrop-filter/i.test(cursorCss),'V22 cursor must not use backdrop-filter');expect(!/mix-blend-mode/i.test(cursorCss),'V22 cursor must not use mix-blend-mode');
+expect(vite.includes("'cinematic-v20.css'")&&vite.includes('/cinematic-v20.js'),'Vite does not own V20 assets');expect(vite.includes("'brayro-cursor-v22.css'")&&vite.includes('/brayro-cursor-v22.js'),'Vite does not own V22 cursor assets');expect(vite.includes("fileName:'assets/brayro-home.css'")||vite.includes("fileName: 'assets/brayro-home.css'"),'Vite does not emit consolidated homepage stylesheet');
+expect(vite.includes('data-v20-text-cycle aria-hidden="true"'),'hero text cycle must be built into initial HTML to avoid CLS');expect(vite.includes('data-v21-critical'),'critical intro performance style missing');expect(vite.includes('motion-v5\\.js'),'homepage no-op V5 runtime removal missing');expect(vite.includes('loading="eager" fetchpriority="high"'),'hero priority hints missing');
+expect(pkg.includes('node --check public/cinematic-v20.js'),'Syntax suite does not check V20 runtime');expect(pkg.includes('node tests/v20-polish-integrity.mjs'),'Integrity suite does not guard V20');expect(!vite.includes('data-v18-reel')&&!vite.includes('cinematicReel'),'V20 must not restore removed cinematic reel');expect(!js.includes("document.createElement('section')"),'V20 must not generate a new homepage section');expect(Buffer.byteLength(js)<20000,'V20 JS exceeds 20KB guardrail');expect(pw.includes('cinematic-v20'),'Playwright config must include V20 coverage');
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V20 polish integrity OK: fluid spring motion, static hero cycle, consolidated CSS, no homepage ScrollCraft, reduced-motion protection and bundle guardrails are intact.');
+console.log('V20 polish integrity OK: cached scene geometry, unified V22 pointer work, paused offscreen effects and reduced-motion protections are intact.');

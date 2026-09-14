@@ -1,0 +1,128 @@
+/* REAL RAE V3 — production 2.5D character skin based on Concept 1.
+   This file is lazy-loaded only when the full Rae app wakes. The character uses
+   layered SVG + compositor-friendly transforms; there is no canvas/WebGL loop. */
+.rae-root [hidden]{display:none!important}
+.rae-character[data-rae-rig="v3"]{overflow:visible;filter:none;transform-origin:50% 82%;isolation:isolate}
+.rae-character[data-rae-rig="v3"] *{vector-effect:non-scaling-stroke}
+.rae-character[data-rae-rig="v3"] .rae-character__shadow{fill:rgba(0,0,0,.2);transform-origin:50% 50%;transition:opacity .32s ease,transform .42s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"] .rae-character__head,.rae-character[data-rae-rig="v3"] .rae-character__torso,.rae-character[data-rae-rig="v3"] .rae-character__pelvis-shell,.rae-character[data-rae-rig="v3"] .rae-character__calf,.rae-character[data-rae-rig="v3"] .rae-character__foot,.rae-character[data-rae-rig="v3"] .rae-character__shoulder-shell,.rae-character[data-rae-rig="v3"] .rae-character__upper-arm,.rae-character[data-rae-rig="v3"] .rae-character__forearm{stroke:rgba(8,9,11,.2);stroke-width:1.15}
+.rae-character[data-rae-rig="v3"] .rae-character__joint,.rae-character[data-rae-rig="v3"] .rae-character__hip,.rae-character[data-rae-rig="v3"] .rae-character__elbow,.rae-character[data-rae-rig="v3"] .rae-character__shoulder-joint{stroke:rgba(255,255,255,.06);stroke-width:1}
+.rae-character[data-rae-rig="v3"] .rae-character__head-wrap{transform-box:fill-box;transform-origin:50% 62%;transform:translateX(var(--rae-head-x)) rotate(var(--rae-head-r));transition:transform .3s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"] .rae-character__body{transform-box:fill-box;transform-origin:50% 82%;animation:raeV3Breathe var(--rae-breath-duration) ease-in-out infinite}
+.rae-character[data-rae-rig="v3"] .rae-character__leg,.rae-character[data-rae-rig="v3"] .rae-character__arm,.rae-character[data-rae-rig="v3"] .rae-character__hand{transform-box:fill-box;transition:transform .42s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"] .rae-character__leg{transform-origin:50% 5%}.rae-character[data-rae-rig="v3"] .rae-character__arm--l{transform-origin:72% 18%}.rae-character[data-rae-rig="v3"] .rae-character__arm--r{transform-origin:28% 18%}.rae-character[data-rae-rig="v3"] .rae-character__hand{transform-origin:50% 50%}
+.rae-character[data-rae-rig="v3"] .rae-character__visor{stroke:#08090b;stroke-width:2}.rae-character[data-rae-rig="v3"] .rae-character__visor-wrap{transform-box:fill-box;transform-origin:center;transition:transform .36s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"] .rae-character__ear{transform-box:fill-box;transform-origin:50% 72%;transition:transform .3s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"] .rae-character__ear-ring-light,.rae-character[data-rae-rig="v3"] .rae-character__chest-light,.rae-character[data-rae-rig="v3"] .rae-character__leg-light,.rae-character[data-rae-rig="v3"] .rae-character__foot-light{transition:opacity .25s ease,transform .28s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"] .rae-character__brow,.rae-character[data-rae-rig="v3"] .rae-character__mouth,.rae-character[data-rae-rig="v3"] .rae-character__lid{fill:none;stroke:#ff7a25;stroke-width:3.2;stroke-linecap:round;transition:transform .22s var(--rae-ease),opacity .2s ease}
+.rae-character[data-rae-rig="v3"] .rae-character__eye{transform-box:fill-box;transform-origin:center;transition:transform .24s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"] .rae-character__eye-white{fill:#ff812a;stroke:#ffc06e;stroke-width:.8;transform-box:fill-box;transform-origin:center;transition:transform .18s var(--rae-ease),opacity .18s ease}
+.rae-character[data-rae-rig="v3"] .rae-character__pupil{fill:#1b0b03;transform-box:fill-box;transform-origin:center;transform:translate(var(--rae-gaze-x),var(--rae-gaze-y));transition:transform .08s linear,opacity .18s ease}
+.rae-character[data-rae-rig="v3"] .rae-character__cheek{fill:#ff5a1f;opacity:0;transition:opacity .2s ease,transform .24s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"] .rae-character__mouth{transform-box:fill-box;transform-origin:center;transform:translateY(calc(var(--rae-speech) * 2px)) scaleY(calc(1 + var(--rae-speech) * .55));transition:transform .11s ease,stroke-width .18s ease}
+.rae-character[data-rae-rig="v3"] .rae-character__lid{opacity:0}
+.rae-character[data-rae-rig="v3"] .rae-character__spark path{fill:none;stroke:#ff6a20;stroke-width:4;stroke-linecap:round}
+
+/* Variant framing: launcher/header show the expressive head + upper torso; stage shows the full robot. */
+.rae-character--launcher[data-rae-rig="v3"]{width:3.15rem;height:3.15rem}.rae-character--header[data-rae-rig="v3"]{width:3.5rem;height:3.5rem}.rae-character--stage[data-rae-rig="v3"]{width:10.5rem;height:10.5rem}
+.rae-stage{grid-template-columns:10.6rem 1fr;min-height:10rem}.rae-stage__actor{height:9.9rem;overflow:visible}.rae-stage__copy{padding-left:.15rem}
+
+/* Eyes and body feel alive even before a message starts. */
+.rae-character[data-rae-rig="v3"][data-state="boot"]{animation:raeV3Boot .6s var(--rae-ease) both}
+.rae-character[data-rae-rig="v3"][data-state="idle"] .rae-character__ear-ring-light{opacity:.86}
+.rae-character[data-rae-rig="v3"][data-state="attention"] .rae-character__head-wrap,.rae-character[data-rae-rig="v3"][data-state="curious"] .rae-character__head-wrap{transform:translate(calc(var(--rae-head-x) + 3px),-2px) rotate(calc(var(--rae-head-r) + 7deg))}
+.rae-character[data-rae-rig="v3"][data-state="attention"] .rae-character__ear--r,.rae-character[data-rae-rig="v3"][data-state="curious"] .rae-character__ear--r{transform:rotate(4deg) translateY(-2px)}
+.rae-character[data-rae-rig="v3"][data-state="attention"] .rae-character__spark,.rae-character[data-rae-rig="v3"][data-state="curious"] .rae-character__spark{animation:raeV3SparkNotice .75s var(--rae-ease)}
+
+/* Opening = proper friendly wave, not a generic scale animation. */
+.rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__arm--r{transform:translate(-10px,-20px) rotate(-34deg)}
+.rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__hand--r{animation:raeV3Wave .58s var(--rae-ease) 2}
+.rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__mouth{transform:translateY(1px) scaleX(1.15)}
+.rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__cheek{opacity:.48}
+
+/* Listening leans toward the visitor. */
+.rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__body{transform:translateY(-2px) scale(1.012)}
+.rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__head-wrap{transform:translateX(var(--rae-head-x)) translateY(3px) rotate(var(--rae-head-r)) scale(1.015)}
+.rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__ear-ring-light{animation:raeV3ListenPulse 1.15s ease-in-out infinite}
+.rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__eye-white{transform:scale(1.06)}
+
+/* Thinking: eyes up, head angle, right hand toward chin, slower orange pulse. */
+.rae-character[data-rae-rig="v3"][data-state="thinking"] .rae-character__head-wrap{animation:raeV3ThinkHead 1.8s ease-in-out infinite}
+.rae-character[data-rae-rig="v3"][data-state="thinking"] .rae-character__pupil{transform:translate(3px,-5px)}
+.rae-character[data-rae-rig="v3"][data-state="thinking"] .rae-character__arm--r{transform:translate(-19px,-24px) rotate(-48deg)}
+.rae-character[data-rae-rig="v3"][data-state="thinking"] .rae-character__hand--r{transform:rotate(-22deg) translate(-2px,-2px)}
+.rae-character[data-rae-rig="v3"][data-state="thinking"] .rae-character__chest-light,.rae-character[data-rae-rig="v3"][data-state="thinking"] .rae-character__ear-ring-light{animation:raeV3ThinkPulse 1.35s ease-in-out infinite}
+.rae-character[data-rae-rig="v3"][data-state="thinking"] .rae-character__mouth{transform:scaleX(.55) translateY(-1px)}
+
+/* Speaking: stream energy drives the mouth; hands make restrained gestures. */
+.rae-character[data-rae-rig="v3"][data-state="speaking"] .rae-character__arm--r{animation:raeV3SpeakingArm 2.1s ease-in-out infinite}
+.rae-character[data-rae-rig="v3"][data-state="speaking"] .rae-character__hand--r{animation:raeV3SpeakingHand 1.35s ease-in-out infinite}
+.rae-character[data-rae-rig="v3"][data-state="speaking"] .rae-character__cheek{opacity:.32}
+.rae-character[data-rae-rig="v3"][data-state="speaking"] .rae-character__ear-ring-light{opacity:1}
+
+/* Positive / happy. */
+.rae-character[data-rae-rig="v3"][data-state="positive"] .rae-character__head-wrap{transform:translateX(var(--rae-head-x)) rotate(calc(var(--rae-head-r) - 4deg)) translateY(-2px)}
+.rae-character[data-rae-rig="v3"][data-state="positive"] .rae-character__eye-white{transform:scaleY(.68) scaleX(1.08)}
+.rae-character[data-rae-rig="v3"][data-state="positive"] .rae-character__pupil{transform:translate(var(--rae-gaze-x),var(--rae-gaze-y)) scaleY(.72)}
+.rae-character[data-rae-rig="v3"][data-state="positive"] .rae-character__cheek,.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__cheek{opacity:.72;transform:scale(1.12)}
+.rae-character[data-rae-rig="v3"][data-state="positive"] .rae-character__mouth{transform:translateY(2px) scaleX(1.28) scaleY(1.12)}
+
+/* Confused and error are visibly different — curious vs genuinely concerned. */
+.rae-character[data-rae-rig="v3"][data-state="confused"] .rae-character__head-wrap{transform:translateX(var(--rae-head-x)) rotate(calc(var(--rae-head-r) - 9deg))}
+.rae-character[data-rae-rig="v3"][data-state="confused"] .rae-character__brow--l{transform:rotate(14deg) translateY(3px)}
+.rae-character[data-rae-rig="v3"][data-state="confused"] .rae-character__brow--r{transform:rotate(-14deg) translateY(-2px)}
+.rae-character[data-rae-rig="v3"][data-state="confused"] .rae-character__eye--r{transform:scale(.88)}
+.rae-character[data-rae-rig="v3"][data-state="error"]{animation:raeV3Concern .55s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"][data-state="error"] .rae-character__head-wrap,.rae-character[data-rae-rig="v3"][data-state="offline"] .rae-character__head-wrap{transform:translateY(4px) rotate(-3deg)}
+.rae-character[data-rae-rig="v3"][data-state="error"] .rae-character__eye-white,.rae-character[data-rae-rig="v3"][data-state="offline"] .rae-character__eye-white{transform:scaleY(.78)}
+.rae-character[data-rae-rig="v3"][data-state="error"] .rae-character__brow--l,.rae-character[data-rae-rig="v3"][data-state="offline"] .rae-character__brow--l{transform:rotate(-10deg)}
+.rae-character[data-rae-rig="v3"][data-state="error"] .rae-character__brow--r,.rae-character[data-rae-rig="v3"][data-state="offline"] .rae-character__brow--r{transform:rotate(10deg)}
+.rae-character[data-rae-rig="v3"][data-state="error"] .rae-character__mouth,.rae-character[data-rae-rig="v3"][data-state="offline"] .rae-character__mouth{transform:rotate(180deg) scaleX(.72)}
+.rae-character[data-rae-rig="v3"][data-state="offline"] .rae-character__ear-ring-light,.rae-character[data-rae-rig="v3"][data-state="offline"] .rae-character__leg-light,.rae-character[data-rae-rig="v3"][data-state="offline"] .rae-character__foot-light{opacity:.3}
+
+/* Celebrate = full-body bounce and both arms up. */
+.rae-character[data-rae-rig="v3"][data-state="celebrate"]{animation:raeV3Celebrate .82s var(--rae-ease)}
+.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__arm--l{transform:translate(12px,-28px) rotate(35deg)}
+.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__arm--r{transform:translate(-12px,-28px) rotate(-35deg)}
+.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__eye-white{transform:scaleY(.58) scaleX(1.12)}
+.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__mouth{transform:translateY(3px) scale(1.35)}
+.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__ear-ring-light,.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__chest-light{animation:raeV3CelebrateLight .4s ease-in-out 2}
+
+/* Sleep = powered-down posture rather than simply hiding the face. */
+.rae-character[data-rae-rig="v3"][data-state="sleep"] .rae-character__body{animation:none;transform:translateY(3px)}
+.rae-character[data-rae-rig="v3"][data-state="sleep"] .rae-character__head-wrap{transform:translateY(8px) rotate(-7deg)}
+.rae-character[data-rae-rig="v3"][data-state="sleep"] .rae-character__eye-white,.rae-character[data-rae-rig="v3"][data-state="sleep"] .rae-character__pupil{transform:scaleY(.1);transform-origin:center}
+.rae-character[data-rae-rig="v3"][data-state="sleep"] .rae-character__ear-ring-light,.rae-character[data-rae-rig="v3"][data-state="sleep"] .rae-character__chest-light,.rae-character[data-rae-rig="v3"][data-state="sleep"] .rae-character__leg-light,.rae-character[data-rae-rig="v3"][data-state="sleep"] .rae-character__foot-light{opacity:.16}
+
+/* Existing director blink hooks now affect the luminous display eyes. */
+.rae-root.rae-is-blinking .rae-character[data-rae-rig="v3"] .rae-character__eye-white,.rae-root.rae-is-blinking .rae-character[data-rae-rig="v3"] .rae-character__pupil{animation:raeV3Blink .2s ease}
+.rae-root.rae-is-double-blinking .rae-character[data-rae-rig="v3"] .rae-character__eye-white,.rae-root.rae-is-double-blinking .rae-character[data-rae-rig="v3"] .rae-character__pupil{animation:raeV3DoubleBlink .42s ease}
+
+/* Weighted idle variants from RaeDirector. */
+.rae-root[data-rae-idle="glance-left"] .rae-character[data-rae-rig="v3"]{--rae-gaze-x:-4px;--rae-head-r:-1deg}.rae-root[data-rae-idle="glance-right"] .rae-character[data-rae-rig="v3"]{--rae-gaze-x:4px;--rae-head-r:1deg}
+.rae-root[data-rae-idle="tiny-lean"] .rae-character[data-rae-rig="v3"]{transform:translateY(-2px) rotate(1.4deg)}
+.rae-root[data-rae-idle="curiosity"] .rae-character[data-rae-rig="v3"] .rae-character__head-wrap{transform:translateY(-3px) rotate(6deg)}
+.rae-root[data-rae-idle="settle"] .rae-character[data-rae-rig="v3"] .rae-character__shadow{transform:scaleX(.9);opacity:.14}
+
+@keyframes raeV3Boot{0%{opacity:0;transform:translateY(12px) scale(.84) rotate(-4deg)}70%{opacity:1;transform:translateY(-2px) scale(1.025) rotate(1deg)}100%{opacity:1;transform:none}}
+@keyframes raeV3Breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.006)}}
+@keyframes raeV3Blink{50%{transform:scaleY(.08)}}@keyframes raeV3DoubleBlink{20%,70%{transform:scaleY(.08)}0%,40%,100%{transform:scaleY(1)}}
+@keyframes raeV3SparkNotice{45%{transform:scale(1.28) rotate(12deg)}}
+@keyframes raeV3Wave{0%,100%{transform:rotate(0)}35%{transform:rotate(-28deg)}70%{transform:rotate(18deg)}}
+@keyframes raeV3ListenPulse{0%,100%{opacity:.72}50%{opacity:1;transform:scale(1.08)}}
+@keyframes raeV3ThinkHead{0%,100%{transform:translate(-2px,0) rotate(-5deg)}50%{transform:translate(2px,-3px) rotate(4deg)}}
+@keyframes raeV3ThinkPulse{0%,100%{opacity:.46}50%{opacity:1}}
+@keyframes raeV3SpeakingArm{0%,100%{transform:rotate(0) translateY(0)}50%{transform:rotate(-7deg) translate(-3px,-3px)}}
+@keyframes raeV3SpeakingHand{0%,100%{transform:rotate(0)}50%{transform:rotate(-10deg)}}
+@keyframes raeV3Concern{0%,100%{transform:none}45%{transform:translateX(-2px) rotate(-1.2deg)}}
+@keyframes raeV3Celebrate{0%,100%{transform:none}42%{transform:translateY(-8px) scale(1.035) rotate(1.5deg)}68%{transform:translateY(-2px) scale(.995)}}
+@keyframes raeV3CelebrateLight{0%,100%{opacity:.5}50%{opacity:1;transform:scale(1.12)}}
+
+@media(max-height:760px) and (min-width:701px){.rae-character--stage[data-rae-rig="v3"]{width:7.2rem;height:7.2rem}.rae-stage{grid-template-columns:7.3rem 1fr;min-height:6.2rem}.rae-stage__actor{height:6.2rem}}
+@media(max-width:700px){.rae-character--stage[data-rae-rig="v3"]{width:8rem;height:8rem}.rae-stage{grid-template-columns:8.1rem 1fr;min-height:7.4rem}.rae-stage__actor{height:7.4rem}}
+@media(max-width:360px){.rae-character--stage[data-rae-rig="v3"]{width:6.6rem;height:6.6rem}.rae-stage{grid-template-columns:6.7rem 1fr}.rae-stage__actor{height:6.4rem}}
+
+@media(prefers-reduced-motion:reduce){
+  .rae-character[data-rae-rig="v3"],.rae-character[data-rae-rig="v3"] *{animation:none!important;transition:none!important}
+  .rae-character[data-rae-rig="v3"] .rae-character__body,.rae-character[data-rae-rig="v3"] .rae-character__head-wrap,.rae-character[data-rae-rig="v3"] .rae-character__arm,.rae-character[data-rae-rig="v3"] .rae-character__hand,.rae-character[data-rae-rig="v3"] .rae-character__leg{transform:none!important}
+}

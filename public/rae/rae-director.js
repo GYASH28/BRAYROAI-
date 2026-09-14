@@ -6,15 +6,15 @@ export const RAE_STATES=Object.freeze(['boot','idle','attention','opening','list
 
 export class RaeDirector{
   constructor(root,{reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches}={}){
-    mountEmotionSkin();this.root=root;this.reduced=reducedMotion;this.characters=[...root.querySelectorAll('[data-rae-character]')];this.state='boot';this.visible=true;this.sleeping=false;this.pointerFrame=0;this.idleTimer=0;this.blinkTimer=0;this.speechTimer=0;this.emotionTimer=0;this.lastIdle='';this.lastInteraction=Date.now();this.listeners=[];
-    this.onVisibility=()=>document.hidden?this.sleep():this.wake();document.addEventListener('visibilitychange',this.onVisibility);this.bindEvents();this.setState('boot');setTimeout(()=>this.setState('idle'),this.reduced?0:520);this.scheduleBlink();this.scheduleIdle();
+    mountEmotionSkin();this.root=root;this.reduced=reducedMotion;this.characters=[...root.querySelectorAll('[data-rae-character]')];this.state='boot';this.visible=true;this.sleeping=false;this.pointerFrame=0;this.idleTimer=0;this.blinkTimer=0;this.speechTimer=0;this.emotionTimer=0;this.bootTimer=0;this.lastIdle='';this.lastInteraction=Date.now();this.listeners=[];
+    this.onVisibility=()=>document.hidden?this.sleep():this.wake();document.addEventListener('visibilitychange',this.onVisibility);this.bindEvents();this.setState('boot');this.bootTimer=setTimeout(()=>{this.bootTimer=0;if(this.state==='boot')this.setState('idle')},this.reduced?0:520);this.scheduleBlink();this.scheduleIdle();
   }
   bindEvents(){
     const map={'rae:opened':()=>this.setState('opening'),'rae:closed':()=>this.setState('idle'),'rae:user-focus':()=>this.setState('attention'),'rae:user-submit':()=>this.setState('listening'),'rae:request-start':()=>this.setState('thinking'),'rae:first-token':()=>this.setState('speaking'),'rae:stream-chunk':event=>this.pulseSpeech(event.detail?.text||''),'rae:stream-complete':event=>this.setEmotion(event.detail?.emotion||'positive'),'rae:stream-abort':()=>this.setState('idle'),'rae:tool-start':()=>this.setState('curious'),'rae:tool-success':()=>this.setState('proud'),'rae:tool-error':()=>this.setState('confused'),'rae:network-error':()=>this.setState('error'),'rae:offline':()=>this.setState('offline'),'rae:character-react':event=>this.setEmotion(event.detail?.emotion||'playful'),'rae:sleep':()=>this.sleep(),'rae:wake':()=>this.wake()};
     for(const [name,handler] of Object.entries(map)){document.addEventListener(name,handler);this.listeners.push([name,handler])}
   }
   setState(next){
-    if(!RAE_STATES.includes(next))next='idle';clearTimeout(this.emotionTimer);this.state=next;this.lastInteraction=Date.now();this.sleeping=next==='sleep';this.root.dataset.raeState=next;
+    if(!RAE_STATES.includes(next))next='idle';if(next!=='boot'&&this.bootTimer){clearTimeout(this.bootTimer);this.bootTimer=0}clearTimeout(this.emotionTimer);this.state=next;this.lastInteraction=Date.now();this.sleeping=next==='sleep';this.root.dataset.raeState=next;
     if(next==='idle'&&!this.reduced)this.root.style.setProperty('--rae-breath-duration',`${(3.7+Math.random()*1.7).toFixed(2)}s`);
     for(const node of this.characters)node.dataset.state=next;if(next!=='speaking')this.setSpeakingLevel(0);
     if(this.reduced)return;
@@ -42,7 +42,7 @@ export class RaeDirector{
   sleep(){if(this.state==='speaking'||this.state==='thinking')return;this.setState('sleep');this.resetAttention()}
   wake(){if(!this.sleeping)return;this.sleeping=false;this.setState('idle');this.scheduleBlink();this.scheduleIdle()}
   setVisible(value){this.visible=Boolean(value);this.root.toggleAttribute('data-rae-hidden',!this.visible)}
-  dispose(){clearTimeout(this.idleTimer);clearTimeout(this.blinkTimer);clearTimeout(this.speechTimer);clearTimeout(this.emotionTimer);if(this.pointerFrame)cancelAnimationFrame(this.pointerFrame);document.removeEventListener('visibilitychange',this.onVisibility);for(const [name,handler] of this.listeners)document.removeEventListener(name,handler);this.listeners=[]}
+  dispose(){clearTimeout(this.bootTimer);clearTimeout(this.idleTimer);clearTimeout(this.blinkTimer);clearTimeout(this.speechTimer);clearTimeout(this.emotionTimer);if(this.pointerFrame)cancelAnimationFrame(this.pointerFrame);document.removeEventListener('visibilitychange',this.onVisibility);for(const [name,handler] of this.listeners)document.removeEventListener(name,handler);this.listeners=[]}
 }
 
 export const emitRae=(name,detail={})=>document.dispatchEvent(new CustomEvent(name,{detail}));

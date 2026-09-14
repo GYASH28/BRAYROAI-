@@ -2,16 +2,17 @@ import {RAE_KNOWLEDGE,RAE_ALLOWED_ACTIONS} from './_rae-knowledge.js';
 
 const windows=new Map();
 const WINDOW_MS=60_000;
-const DEFAULT_MAX=10;
+const DEFAULT_MAX=18;
 const MAX_MESSAGE=1200;
 const MAX_HISTORY=8;
-const PROVIDER_TIMEOUT=14_000;
-const PROMPT_VERSION='rae-real-v2';
+const PROVIDER_TIMEOUT=8_500;
+const MAX_PROVIDER_ATTEMPTS=3;
+const PROMPT_VERSION='rae-real-v3';
 
 const clean=value=>String(value??'').replace(/\u0000/g,'').trim();
 const clientId=req=>String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
 const isLimited=req=>{
-  const max=Math.max(2,Math.min(30,Number(process.env.RAE_MAX_PER_WINDOW||DEFAULT_MAX)||DEFAULT_MAX));
+  const max=Math.max(4,Math.min(60,Number(process.env.RAE_MAX_PER_WINDOW||DEFAULT_MAX)||DEFAULT_MAX));
   const key=clientId(req),now=Date.now(),item=windows.get(key);
   if(!item||now-item.start>WINDOW_MS){windows.set(key,{start:now,count:1});return false}
   item.count+=1;
@@ -83,13 +84,23 @@ function systemPrompt(context,session){
   return `${BEHAVIOR}\n\nPROMPT VERSION: ${PROMPT_VERSION}\n\nVERIFIED BRAYROAI KNOWLEDGE (source of truth):\n${JSON.stringify(RAE_KNOWLEDGE)}\n\nALLOWLISTED SITE ACTION CAPABILITIES (application-owned; do not claim execution):\n${JSON.stringify(RAE_ALLOWED_ACTIONS)}\n\nCURRENT SAFE PAGE CONTEXT:\n${JSON.stringify(context)}\n\nKNOWN SESSION CONTEXT (visitor-provided, may be incomplete):\n${JSON.stringify(session)}`;
 }
 
-function providerConfig(){
-  let provider=clean(process.env.RAE_PROVIDER).toLowerCase();
-  if(!provider){if(process.env.GEMINI_API_KEY)provider='gemini';else if(process.env.OPENAI_API_KEY)provider='openai';else if(process.env.GROQ_API_KEY)provider='groq'}
-  if(provider==='gemini')return{provider,key:process.env.GEMINI_API_KEY,model:clean(process.env.RAE_MODEL||process.env.GEMINI_MODEL||'gemini-3.8-flash')};
-  if(provider==='openai')return{provider,key:process.env.OPENAI_API_KEY,model:clean(process.env.RAE_MODEL||process.env.OPENAI_MODEL),base:clean(process.env.RAE_OPENAI_BASE_URL||'https://api.openai.com/v1').replace(/\/$/,'')};
-  if(provider==='groq')return{provider,key:process.env.GROQ_API_KEY,model:clean(process.env.RAE_MODEL||process.env.GROQ_MODEL),base:clean(process.env.RAE_GROQ_BASE_URL||'https://api.groq.com/openai/v1').replace(/\/$/,'')};
-  return{provider:'',key:'',model:''};
+function providerCandidates(){
+  const preferred=clean(process.env.RAE_PROVIDER).toLowerCase();
+  const genericModel=clean(process.env.RAE_MODEL);
+  const base={
+    gemini:{provider:'gemini',key:clean(process.env.GEMINI_API_KEY),base:'',models:[preferred==='gemini'?genericModel:'',clean(process.env.GEMINI_MODEL),'gemini-3.8-flash']},
+    groq:{provider:'groq',key:clean(process.env.GROQ_API_KEY),base:clean(process.env.RAE_GROQ_BASE_URL||'https://api.groq.com/openai/v1').replace(/\/$/,''),models:[preferred==='groq'?genericModel:'',clean(process.env.GROQ_MODEL),'openai/gpt-oss-20b']},
+    openai:{provider:'openai',key:clean(process.env.OPENAI_API_KEY),base:clean(process.env.RAE_OPENAI_BASE_URL||'https://api.openai.com/v1').replace(/\/$/,''),models:[preferred==='openai'?genericModel:'',clean(process.env.OPENAI_MODEL)]}
+  };
+  const order=[preferred,'groq','gemini','openai'].filter(Boolean),seen=new Set(),configs=[];
+  for(const name of [...new Set(order)]){
+    const entry=base[name];if(!entry?.key)continue;
+    for(const model of [...new Set(entry.models.filter(Boolean))]){
+      const key=`${name}:${model}`;if(seen.has(key))continue;seen.add(key);configs.push({provider:name,key:entry.key,model,base:entry.base});
+      if(configs.length>=MAX_PROVIDER_ATTEMPTS)return configs;
+    }
+  }
+  return configs;
 }
 
 const planCard=plan=>plan?{type:'plan',eyebrow:'CURRENT VERIFIED PLAN',title:plan.name,copy:plan.summary||plan.kind||'',price:plan.price,action:{name:plan.id==='ai-workflow-audit'?'navigateToRoute':plan.id==='company-second-brain'?'navigateToRoute':'showPlan',args:plan.id==='ai-workflow-audit'?{route:'/ai-workflow-audit'}:plan.id==='company-second-brain'?{route:'/company-second-brain'}:{planId:plan.id},label:'View this option'}}:null;
@@ -137,13 +148,24 @@ function buildMeta(message,context,session){
   return{quickReplies:[...new Set(quick)].slice(0,4),actions:actions.slice(0,3),card,emotion};
 }
 
-async function pumpOpenAI(upstream,res){
-  const reader=upstream.body.getReader(),decoder=new TextDecoder();let buffer='';
-  while(true){const {value,done}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const lines=buffer.split('\n');buffer=lines.pop()||'';for(const line of lines){const trimmed=line.trim();if(!trimmed.startsWith('data:'))continue;const raw=trimmed.slice(5).trim();if(!raw||raw==='[DONE]')continue;let data;try{data=JSON.parse(raw)}catch{continue}const text=data?.choices?.[0]?.delta?.content;if(text)sse(res,'delta',{text})}}
+function emitFirstToken(res,tracker){if(tracker.started)return;tracker.started=true;sse(res,'state',{state:'speaking'});}
+function parseOpenAILine(line,res,tracker){
+  const trimmed=line.trim();if(!trimmed.startsWith('data:'))return;const raw=trimmed.slice(5).trim();if(!raw||raw==='[DONE]')return;
+  let data;try{data=JSON.parse(raw)}catch{return}const text=data?.choices?.[0]?.delta?.content;if(!text)return;emitFirstToken(res,tracker);tracker.count+=1;sse(res,'delta',{text});
 }
-async function pumpGemini(upstream,res){
+function parseGeminiLine(line,res,tracker){
+  const trimmed=line.trim();if(!trimmed.startsWith('data:'))return;const raw=trimmed.slice(5).trim();if(!raw)return;
+  let data;try{data=JSON.parse(raw)}catch{return}const text=(data?.candidates?.[0]?.content?.parts||[]).map(part=>part?.text||'').join('');if(!text)return;emitFirstToken(res,tracker);tracker.count+=1;sse(res,'delta',{text});
+}
+async function pumpOpenAI(upstream,res,tracker){
   const reader=upstream.body.getReader(),decoder=new TextDecoder();let buffer='';
-  while(true){const {value,done}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const lines=buffer.split('\n');buffer=lines.pop()||'';for(const line of lines){const trimmed=line.trim();if(!trimmed.startsWith('data:'))continue;const raw=trimmed.slice(5).trim();if(!raw)continue;let data;try{data=JSON.parse(raw)}catch{continue}const text=(data?.candidates?.[0]?.content?.parts||[]).map(part=>part?.text||'').join('');if(text)sse(res,'delta',{text})}}
+  while(true){const {value,done}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const lines=buffer.split('\n');buffer=lines.pop()||'';for(const line of lines)parseOpenAILine(line,res,tracker)}
+  if(buffer.trim())for(const line of buffer.split('\n'))parseOpenAILine(line,res,tracker);return tracker.count;
+}
+async function pumpGemini(upstream,res,tracker){
+  const reader=upstream.body.getReader(),decoder=new TextDecoder();let buffer='';
+  while(true){const {value,done}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const lines=buffer.split('\n');buffer=lines.pop()||'';for(const line of lines)parseGeminiLine(line,res,tracker)}
+  if(buffer.trim())for(const line of buffer.split('\n'))parseGeminiLine(line,res,tracker);return tracker.count;
 }
 
 async function openProviderStream(config,{message,history,context,session,signal}){
@@ -161,20 +183,34 @@ export default async function handler(req,res){
   if(isLimited(req))return sendJson(res,429,{error:'Rae has hit the public rate limit for this minute.',code:'rate_limited'});
   const body=parseBody(req);if(!body)return sendJson(res,400,{error:'Invalid JSON request.',code:'invalid_request'});
   const message=clean(body.message).slice(0,MAX_MESSAGE);if(!message)return sendJson(res,400,{error:'Message required.',code:'message_required'});
-  const history=safeHistory(body.history),context=safeContext(body.context),session=safeSession(body.session),config=providerConfig();
+  const history=safeHistory(body.history),context=safeContext(body.context),session=safeSession(body.session),candidates=providerCandidates();
   if(history.at(-1)?.role==='user'&&history.at(-1)?.text===message)history.pop();
-  if(!config.provider||!config.key)return sendJson(res,503,{error:'Rae AI is not configured on this deployment.',code:'provider_not_configured'});
-  if(!config.model)return sendJson(res,503,{error:'Rae AI model is not configured.',code:'model_not_configured'});
+  if(!candidates.length)return sendJson(res,503,{error:'Rae AI is not configured on this deployment.',code:'provider_not_configured'});
 
-  res.statusCode=200;res.setHeader('Content-Type','text/event-stream; charset=utf-8');res.setHeader('Cache-Control','no-store, no-cache, max-age=0, must-revalidate');res.setHeader('Connection','keep-alive');res.setHeader('X-Accel-Buffering','no');res.flushHeaders?.();sse(res,'state',{state:'thinking'});
+  res.statusCode=200;res.setHeader('Content-Type','text/event-stream; charset=utf-8');res.setHeader('Cache-Control','no-store, no-cache, max-age=0, must-revalidate');res.setHeader('Connection','keep-alive');res.setHeader('X-Accel-Buffering','no');res.flushHeaders?.();sse(res,'state',{state:'thinking',attempt:1});
 
-  const controller=new AbortController(),timer=setTimeout(()=>controller.abort('timeout'),PROVIDER_TIMEOUT),close=()=>controller.abort('client_closed');res.on?.('close',close);
+  let currentController=null,clientClosed=false,lastCode='provider_unavailable';
+  const close=()=>{clientClosed=true;if(currentController&&!currentController.signal.aborted)currentController.abort('client_closed')};res.on?.('close',close);
   try{
-    const upstream=await openProviderStream(config,{message,history,context,session,signal:controller.signal});
-    if(!upstream.ok||!upstream.body){const detail=await upstream.text().catch(()=> '');console.error('Rae provider error',config.provider,upstream.status,detail.slice(0,300));sse(res,'error',{code:'provider_unavailable',message:'Rae’s AI connection is unavailable right now.'});return res.end()}
-    sse(res,'state',{state:'speaking'});if(config.provider==='gemini')await pumpGemini(upstream,res);else await pumpOpenAI(upstream,res);
-    const meta=buildMeta(message,context,session);sse(res,'meta',meta);sse(res,'done',{finishReason:'stop',emotion:meta.emotion,provider:config.provider,promptVersion:PROMPT_VERSION});res.end();
-  }catch(error){
-    if(res.writableEnded)return;const timeout=controller.signal.aborted&&controller.signal.reason==='timeout';console.error('Rae stream failed',error?.name||error);sse(res,'error',{code:timeout?'timeout':'provider_unavailable',message:timeout?'Rae’s response timed out.':'Rae lost the AI connection.'});res.end();
-  }finally{clearTimeout(timer);res.off?.('close',close)}
+    for(let index=0;index<candidates.length;index+=1){
+      if(clientClosed||res.writableEnded)return;
+      const config=candidates[index],controller=new AbortController(),tracker={count:0,started:false};currentController=controller;
+      const timer=setTimeout(()=>controller.abort('timeout'),PROVIDER_TIMEOUT);
+      if(index>0)sse(res,'state',{state:'thinking',attempt:index+1,recovering:true});
+      try{
+        const upstream=await openProviderStream(config,{message,history,context,session,signal:controller.signal});
+        if(!upstream.ok||!upstream.body){
+          const detail=await upstream.text().catch(()=> '');lastCode=upstream.status===429?'provider_busy':'provider_unavailable';console.error('Rae provider attempt failed',config.provider,config.model,upstream.status,detail.slice(0,220));continue;
+        }
+        if(config.provider==='gemini')await pumpGemini(upstream,res,tracker);else await pumpOpenAI(upstream,res,tracker);
+        if(!tracker.count){lastCode='empty_response';console.error('Rae provider returned no text',config.provider,config.model);continue}
+        const meta=buildMeta(message,context,session);sse(res,'meta',meta);sse(res,'done',{finishReason:'stop',emotion:meta.emotion,provider:config.provider,promptVersion:PROMPT_VERSION,recovered:index>0});return res.end();
+      }catch(error){
+        if(clientClosed||controller.signal.reason==='client_closed'||res.writableEnded)return;
+        const timeout=controller.signal.aborted&&controller.signal.reason==='timeout';lastCode=timeout?'timeout':'provider_unavailable';console.error('Rae provider stream failed',config.provider,config.model,error?.name||error);
+        if(tracker.count){sse(res,'error',{code:'stream_interrupted',message:'Rae’s answer was interrupted. Please retry.'});return res.end()}
+      }finally{clearTimeout(timer);if(currentController===controller)currentController=null}
+    }
+    if(!res.writableEnded){sse(res,'error',{code:'all_providers_failed',reason:lastCode,message:'Rae’s AI connections are busy right now. Please retry in a moment.'});res.end()}
+  }finally{currentController?.abort('cleanup');res.off?.('close',close)}
 }

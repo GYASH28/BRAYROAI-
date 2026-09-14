@@ -72,6 +72,12 @@ test('Rae respects reduced motion while all chat functionality remains',async({b
   const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}}),page=await context.newPage();await mockAI(page);await openRae(page,'/terms');const animation=await page.locator('.rae-character__body').first().evaluate(node=>getComputedStyle(node).animationName);expect(animation).toBe('none');await page.locator('[data-rae-input]').fill('Explain this page');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-feed]')).toContainText('BRAYROAI can help with');await context.close();
 });
 
+test('Rae reserves real space above the WhatsApp and email contact dock and owns the corner while open',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});await loadRae(page,'/');const dock=page.locator('.brayro-contact-dock');await expect(dock).toBeVisible();await expect(dock.locator('.brayro-contact-dock__whatsapp')).toHaveCount(1);await expect(dock.locator('.brayro-contact-dock__email')).toHaveCount(1);
+  await expect.poll(async()=>{const raeBox=await page.locator('[data-rae-toggle]').boundingBox(),dockBox=await dock.boundingBox();return raeBox&&dockBox?Math.round(dockBox.y-(raeBox.y+raeBox.height)):-999},{timeout:3000}).toBeGreaterThanOrEqual(10);
+  await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-clearance','lifted');await page.locator('[data-rae-toggle]').click();await expect(page.locator('body')).toHaveClass(/rae-conversation-open/);await expect(dock).toHaveCSS('pointer-events','none');await expect(dock).toHaveCSS('opacity','0');await page.locator('[data-rae-close]').click();await expect(page.locator('body')).not.toHaveClass(/rae-conversation-open/);await expect.poll(async()=>parseFloat(await dock.evaluate(node=>getComputedStyle(node).opacity))).toBeGreaterThan(.9);
+});
+
 test('launcher dynamically lifts above another fixed bottom-right control',async({page})=>{
   await loadRae(page,'/');await page.evaluate(()=>{const fake=document.createElement('button');fake.id='collision-probe';fake.textContent='fixed';Object.assign(fake.style,{position:'fixed',right:'12px',bottom:'12px',width:'72px',height:'72px',zIndex:'99999'});document.body.append(fake);dispatchEvent(new Event('resize'))});await page.waitForTimeout(250);const lift=await page.locator('[data-rae-root]').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--rae-collision-lift'))||0);expect(lift).toBeGreaterThan(0);
 });

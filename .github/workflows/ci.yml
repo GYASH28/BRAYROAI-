@@ -40,6 +40,7 @@ jobs:
             brayro-cursor-v22.css brayro-cursor-v22.js rae.css rae.js \
             rae/rae-app.js rae/rae-director.js rae/rae-chat-client.js \
             rae/rae-ui.js rae/rae-actions.js rae/rae-context.js rae/rae-character.js \
+            rae/rae-character-v2.css rae/rae-character-emotions.css \
             ai-service-pages.css ai-service-pages.js client-work.css client-work.js \
             plans-page.css plans-page.js founder-page.css founder-page.js \
             terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do
@@ -54,8 +55,8 @@ jobs:
           test -f dist/assets/fakhrimart-case-desktop.png
           test -f dist/assets/fakhrimart-case-mobile.png
 
-          # Homepage ships one ordered CSS file; Rae CSS is part of it so Rae
-          # does not add another render-blocking stylesheet.
+          # Homepage ships one ordered CSS file; Rae base CSS is part of it while
+          # detailed character skins lazy-load only when the full character wakes.
           grep -q 'data-brayro-home-styles' dist/index.html
           grep -q '/assets/brayro-home.css' dist/index.html
           ! grep -q 'href="/brayro-v12.css"' dist/index.html
@@ -76,6 +77,8 @@ jobs:
           grep -q '.rae-root' dist/assets/brayro-home.css
           grep -q '.rae-character__head' dist/assets/brayro-home.css
           grep -q '.rae-stage' dist/assets/brayro-home.css
+          grep -q 'data-rae-rig="v3"' dist/rae/rae-character-v2.css
+          grep -q 'data-state="playful"' dist/rae/rae-character-emotions.css
 
           # Client proof and offer architecture.
           grep -q 'data-editorial-sequence' dist/index.html
@@ -116,6 +119,7 @@ jobs:
           grep -q 'class RaeDirector' dist/rae/rae-director.js
           grep -q 'class RaeChatClient' dist/rae/rae-chat-client.js
           grep -q 'class RaeUI' dist/rae/rae-ui.js
+          grep -q 'data-rae-rig="v3"' dist/rae/rae-character.js
           grep -q "'/api/rae-chat'" dist/rae/rae-app.js
           grep -q 'RAE_PROVIDER' api/rae-chat.js
           grep -q 'RAE_MODEL' api/rae-chat.js
@@ -171,6 +175,8 @@ jobs:
               curl -fsS http://127.0.0.1:4173/assets/brayro-home.css | grep -q 'rae-character__head' && \
               curl -fsS http://127.0.0.1:4173/rae.js | grep -q 'class RaeBootstrap' && \
               curl -fsS http://127.0.0.1:4173/rae/rae-app.js | grep -q 'class RaeApp' && \
+              curl -fsS http://127.0.0.1:4173/rae/rae-character.js | grep -q 'data-rae-rig="v3"' && \
+              curl -fsS http://127.0.0.1:4173/rae/rae-character-v2.css | grep -q 'raeV3Breathe' && \
               curl -fsS http://127.0.0.1:4173/brayro-cursor-v22.js | grep -q 'v22CursorMounted' && \
               curl -fsS http://127.0.0.1:4173/ai-workflow-audit | grep -q 'AI WORKFLOW AUDIT' && \
               curl -fsS http://127.0.0.1:4173/company-second-brain | grep -q 'COMPANY SECOND BRAIN' && \
@@ -197,6 +203,12 @@ jobs:
           mkdir -p artifacts/screenshots
           node - <<'JS'
           const {chromium}=require('playwright');
+          const wakeRae=async page=>{
+            await page.waitForSelector('[data-rae-root]');
+            await page.evaluate(()=>{const shell=document.querySelector('[data-rae-shell]');if(shell)shell.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true,pointerType:'mouse'}))});
+            await page.waitForSelector('[data-rae-toggle]');
+            await page.waitForFunction(()=>document.querySelector('[data-rae-root]')?.dataset.raeAppReady==='true');
+          };
           (async()=>{
             const browser=await chromium.launch({headless:true});
             for(const [device,width,height] of [['desktop',1440,1000],['mobile',390,844]]){
@@ -204,10 +216,16 @@ jobs:
               for(const [route,name] of [['/','home'],['/plans','plans'],['/founder','founder'],['/terms','terms'],['/ai-workflow-audit','audit'],['/company-second-brain','second-brain'],['/clients','clients'],['/clients/fakhrimart','fakhrimart-case-study']]){
                 await page.goto(`http://127.0.0.1:4173${route}`,{waitUntil:'networkidle'});await page.evaluate(()=>{document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach(n=>n.remove());document.body.classList.remove('hf-intro-active','polish-opening','is-opening')});await page.waitForTimeout(650);await page.screenshot({path:`artifacts/screenshots/${device}-${name}.png`,fullPage:false});
               }
-              await page.goto('http://127.0.0.1:4173/plans',{waitUntil:'domcontentloaded'});await page.locator('[data-rae-shell]').hover();await page.waitForSelector('[data-rae-toggle]');await page.screenshot({path:`artifacts/screenshots/${device}-rae-launcher.png`});await page.locator('[data-rae-toggle]').click();await page.waitForSelector('[data-rae-panel][aria-hidden="false"]');await page.screenshot({path:`artifacts/screenshots/${device}-rae-open.png`});await page.evaluate(()=>document.dispatchEvent(new CustomEvent('rae:request-start')));await page.screenshot({path:`artifacts/screenshots/${device}-rae-thinking.png`});await page.evaluate(()=>window.__BRAYRO_RAE__?.ui.addMessage('assistant','The smallest sensible option should fit the job, not the other way around.',{card:{type:'plan',eyebrow:'CURRENT VERIFIED PLAN',title:'Launch Website',copy:'Complete one-time website build',price:'₹9,999',action:{name:'showPlan',args:{planId:'launch-website'},label:'View this option'}}}));await page.screenshot({path:`artifacts/screenshots/${device}-rae-plan-card.png`});
+              await page.goto('http://127.0.0.1:4173/plans',{waitUntil:'domcontentloaded'});await wakeRae(page);await page.screenshot({path:`artifacts/screenshots/${device}-rae-launcher.png`});await page.locator('[data-rae-toggle]').click();await page.waitForSelector('[data-rae-panel][aria-hidden="false"]');await page.screenshot({path:`artifacts/screenshots/${device}-rae-open.png`});
+              if(device==='desktop'){
+                for(const state of ['idle','curious','thinking','speaking','positive','surprised','playful','proud','shy','skeptical','laughing','wink','error','celebrate','sleep']){
+                  await page.evaluate(value=>window.__BRAYRO_RAE__?.director.setState(value),state);await page.waitForTimeout(state==='celebrate'?120:70);await page.screenshot({path:`artifacts/screenshots/desktop-rae-emotion-${state}.png`});
+                }
+              }
+              await page.evaluate(()=>window.__BRAYRO_RAE__?.director.setState('thinking'));await page.screenshot({path:`artifacts/screenshots/${device}-rae-thinking.png`});await page.evaluate(()=>window.__BRAYRO_RAE__?.ui.addMessage('assistant','The smallest sensible option should fit the job, not the other way around.',{card:{type:'plan',eyebrow:'CURRENT VERIFIED PLAN',title:'Launch Website',copy:'Complete one-time website build',price:'₹9,999',action:{name:'showPlan',args:{planId:'launch-website'},label:'View this option'}}}));await page.screenshot({path:`artifacts/screenshots/${device}-rae-plan-card.png`});
               await context.close();
             }
-            const reduced=await browser.newContext({viewport:{width:1280,height:800},reducedMotion:'reduce'});const reducedPage=await reduced.newPage();await reducedPage.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});await reducedPage.locator('[data-rae-shell]').hover();await reducedPage.waitForSelector('[data-rae-toggle]');await reducedPage.locator('[data-rae-toggle]').click();await reducedPage.screenshot({path:'artifacts/screenshots/reduced-motion-rae.png'});await reduced.close();await browser.close();
+            const reduced=await browser.newContext({viewport:{width:1280,height:800},reducedMotion:'reduce'});const reducedPage=await reduced.newPage();await reducedPage.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});await wakeRae(reducedPage);await reducedPage.locator('[data-rae-toggle]').click();await reducedPage.screenshot({path:'artifacts/screenshots/reduced-motion-rae.png'});await reduced.close();await browser.close();
           })().catch(error=>{console.error(error);process.exit(1)});
           JS
       - name: Lighthouse mobile audit
@@ -221,9 +239,9 @@ jobs:
         with:
           name: brayroai-qa-${{ github.run_number }}
           path: |
-            dist/
-            artifacts/
-            test-results/
+            artifacts/screenshots/
+            artifacts/lighthouse/
+            artifacts/playwright-report/
             /tmp/brayroai-preview.log
           if-no-files-found: ignore
           retention-days: 14

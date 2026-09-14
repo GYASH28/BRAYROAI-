@@ -49,6 +49,7 @@ const experienceTransform={
       html=html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/g,'\n  ').replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/g,'\n  ').replace(/\s*<link rel="stylesheet" href="\/motion-v5\.css">\s*/g,'\n  ').replace(/\s*<script src="\/motion-v5\.js"><\/script>\s*/g,'\n  ');
       html=html.replace(/\s*<div class="v12-cursor"[^>]*>[^<]*<\/div>\s*/g,'\n  ');
       html=removeHomepageStyleLinks(html);
+      if(!html.includes('data-js-bootstrap'))html=injectBefore(html,'</head>',`  <script data-js-bootstrap>document.documentElement.classList.add('js')</script>`);
       if(!html.includes('data-brayro-home-styles'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/assets/brayro-home.css" data-brayro-home-styles data-brayro-v13>');
 
       html=html.replace('Distinctive websites, digital products and practical AI systems. Strategy through launch, directed as one complete production.','Distinctive websites, digital products and practical AI systems—built to make businesses easier to understand and trust. Strategy through launch, one connected production.');

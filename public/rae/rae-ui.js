@@ -51,7 +51,6 @@ export class RaeUI{
       const chip=event.target.closest('[data-rae-prompt]');if(chip)return this.submit(chip.dataset.raePrompt||'');
       const action=event.target.closest('[data-rae-action]');if(action)return this.handlers.onAction?.(action.dataset.raeAction,JSON.parse(action.dataset.raeArgs||'{}'),action);
     });
-    this.toggle.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!this.open){event.preventDefault();event.stopPropagation();this.setOpen(true)}});
     this.root.querySelector('[data-rae-form]').addEventListener('submit',event=>{event.preventDefault();this.submit(this.input.value)});
     this.input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();this.submit(this.input.value)}});
     this.input.addEventListener('input',()=>this.resizeComposer());this.input.addEventListener('focus',()=>this.handlers.onFocus?.());
@@ -63,18 +62,17 @@ export class RaeUI{
   trapFocus(event){
     if(event.key!=='Tab')return;const focusable=[...this.panel.querySelectorAll('button:not([hidden]),textarea,a[href],[tabindex="0"]')].filter(node=>!node.disabled&&node.offsetParent!==null);if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
   }
-  focusComposer(){
-    clearTimeout(this.focusTimer);const focus=()=>{if(this.open&&!this.generating&&this.input?.isConnected&&!this.input.disabled)this.input.focus({preventScroll:true})};
-    focus();queueMicrotask(focus);requestAnimationFrame(()=>{focus();this.focusTimer=setTimeout(focus,280)});
+  settleFocus(target,expectOpen){
+    clearTimeout(this.focusTimer);const delays=[0,72,180,360,620];let index=0;
+    const apply=()=>{if(this.open!==expectOpen||!target?.isConnected)return;try{target.focus({preventScroll:true})}catch{}if(index<delays.length-1){index+=1;this.focusTimer=setTimeout(apply,delays[index])}};
+    queueMicrotask(apply);
   }
+  focusComposer(){if(!this.generating&&!this.input.disabled)this.settleFocus(this.input,true)}
   setOpen(value){
     this.open=Boolean(value);if(this.open)this.lastFocused=document.activeElement;
     this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));document.body.classList.toggle('rae-dialog-open',this.open);
     this.handlers.onOpenChange?.(this.open);
-    if(this.open)this.focusComposer();else{
-      clearTimeout(this.focusTimer);const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;const restore=()=>{if(!this.open&&target?.isConnected)target.focus({preventScroll:true})};
-      requestAnimationFrame(()=>{restore();this.focusTimer=setTimeout(restore,240)});
-    }
+    if(this.open)this.focusComposer();else{const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;this.settleFocus(target,false)}
   }
   renderStarter(){
     const wrap=document.createElement('article');wrap.className='rae-welcome';const title=document.createElement('strong');title.textContent='Ask me the useful version.';const copy=document.createElement('p');copy.textContent=`You’re on ${this.pageInfo?.label||'BRAYROAI'}. ${this.pageInfo?.summary||''}`;wrap.append(title,copy);this.feed.append(wrap);this.setChips(this.pageInfo?.chips||[]);

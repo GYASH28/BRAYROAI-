@@ -39,6 +39,7 @@ export class RaeChatClient{
     for(const line of packet.split('\n')){if(line.startsWith('event:'))event=line.slice(6).trim();else if(line.startsWith('data:'))data.push(line.slice(5).trimStart())}
     if(!data.length)return;
     let payload;const raw=data.join('\n');try{payload=JSON.parse(raw)}catch{payload={text:raw}}
+    if(event==='state'&&payload?.recovering&&typeof document!=='undefined')document.dispatchEvent(new CustomEvent('rae:provider-recovery',{detail:payload}));
     onEvent({type:event,data:payload});
   }
   retry(onEvent){if(!this.lastRequest)throw new Error('Nothing to retry');return this.stream({...this.lastRequest,onEvent})}

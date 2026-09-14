@@ -22,7 +22,7 @@ export class RaeDirector{
     const durations={wink:900,surprised:1250,laughing:1500,playful:1700,shy:1750,proud:1850,skeptical:1900,positive:1600,curious:1600,confused:1600,error:1800};
     if(durations[next])this.emotionTimer=setTimeout(()=>{if(this.state===next)this.setState('idle')},durations[next]);
   }
-  setEmotion(emotion){const allowed={neutral:'idle',happy:'positive',positive:'positive',curious:'curious',thoughtful:'thinking',concerned:'confused',surprised:'surprised',playful:'playful',proud:'proud',shy:'shy',skeptical:'skeptical',laughing:'laughing',wink:'wink'};this.setState(allowed[String(emotion||'').toLowerCase()]||'positive')}
+  setEmotion(emotion){const allowed={neutral:'idle',happy:'positive',positive:'positive',curious:'curious',thoughtful:'thinking',concerned:'confused',confused:'confused',surprised:'surprised',playful:'playful',proud:'proud',shy:'shy',skeptical:'skeptical',laughing:'laughing',wink:'wink'};this.setState(allowed[String(emotion||'').toLowerCase()]||'positive')}
   setAttention({x=0,y=0}={}){if(this.reduced||this.sleeping)return;const gx=clamp(-1,x,1),gy=clamp(-1,y,1);this.root.style.setProperty('--rae-gaze-x',`${(gx*5).toFixed(2)}px`);this.root.style.setProperty('--rae-gaze-y',`${(gy*3.6).toFixed(2)}px`);this.root.style.setProperty('--rae-head-x',`${(gx*1.7).toFixed(2)}px`);this.root.style.setProperty('--rae-head-r',`${(gx*1.8).toFixed(2)}deg`)}
   resetAttention(){this.root.style.setProperty('--rae-gaze-x','0px');this.root.style.setProperty('--rae-gaze-y','0px');this.root.style.setProperty('--rae-head-x','0px');this.root.style.setProperty('--rae-head-r','0deg')}
   setSpeakingLevel(level=0){this.root.style.setProperty('--rae-speech',String(clamp(0,level,1)))}

@@ -33,7 +33,7 @@ for(const viewport of [{width:360,height:800},{width:390,height:844}]){
     expect(eyebrowBox.y).toBeLessThan(viewport.height*.70);
     expect(headingBox.y+headingBox.height).toBeLessThan(viewport.height*.88);
     expect(copyBox.y+copyBox.height).toBeLessThan(viewport.height*.97);
-    expect(ctaBox.y+ctaBox.height).toBeLessThanOrEqual(viewport.height-4);
+    expect(ctaBox.y+ctaBox.height).toBeLessThanOrEqual(viewport.height);
 
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);

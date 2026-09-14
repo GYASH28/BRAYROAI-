@@ -11,7 +11,9 @@ async function openRae(page,route='/plans'){
 }
 
 for(const width of [320,390])test(`Rae mobile stage remains composed at ${width}px`,async({page})=>{
-  await page.setViewportSize({width,height:844});await openRae(page);
+  const height=844;await page.setViewportSize({width,height});await loadRae(page);
+  const launcher=await page.locator('.rae-character--launcher').boundingBox();expect(launcher).not.toBeNull();expect(launcher.y+launcher.height).toBeLessThanOrEqual(height-12);
+  await page.locator('[data-rae-toggle]').click();await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false');
   const panel=page.locator('[data-rae-panel]'),character=page.locator('.rae-stage .rae-character--stage'),copy=page.locator('.rae-stage__copy');
   await expect(panel).toHaveCSS('opacity','1');
   const transitionProperties=await panel.evaluate(node=>getComputedStyle(node).transitionProperty);expect(transitionProperties).not.toContain('opacity');

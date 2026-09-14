@@ -25,9 +25,6 @@ async function mockAI(page,{events=defaultEvents,delay=35,failFirst=false,status
 async function loadRae(page,route='/'){
   await page.goto(route,{waitUntil:'domcontentloaded'});
   await expect(page.locator('[data-rae-root]')).toHaveCount(1);
-  // The tiny bootstrap button is intentionally replaced by the full Rae app.
-  // Dispatch the wake event synchronously instead of asking Playwright to hover a node
-  // that may detach halfway through actionability checks.
   await page.evaluate(()=>{
     const shell=document.querySelector('[data-rae-shell]');
     if(shell)shell.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true,pointerType:'mouse'}));
@@ -43,13 +40,13 @@ for(const [route,pageName] of [['/','home'],['/plans','plans'],['/founder','foun
 }
 
 test('free-text conversation uses the real streaming transport and renders progressively',async({page})=>{
-  await mockAI(page,{delay:120});await openRae(page,'/');await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','thinking');
+  await mockAI(page,{delay:450});await openRae(page,'/');await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','thinking');
   const reply=page.locator('.rae-message[data-who="rae"] .rae-message__bubble').last();
-  await expect(reply).toContainText('BRAYROAI can help with');await expect(reply).not.toContainText('practical AI systems.');await expect(reply).toContainText('practical AI systems.',{timeout:3000});await expect(page.locator('[data-rae-stop]')).toBeHidden();expect(await page.evaluate(()=>window.__raeApiCalls)).toBe(1);
+  await expect(reply).toContainText('BRAYROAI can help with');expect(await reply.textContent()).not.toContain('practical AI systems.');await expect(reply).toContainText('practical AI systems.',{timeout:3000});await expect(page.locator('[data-rae-stop]')).toBeHidden();expect(await page.evaluate(()=>window.__raeApiCalls)).toBe(1);
 });
 
 test('Rae can stop an in-flight streamed answer immediately',async({page})=>{
-  const events=[['state',{state:'thinking'}],['delta',{text:'First useful thought. '}],['delta',{text:'This should never arrive after stop.'}],['done',{finishReason:'stop'}]];await mockAI(page,{events,delay:650});await openRae(page,'/');await page.locator('[data-rae-input]').fill('Think through my project');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-feed]')).toContainText('First useful thought.');await page.locator('[data-rae-stop]').click();await expect(page.locator('[data-rae-feed]')).toContainText('Stopped');await page.waitForTimeout(850);await expect(page.locator('[data-rae-feed]')).not.toContainText('never arrive after stop');
+  const events=[['state',{state:'thinking'}],['delta',{text:'First useful thought. '}],['delta',{text:'This should never arrive after stop.'}],['done',{finishReason:'stop'}]];await mockAI(page,{events,delay:1500});await openRae(page,'/');await page.locator('[data-rae-input]').fill('Think through my project');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-feed]')).toContainText('First useful thought.');await page.locator('[data-rae-stop]').click();await expect(page.locator('[data-rae-feed]')).toContainText('Stopped');await page.waitForTimeout(1750);await expect(page.locator('[data-rae-feed]')).not.toContainText('never arrive after stop');
 });
 
 test('Rae retries after provider failure without losing the transcript',async({page})=>{
@@ -73,7 +70,7 @@ test('model HTML is rendered as inert text, never executable markup',async({page
 });
 
 test('keyboard open/close restores focus and Escape works',async({page})=>{
-  await mockAI(page);await loadRae(page,'/plans');await page.locator('[data-rae-toggle]').focus();await page.keyboard.press('Enter');await expect(page.locator('[data-rae-input]')).toBeFocused();await page.keyboard.press('Escape');await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','true');await expect(page.locator('[data-rae-toggle]')).toBeFocused();
+  await mockAI(page);await loadRae(page,'/plans');await page.locator('[data-rae-toggle]').focus();await page.keyboard.press('Enter');await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false');await expect(page.locator('[data-rae-input]')).toBeFocused();await page.keyboard.press('Escape');await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','true');await expect(page.locator('[data-rae-toggle]')).toBeFocused();
 });
 
 test('all Rae V3 emotional states are addressable without breaking the rig',async({page})=>{

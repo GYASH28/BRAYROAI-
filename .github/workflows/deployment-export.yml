@@ -1,0 +1,36 @@
+name: BRAYROAI Deployment Export
+
+on:
+  push:
+    branches: [deployment-export-20260914]
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build exact merged release
+        env:
+          VERCEL_GIT_COMMIT_SHA: 2aa5cddc6ef5d3e453e26a2e6889b67a52a04659
+        run: npm run build
+      - name: Package source and production build
+        run: |
+          mkdir -p deployment-export
+          tar --exclude=.git --exclude=node_modules --exclude=deployment-export --exclude=artifacts --exclude=test-results -czf deployment-export/source.tar.gz .
+          tar -czf deployment-export/dist.tar.gz dist
+          printf 'release_sha=%s\n' '2aa5cddc6ef5d3e453e26a2e6889b67a52a04659' > deployment-export/release.txt
+          find dist -type f -print | sort > deployment-export/dist-files.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: brayroai-direct-deploy-export
+          path: deployment-export/
+          retention-days: 2

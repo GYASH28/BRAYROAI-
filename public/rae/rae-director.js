@@ -1,11 +1,12 @@
 const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));
 const weightedPick=items=>{const total=items.reduce((sum,item)=>sum+item.weight,0);let cursor=Math.random()*total;for(const item of items){cursor-=item.weight;if(cursor<=0)return item.value}return items[0].value};
+const mountEmotionSkin=()=>{if(typeof document==='undefined'||document.querySelector('link[data-rae-emotion-skin]'))return;const link=document.createElement('link');link.rel='stylesheet';link.href='/rae/rae-character-emotions.css';link.dataset.raeEmotionSkin='v3';document.head.append(link)};
 
 export const RAE_STATES=Object.freeze(['boot','idle','attention','opening','listening','thinking','speaking','positive','curious','confused','surprised','playful','proud','shy','skeptical','laughing','wink','error','offline','celebrate','sleep']);
 
 export class RaeDirector{
   constructor(root,{reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches}={}){
-    this.root=root;this.reduced=reducedMotion;this.characters=[...root.querySelectorAll('[data-rae-character]')];this.state='boot';this.visible=true;this.sleeping=false;this.pointerFrame=0;this.idleTimer=0;this.blinkTimer=0;this.speechTimer=0;this.emotionTimer=0;this.lastIdle='';this.lastInteraction=Date.now();this.listeners=[];
+    mountEmotionSkin();this.root=root;this.reduced=reducedMotion;this.characters=[...root.querySelectorAll('[data-rae-character]')];this.state='boot';this.visible=true;this.sleeping=false;this.pointerFrame=0;this.idleTimer=0;this.blinkTimer=0;this.speechTimer=0;this.emotionTimer=0;this.lastIdle='';this.lastInteraction=Date.now();this.listeners=[];
     this.onVisibility=()=>document.hidden?this.sleep():this.wake();document.addEventListener('visibilitychange',this.onVisibility);this.bindEvents();this.setState('boot');setTimeout(()=>this.setState('idle'),this.reduced?0:520);this.scheduleBlink();this.scheduleIdle();
   }
   bindEvents(){

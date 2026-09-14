@@ -11,6 +11,7 @@ for(const token of ['class RaeBootstrap','import(\'/rae/rae-app.js\')','Chat wit
 expect(files.bootstrap.includes('shellCharacter')&&files.bootstrap.includes('linearGradient id="rs"')&&files.bootstrap.includes('stroke="#ff6a20"'),'Rae bootstrap launcher must visually match the production ivory/visor/orange character');
 for(const token of ['class RaeDirector','setState(next)','setAttention','setSpeakingLevel','scheduleBlink','scheduleIdle','pulseSpeech','sleep()','wake()','rae:first-token','rae:stream-chunk','mountEmotionSkin'])expect(files.director.includes(token),`Rae director missing ${token}`);
 for(const state of ['boot','idle','attention','opening','listening','thinking','speaking','positive','curious','confused','surprised','playful','proud','shy','skeptical','laughing','wink','error','offline','celebrate','sleep'])expect(files.director.includes(`'${state}'`),`Rae state missing ${state}`);
+for(const token of ["confused:'confused'","surprised:'surprised'","playful:'playful'","proud:'proud'","skeptical:'skeptical'","laughing:'laughing'","wink:'wink'"])expect(files.director.includes(token),`Rae emotion bridge missing ${token}`);
 for(const token of ['data-rae-rig="v3"','rae-character__head','rae-character__visor','rae-character__eyes','rae-character__pupil','rae-character__brows','rae-character__mouth','rae-character__arm','rae-character__hand','rae-character__leg','rae-character__foot','rae-character__ear-ring-light','rae-character__chest-light','rae-character__spark'])expect(files.character.includes(token),`Detailed Rae V3 rig missing ${token}`);
 for(const token of ['ensureRaeCharacterSkin','/rae/rae-character-v2.css','linearGradient','radialGradient','rae-character__shoulder-shell','rae-character__calf-panel'])expect(files.character.includes(token),`Rae production character construction missing ${token}`);
 for(const token of ['data-rae-rig="v3"','raeV3Breathe','raeV3ThinkHead','raeV3Wave','raeV3ListenPulse','raeV3SpeakingArm','raeV3Celebrate','data-state="thinking"','data-state="speaking"','data-state="sleep"','prefers-reduced-motion'])expect(files.characterCss.includes(token),`Rae character skin missing ${token}`);
@@ -18,6 +19,7 @@ for(const token of ['data-state="surprised"','data-state="playful"','data-state=
 expect(files.director.includes('/rae/rae-character-emotions.css'),'Rae director must lazy-load the extended emotion skin');
 expect(!/<canvas|THREE\.|WebGLRenderingContext|requestAnimationFrame\s*\([^)]*render/i.test(files.character),'Detailed Rae executable rig must remain SVG/CSS rather than a permanent canvas/WebGL render loop');
 for(const token of ['role="dialog"','aria-modal="true"','data-rae-stop','data-rae-live','visualViewport','trapFocus','Continue on WhatsApp','rae-card'])expect(files.ui.includes(token),`Rae accessible UI missing ${token}`);
+expect(files.ui.includes('setTimeout(focus,280)')&&files.ui.includes('setTimeout(restore,240)'),'Rae dialog focus must account for open/close visibility transitions');
 for(const token of ['text/event-stream','AbortController','parsePacket','event:'])expect(files.transport.includes(token),`Rae streaming client missing ${token}`);
 for(const token of ['navigateToRoute','scrollToSection','openProject','showPlan','highlightElement','ROUTES','SECTIONS'])expect(files.actions.includes(token),`Rae safe action layer missing ${token}`);
 for(const token of ['sessionStorage','rae:v2:session','PAGE_INFO','IntersectionObserver'])expect(files.context.includes(token),`Rae context/session layer missing ${token}`);
@@ -30,6 +32,7 @@ expect(!/backdrop-filter/i.test(files.css+files.characterCss+files.emotionCss),'
 expect(files.api.includes("streamGenerateContent?alt=sse")&&files.api.includes('/chat/completions'),'Rae API must support real streaming providers');
 expect(files.api.includes('RAE_PROVIDER')&&files.api.includes('RAE_MODEL'),'Rae provider abstraction env contract missing');
 expect(files.api.includes('Never invent prices')&&files.api.includes('smallest sensible scope'),'Rae server persona truth/sales guard missing');
+expect(files.api.includes('socialEmotion')&&files.api.includes("PROMPT_VERSION='rae-real-v2'"),'Rae conversational emotion/persona contract missing');
 expect(files.knowledge.includes('₹2,599/month')&&files.knowledge.includes('₹9,999')&&files.knowledge.includes('₹17,999')&&files.knowledge.includes('₹25K–₹35K+')&&files.knowledge.includes('from ₹29,999'),'Verified Rae pricing knowledge drifted');
 expect(files.knowledge.includes('FakhriMart')&&files.knowledge.includes('fakhriyarns.vercel.app'),'Verified client knowledge missing');
 expect(files.vite.includes("'rae.css'")&&files.vite.includes('/rae.js'),'Vite does not mount Rae');

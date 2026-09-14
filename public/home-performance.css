@@ -1,0 +1,26 @@
+/* BRAYROAI / measured homepage stability fixes.
+   Keep this late in the homepage cascade: it only corrects intrinsic geometry
+   and mobile anchoring found by Lighthouse; it does not change the visual system. */
+
+.hero__subject{height:auto}
+
+@media(max-width:760px){
+  /* The source portrait is 900x697. Earlier mobile passes narrowed its width
+     while the HTML height hint remained 697px, which stretched the portrait.
+     Size from height instead so the intrinsic 900:697 ratio is preserved while
+     keeping the same cinematic crop and subject scale. */
+  .hero__subject{
+    width:auto;
+    height:clamp(36rem,82svh,43.5rem);
+    max-width:none;
+    right:-72vw;
+    bottom:7.5rem;
+  }
+
+  /* Anchor the copy from its top on small screens. A bottom anchor made a
+     fast web-font metric change move the entire copy block and caused CLS. */
+  .hero__copy{
+    top:clamp(11.5rem,25svh,13.25rem);
+    bottom:auto;
+  }
+}

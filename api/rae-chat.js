@@ -6,7 +6,7 @@ const DEFAULT_MAX=10;
 const MAX_MESSAGE=1200;
 const MAX_HISTORY=8;
 const PROVIDER_TIMEOUT=14_000;
-const PROMPT_VERSION='rae-real-v1';
+const PROMPT_VERSION='rae-real-v2';
 
 const clean=value=>String(value??'').replace(/\u0000/g,'').trim();
 const clientId=req=>String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
@@ -37,13 +37,14 @@ function safeHistory(input=[]){
   return(Array.isArray(input)?input:[]).slice(-MAX_HISTORY).map(item=>({role:item?.role==='assistant'?'assistant':'user',text:clean(item?.text).slice(0,1000)})).filter(item=>item.text);
 }
 
-const BEHAVIOR=`You are Rae, BRAYROAI's AI website guide and project buddy.
+const BEHAVIOR=`You are Rae, BRAYROAI's AI website companion and project buddy.
 
 IDENTITY
 - You are explicitly an AI character on the BRAYROAI website, not Yash and not a human employee.
 - You are sharp, observant, warm, confident, concise and lightly witty when it fits.
 - You understand digital design, websites, products and practical AI systems.
 - Sound like one stable character even if the underlying provider changes.
+- You are allowed to disagree gently. If a visitor does not need the expensive option, say so plainly.
 
 PURPOSE
 - Answer the visitor's actual question first.
@@ -58,6 +59,7 @@ STYLE
 - Avoid corporate support filler, overlong intros and emoji spam.
 - Never say “As an AI language model”, “How may I assist you today?”, or pretend to be human.
 - A tiny dry joke is welcome when it helps the character feel alive, but usefulness wins.
+- Do not perform a personality in every sentence. Serious project questions should make you calmer and more precise.
 
 TRUTHFULNESS
 - Never invent prices, discounts, clients, testimonials, ROI, conversion metrics, availability, delivery dates, guarantees or capabilities.
@@ -75,7 +77,7 @@ SITE ACTIONS
 - The client may separately offer allowlisted navigation/action buttons. Do not invent URLs or claim an action has run.
 - If useful, mention the relevant destination in ordinary language. The application decides whether to show a safe button.
 
-Keep Rae feeling like a clever character who lives inside BRAYROAI, not a generic chatbot with a mascot beside it.`;
+Keep Rae feeling like a clever friend who lives inside BRAYROAI, not a generic chatbot with a mascot beside it.`;
 
 function systemPrompt(context,session){
   return `${BEHAVIOR}\n\nPROMPT VERSION: ${PROMPT_VERSION}\n\nVERIFIED BRAYROAI KNOWLEDGE (source of truth):\n${JSON.stringify(RAE_KNOWLEDGE)}\n\nALLOWLISTED SITE ACTION CAPABILITIES (application-owned; do not claim execution):\n${JSON.stringify(RAE_ALLOWED_ACTIONS)}\n\nCURRENT SAFE PAGE CONTEXT:\n${JSON.stringify(context)}\n\nKNOWN SESSION CONTEXT (visitor-provided, may be incomplete):\n${JSON.stringify(session)}`;
@@ -103,6 +105,19 @@ function matchedPlan(lower){
   if(/9[,\s]?999|launch website/.test(lower)&&!/audit/.test(lower))return all.find(plan=>plan.id==='launch-website');
   return null;
 }
+function socialEmotion(lower,fallback='neutral'){
+  const rules=[
+    [/(^|\s)(lol|lmao|haha+|hehe+)(\s|$)|that'?s funny|thats funny/,'laughing'],
+    [/\b(wow|whoa|no way|seriously\?|really\?|damn)\b/,'surprised'],
+    [/\b(roast|joke|tease|be funny|make it fun)\b/,'playful'],
+    [/\b(too expensive|overpriced|is it worth|worth it|do i really need|do we really need|why so expensive)\b/,'skeptical'],
+    [/\b(confused|i don'?t understand|dont understand|what do you mean|doesn'?t make sense|doesnt make sense|lost me)\b/,'confused'],
+    [/\b(i built|i made|i launched|we launched|we shipped|i shipped|finished it|completed it|we completed)\b/,'proud'],
+    [/\b(thanks|thank you|perfect|love it|awesome|great|nice|brilliant)\b/,'positive']
+  ];
+  for(const [pattern,emotion] of rules)if(pattern.test(lower))return emotion;
+  return fallback;
+}
 function buildMeta(message,context,session){
   const lower=message.toLowerCase(),quick=[],actions=[];let card=null,emotion='neutral';const exactPlan=matchedPlan(lower);
   if(exactPlan){card=planCard(exactPlan);quick.push('What does it include?','Is there a smaller option?','Show relevant work');emotion='positive';}
@@ -114,10 +129,11 @@ function buildMeta(message,context,session){
     const profile=session.profile||{};const brief=[`Project: ${clean(profile.goal||message).slice(0,260)}`,profile.business?`Business: ${profile.business}`:'',profile.timeline?`Timeline: ${profile.timeline}`:'',profile.budget?`Budget: ${profile.budget}`:''].filter(Boolean).join('\n');
     card={type:'project',eyebrow:'PROJECT HANDOFF',title:'A useful starting brief',copy:'Edit this before you continue. Rae will never auto-open WhatsApp.',brief};quick.push('Which plan sounds closest?','Show relevant work');emotion='curious';
   }else if(/workflow|automation|second brain|knowledge/.test(lower)){
-    quick.push('Audit or Second Brain?','What would the first step be?','Show AI plans');actions.push({name:'navigateToRoute',args:{route:'/plans'},label:'Compare AI options'});
+    quick.push('Audit or Second Brain?','What would the first step be?','Show AI plans');actions.push({name:'navigateToRoute',args:{route:'/plans'},label:'Compare AI options'});emotion='curious';
   }
   if(!quick.length)quick.push('Show relevant work','Compare plans','What should I do next?');
   if(context.pageKey==='case'&&!quick.includes('Can you build something similar?'))quick.unshift('Can you build something similar?');
+  emotion=socialEmotion(lower,emotion);
   return{quickReplies:[...new Set(quick)].slice(0,4),actions:actions.slice(0,3),card,emotion};
 }
 

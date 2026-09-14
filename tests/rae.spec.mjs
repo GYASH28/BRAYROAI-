@@ -83,7 +83,7 @@ test('Rae has no serious accessibility violations while open',async({page,browse
 });
 
 for(const width of [320,390,768,1440,1920])test(`Rae has no horizontal overflow and remains usable at ${width}px`,async({page})=>{
-  await page.setViewportSize({width,height:width<500?844:900});await mockAI(page);await openRae(page,'/');const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);expect(overflow).toBeLessThanOrEqual(1);await expect(page.locator('[data-rae-input]')).toBeVisible();await expect(page.locator('[data-rae-close]')).toBeVisible();
+  await page.setViewportSize({width,height:width<500?844:900});await mockAI(page);await openRae(page,'/');const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);expect(overflow).toBeLessThanOrEqual(1);const panel=await page.locator('[data-rae-panel]').boundingBox();expect(panel).not.toBeNull();expect(panel.x).toBeGreaterThanOrEqual(-1);expect(panel.x+panel.width).toBeLessThanOrEqual(width+1);if(width<=700){expect(panel.x).toBeLessThanOrEqual(1);expect(panel.width).toBeGreaterThanOrEqual(width-2)}await expect(page.locator('[data-rae-input]')).toBeVisible();await expect(page.locator('[data-rae-close]')).toBeVisible();
 });
 
 test('Rae respects reduced motion while all chat functionality remains',async({browser})=>{

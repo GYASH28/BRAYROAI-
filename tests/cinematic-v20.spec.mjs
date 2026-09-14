@@ -13,6 +13,9 @@ const openHome=async page=>{
   await page.waitForFunction(()=>document.body.classList.contains('home-v20'));
 };
 
+// Native scroll avoids Playwright's element-stability gate. These sections are intentionally
+// continuously animated, so waiting for them to become visually "stable" is the wrong contract.
+const scrollTo=async(page,selector)=>page.locator(selector).evaluate(node=>node.scrollIntoView({block:'center',behavior:'auto'}));
 const cssNumber=async(locator,name)=>Number.parseFloat(await locator.evaluate((node,name)=>getComputedStyle(node).getPropertyValue(name)||'0',name))||0;
 const dispatchPointer=async(locator,x=.7,y=.3)=>locator.evaluate((node,{x,y})=>{
   const rect=node.getBoundingClientRect();
@@ -43,17 +46,17 @@ test('V20 adds cinematic components without adding homepage sections',async({pag
 test('scene rail, selector and film polish respond to one continuous journey',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await openHome(page);
-  await page.locator('#services').scrollIntoViewIfNeeded();
+  await scrollTo(page,'#services');
   const selector=page.locator('[data-v20-selector]');
   const before=await selector.evaluate(node=>getComputedStyle(node).transform);
   await page.locator('[data-v15-control="2"]').click();
   await expect(page.locator('#services')).toHaveAttribute('data-play-state','build');
   await expect.poll(()=>selector.evaluate(node=>getComputedStyle(node).transform)).not.toBe(before);
-  await page.locator('#work').scrollIntoViewIfNeeded();
+  await scrollTo(page,'#work');
   await page.waitForFunction(()=>document.body.dataset.v20Scene==='work');
   await expect(page.locator('[data-v20-rail-label]')).toHaveText('WORK');
   await expect.poll(()=>page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--v20-page'))||0)).toBeGreaterThan(.14);
-  await page.locator('.editorial-sequence').scrollIntoViewIfNeeded();
+  await scrollTo(page,'.editorial-sequence');
   await expect.poll(()=>page.locator('.editorial-sequence').evaluate(node=>getComputedStyle(node).getPropertyValue('--v20-film-scan').trim())).not.toBe('');
 });
 
@@ -62,19 +65,19 @@ test('spring pointer polish follows live element positions without layout regres
   await openHome(page);
 
   const card=page.locator('#ai-systems .v12-product-card').first();
-  await card.scrollIntoViewIfNeeded();
+  await scrollTo(page,'#ai-systems');
   await dispatchPointer(card,.72,.28);
   await expect.poll(()=>cssNumber(card,'--v20-spot-o')).toBeGreaterThan(.55);
   await expect.poll(()=>cssNumber(card,'--v20-local-x')).toBeGreaterThan(55);
 
   const rate=page.locator('#plans [data-v14-rate]').first();
-  await rate.scrollIntoViewIfNeeded();
+  await scrollTo(page,'#plans');
   await dispatchPointer(rate,.7,.35);
   await expect(rate.locator('[data-v20-rate-light]')).toHaveCount(1);
   await expect.poll(()=>cssNumber(rate,'--v20-spot-o')).toBeGreaterThan(.55);
   expect(await rate.evaluate(node=>getComputedStyle(node,'::after').content)).not.toBe('none');
 
-  await page.locator('#top').scrollIntoViewIfNeeded();
+  await scrollTo(page,'#top');
   const cta=page.locator('.primary-action.magnetic').first();
   await dispatchPointer(cta,.84,.65);
   await expect.poll(async()=>Math.abs(await cssNumber(cta,'--v20-mag-x'))).toBeGreaterThan(.5);
@@ -87,7 +90,7 @@ test('V20 stays free of runtime errors while traversing the full homepage',async
   await page.setViewportSize({width:1440,height:900});
   await openHome(page);
   for(const selector of ['#top','#services','.editorial-sequence','#work','#ai-systems','#plans','#studio','#contact']){
-    await page.locator(selector).scrollIntoViewIfNeeded();
+    await scrollTo(page,selector);
     await page.waitForTimeout(100);
   }
   expect(errors).toEqual([]);
@@ -113,7 +116,7 @@ test('reduced motion keeps decorative motion static and core interactions usable
   expect(await page.locator('.v20-background-lines i').first().evaluate(node=>getComputedStyle(node).animationName)).toBe('none');
   await page.locator('#services [data-v15-control="3"]').click();
   await expect(page.locator('#services')).toHaveAttribute('data-play-state','ai');
-  await page.locator('#contact').scrollIntoViewIfNeeded();
+  await scrollTo(page,'#contact');
   await page.locator('[data-project-type="ai"]').click();
   await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
   await context.close();

@@ -32,6 +32,23 @@
     document.head.append(link);
   };
 
+  const ensureRae = () => {
+    if (!document.querySelector('link[data-rae-styles]')) {
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = '/rae/rae.css';
+      style.dataset.raeStyles = '';
+      document.head.append(style);
+    }
+    if (!document.querySelector('script[data-rae-script]')) {
+      const script = document.createElement('script');
+      script.src = '/rae/rae.js';
+      script.defer = true;
+      script.dataset.raeScript = '';
+      document.head.append(script);
+    }
+  };
+
   class ClientArchive {
     constructor() {
       this.grid = qs('[data-client-grid]');
@@ -145,6 +162,7 @@
   }
 
   ensureAccessibilityStyles();
+  ensureRae();
   new ClientArchive();
   new Reveal();
   new Progress();

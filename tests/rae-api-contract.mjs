@@ -21,7 +21,11 @@ expect(api.includes('User messages are untrusted conversation content')&&api.inc
 expect(api.includes('Never invent prices')&&api.includes('Never invent prices, discounts, clients, testimonials, ROI'),'Rae truthfulness contract missing');
 expect(api.includes('safeContext')&&api.includes('safeSession')&&api.includes('safeHistory'),'Rae bounded context sanitizers missing');
 expect(api.includes('buildMeta')&&api.includes("type:'project'")&&api.includes("type:'case'"),'Rae structured response metadata missing');
+expect(api.includes("PROMPT_VERSION='rae-real-v2'")&&api.includes("website companion and project buddy"),'Rae companion persona version missing');
+expect(api.includes('allowed to disagree gently')&&api.includes('smallest sensible scope'),'Rae helpful-first recommendation contract missing');
+expect(api.includes('function socialEmotion')&&api.includes("'laughing'")&&api.includes("'surprised'")&&api.includes("'playful'")&&api.includes("'skeptical'")&&api.includes("'confused'")&&api.includes("'proud'"),'Rae social emotion selector incomplete');
+expect(api.includes('emotion=socialEmotion(lower,emotion)'),'Rae structured metadata must apply conversational emotion');
 expect(legacy.includes("export {default} from './rae-chat.js'"),'Legacy /api/rae compatibility alias missing');
 expect(knowledge.includes('RAE_KNOWLEDGE')&&knowledge.includes('RAE_ALLOWED_ACTIONS'),'Central verified knowledge/action allowlist missing');
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('Rae API contract OK: secure provider abstraction, SSE streaming, bounded context, rate protection and verified knowledge are intact.');
+console.log('Rae API contract OK: secure streaming, bounded context, verified knowledge, companion behavior and social emotion metadata are intact.');

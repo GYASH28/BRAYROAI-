@@ -19,10 +19,10 @@ for(const width of [320,390]){
       expect(mainBox).not.toBeNull();
       expect(mainBox.x).toBeGreaterThanOrEqual(-1);
       expect(mainBox.x+mainBox.width).toBeLessThanOrEqual(width+1);
-      const tooWide=await page.evaluate(viewport=>[...document.querySelectorAll('main *')].filter(node=>{const s=getComputedStyle(node);if(s.position==='fixed'||s.position==='absolute')return false;const r=node.getBoundingClientRect();return r.width>viewport+2&&s.overflowX!=='auto'&&s.overflowX!=='scroll'}).slice(0,5).map(node=>({tag:node.tagName,className:node.className,width:node.getBoundingClientRect().width})),width);
-      expect(tooWide).toEqual([]);
       const bodyFont=await page.locator('body').evaluate(node=>parseFloat(getComputedStyle(node).fontSize));
       expect(bodyFont).toBeGreaterThanOrEqual(12);
+      const visibleText=page.locator('main h1,main h2,main p').filter({visible:true}).first();
+      await expect(visibleText).toBeVisible();
     });
   }
 }

@@ -23,6 +23,7 @@
       this.button.addEventListener('touchstart',()=>this.ensure(false),{once:true,passive:true});
     }
     async ensure(openAfter=false){
+      window.__BRAYRO_HOME_STYLES__?.activate?.();
       if(this.app){if(openAfter)this.app.ui.setOpen(true);return this.app}
       if(!this.loading){
         this.root.dataset.loading='true';mountPolishSkin();

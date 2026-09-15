@@ -18,8 +18,8 @@ const ensureJsClass=html=>html.replace(/<html([^>]*)>/i,(match,attrs)=>{
 
 walk(root);
 
-// Keep the phone layer inside the homepage's consolidated stylesheet so mobile does not
-// pay for a second render-blocking CSS request. Subpages still load the file directly.
+// Keep the phone layer inside the homepage's consolidated stylesheet. Mobile first paint
+// now uses a tiny critical stylesheet, while the complete bundle is promoted after intent.
 const homeBundle=resolve(root,'assets/brayro-home.css');
 const mobileCss=readFileSync(resolve(sourceRoot,'mobile-polish-v25.css'),'utf8');
 let homeCss=readFileSync(homeBundle,'utf8');
@@ -38,9 +38,14 @@ for(const file of htmlFiles){
   const isHome=file===resolve(root,'index.html');
   if(isHome){
     html=html.replace(/\s*<link rel="stylesheet" href="\/mobile-polish-v25\.css"[^>]*>/g,'');
+    html=html.replace(
+      /<link rel="stylesheet" href="\/assets\/brayro-home\.css" data-brayro-home-styles data-brayro-v13>/g,
+      '<link rel="stylesheet" href="/home-critical.css" data-brayro-home-critical>\n  <link rel="stylesheet" href="/assets/brayro-home.css" media="(min-width:701px)" data-brayro-home-styles data-brayro-v13>'
+    );
+    if(!html.includes('data-home-style-loader'))html=html.replace('</body>','  <script src="/home-style-loader.js" data-home-style-loader></script>\n</body>');
   }else if(!html.includes('data-mobile-polish-v25')){
     html=html.replace('</head>','  <link rel="stylesheet" href="/mobile-polish-v25.css" data-mobile-polish-v25>\n</head>');
   }
   writeFileSync(file,html);
 }
-console.log(`Post-build hardening complete for ${htmlFiles.length} HTML files: static JS capability, CSP-safe non-blocking fonts + bundled-home Mobile V25.`);
+console.log(`Post-build hardening complete for ${htmlFiles.length} HTML files: static JS capability, CSP-safe non-blocking fonts, critical mobile home CSS + intent-loaded full home styles, and Mobile V25.`);

@@ -14,11 +14,13 @@ const checks = [
 
 const errors = [];
 const expect = (condition, message) => { if (!condition) errors.push(message); };
-const assertCspSafeHtml=(html,file)=>{
+const assertCspSafeHtml=(html,file,{mobileLink=true}={})=>{
   expect(!/<script(?:\s[^>]*)?>\s*[^<\s][\s\S]*?<\/script>/i.test(html), `${file} contains inline executable script`);
   expect(!/\sonload\s*=/i.test(html), `${file} contains an inline onload handler`);
   expect(!/\sonclick\s*=/i.test(html), `${file} contains an inline click handler`);
-  expect(html.includes('/mobile-polish-v25.css'), `${file} is missing Mobile V25 polish`);
+  expect(/<html[^>]*\bclass=(['"])[^'"]*\bjs\b[^'"]*\1/i.test(html), `${file} is missing the static JS capability class`);
+  expect(!html.includes('data-js-bootstrap'), `${file} still ships a JS bootstrap script`);
+  if(mobileLink)expect(html.includes('/mobile-polish-v25.css'), `${file} is missing Mobile V25 polish`);
 };
 
 for (const [file, canonicalPath] of checks) {
@@ -48,8 +50,8 @@ if (existsSync(home)) {
   expect(html.includes('href="/assets/brayro-home.css"'), 'Homepage is missing the consolidated stylesheet');
   expect(html.includes('/rae.js'), 'Homepage is missing Rae runtime');
   expect(html.includes('/brayro-cursor-v22.js'), 'Homepage is missing V22 cursor runtime');
-  expect(html.includes('src="/js-bootstrap.js" data-js-bootstrap'), 'Homepage JS bootstrap is not CSP-safe');
-  assertCspSafeHtml(html,'index.html');
+  expect(!html.includes('href="/mobile-polish-v25.css"'), 'Homepage should bundle Mobile V25 instead of adding a render-blocking stylesheet');
+  assertCspSafeHtml(html,'index.html',{mobileLink:false});
   for (const legacy of ['/brayro-v12.css', '/brayro-v14.css', '/brayro-v15.css', '/rae.css', '/brayro-cursor-v22.css']) {
     expect(!html.includes(`href="${legacy}"`), `Homepage should bundle stylesheet instead of direct-linking ${legacy}`);
   }
@@ -59,10 +61,11 @@ if (existsSync(home)) {
     const css = readFileSync(bundle, 'utf8');
     expect(css.includes('.rae-root'), 'Homepage bundle is missing Rae styles');
     expect(css.includes('.v22-cursor'), 'Homepage bundle is missing V22 cursor styles');
+    expect(css.includes('BRAYROAI / Mobile V25'), 'Homepage bundle is missing Mobile V25 styles');
   }
 }
 
-for (const file of ['rae.js','rae.css','brayro-cursor-v22.js','brayro-cursor-v22.css','mobile-polish-v25.css','js-bootstrap.js']) {
+for (const file of ['rae.js','rae.css','brayro-cursor-v22.js','brayro-cursor-v22.css','mobile-polish-v25.css']) {
   expect(existsSync(resolve(root,file)), `Missing production companion asset: ${file}`);
 }
 
@@ -70,4 +73,4 @@ if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
-console.log('Dist integrity passed: clean routes, CSP-safe production HTML, Mobile V25, canonical metadata, Rae and V22 cursor are present.');
+console.log('Dist integrity passed: clean routes, CSP-safe static JS capability, bundled-home Mobile V25, canonical metadata, Rae and V22 cursor are present.');

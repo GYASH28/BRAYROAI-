@@ -31,7 +31,9 @@ for(const file of htmlFiles){
   // In production the capability class is static, so no CSP-sensitive or render-blocking
   // bootstrap script is needed.
   html=html.replace(/\s*<script(?:\s+src="\/js-bootstrap\.js")?\s+data-js-bootstrap>[^<]*<\/script>/g,'');
-  html=html.replace(new RegExp(`<link rel="preload" as="style" href="${googleFontsHref.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}" onload="[^"]*" data-layout-stable-fonts>`,'g'),`<link rel="stylesheet" href="${googleFontsHref}" data-layout-stable-fonts>`);
+  // Keep Google Fonts CSP-safe without making the remote stylesheet part of the critical
+  // render path. commercial-cut.js promotes this print-media sheet after window load.
+  html=html.replace(new RegExp(`<link rel="preload" as="style" href="${googleFontsHref.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}" onload="[^"]*" data-layout-stable-fonts>`,'g'),`<link rel="stylesheet" href="${googleFontsHref}" media="print" data-layout-stable-fonts>`);
   html=html.replace(/\s*<noscript><link href="https:\/\/fonts\.googleapis\.com\/css2\?family=Archivo\+Black[^>]+><\/noscript>/g,'');
   const isHome=file===resolve(root,'index.html');
   if(isHome){
@@ -41,4 +43,4 @@ for(const file of htmlFiles){
   }
   writeFileSync(file,html);
 }
-console.log(`Post-build hardening complete for ${htmlFiles.length} HTML files: static JS capability, CSP-safe fonts + bundled-home Mobile V25.`);
+console.log(`Post-build hardening complete for ${htmlFiles.length} HTML files: static JS capability, CSP-safe non-blocking fonts + bundled-home Mobile V25.`);

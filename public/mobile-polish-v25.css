@@ -13,11 +13,11 @@
   .v22-cursor,.v22-cursor-label,.v12-project-preview{display:none!important}
 
   /* Navigation should read like a mobile product header, not a compressed desktop bar. */
-  :is(.site-nav,.plans-nav,.founder-nav,.terms-nav,.client-nav,.service-nav){left:.62rem!important;right:.62rem!important;top:.58rem!important;width:auto!important;min-height:3.45rem!important;padding:.52rem .68rem!important;border-radius:.9rem!important}
+  :is(.site-nav,.plans-nav,.founder-nav,.terms-nav,.client-nav,.service-nav){left:.62rem!important;right:.62rem!important;top:.58rem!important;width:auto!important;min-height:3.45rem!important;padding:.52rem .68rem!important;border-radius:.9rem!important;transform:none!important;animation:none!important;opacity:1!important;visibility:visible!important}
   :is(.site-nav,.plans-nav,.founder-nav,.terms-nav,.client-nav,.service-nav) nav{display:none!important}
   .site-nav__cta{display:none!important}
-  .site-nav__brand,.plans-nav__brand,.founder-nav__brand,.terms-nav__brand{font-size:.82rem!important;letter-spacing:-.035em}
-  .site-nav__menu{display:flex!important;min-width:2.65rem;min-height:2.65rem}
+  :is(.site-nav__brand,.plans-nav__brand,.founder-nav__brand,.terms-nav__brand,.client-nav__brand,.service-nav__brand){font-size:.82rem!important;letter-spacing:-.035em;opacity:1!important;visibility:visible!important}
+  .site-nav__menu{display:flex!important;min-width:2.65rem;min-height:2.65rem;opacity:1!important;visibility:visible!important}
   .mobile-menu{padding:5.1rem var(--m-pad) max(1.2rem,env(safe-area-inset-bottom))!important}
   .mobile-menu nav a{min-height:3.55rem;font-size:clamp(1.45rem,7vw,2.15rem)!important}
 

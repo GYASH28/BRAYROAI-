@@ -21,7 +21,9 @@
   .mobile-menu{padding:5.1rem var(--m-pad) max(1.2rem,env(safe-area-inset-bottom))!important}
   .mobile-menu nav a{min-height:3.55rem;font-size:clamp(1.45rem,7vw,2.15rem)!important}
 
-  /* Home / hero: intentional phone crop + readable first action. */
+  /* Home / hero: preserve the branded shutter intro, but let the hero paint as soon
+     as the shutters part instead of keeping an opaque parent over the ready LCP image. */
+  .opening-sequence{background:transparent!important}
   .hero,.hero__stage{min-height:100svh!important;height:auto!important}
   .hero__stage{overflow:hidden}
   .hero__picture{min-height:100svh!important}

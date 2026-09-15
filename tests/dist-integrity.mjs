@@ -20,6 +20,7 @@ const assertCspSafeHtml=(html,file,{mobileLink=true}={})=>{
   expect(!/\sonclick\s*=/i.test(html), `${file} contains an inline click handler`);
   expect(/<html[^>]*\bclass=(['"])[^'"]*\bjs\b[^'"]*\1/i.test(html), `${file} is missing the static JS capability class`);
   expect(!html.includes('data-js-bootstrap'), `${file} still ships a JS bootstrap script`);
+  expect(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com\/css2\?family=Archivo\+Black[^>]*media="print"[^>]*data-layout-stable-fonts>/i.test(html), `${file} should keep Google Fonts non-blocking and CSP-safe`);
   if(mobileLink)expect(html.includes('/mobile-polish-v25.css'), `${file} is missing Mobile V25 polish`);
 };
 
@@ -62,6 +63,7 @@ if (existsSync(home)) {
     expect(css.includes('.rae-root'), 'Homepage bundle is missing Rae styles');
     expect(css.includes('.v22-cursor'), 'Homepage bundle is missing V22 cursor styles');
     expect(css.includes('BRAYROAI / Mobile V25'), 'Homepage bundle is missing Mobile V25 styles');
+    expect(css.includes('.opening-sequence{background:transparent!important}'), 'Homepage Mobile V25 should reveal the ready hero beneath the opening shutters');
   }
 }
 
@@ -73,4 +75,4 @@ if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
-console.log('Dist integrity passed: clean routes, CSP-safe static JS capability, bundled-home Mobile V25, canonical metadata, Rae and V22 cursor are present.');
+console.log('Dist integrity passed: clean routes, CSP-safe static JS capability, non-blocking fonts, bundled-home Mobile V25, canonical metadata, Rae and V22 cursor are present.');

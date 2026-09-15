@@ -1,0 +1,123 @@
+/* BRAYROAI / Mobile V25 — phone-first composition pass. */
+@media (max-width:700px){
+  :root{--m-pad:clamp(.92rem,4.2vw,1.18rem);--m-radius:1rem}
+  html{overflow-x:clip;scroll-padding-top:4.8rem}
+  body{overflow-x:clip;text-rendering:optimizeLegibility;-webkit-text-size-adjust:100%}
+  main,section,.scene,.scene-shell{max-width:100%;min-width:0}
+  .scene-shell{width:100%;padding-inline:var(--m-pad)}
+  h1,h2,h3,p{overflow-wrap:anywhere}
+  h1,h2{text-wrap:balance}
+  p{text-wrap:pretty}
+  :is(a,button,input,textarea,select){font:inherit}
+  :is(a,button)[class*="action"],:is(a,button)[class*="cta"],.rae-chip,.rae-action{min-height:44px}
+  .v22-cursor,.v22-cursor-label,.v12-project-preview{display:none!important}
+
+  /* Navigation should read like a mobile product header, not a compressed desktop bar. */
+  :is(.site-nav,.plans-nav,.founder-nav,.terms-nav,.client-nav,.service-nav){left:.62rem!important;right:.62rem!important;top:.58rem!important;width:auto!important;min-height:3.45rem!important;padding:.52rem .68rem!important;border-radius:.9rem!important}
+  :is(.site-nav,.plans-nav,.founder-nav,.terms-nav,.client-nav,.service-nav) nav{display:none!important}
+  .site-nav__cta{display:none!important}
+  .site-nav__brand,.plans-nav__brand,.founder-nav__brand,.terms-nav__brand{font-size:.82rem!important;letter-spacing:-.035em}
+  .site-nav__menu{display:flex!important;min-width:2.65rem;min-height:2.65rem}
+  .mobile-menu{padding:5.1rem var(--m-pad) max(1.2rem,env(safe-area-inset-bottom))!important}
+  .mobile-menu nav a{min-height:3.55rem;font-size:clamp(1.45rem,7vw,2.15rem)!important}
+
+  /* Home / hero: intentional phone crop + readable first action. */
+  .hero,.hero__stage{min-height:100svh!important;height:auto!important}
+  .hero__stage{overflow:hidden}
+  .hero__picture{min-height:100svh!important}
+  .hero__background{height:100%!important;object-fit:cover!important;object-position:54% center!important}
+  .hero__subject{height:min(70svh,42rem)!important;width:auto!important;max-width:none!important;left:50%!important;right:auto!important;bottom:8.6rem!important;transform:translateX(-45%)!important;object-fit:contain!important}
+  .hero__word{font-size:31vw!important;top:10.5%!important;opacity:.07!important}
+  .hero__shade{background:linear-gradient(180deg,rgba(4,5,7,.05) 0,rgba(4,5,7,.12) 42%,rgba(4,5,7,.83) 68%,#050608 92%)!important}
+  .hero__copy{left:var(--m-pad)!important;right:var(--m-pad)!important;bottom:4.7rem!important;width:auto!important;max-width:none!important;padding:0!important;transform:none!important}
+  .hero__copy .eyebrow{max-width:34ch;margin-bottom:.65rem;font-size:.5rem!important;line-height:1.35}
+  .hero__copy h1,.v12-hero-title{max-width:8.8ch!important;margin:0!important;font-size:clamp(3rem,15.2vw,4.5rem)!important;line-height:.84!important;letter-spacing:-.075em!important}
+  .hero__body{max-width:34ch!important;margin-top:.88rem!important;font-size:.76rem!important;line-height:1.5!important;color:rgba(255,255,255,.76)!important}
+  .v12-hero-meta{gap:.34rem .6rem!important;margin-top:.72rem!important;font-size:.46rem!important;line-height:1.35!important}
+  .hero__actions{display:grid!important;grid-template-columns:1fr 1fr;gap:.55rem!important;margin-top:1rem!important}
+  .hero__actions>*{width:100%;justify-content:center;min-height:3.05rem!important;padding-inline:.7rem!important;font-size:.64rem!important}
+  .hero__credit{display:none!important}
+  .v12-signal-strip{min-height:2.5rem!important}
+  .v12-signal-track{font-size:.52rem!important}
+
+  /* Long desktop story scenes become readable mobile chapters. */
+  .v12-capabilities{padding-block:4.6rem 3.4rem!important}
+  .v12-capabilities__head{display:grid!important;grid-template-columns:1fr!important;gap:1rem!important}
+  .v12-capabilities__head h2{font-size:clamp(2.55rem,12vw,3.75rem)!important;line-height:.9!important;letter-spacing:-.065em!important}
+  .v12-capabilities__head>p{max-width:36ch!important;font-size:.82rem!important;line-height:1.6!important}
+  .v12-story{display:block!important;margin-top:2rem!important}
+  .v12-story__visual{position:relative!important;top:auto!important;height:15rem!important;min-height:0!important;border-radius:var(--m-radius)!important;margin-bottom:.65rem!important;overflow:hidden!important}
+  .v12-story__word{font-size:27vw!important}
+  .v12-story__steps{display:block!important}
+  .v12-story-step{min-height:0!important;padding:2rem .15rem 2.35rem!important;border-bottom:1px solid rgba(255,255,255,.11)}
+  .v12-story-step h3{font-size:clamp(2rem,9.7vw,3rem)!important;line-height:.95!important}
+  .v12-story-step p{font-size:.82rem!important;line-height:1.58!important}
+  .v12-story-step ul{gap:.4rem!important;flex-wrap:wrap!important}
+
+  .editorial-sequence{height:auto!important;min-height:0!important;padding-block:2rem 4.5rem!important}
+  .editorial-sequence__sticky{position:relative!important;top:auto!important;height:auto!important;min-height:0!important}
+  .editorial-sequence__frame{min-height:34rem!important;border-radius:var(--m-radius)!important}
+  .editorial-sequence__ghost{font-size:31vw!important;opacity:.04!important}
+  .editorial-sequence__stage{min-height:28rem!important}
+  .editorial-sequence__word{font-size:23vw!important}
+  .editorial-sequence__copy{max-width:78%!important}
+  .editorial-sequence__footer{font-size:.44rem!important;gap:.5rem!important}
+
+  .v12-work,.v12-capabilities,#ai-systems,#contact{overflow:clip}
+  .v12-work{padding-block:4rem!important}
+  .v12-work-head{display:grid!important;grid-template-columns:1fr!important;gap:.8rem!important}
+  .v12-work-head h2{font-size:clamp(2.5rem,12vw,3.65rem)!important;line-height:.9!important}
+  .v12-project-row{grid-template-columns:2.2rem 1fr auto!important;gap:.58rem!important;padding:1rem .1rem!important}
+  .v12-project-row p{grid-column:2/4!important;margin-top:.18rem!important;font-size:.72rem!important;line-height:1.45!important}
+  .v12-featured-case{grid-template-columns:1fr!important;gap:1rem!important}
+  .v12-featured-case :is(img,video){max-width:100%;height:auto}
+
+  /* Plan / service / client cards: always one readable column on a phone. */
+  :is(.plans-grid,.build-grid,.builds-grid,.monthly-grid,.ai-plan-grid,.client-grid,.service-grid,.case-grid,.audit-grid,.brain-grid){grid-template-columns:minmax(0,1fr)!important}
+  :is(.build-card,.ai-plan-card,.client-card,.service-card,.case-card){width:100%!important;max-width:none!important;min-width:0!important}
+  .plans-hero,.client-hero,.service-hero,.terms-hero{padding-inline:var(--m-pad)!important}
+  .plans-hero h1,.client-hero h1,.service-hero h1,.terms-hero h1{font-size:clamp(3rem,14vw,4.35rem)!important;line-height:.86!important;letter-spacing:-.07em!important}
+  .plans-hero>p,.client-hero>p,.service-hero>p,.terms-hero>p{max-width:36ch;font-size:.8rem!important;line-height:1.56!important}
+
+  /* Founder retains the cinematic portrait, but gets breathing room and a calmer fold. */
+  .founder-hero__copy{padding-left:var(--m-pad)!important;padding-right:var(--m-pad)!important}
+  .founder-hero__copy h1{font-size:clamp(2.65rem,12vw,3.65rem)!important;line-height:.88!important}
+  .founder-hero__copy>p:last-of-type{max-width:34ch!important;font-size:.76rem!important;line-height:1.5!important}
+
+  /* Client / AI / terms content should never inherit desktop widths. */
+  :is(.client-shell,.service-shell,.terms-shell,.plans-shell,.founder-shell){width:100%!important;max-width:100%!important;padding-left:var(--m-pad)!important;padding-right:var(--m-pad)!important}
+  :is(.terms-section,.service-section,.client-section){scroll-margin-top:5rem}
+  .terms-section{padding-block:2.6rem!important}
+  .terms-section h2{font-size:clamp(2rem,9vw,2.8rem)!important;line-height:.95!important}
+  .terms-section p,.terms-section li{font-size:.8rem!important;line-height:1.62!important}
+
+  /* Rae is a bottom-sheet product on phones, not a floating desktop modal. */
+  .rae-root.is-open .rae-panel{height:min(88dvh,var(--rae-vv-height))!important;border-radius:1.1rem 1.1rem 0 0!important}
+  .rae-root.is-open .rae-panel__head{min-height:3.55rem!important}
+  .rae-root.is-open .rae-stage{grid-template-columns:5.7rem minmax(0,1fr)!important;min-height:6.7rem!important;gap:.5rem!important;padding:.16rem .7rem .25rem!important}
+  .rae-root.is-open .rae-stage__actor{height:6.45rem!important}
+  .rae-root.is-open .rae-character--stage[data-rae-rig="v3"]{width:6.15rem!important;height:6.15rem!important}
+  .rae-root.is-open .rae-stage__copy strong{font-size:.9rem!important}
+  .rae-root.is-open .rae-stage__copy span{font-size:.63rem!important;line-height:1.42!important}
+  .rae-root.is-open .rae-feed{padding:.72rem .68rem .9rem!important}
+  .rae-root.is-open .rae-composer{padding:.56rem .6rem max(.56rem,env(safe-area-inset-bottom))!important}
+  .rae-root.is-open .rae-composer textarea{font-size:16px!important;min-height:2.85rem!important}
+}
+
+@media(max-width:360px){
+  .hero__copy h1,.v12-hero-title{font-size:clamp(2.75rem,14.5vw,3.65rem)!important}
+  .hero__actions{grid-template-columns:1fr!important}
+  .hero__actions>*{min-height:2.75rem!important}
+  .hero__body{font-size:.72rem!important}
+  .v12-story__visual{height:13.4rem!important}
+  .rae-root.is-open .rae-stage{grid-template-columns:5.15rem minmax(0,1fr)!important}
+  .rae-root.is-open .rae-character--stage[data-rae-rig="v3"]{width:5.55rem!important;height:5.55rem!important}
+}
+
+@media(max-width:700px) and (hover:none){
+  .magnetic{transform:none!important}
+}
+
+@media(max-width:700px) and (prefers-reduced-motion:reduce){
+  .v12-story__visual,.editorial-sequence__sticky{position:relative!important}
+}

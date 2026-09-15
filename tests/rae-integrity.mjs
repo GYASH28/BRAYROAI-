@@ -9,7 +9,8 @@ const files={
 
 for(const token of ['class RaeBootstrap','import(\'/rae/rae-app.js\')','Chat with Rae, BRAYROAI AI assistant','showFallback()'])expect(files.bootstrap.includes(token),`Rae bootstrap missing ${token}`);
 expect(files.bootstrap.includes('shellCharacter')&&files.bootstrap.includes('linearGradient id="rs"')&&files.bootstrap.includes('stroke="#ff6a20"'),'Rae bootstrap launcher must visually match the production ivory/visor/orange character');
-expect(files.bootstrap.includes('BRAYROAI companion')&&files.bootstrap.includes('cancelPreload()')&&files.bootstrap.includes("addEventListener('load',schedule")&&files.bootstrap.includes('requestIdleCallback(load,{timeout:1800})'),'Rae bootstrap must keep the companion label and defer idle warmup past the critical hero paint while preserving instant interaction loading');
+expect(files.bootstrap.includes('BRAYROAI companion')&&files.bootstrap.includes("addEventListener('focus',()=>this.ensure(false)")&&files.bootstrap.includes("addEventListener('pointerenter',()=>this.ensure(false)")&&files.bootstrap.includes("addEventListener('pointerdown',()=>this.ensure(false)")&&files.bootstrap.includes("addEventListener('touchstart',()=>this.ensure(false)")&&files.bootstrap.includes("addEventListener('click',()=>this.ensure(true)"),'Rae bootstrap must keep the lightweight companion shell and load the full app only on explicit user intent');
+expect(!files.bootstrap.includes('deferLoad()')&&!files.bootstrap.includes('requestIdleCallback(load'),'Rae must not auto-mount its heavy UI during the initial page performance window');
 expect(files.bootstrap.includes("/rae/rae-polish-v5.css")&&files.bootstrap.includes("import('/rae/rae-polish-v5.js')"),'Rae V5 polish must remain lazy-loaded with the full app');
 for(const token of ['class RaeDirector','setState(next)','setAttention','setSpeakingLevel','scheduleBlink','scheduleIdle','pulseSpeech','sleep()','wake()','rae:first-token','rae:stream-chunk','mountEmotionSkin'])expect(files.director.includes(token),`Rae director missing ${token}`);
 for(const state of ['boot','idle','attention','opening','listening','thinking','speaking','positive','curious','confused','surprised','playful','proud','shy','skeptical','laughing','wink','error','offline','celebrate','sleep'])expect(files.director.includes(`'${state}'`),`Rae state missing ${state}`);
@@ -53,4 +54,4 @@ expect(Buffer.byteLength(files.polishJs)<5000,'Rae V5 polish JS exceeds 5KB lazy
 expect(Buffer.byteLength(files.api)<30000,'Rae API exceeds 30KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Rae integrity OK: ${clientBytes}B modular client, V3 ivory/visor character rig, V4+V5 presentation polish, 21 emotional states, resilient streaming AI, safe actions, collision clearance and verified knowledge.`);
+console.log(`Rae integrity OK: ${clientBytes}B modular client, intent-loaded V3 companion, V4+V5 presentation polish, 21 emotional states, resilient streaming AI, safe actions, collision clearance and verified knowledge.`);

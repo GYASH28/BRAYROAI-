@@ -13,7 +13,7 @@
   .v22-cursor,.v22-cursor-label,.v12-project-preview{display:none!important}
 
   /* Navigation should read like a mobile product header, not a compressed desktop bar. */
-  :is(.site-nav,.plans-nav,.founder-nav,.terms-nav,.client-nav,.service-nav){left:.62rem!important;right:.62rem!important;top:.58rem!important;width:auto!important;min-height:3.45rem!important;padding:.52rem .68rem!important;border-radius:.9rem!important;transform:none!important;animation:none!important;opacity:1!important;visibility:visible!important}
+  :is(.site-nav,.plans-nav,.founder-nav,.terms-nav,.client-nav,.service-nav){left:.62rem!important;right:.62rem!important;top:.58rem!important;width:auto!important;min-height:3.45rem!important;padding:.52rem .68rem!important;border-radius:.9rem!important;transform:none!important;translate:none!important;animation:none!important;opacity:1!important;visibility:visible!important}
   :is(.site-nav,.plans-nav,.founder-nav,.terms-nav,.client-nav,.service-nav) nav{display:none!important}
   .site-nav__cta{display:none!important}
   :is(.site-nav__brand,.plans-nav__brand,.founder-nav__brand,.terms-nav__brand,.client-nav__brand,.service-nav__brand){font-size:.82rem!important;letter-spacing:-.035em;opacity:1!important;visibility:visible!important}

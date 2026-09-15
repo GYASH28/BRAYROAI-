@@ -5,6 +5,7 @@ async function loadRae(page,route='/plans'){
   await expect(page.locator('[data-rae-root]')).toHaveCount(1);
   await page.evaluate(()=>document.querySelector('[data-rae-shell]')?.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true,pointerType:'mouse'})));
   await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-app-ready','true',{timeout:8000});
+  await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-polish','v5',{timeout:8000});
 }
 async function openRae(page,route='/plans'){
   await loadRae(page,route);await page.locator('[data-rae-toggle]').click();await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false');
@@ -32,4 +33,28 @@ test('Rae desktop reads as a dedicated companion surface',async({page,browserNam
   const kicker=await page.locator('.rae-stage__copy').evaluate(node=>getComputedStyle(node,'::before').content);
   expect(kicker).toContain('BRAYROAI');
   await expect(page.locator('.v22-cursor')).toHaveCSS('display','none');
+});
+
+test('Rae V5 empty state is useful instead of dead space',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','One browser is sufficient for V5 hierarchy contract');
+  await page.setViewportSize({width:1440,height:1000});await openRae(page,'/plans');
+  const feed=page.locator('[data-rae-feed]');
+  await expect(feed).toHaveAttribute('data-rae-empty','true');
+  await expect(page.locator('.rae-welcome--v5')).toBeVisible();
+  await expect(page.locator('.rae-welcome__eyebrow')).toHaveText('USE RAE FOR');
+  await expect(page.locator('.rae-welcome__prompt')).toHaveCount(3);
+  await expect(page.locator('[data-rae-suggestions]')).toHaveCSS('display','none');
+  await expect(page.locator('[data-rae-status]')).toHaveText('ONLINE');
+});
+
+test('Rae V5 starter yields to the conversation after a prompt',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','One browser is sufficient for starter transition contract');
+  await page.route('**/api/rae-chat',async route=>route.fulfill({status:200,contentType:'text/event-stream; charset=utf-8',body:'event: state\ndata: {"state":"thinking"}\n\nevent: delta\ndata: {"text":"I can help with that."}\n\nevent: meta\ndata: {"quickReplies":["Compare plans"]}\n\nevent: done\ndata: {"emotion":"positive"}\n\n'}));
+  await openRae(page,'/plans');
+  await page.locator('[data-rae-input]').fill('Help me choose a plan');
+  await page.locator('[data-rae-send]').click();
+  await expect(page.locator('[data-rae-feed]')).toHaveAttribute('data-rae-empty','false');
+  await expect(page.locator('.rae-welcome--v5')).toHaveCount(0);
+  await expect(page.locator('.rae-message[data-who="rae"]')).toContainText('I can help with that.');
+  await expect(page.locator('[data-rae-suggestions]')).not.toHaveCSS('display','none');
 });

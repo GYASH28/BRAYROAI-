@@ -21,8 +21,7 @@ for(const width of [320,390]){
       expect(mainBox.x+mainBox.width).toBeLessThanOrEqual(width+1);
       const bodyFont=await page.locator('body').evaluate(node=>parseFloat(getComputedStyle(node).fontSize));
       expect(bodyFont).toBeGreaterThanOrEqual(12);
-      const visibleText=page.locator('main h1,main h2,main p').filter({visible:true}).first();
-      await expect(visibleText).toBeVisible();
+      await expect(main.getByRole('heading').first()).toBeVisible();
     });
   }
 }

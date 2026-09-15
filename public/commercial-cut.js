@@ -2,6 +2,12 @@ const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
 const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));
 
+const activateDeferredFonts=()=>{
+  document.querySelectorAll('link[data-layout-stable-fonts][media="print"]').forEach(link=>{link.media='all'});
+};
+if(document.readyState==='complete')setTimeout(activateDeferredFonts,0);
+else addEventListener('load',activateDeferredFonts,{once:true});
+
 class RevealDirector{
   constructor(){
     this.items=[...document.querySelectorAll('[data-reveal]')];

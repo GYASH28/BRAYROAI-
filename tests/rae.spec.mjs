@@ -5,21 +5,28 @@ const defaultEvents=[
   ['state',{state:'thinking'}],['state',{state:'speaking'}],['delta',{text:'BRAYROAI can help with '}],['delta',{text:'websites, products and practical AI systems.'}],['meta',{quickReplies:['Show relevant work','Compare plans'],emotion:'positive'}],['done',{finishReason:'stop',emotion:'positive'}]
 ];
 
-async function mockAI(page,{events=defaultEvents,delay=35,failFirst=false,status=200,errorCode='provider_unavailable',errorMessage='temporary failure'}={}){
-  await page.addInitScript(({events,delay,failFirst,status,errorCode,errorMessage})=>{
-    const original=window.fetch.bind(window);window.__raeApiCalls=0;
+async function mockAI(page,{events=defaultEvents,delay=35,failFirst=false,status=200,errorCode='provider_unavailable',errorMessage='temporary failure',gateAfterFirstDelta=false}={}){
+  await page.addInitScript(({events,delay,failFirst,status,errorCode,errorMessage,gateAfterFirstDelta})=>{
+    const original=window.fetch.bind(window);window.__raeApiCalls=0;window.__raeReleaseStream=null;window.__raeStreamGateUsed=false;
     window.fetch=async(input,init={})=>{
       const url=typeof input==='string'?input:input?.url||'';if(!url.includes('/api/rae-chat'))return original(input,init);
       window.__raeApiCalls+=1;
       if((failFirst&&window.__raeApiCalls===1)||status!==200)return new Response(JSON.stringify({error:errorMessage,code:errorCode}),{status:status===200?503:status,headers:{'Content-Type':'application/json'}});
       const encoder=new TextEncoder();let index=0,timer;
       const stream=new ReadableStream({start(controller){
-        const push=()=>{if(init.signal?.aborted){try{controller.error(new DOMException('Aborted','AbortError'))}catch{}return}if(index>=events.length){controller.close();return}const [type,data]=events[index++];controller.enqueue(encoder.encode(`event: ${type}\ndata: ${JSON.stringify(data)}\n\n`));timer=setTimeout(push,delay)};push();
-        init.signal?.addEventListener('abort',()=>{clearTimeout(timer);try{controller.error(new DOMException('Aborted','AbortError'))}catch{}},{once:true});
+        const push=()=>{
+          if(init.signal?.aborted){try{controller.error(new DOMException('Aborted','AbortError'))}catch{}return}
+          if(index>=events.length){controller.close();return}
+          const [type,data]=events[index++];controller.enqueue(encoder.encode(`event: ${type}\ndata: ${JSON.stringify(data)}\n\n`));
+          if(gateAfterFirstDelta&&type==='delta'&&!window.__raeStreamGateUsed){window.__raeStreamGateUsed=true;window.__raeReleaseStream=()=>{window.__raeReleaseStream=null;timer=setTimeout(push,0)};return}
+          timer=setTimeout(push,delay);
+        };
+        push();
+        init.signal?.addEventListener('abort',()=>{clearTimeout(timer);window.__raeReleaseStream=null;try{controller.error(new DOMException('Aborted','AbortError'))}catch{}},{once:true});
       }});
       return new Response(stream,{status:200,headers:{'Content-Type':'text/event-stream; charset=utf-8'}});
     };
-  },{events,delay,failFirst,status,errorCode,errorMessage});
+  },{events,delay,failFirst,status,errorCode,errorMessage,gateAfterFirstDelta});
 }
 
 async function loadRae(page,route='/'){
@@ -40,9 +47,11 @@ for(const [route,pageName] of [['/','home'],['/plans','plans'],['/founder','foun
 }
 
 test('free-text conversation uses the real streaming transport and renders progressively',async({page})=>{
-  await mockAI(page,{delay:450});await openRae(page,'/');await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','thinking');
+  await mockAI(page,{delay:20,gateAfterFirstDelta:true});await openRae(page,'/');await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state',/thinking|speaking/);
   const reply=page.locator('.rae-message[data-who="rae"] .rae-message__bubble').last();
-  await expect(reply).toContainText('BRAYROAI can help with');expect(await reply.textContent()).not.toContain('practical AI systems.');await expect(reply).toContainText('practical AI systems.',{timeout:3000});await expect(page.locator('[data-rae-stop]')).toBeHidden();expect(await page.evaluate(()=>window.__raeApiCalls)).toBe(1);
+  await expect(reply).toContainText('BRAYROAI can help with');expect(await reply.textContent()).not.toContain('practical AI systems.');
+  await page.evaluate(()=>window.__raeReleaseStream?.());
+  await expect(reply).toContainText('practical AI systems.',{timeout:3000});await expect(page.locator('[data-rae-stop]')).toBeHidden();expect(await page.evaluate(()=>window.__raeApiCalls)).toBe(1);
 });
 
 test('Rae can stop an in-flight streamed answer immediately',async({page})=>{

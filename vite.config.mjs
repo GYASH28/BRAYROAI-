@@ -9,11 +9,12 @@ const buildCommit=(process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA||'l
 const cleanRouteMap=Object.freeze({'/plans':'/plans.html','/founder':'/founder.html','/terms':'/terms.html','/ai-workflow-audit':'/ai-workflow-audit.html','/company-second-brain':'/company-second-brain.html','/clients':'/clients.html','/clients/fakhrimart':'/fakhrimart-case-study.html'});
 
 // Keep source passes modular in the repo, but ship one ordered homepage sheet.
-// V5 is intentionally absent: its homepage runtime exits immediately beneath V15,
-// so its home-only CSS/JS is stripped instead of downloaded and parsed.
+// Rae's complete panel skin is loaded on interaction and the V22 cursor skin is
+// fine-pointer only, so neither belongs in the phone's render-blocking cascade.
 const homeStyleFiles=Object.freeze([
-  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css','rae.css','home-performance.css'
+  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','home-performance.css'
 ]);
+const homeDeferredStyleFiles=Object.freeze(['brayro-cursor-v22.css','rae.css']);
 const readHomeStyles=()=>homeStyleFiles.map(file=>`/* ${file} */\n${readFileSync(resolve(process.cwd(),'public',file),'utf8')}`).join('\n\n');
 // The homepage sheet is emitted manually, so it bypasses Vite's normal CSS optimizer.
 // Compact comments and whitespace at build time while keeping source files readable.
@@ -25,7 +26,7 @@ const serveHomeStyleBundle=server=>{server.middlewares.use((req,res,next)=>{if(!
 const pagePathFor=(filename='')=>filename.endsWith('/plans.html')?'/plans':filename.endsWith('/founder.html')?'/founder':filename.endsWith('/terms.html')?'/terms':filename.endsWith('/ai-workflow-audit.html')?'/ai-workflow-audit':filename.endsWith('/company-second-brain.html')?'/company-second-brain':filename.endsWith('/clients.html')?'/clients':filename.endsWith('/fakhrimart-case-study.html')?'/clients/fakhrimart':'/';
 const injectBefore=(html,marker,value)=>html.replace(marker,`${value}\n${marker}`);
 const optimiseFonts=html=>{const blocking=`<link href="${googleFontsHref}" rel="stylesheet">`;if(!html.includes(blocking))return html;const nonBlocking=`<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'" data-layout-stable-fonts>\n  <noscript><link href="${googleFontsHref}" rel="stylesheet"></noscript>`;return html.replace(blocking,nonBlocking)};
-const removeHomepageStyleLinks=html=>{let next=html;for(const file of homeStyleFiles){const escaped=file.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');next=next.replace(new RegExp(`\\s*<link rel="stylesheet" href="/${escaped}"(?: [^>]*)?>\\s*`,'g'),'\n  ')}return next};
+const removeHomepageStyleLinks=html=>{let next=html;for(const file of [...homeStyleFiles,...homeDeferredStyleFiles]){const escaped=file.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');next=next.replace(new RegExp(`\\s*<link rel="stylesheet" href="/${escaped}"(?: [^>]*)?>\\s*`,'g'),'\n  ')}return next};
 
 const experienceTransform={
   name:'brayro-experience-transform',

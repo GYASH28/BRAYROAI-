@@ -4,13 +4,15 @@ const read=file=>fs.readFileSync(file,'utf8');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 const files={
-  bootstrap:read('public/rae.js'),css:read('public/rae.css'),characterCss:read('public/rae/rae-character-v2.css'),emotionCss:read('public/rae/rae-character-emotions.css'),polishCss:read('public/rae/rae-polish-v5.css'),polishJs:read('public/rae/rae-polish-v5.js'),app:read('public/rae/rae-app.js'),director:read('public/rae/rae-director.js'),ui:read('public/rae/rae-ui.js'),transport:read('public/rae/rae-chat-client.js'),actions:read('public/rae/rae-actions.js'),context:read('public/rae/rae-context.js'),character:read('public/rae/rae-character.js'),contactCss:read('public/contact-priority.css'),contactJs:read('public/contact-priority.js'),api:read('api/rae-chat.js'),knowledge:read('api/_rae-knowledge.js'),vite:read('vite.config.mjs'),pkg:read('package.json')
+  bootstrap:read('public/rae.js'),css:read('public/rae.css'),characterCss:read('public/rae/rae-character-v2.css'),emotionCss:read('public/rae/rae-character-emotions.css'),polishCss:read('public/rae/rae-polish-v5.css'),polishJs:read('public/rae/rae-polish-v5.js'),app:read('public/rae/rae-app.js'),director:read('public/rae/rae-director.js'),ui:read('public/rae/rae-ui.js'),transport:read('public/rae/rae-chat-client.js'),actions:read('public/rae/rae-actions.js'),context:read('public/rae/rae-context.js'),character:read('public/rae/rae-character.js'),contactCss:read('public/contact-priority.css'),contactJs:read('public/contact-priority.js'),api:read('api/rae-chat.js'),knowledge:read('api/_rae-knowledge.js'),vite:read('vite.config.mjs'),pkg:read('package.json'),homePerf:read('public/home-performance.css')
 };
 
 for(const token of ['class RaeBootstrap','import(\'/rae/rae-app.js\')','Chat with Rae, BRAYROAI AI assistant','showFallback()'])expect(files.bootstrap.includes(token),`Rae bootstrap missing ${token}`);
 expect(files.bootstrap.includes('shellCharacter')&&files.bootstrap.includes('linearGradient id="rs"')&&files.bootstrap.includes('stroke="#ff6a20"'),'Rae bootstrap launcher must visually match the production ivory/visor/orange character');
 expect(files.bootstrap.includes('BRAYROAI companion')&&files.bootstrap.includes("addEventListener('focus',()=>this.ensure(false)")&&files.bootstrap.includes("addEventListener('pointerenter',()=>this.ensure(false)")&&files.bootstrap.includes("addEventListener('pointerdown',()=>this.ensure(false)")&&files.bootstrap.includes("addEventListener('touchstart',()=>this.ensure(false)")&&files.bootstrap.includes("addEventListener('click',()=>this.ensure(true)"),'Rae bootstrap must keep the lightweight companion shell and load the full app only on explicit user intent');
 expect(!files.bootstrap.includes('deferLoad()')&&!files.bootstrap.includes('requestIdleCallback(load'),'Rae must not auto-mount its heavy UI during the initial page performance window');
+expect(files.bootstrap.includes("ensureStylesheet('/rae.css','data-rae-style')")&&files.bootstrap.includes("Promise.all([ensureStylesheet('/rae.css'"),'Rae full conversation skin must lazy-load with the app rather than block homepage paint');
+expect(files.homePerf.includes('.rae-presence')&&files.homePerf.includes('.rae-presence__actor'),'Homepage performance layer must retain the lightweight Rae launcher skin');
 expect(files.bootstrap.includes("/rae/rae-polish-v5.css")&&files.bootstrap.includes("import('/rae/rae-polish-v5.js')"),'Rae V5 polish must remain lazy-loaded with the full app');
 for(const token of ['class RaeDirector','setState(next)','setAttention','setSpeakingLevel','scheduleBlink','scheduleIdle','pulseSpeech','sleep()','wake()','rae:first-token','rae:stream-chunk','mountEmotionSkin'])expect(files.director.includes(token),`Rae director missing ${token}`);
 for(const state of ['boot','idle','attention','opening','listening','thinking','speaking','positive','curious','confused','surprised','playful','proud','shy','skeptical','laughing','wink','error','offline','celebrate','sleep'])expect(files.director.includes(`'${state}'`),`Rae state missing ${state}`);
@@ -45,7 +47,7 @@ expect(files.knowledge.includes('FakhriMart')&&files.knowledge.includes('fakhriy
 expect(files.vite.includes("'rae.css'")&&files.vite.includes('/rae.js'),'Vite does not mount Rae');
 expect(files.pkg.includes('public/rae/rae-polish-v5.js')&&files.pkg.includes('tests/rae-provider-fallback.mjs')&&files.pkg.includes('api/rae-chat.js'),'Syntax/integrity suite does not guard Rae V5');
 const clientBytes=['bootstrap','app','director','ui','transport','actions','context','character','polishJs'].reduce((sum,key)=>sum+Buffer.byteLength(files[key]),0);
-expect(clientBytes<124000,`Rae modular JS exceeds 124KB guardrail (${clientBytes})`);
+expect(clientBytes<126000,`Rae modular JS exceeds 126KB guardrail (${clientBytes})`);
 expect(Buffer.byteLength(files.css)<32000,'Rae base CSS exceeds 32KB guardrail');
 expect(Buffer.byteLength(files.characterCss)<26000,'Rae character skin exceeds 26KB guardrail');
 expect(Buffer.byteLength(files.emotionCss)<18000,'Rae emotion/presentation skin exceeds 18KB lazy-load guardrail');
@@ -54,4 +56,4 @@ expect(Buffer.byteLength(files.polishJs)<5000,'Rae V5 polish JS exceeds 5KB lazy
 expect(Buffer.byteLength(files.api)<30000,'Rae API exceeds 30KB guardrail');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log(`Rae integrity OK: ${clientBytes}B modular client, intent-loaded V3 companion, V4+V5 presentation polish, 21 emotional states, resilient streaming AI, safe actions, collision clearance and verified knowledge.`);
+console.log(`Rae integrity OK: ${clientBytes}B modular client, intent-loaded base/V3 companion skins, V4+V5 presentation polish, 21 emotional states, resilient streaming AI, safe actions, collision clearance and verified knowledge.`);

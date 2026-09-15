@@ -20,7 +20,6 @@ const assertCspSafeHtml=(html,file,{mobileLink=true}={})=>{
   expect(!/\sonclick\s*=/i.test(html), `${file} contains an inline click handler`);
   expect(/<html[^>]*\bclass=(['"])[^'"]*\bjs\b[^'"]*\1/i.test(html), `${file} is missing the static JS capability class`);
   expect(!html.includes('data-js-bootstrap'), `${file} still ships a JS bootstrap script`);
-  expect(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com\/css2\?family=Archivo\+Black[^>]*media="print"[^>]*data-layout-stable-fonts>/i.test(html), `${file} should keep Google Fonts non-blocking and CSP-safe`);
   if(mobileLink)expect(html.includes('/mobile-polish-v25.css'), `${file} is missing Mobile V25 polish`);
 };
 
@@ -52,6 +51,7 @@ if (existsSync(home)) {
   expect(html.includes('/rae.js'), 'Homepage is missing Rae runtime');
   expect(html.includes('/brayro-cursor-v22.js'), 'Homepage is missing V22 cursor runtime');
   expect(!html.includes('href="/mobile-polish-v25.css"'), 'Homepage should bundle Mobile V25 instead of adding a render-blocking stylesheet');
+  expect(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com\/css2\?family=Archivo\+Black[^>]*media="print"[^>]*data-layout-stable-fonts>/i.test(html), 'Homepage Google Fonts should remain non-blocking and CSP-safe');
   assertCspSafeHtml(html,'index.html',{mobileLink:false});
   for (const legacy of ['/brayro-v12.css', '/brayro-v14.css', '/brayro-v15.css', '/rae.css', '/brayro-cursor-v22.css']) {
     expect(!html.includes(`href="${legacy}"`), `Homepage should bundle stylesheet instead of direct-linking ${legacy}`);
@@ -75,4 +75,4 @@ if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
-console.log('Dist integrity passed: clean routes, CSP-safe static JS capability, non-blocking fonts, bundled-home Mobile V25, canonical metadata, Rae and V22 cursor are present.');
+console.log('Dist integrity passed: clean routes, CSP-safe static JS capability, non-blocking homepage fonts, bundled-home Mobile V25, canonical metadata, Rae and V22 cursor are present.');

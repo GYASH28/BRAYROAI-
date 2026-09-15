@@ -18,8 +18,9 @@ const ensureJsClass=html=>html.replace(/<html([^>]*)>/i,(match,attrs)=>{
 
 walk(root);
 
-// Keep the phone layer inside the homepage's consolidated stylesheet. Mobile first paint
-// now uses a tiny critical stylesheet, while the complete bundle is promoted after intent.
+// Keep the phone layer inside the homepage's consolidated stylesheet so mobile does not
+// pay for a second render-blocking CSS request. Rae's full UI skin is intent-loaded by
+// rae.js; the V22 cursor skin is a non-matching media sheet on touch/mobile devices.
 const homeBundle=resolve(root,'assets/brayro-home.css');
 const mobileCss=readFileSync(resolve(sourceRoot,'mobile-polish-v25.css'),'utf8');
 let homeCss=readFileSync(homeBundle,'utf8');
@@ -38,14 +39,10 @@ for(const file of htmlFiles){
   const isHome=file===resolve(root,'index.html');
   if(isHome){
     html=html.replace(/\s*<link rel="stylesheet" href="\/mobile-polish-v25\.css"[^>]*>/g,'');
-    html=html.replace(
-      /<link rel="stylesheet" href="\/assets\/brayro-home\.css" data-brayro-home-styles data-brayro-v13>/g,
-      '<link rel="stylesheet" href="/home-critical.css" data-brayro-home-critical>\n  <link rel="stylesheet" href="/assets/brayro-home.css" media="(min-width:701px)" data-brayro-home-styles data-brayro-v13>'
-    );
-    if(!html.includes('data-home-style-loader'))html=html.replace('</body>','  <script src="/home-style-loader.js" data-home-style-loader></script>\n</body>');
+    if(!html.includes('data-v22-cursor-home'))html=html.replace('</head>','  <link rel="stylesheet" href="/brayro-cursor-v22.css" media="(hover:hover) and (pointer:fine)" data-v22-cursor-home>\n</head>');
   }else if(!html.includes('data-mobile-polish-v25')){
     html=html.replace('</head>','  <link rel="stylesheet" href="/mobile-polish-v25.css" data-mobile-polish-v25>\n</head>');
   }
   writeFileSync(file,html);
 }
-console.log(`Post-build hardening complete for ${htmlFiles.length} HTML files: static JS capability, CSP-safe non-blocking fonts, critical mobile home CSS + intent-loaded full home styles, and Mobile V25.`);
+console.log(`Post-build hardening complete for ${htmlFiles.length} HTML files: stable home cascade, CSP-safe non-blocking fonts, intent-loaded Rae skin, fine-pointer cursor skin + bundled-home Mobile V25.`);

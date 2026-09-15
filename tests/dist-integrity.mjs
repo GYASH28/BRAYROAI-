@@ -14,6 +14,12 @@ const checks = [
 
 const errors = [];
 const expect = (condition, message) => { if (!condition) errors.push(message); };
+const assertCspSafeHtml=(html,file)=>{
+  expect(!/<script(?:\s[^>]*)?>\s*[^<\s][\s\S]*?<\/script>/i.test(html), `${file} contains inline executable script`);
+  expect(!/\sonload\s*=/i.test(html), `${file} contains an inline onload handler`);
+  expect(!/\sonclick\s*=/i.test(html), `${file} contains an inline click handler`);
+  expect(html.includes('/mobile-polish-v25.css'), `${file} is missing Mobile V25 polish`);
+};
 
 for (const [file, canonicalPath] of checks) {
   const full = resolve(root, file);
@@ -26,6 +32,7 @@ for (const [file, canonicalPath] of checks) {
   expect(html.includes('/rae.js'), `${file} is missing Rae runtime`);
   expect(html.includes('/brayro-cursor-v22.css'), `${file} is missing V22 cursor CSS`);
   expect(html.includes('/brayro-cursor-v22.js'), `${file} is missing V22 cursor runtime`);
+  assertCspSafeHtml(html,file);
 }
 
 const fakhri = resolve(root, 'clients/fakhrimart/index.html');
@@ -41,6 +48,8 @@ if (existsSync(home)) {
   expect(html.includes('href="/assets/brayro-home.css"'), 'Homepage is missing the consolidated stylesheet');
   expect(html.includes('/rae.js'), 'Homepage is missing Rae runtime');
   expect(html.includes('/brayro-cursor-v22.js'), 'Homepage is missing V22 cursor runtime');
+  expect(html.includes('src="/js-bootstrap.js" data-js-bootstrap'), 'Homepage JS bootstrap is not CSP-safe');
+  assertCspSafeHtml(html,'index.html');
   for (const legacy of ['/brayro-v12.css', '/brayro-v14.css', '/brayro-v15.css', '/rae.css', '/brayro-cursor-v22.css']) {
     expect(!html.includes(`href="${legacy}"`), `Homepage should bundle stylesheet instead of direct-linking ${legacy}`);
   }
@@ -53,7 +62,7 @@ if (existsSync(home)) {
   }
 }
 
-for (const file of ['rae.js','rae.css','brayro-cursor-v22.js','brayro-cursor-v22.css']) {
+for (const file of ['rae.js','rae.css','brayro-cursor-v22.js','brayro-cursor-v22.css','mobile-polish-v25.css','js-bootstrap.js']) {
   expect(existsSync(resolve(root,file)), `Missing production companion asset: ${file}`);
 }
 
@@ -61,4 +70,4 @@ if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
-console.log('Dist integrity passed: clean routes, canonical metadata, consolidated homepage CSS, Rae and V22 cursor are present.');
+console.log('Dist integrity passed: clean routes, CSP-safe production HTML, Mobile V25, canonical metadata, Rae and V22 cursor are present.');

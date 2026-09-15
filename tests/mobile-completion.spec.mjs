@@ -10,7 +10,8 @@ for(const width of [320,390]){
       await page.setViewportSize({width,height:844});
       await page.goto(route,{waitUntil:'domcontentloaded'});
       await clearOpening(page);
-      await expect(page.locator('link[data-mobile-polish-v25]')).toHaveCount(1);
+      if(route==='/')await expect(page.locator('link[data-mobile-polish-v25]')).toHaveCount(0);
+      else await expect(page.locator('link[data-mobile-polish-v25]')).toHaveCount(1);
       const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(1);
       const main=page.locator('main').first();
@@ -22,6 +23,26 @@ for(const width of [320,390]){
       const bodyFont=await page.locator('body').evaluate(node=>parseFloat(getComputedStyle(node).fontSize));
       expect(bodyFont).toBeGreaterThanOrEqual(12);
       await expect(main.getByRole('heading').first()).toBeVisible();
+
+      const header=page.locator('header').first();
+      await expect(header).toBeVisible();
+      const headerBox=await header.boundingBox();
+      expect(headerBox).not.toBeNull();
+      expect(headerBox.x).toBeGreaterThanOrEqual(-1);
+      expect(headerBox.x+headerBox.width).toBeLessThanOrEqual(width+1);
+      const brand=header.locator('a').first();
+      await expect(brand).toBeVisible();
+      const brandBox=await brand.boundingBox();
+      expect(brandBox).not.toBeNull();
+      expect(brandBox.x).toBeGreaterThanOrEqual(0);
+      expect(brandBox.x+brandBox.width).toBeLessThanOrEqual(width);
+      if(route==='/'){
+        const menu=page.locator('[data-menu-button]');
+        await expect(menu).toBeVisible();
+        const menuBox=await menu.boundingBox();
+        expect(menuBox.x).toBeGreaterThanOrEqual(0);
+        expect(menuBox.x+menuBox.width).toBeLessThanOrEqual(width);
+      }
     });
   }
 }

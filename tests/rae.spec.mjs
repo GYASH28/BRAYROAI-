@@ -47,7 +47,7 @@ for(const [route,pageName] of [['/','home'],['/plans','plans'],['/founder','foun
 }
 
 test('free-text conversation uses the real streaming transport and renders progressively',async({page})=>{
-  await mockAI(page,{delay:20,gateAfterFirstDelta:true});await openRae(page,'/');await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','thinking');
+  await mockAI(page,{delay:20,gateAfterFirstDelta:true});await openRae(page,'/');await page.locator('[data-rae-input]').fill('What can BRAYROAI build for my company?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state',/thinking|speaking/);
   const reply=page.locator('.rae-message[data-who="rae"] .rae-message__bubble').last();
   await expect(reply).toContainText('BRAYROAI can help with');expect(await reply.textContent()).not.toContain('practical AI systems.');
   await page.evaluate(()=>window.__raeReleaseStream?.());

@@ -4,6 +4,8 @@ import {load} from 'cheerio';
 import {MARKETS,MARKET_ROUTES,marketRoute} from '../data/markets.js';
 import {OFFERS,priceFor,leadText} from '../data/pricing.js';
 import {translateArabicService} from './arabic-services.mjs';
+import {translateArabicHome} from './arabic-home.mjs';
+import {translateArabicFounder,translateArabicClientArchive,translateArabicCaseIntro,translateArabicTerms} from './arabic-inner.mjs';
 
 const origin='https://brayroai.vercel.app';
 const source={
@@ -70,6 +72,8 @@ function localizeEnglish($,market,route){
   const uae=market==='ae';
   const territory=uae?'the UAE':'Australia';
   const country=uae?'UAE':'Australia';
+  $('.market-trigger').contents().filter((_,node)=>node.type==='text').first().replaceWith(`${MARKETS[market].label} `);
+  $('.global-menu__market').text(`Change market · ${MARKETS[market].currency}`);
   setText($,'.global-footer__top>div>small',`BRAYROAI / REMOTE STUDIO SERVING ${country.toUpperCase()}`);
   setText($,'.global-footer__top>nav>div:last-child>span',`Based in Pune, India · Serving ${territory} remotely`);
   if(route==='/'){
@@ -100,7 +104,7 @@ const arabicRouteCopy={
   '/terms':{heading:'.terms-hero h1',html:'شروط واضحة.<br><em>عمل أفضل.</em>',lead:'.terms-hero__copy>p:not(.eyebrow)',leadText:'توضح هذه الشروط قواعد العمل الأساسية للمشاريع والشراكات الشهرية. يمكن للعرض المكتوب أو الفاتورة تحديد شروط إضافية للمشروع.'}
 };
 const arabicLabels={
-  'Monthly':'شهري','Builds':'المشاريع','Compare':'قارن','Care':'التفاصيل','Overview':'نظرة عامة','Process':'العملية','Outcome':'النتيجة','Work':'الأعمال','AI systems':'أنظمة الذكاء','Start':'البداية','Capabilities':'الخدمات','Contact':'تواصل','Choose':'الاختيار','One-time':'مشروع واحد','PLANS':'الخطط','INDEX':'الفهرس',
+  'Monthly':'شهري','Builds':'المشاريع','Compare':'قارن','Care':'التفاصيل','Overview':'نظرة عامة','Process':'العملية','Outcome':'النتيجة','Work':'الأعمال','AI systems':'أنظمة الذكاء','AI Systems':'أنظمة الذكاء','Start':'البداية','Capabilities':'الخدمات','Contact':'تواصل','Choose':'الاختيار','One-time':'مشروع واحد','PLANS':'الخطط','INDEX':'الفهرس','Principles':'المبادئ','Approach':'المنهج','Experience':'التجربة','FOUNDER':'المؤسس','CLIENTS':'العملاء','TERMS':'الشروط','Story':'القصة','Method':'المنهج','Index':'الفهرس','Services':'الخدمات','Pricing':'الأسعار','Payments':'الدفعات','Ownership':'الملكية','Liability':'المسؤولية','Plans':'الخطط','What we fix':'ما نقدمه',
   'CLEAR SCOPE / ONE STANDARD':'نطاق واضح / معيار واحد','Monthly partnership':'شراكة شهرية','One-time build':'مشروع متكامل','Looking for AI systems? See the AI offers':'تبحث عن نظام ذكاء اصطناعي؟ اكتشف الخيارات','THE CURRENT FIT':'الخيار الحالي','ONE-TIME / COMPLETE BUILD':'مشروع متكامل','See the plans':'شاهد الخطط','THREE WAYS TO WORK TOGETHER':'ثلاث طرق للعمل معاً','01 / KEEP IMPROVING':'٠١ / تطوير مستمر','02 / BUILD + LAUNCH':'٠٢ / بناء وإطلاق','03 / REMOVE FRICTION':'٠٣ / تبسيط العمل','Compare all published offers':'قارن جميع الخيارات المنشورة',
   'ONGOING / MONTHLY':'شراكة مستمرة / شهرياً','ONE-TIME FAMILY / 02':'مشاريع متكاملة / ٠٢','MONTHLY FAMILY / 01':'شراكات شهرية / ٠١','Website care + growth':'تطوير الموقع ونموه','Complete website builds':'بناء مواقع متكاملة','PRACTICAL AI / GROWING COMPANIES':'ذكاء اصطناعي عملي / للشركات النامية','FIXED SCOPE':'نطاق ثابت','IMPLEMENTATION':'تنفيذ','ONGOING / OPTIONAL':'دعم مستمر / اختياري','CHOOSE THE RIGHT JOB':'اختر ما يحقق هدفك','CLEAR BOUNDARIES / NO SURPRISES':'نطاق واضح / بلا مفاجآت','BRING THE ROUGH BRIEF':'ابدأ بفكرة أولية',
   'Monthly Starter':'الخطة الشهرية الأساسية','Monthly Growth':'الخطة الشهرية للنمو','Monthly Studio':'الخطة الشهرية المتقدمة','Launch Website':'موقع الإطلاق','Business Experience':'تجربة الأعمال','Premium Experience':'التجربة المميزة','AI Workflow Audit':'تدقيق سير العمل بالذكاء الاصطناعي','Company Second Brain':'ذاكرة الشركة الذكية','Knowledge Care':'رعاية المعرفة',
@@ -110,7 +114,8 @@ const arabicLabels={
   'Domain + hosting':'النطاق والاستضافة','APIs + licenses':'واجهات البرمجة والتراخيص','Knowledge boundaries':'حدود المعرفة','Terms & Conditions':'الشروط والأحكام','We will make the right scope clear.':'سنحدد النطاق المناسب بوضوح.','Agency site':'الصفحة الرئيسية',
   'No invented outcome metrics':'لا ندّعي نتائج غير موثقة','Search client work':'ابحث في أعمال العملاء','All work':'كل الأعمال','Live work':'الأعمال المنشورة',
   'How it works':'كيف نعمل','Deliverables':'المخرجات','Fit':'الملاءمة','Architecture':'البنية','Integration':'التكامل','Scope':'النطاق','FAQ':'الأسئلة',
-  'EXPLORE':'استكشف','WORK TOGETHER':'نعمل معاً','ELSEWHERE':'روابط أخرى','Back to top':'العودة للأعلى','Built for useful impact.':'صُممت لأثر حقيقي.'
+  'EXPLORE':'استكشف','WORK TOGETHER':'نعمل معاً','ELSEWHERE':'روابط أخرى','Back to top':'العودة للأعلى','Built for useful impact.':'صُممت لأثر حقيقي.',
+  'COMPLETE PROJECT / ONE-TIME':'مشروع متكامل / لمرة واحدة','Workflow Audit':'تدقيق سير العمل','Second Brain':'ذاكرة الشركة الذكية','Business':'الأعمال','Launch':'الإطلاق','Premium':'المميزة','BRAYROAI / PLANS':'BRAYROAI / الخطط'
 };
 function translateArabicLabels($){
   const walk=node=>{
@@ -129,6 +134,27 @@ const arabicPlans={
   custom:{description:'موقع مخصص للعلامات التي تريد سرداً بصرياً سينمائياً وتفاعلاً أعمق وتجربة رقمية ذات طابع خاص.',features:['نظام موقع بتوجيه فني متقدم','حركة وانتقالات مدروسة مع التمرير','تخطيطات وحالات وتفاعلات مخصصة أكثر','صقل عميق للهواتف والأجهزة المختلفة قبل الإطلاق'],boundary:'يتحدد السعر النهائي وفق التعقيد وعدد الصفحات والأنظمة المخصصة والمحتوى والتكاملات.'}
 };
 function translateArabicPlans($){
+  // Keep the first paint in Arabic too; the mode director updates this panel
+  // again after its script loads.
+  setText($,'[data-plan-mode-output] section h2','تجربة الأعمال');
+  setText($,'[data-plan-mode-output] section>p','موقع أعمال متكامل يشمل التخطيط والتصميم والتطوير والتوافق مع الأجهزة والإطلاق ضمن نطاق واضح.');
+  $('.plan-decision__card').each((i,el)=>{
+    const summaries=[`ابتداءً من ${priceFor('monthly-starter','ae-ar')} شهرياً`,`ابتداءً من ${priceFor('launch-website','ae-ar')} للمشروع`,`التدقيق ${priceFor('ai-workflow-audit','ae-ar')} · الأنظمة ابتداءً من ${priceFor('company-second-brain','ae-ar')}`];
+    $(el).find('small').text(summaries[i]||'');
+  });
+  const planNames={'monthly-starter':'الخطة الشهرية<br>الأساسية','monthly-business':'الخطة الشهرية<br>للنمو','monthly-premium':'الخطة الشهرية<br>المتقدمة',starter:'موقع<br>الإطلاق',business:'تجربة<br>الأعمال',custom:'التجربة<br>المميزة'};
+  $('[data-plan-key]').each((_,element)=>{const name=planNames[$(element).attr('data-plan-key')];if(name)$(element).find('h3').first().html(name)});
+  $('.ai-plan-card[data-offer-id="company-second-brain"]>strong').text(`ابتداءً من ${priceFor('company-second-brain','ae-ar')}`);
+  $('.ai-care-strip>b').text(`ابتداءً من ${priceFor('knowledge-care','ae-ar')}`);
+  setText($,'.plan-family__heading p','للشركات التي لديها موقع قائم وتحتاج إلى تطوير مستمر للتصميم والمحتوى ومسارات الاستفسار بعد الإطلاق.');
+  $('#builds .plan-family__heading p').text('لمشروع محدد يشمل التخطيط والتصميم والتطوير والتحسين للأجهزة المختلفة ثم الإطلاق.');
+  setHtml($,'#compare .plan-heading h2','نتائج مختلفة.<br><em>والتزام يناسبها.</em>');
+  setHtml($,'.care__heading h2','اعرف ما يشمله العرض.<br><em>وما يُسعّر منفصلاً.</em>');
+  setHtml($,'.care__note','قد يختلف نطاق المشروع أو جدوله أو طريقة الدفع وفق العرض المكتوب. اقرأ <a class="terms-link" href="/terms">الشروط والأحكام ↗</a> قبل بدء التعاون.');
+  $('[role="table"][aria-label="Monthly website partnership comparison"]').attr('aria-label','مقارنة خطط تطوير المواقع الشهرية');
+  $('[role="table"][aria-label="One-time website build comparison"]').attr('aria-label','مقارنة مشاريع بناء المواقع');
+  $('[role="table"][aria-label="AI system comparison"]').attr('aria-label','مقارنة أنظمة الذكاء الاصطناعي');
+  $('.care-grid article>small').each((i,el)=>$(el).text(['٠١ / البنية الأساسية','٠٢ / استخدام الذكاء الاصطناعي','٠٣ / مصادر معتمدة'][i]||''));
   $('[data-plan-key]').each((_,element)=>{
     const copy=arabicPlans[$(element).attr('data-plan-key')];if(!copy)return;
     const section=$(element).children('section');section.children('p').first().text(copy.description);section.children('ul').children('li').each((i,li)=>{if(copy.features[i])$(li).text(copy.features[i])});section.children('.boundary').text(copy.boundary);
@@ -149,6 +175,23 @@ function translateArabicPlans($){
 function localizeArabic($,route){
   const copy=arabicRouteCopy[route];
   if(copy){setHtml($,copy.heading,copy.html);setText($,copy.lead,copy.leadText)}
+  setText($,'.global-nav__brand small','استوديو إبداعي تقني');
+  $('.global-nav__brand').attr('aria-label','BRAYROAI الرئيسية');
+  $('.chapter-nav').attr('aria-label','أقسام هذه الصفحة');
+  $('.global-nav__links').attr('aria-label','التنقل الرئيسي');
+  $('.global-menu nav').attr('aria-label','التنقل الرئيسي للهاتف');
+  $('.global-menu__market').text('اختر السوق والعملة');
+  $('.market-trigger').contents().filter((_,node)=>node.type==='text').first().replaceWith('الإمارات · AED ');
+  $('.global-nav__toggle').attr('aria-label','افتح القائمة');
+  $('.global-menu__cta').contents().filter((_,node)=>node.type==='text').first().replaceWith('ابدأ مشروعاً ');
+  $('.skip-link').text(route==='/plans'?'تجاوز إلى الخطط':route==='/terms'?'تجاوز إلى الشروط':'تجاوز إلى المحتوى');
+  $('.global-footer nav').attr('aria-label','روابط أسفل الصفحة');
+  $('.global-footer nav>div').eq(0).find('small').text('استكشف');
+  $('.global-footer nav>div').eq(1).find('small').text('تعرّف أكثر');
+  $('.global-footer nav>div').eq(2).find('small').text('تواصل معنا');
+  const footerLabels={'Home':'الرئيسية','Client work':'أعمال العملاء','Plans':'الخطط','Founder':'المؤسس','Terms':'الشروط','Email Yash ↗':'راسل ياش ↗','WhatsApp ↗':'واتساب ↗','Ask Rae ↗':'اسأل راي ↗','BACK TO TOP ↑':'العودة إلى الأعلى ↑'};
+  $('.global-footer a,.global-footer button').each((_,element)=>{const node=$(element),text=node.text().trim();if(footerLabels[text])node.text(footerLabels[text])});
+  setText($,'.global-footer__base>span','© ٢٠٢٦ BRAYROAI · تصميم · هندسة · ذكاء اصطناعي مفيد');
   const nav={Home:'الرئيسية',Capabilities:'الخدمات',Clients:'العملاء',AI:'الذكاء الاصطناعي',Plans:'الخطط',Founder:'المؤسس',Terms:'الشروط',Contact:'تواصل'};
   $('.global-nav__links a,.global-menu nav a').each((_,element)=>{const key=$(element).text().trim();if(nav[key])$(element).text(nav[key])});
   $('.global-nav__cta,.global-menu__cta').contents().filter((_,node)=>node.type==='text').first().replaceWith('ابدأ مشروعاً ');
@@ -164,6 +207,7 @@ function localizeArabic($,route){
     setHtml($,'#work .v12-work-head h2','العمل الحقيقي أقوى من الوعود.');
     setHtml($,'#ai-systems .v12-ai-head h2','ابدأ بنظام واحد مفيد.<br>لا بعشرة <em>أدوات جديدة.</em>');
     setHtml($,'#contact h2','احكِ لنا عن التحدي.<br><em>وسنجد له شكلاً واضحاً.</em>');
+    translateArabicHome($);
   }
   if(route==='/plans'){
     setHtml($,'.plan-decision__heading h2','ابدأ بما تحتاجه.<br><em>ثم اختر الخطة.</em>');
@@ -176,7 +220,17 @@ function localizeArabic($,route){
     setText($,'.care__heading>p','الضرائب المطبقة والنطاقات والاستضافة واستخدام واجهات البرمجة والخدمات المدفوعة منفصلة، ما لم تُذكر في العرض المكتوب.');
     translateArabicPlans($);
   }
+  if(route==='/founder')translateArabicFounder($);
+  if(route==='/clients')translateArabicClientArchive($);
+  if(route==='/clients/fakhrimart')translateArabicCaseIntro($);
+  if(route.startsWith('/clients')){
+    $('.client-nav__brand').attr('aria-label','BRAYROAI الرئيسية');
+    $('.client-nav nav').attr('aria-label','التنقل في أعمال العملاء');
+    $('.client-nav__cta').text('ابدأ مشروعاً ↗');
+    $('.client-skip').text('تجاوز إلى أعمال العملاء');
+  }
   if(route==='/ai-workflow-audit'||route==='/company-second-brain')translateArabicService($,route);
+  if(route==='/terms')translateArabicTerms($);
   translateArabicLabels($);
   if(route==='/ai-workflow-audit')setText($,'.chapter-nav>span','تدقيق سير العمل');
   if(route==='/company-second-brain')setText($,'.chapter-nav>span','ذاكرة الشركة');
@@ -184,7 +238,6 @@ function localizeArabic($,route){
     $('.terms-hero__copy').append('<p class="market-legal-note">هذه خلاصة عربية لتيسير القراءة. تظل التفاصيل التعاقدية أدناه باللغة الإنجليزية إلى حين اعتماد مراجعة قانونية وترجمة بشرية متخصصة. يتم الاتفاق على السعر والنطاق والضرائب المطبقة كتابةً قبل بدء العمل.</p>');
     const headings=['ما الذي تقدمه BRAYROAI؟','العمل الشهري والمشروع الواحد مختلفان.','يبدأ العمل وفق جدول دفع متفق عليه.','النطاق والتعديلات يحتاجان إلى حدود واضحة.','الجدول الزمني يعتمد على الطرفين.','يوفر العميل المعلومات والموافقات اللازمة.','للخدمات الخارجية شروطها الخاصة.','تنتقل ملكية الأعمال وفق الاتفاق.','كيف يعمل الإلغاء؟','الضمان والدعم بعد التسليم.','حدود المسؤولية.','تفاصيل عملية أخيرة.'];
     $('.terms-section h2').each((i,el)=>{if(headings[i])$(el).text(headings[i])});
-    $('.terms-copy .terms-section').attr('lang','en').attr('dir','ltr');
   }
   $('body').addClass('market-arabic');
   $('head').append('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preload" as="style" media="(min-width: 761px)" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=optional" onload="this.onload=null;this.rel=\'stylesheet\'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=optional" media="(min-width: 761px)"></noscript>');

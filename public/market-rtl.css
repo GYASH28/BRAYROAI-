@@ -18,9 +18,7 @@ html[dir="rtl"] .client-search>span:last-child{right:auto;left:12px}
 html[dir="rtl"] .terms-toc a:hover,html[dir="rtl"] .terms-toc a.is-current{padding-left:0;padding-right:.35rem}
 html[dir="rtl"] .terms-card::before{left:auto;right:0}
 html[dir="rtl"] .market-legal-note{padding:14px 18px;border-right:3px solid #ff8a00;background:rgba(255,138,0,.07);color:#e1d9cc;line-height:1.8}
-html[dir="rtl"] .terms-copy .terms-section[lang="en"]{text-align:left;font-family:Manrope,system-ui,sans-serif}
-html[dir="rtl"] .terms-copy .terms-section[lang="en"] :is(p,li){font-family:Manrope,system-ui,sans-serif}
-html[dir="rtl"] .terms-copy .terms-section[lang="en"] h2{font-family:'Noto Sans Arabic',system-ui,sans-serif;text-align:right}
+html[dir="rtl"] .terms-copy .terms-section [lang="en"]{text-align:left;font-family:Manrope,system-ui,sans-serif}
 html[dir="rtl"] .brayro-contact-dock{direction:ltr}
 html[dir="rtl"] .rae-root{direction:rtl}
 html[dir="rtl"] .rae-panel,html[dir="rtl"] .rae-feed{text-align:right}
@@ -36,4 +34,5 @@ html[dir="rtl"] .ai-detail .process-tab[aria-selected="true"]{padding-right:.7re
 html[dir="rtl"] .ai-detail .faq details p{margin-right:4rem;margin-left:0}
 html[dir="rtl"] .ai-detail .arch-node:hover,html[dir="rtl"] .ai-detail .arch-node:focus-visible,html[dir="rtl"] .ai-detail .arch-node.is-active{transform:translateX(-.35rem)}
 @media(max-width:700px){html[dir="rtl"] .plans-hero__copy h1{font-size:clamp(38px,9.8vw,58px);line-height:1.27}html[dir="rtl"] .hero__copy h1{font-size:clamp(40px,9.5vw,60px);line-height:1.22}html[dir="rtl"] .global-nav__brand{font-family:'Space Grotesk',sans-serif}html[dir="rtl"] .market-sheet{margin:0 12px 12px}}
+@media(max-width:700px){html[dir="rtl"] body.founder-v16 .founder-hero__copy{padding-inline:1rem}html[dir="rtl"] .founder-hero__copy h1{max-width:100%;font-size:clamp(40px,10.5vw,54px);line-height:1.25}html[dir="rtl"] .founder-hero__copy h1 span{overflow:visible}html[dir="rtl"] .rae-root:not(.is-open){left:max(.7rem,env(safe-area-inset-left));right:auto}html[dir="rtl"] .rae-root:not(.is-open) .rae-nudge{left:0;right:auto;text-align:right}}
 @media(max-width:700px){html[dir="rtl"] .ai-detail .ai-hero{min-height:100svh;padding:11rem 1rem 3rem}html[dir="rtl"] .ai-detail .ai-hero__meta{top:7.5rem;gap:.2rem;font-size:.5rem}html[dir="rtl"] .ai-detail .ai-hero h1{font-size:clamp(43px,12vw,59px);line-height:1.26;max-width:100%;margin:.6rem 0 1rem}html[dir="rtl"] .ai-detail .ai-heading h2{font-size:clamp(43px,10.5vw,63px)}html[dir="rtl"] .ai-detail .ai-cta h2{font-size:clamp(47px,12vw,70px)}html[dir="rtl"] .ai-detail .faq details p{margin-right:3.2rem}}

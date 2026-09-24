@@ -1,5 +1,6 @@
 // Arabic commercial copy for the two AI offer journeys. Technical scope and
 // qualifications remain aligned with the English source pages.
+import {priceFor} from '../data/pricing.js';
 const audit = {
   nav:['كيف نعمل','ما تستلمه','الملاءمة','أسئلة شائعة','الخطط'],
   heroMeta:['نظام ذكاء اصطناعي / ٠١','نطاق محدد','BRAYROAI / بونه'],
@@ -111,12 +112,17 @@ export function translateArabicService($,route){
   setList($,$('.ai-nav nav a'),copy.nav.slice(0,-1));
   $('.ai-nav__back').contents().filter((_,node)=>node.type==='text').first().replaceWith(copy.nav.at(-1)+' ');
   setList($,$('.ai-hero__meta span'),copy.heroMeta);
-  $('.ai-hero__copy>small').text(copy.price[0]+' / '+(isAudit?'AED 2,490':'AED 7,900'));
+  $('.ai-hero__copy>small').text(copy.price[0]+' / '+priceFor(isAudit?'ai-workflow-audit':'company-second-brain','ae-ar'));
   $('.ai-price small').text(copy.price[1]);$('.ai-price span').text(copy.price[2]);
   setList($,$('.ai-strip>div'),copy.strip,(item,[label,value])=>{item.find('small').text(label);item.find('strong').text(value)});
   setList($,$('.ai-section> .ai-shell> .ai-heading'),copy.sections,(heading,sectionCopy)=>setHeading($,heading,sectionCopy));
   $('.process-lab').attr('data-process-items',JSON.stringify(copy.process));
   setList($,$('[data-process-tab] b'),copy.processTabs);
+  const firstStep=copy.process[0];
+  $('[data-process-label]').text(firstStep.label);
+  $('[data-process-title]').text(firstStep.title);
+  $('[data-process-body]').text(firstStep.body);
+  setList($,$('[data-process-outputs]>span'),firstStep.outputs);
   setFaq($,copy.faq);
   if(isAudit){
     setRows($,$('.ai-section').eq(1),copy.matrices[0]);
@@ -132,6 +138,7 @@ export function translateArabicService($,route){
     $('.arch-engine h3').text('نظّم ← استرجع ← أجب.');
     $('.arch-engine p').text('ننظّم المحتوى وفق تصنيف متفق عليه، ثم نسترجع ما يلزم للإجابة. يعتمد اختيار النموذج ومخزن البيانات والتكاملات والاستضافة على نطاق التنفيذ.');
     $('.arch-status small').text('اختر مصدراً لاستكشافه');
+    $('[data-arch-status]').text(arch.copy.docs);
     $('.architecture').attr('data-arch-copy',JSON.stringify(arch.copy));
     setList($,$('[data-arch-node]'),arch.nodes,(node,[title,body])=>{node.find('strong').text(title);node.find('span').text(body)});
     setList($,$('.arch-col:last-child .arch-node'),arch.team,(node,[title,body])=>{node.find('strong').text(title);node.find('span').text(body)});
@@ -141,4 +148,5 @@ export function translateArabicService($,route){
   setList($,$('.ai-cta__actions a'),[primary,secondary],(node,label)=>node.contents().filter((_,part)=>part.type==='text').first().replaceWith(label+' '));
   $('.ai-footer a').first().text(footerLink);
   $('.ai-footer a').last().text('الشروط');
+  $('.ai-footer span').text('BRAYROAI / استوديو إبداعي تقني');
 }

@@ -43,7 +43,7 @@ for(const market of ['ae','ae-ar','au'])for(const route of MARKET_ROUTES){
     offers++;
   }
   if(route==='/plans'){
-    const monthlyRow=$('[aria-label="Monthly website partnership comparison"] [role="row"]').eq(1).text();
+    const monthlyRow=$('#compare [role="table"]').first().find('[role="row"]').eq(1).text();
     for(const id of ['monthly-starter','monthly-growth','monthly-studio'])assert.ok(monthlyRow.includes(priceFor(id,market)),`${market} comparison mismatches ${id}`);
     const schema=$('script[type="application/ld+json"]').toArray().map(el=>{try{return JSON.parse($(el).html())}catch{return null}}).find(value=>value?.['@type']==='OfferCatalog');
     assert.ok(schema,`${market} missing OfferCatalog`);

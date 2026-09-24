@@ -131,13 +131,14 @@
 
     renameNavigation(){
       const rename=()=>{
+        const arabic=window.BRAYRO_MARKET?.id==='ae-ar';
         document.querySelectorAll('a[href="#services"]').forEach(link=>{
           const number=link.querySelector('span');
-          if(number)link.childNodes[0].nodeValue='What we fix ';
-          else link.textContent='What we fix';
+          if(number)link.childNodes[0].nodeValue=arabic?'ما نقدمه ':'What we fix ';
+          else link.textContent=arabic?'ما نقدمه':'What we fix';
         });
         const bridge=this.section.querySelector(':scope > .v9-bridge');
-        if(bridge){const first=bridge.querySelector('span');if(first)first.textContent='WHAT WE FIX'}
+        if(bridge){const first=bridge.querySelector('span');if(first)first.textContent=arabic?'ما نقدمه':'WHAT WE FIX'}
       };
       rename();
       const observer=new MutationObserver(rename);

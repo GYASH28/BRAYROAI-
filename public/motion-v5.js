@@ -170,7 +170,15 @@
 
   new MicroCursor();
   new ScrollReadingLine();
-  new SectionMicroDirector();
+  // Section numbers disappear below 901px. Avoid scanning and measuring every
+  // section on phones where the director has no visible output.
+  const sectionIndexViewport = matchMedia('(min-width: 901px)');
+  if (sectionIndexViewport.matches) new SectionMicroDirector();
+  else sectionIndexViewport.addEventListener('change', function mountSectionIndexes(event) {
+    if (!event.matches) return;
+    new SectionMicroDirector();
+    sectionIndexViewport.removeEventListener('change', mountSectionIndexes);
+  });
   new TextDetails();
   new PricingModeDirector();
   new HoverVelocity();

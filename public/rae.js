@@ -3,7 +3,7 @@
   if(document.documentElement.dataset.raeMounted)return;
   document.documentElement.dataset.raeMounted='true';
 
-  const shellCharacter=()=>`<span class="rae-presence__actor" aria-hidden="true"><svg viewBox="0 0 76 76" width="46" height="46" focusable="false"><defs><linearGradient id="rs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf7"/><stop offset="1" stop-color="#d9d0c3"/></linearGradient><linearGradient id="rv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#262a31"/><stop offset="1" stop-color="#030405"/></linearGradient></defs><path d="M17 19 10 5c-2-4 3-6 6-3l9 12M59 19 66 5c2-4-3-6-6-3l-9 12" fill="#15171b" stroke="#ff6a20" stroke-width="1.5"/><circle cx="15" cy="35" r="9" fill="#111318"/><circle cx="61" cy="35" r="9" fill="#111318"/><circle cx="15" cy="35" r="5.5" fill="none" stroke="#ff6a20" stroke-width="2.5"/><circle cx="61" cy="35" r="5.5" fill="none" stroke="#ff6a20" stroke-width="2.5"/><path d="M16 18c6-10 18-14 22-14s16 4 22 14c6 10 6 27 0 37-6 9-15 13-22 13s-16-4-22-13c-6-10-6-27 0-37Z" fill="url(#rs)" stroke="#aaa095"/><rect x="17" y="21" width="42" height="31" rx="14" fill="url(#rv)"/><ellipse cx="29" cy="35" rx="4" ry="6" fill="#ff8b2d"/><ellipse cx="47" cy="35" rx="4" ry="6" fill="#ff8b2d"/><path d="M33 43c3 3 7 3 10 0" fill="none" stroke="#ff7a25" stroke-width="2.5" stroke-linecap="round"/><path d="M22 25c9-5 21-6 31-2" fill="none" stroke="#fff" stroke-width="1.3" opacity=".18"/></svg></span>`;
+  const shellCharacter=()=>`<span class="rae-presence__actor" aria-hidden="true"><svg viewBox="190 60 660 670" width="46" height="46" focusable="false"><image href="/rae/rae-illustration-thumb.webp" x="0" y="0" width="1024" height="1536"/><ellipse cx="428" cy="344" rx="30" ry="42" fill="#ff9822"/><ellipse cx="602" cy="335" rx="30" ry="42" fill="#ff9822"/><ellipse cx="421" cy="332" rx="8" ry="11" fill="#fff4d1"/><ellipse cx="595" cy="323" rx="8" ry="11" fill="#fff4d1"/><path d="M479 419c24 27 54 27 79-3" fill="none" stroke="#ff8a1c" stroke-width="18" stroke-linecap="round"/></svg></span>`;
   const mountPolishSkin=()=>{if(document.querySelector('link[data-rae-polish-skin]'))return;const link=document.createElement('link');link.rel='stylesheet';link.href='/rae/rae-polish-v5.css';link.dataset.raePolishSkin='v5';document.head.append(link)};
 
   class RaeBootstrap{
@@ -23,7 +23,8 @@
       if(navigator.connection?.saveData)return;
       const load=()=>{if(document.hidden){document.addEventListener('visibilitychange',()=>{if(!document.hidden)this.ensure(false)},{once:true});return}this.ensure(false)};
       const warm=()=>{this.preloadTimer=0;if(this.app||this.loading)return;if('requestIdleCallback'in window)this.idle=requestIdleCallback(load,{timeout:1800});else this.idle=setTimeout(load,1000)};
-      const schedule=()=>{if(this.app||this.loading)return;this.preloadTimer=setTimeout(warm,1800)};
+      // Keep the launch sequence responsive; interaction still loads Rae immediately.
+      const schedule=()=>{if(this.app||this.loading)return;this.preloadTimer=setTimeout(warm,10000)};
       if(document.readyState==='complete')schedule();else addEventListener('load',schedule,{once:true});
     }
     cancelPreload(){

@@ -82,7 +82,7 @@
       if (!this.root) return;
       this.nodes = [...this.root.querySelectorAll('[data-arch-node]')];
       this.status = this.root.querySelector('[data-arch-status]');
-      this.copy = {
+      this.copy = this.root.dataset.archCopy ? JSON.parse(this.root.dataset.archCopy) : {
         docs:'Approved PDFs, SOPs, policies and internal documents become searchable knowledge.',
         drive:'Selected Drive folders can be connected as expanded scope while respecting the agreed access model.',
         crm:'CRM records can be integrated when the use case needs account or pipeline context.',
@@ -91,9 +91,9 @@
       };
       this.nodes.forEach(node => {
         const activate = () => this.set(node.dataset.archNode);
-        node.addEventListener('click', activate);
+        node.addEventListener('click', () => { this.pinned=node.dataset.archNode;activate(); });
         node.addEventListener('focus', activate);
-        node.addEventListener('pointerenter', activate);
+        node.addEventListener('pointerenter', () => { if (!this.pinned) activate(); });
       });
       if (this.nodes[0]) this.set(this.nodes[0].dataset.archNode);
     }

@@ -50,22 +50,19 @@
       </div>
     </section>
 
-    <section class="client-index" aria-labelledby="client-index-title">
+    <section id="client-index" class="client-index" aria-labelledby="client-index-title">
       <div class="client-shell">
         <div class="client-index__bar" data-client-reveal>
           <div>
             <p class="client-kicker">INDEX / CURRENT + FUTURE WORK</p>
             <h2 id="client-index-title" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Client project index</h2>
           </div>
-          <div class="client-filters" role="group" aria-label="Filter client projects by status">
-            <button type="button" class="is-active" data-client-filter="all" aria-pressed="true">All</button>
-            <button type="button" data-client-filter="live" aria-pressed="false">Live</button>
-            <button type="button" data-client-filter="in-progress" aria-pressed="false">In progress</button>
-            <button type="button" data-client-filter="upcoming" aria-pressed="false">Upcoming</button>
-          </div>
+          <div class="client-filters" role="group" aria-label="Filter client projects by status"><button type="button" class="is-active" data-client-filter="all" aria-pressed="true">All</button><button type="button" data-client-filter="live" aria-pressed="false">Live</button></div>
+          <label class="client-search"><span class="sr-only">Search client projects</span><input type="search" data-client-search placeholder="Search client work" autocomplete="off"><span aria-hidden="true">⌕</span></label>
           <span class="client-index__count" data-client-count aria-live="polite">1 project</span>
         </div>
         <div class="client-grid" data-client-grid data-client-surface aria-live="polite"></div>
+        <div class="client-empty" data-client-empty hidden><strong>No matching project yet.</strong><p>Try another search. This archive grows as verified work is ready to show.</p><button type="button" data-client-reset>Clear search</button></div>
       </div>
     </section>
 

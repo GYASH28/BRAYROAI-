@@ -15,7 +15,8 @@ expect((plans.match(/class="ai-plan-card/g)||[]).length===2,'Plans must contain 
 
 for(const token of ['.v12-hero-title','.v12-project-preview','.v12-ai-products','.v12-product-card','.ai-plan-card'])expect(css.includes(token),`V12 CSS missing live token ${token}`);
 for(const token of ['.brayro-flip','.brayro-curtain'])expect(css13.includes(token),`V13 live interaction CSS missing ${token}`);
-for(const token of ['class IntroPerformanceGuard','class V12Reveal','class FloatingHeader','class FlipLinks','class CurtainReveal','class ProjectPreview','class HeroTextGuard'])expect(js.includes(token),`V12 runtime missing ${token}`);
+for(const token of ['class IntroPerformanceGuard','class V12Reveal','class FloatingHeader','class FlipLinks','class CurtainReveal','class ProjectPreview'])expect(js.includes(token),`V12 runtime missing ${token}`);
+expect(css.includes('max-width:calc(100vw - 2rem)'),'CSS-only hero title width guard is missing');
 for(const retired of ['class CapabilityLedger','class ContextCursor','class ProductTilt','class SpotlightSurfaces','BRAYROAI / CAPABILITY LEDGER'])expect(!js.includes(retired),`retired V12 runtime still ships: ${retired}`);
 expect(!css13.includes('.brayro-ledger'),'retired V13 ledger CSS still ships');
 expect(js.includes('IntersectionObserver'),'V12 active navigation/reveal should use observer-based state');

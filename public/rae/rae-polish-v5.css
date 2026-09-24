@@ -1,6 +1,6 @@
 /* BRAYROAI / Rae V5 — conversation-first refinement. Loaded only when Rae wakes. */
 body.rae-dialog-open{overflow-x:clip}
-.rae-root[data-rae-polish="v5"].is-open .rae-panel{height:min(42.5rem,79dvh);border-color:rgba(255,255,255,.17);box-shadow:0 32px 92px rgba(0,0,0,.62),0 0 0 1px rgba(255,90,31,.055) inset}
+.rae-root[data-rae-polish="v5"].is-open .rae-panel{height:min(46rem,84dvh);border-color:rgba(255,255,255,.17);box-shadow:0 32px 92px rgba(0,0,0,.62),0 0 0 1px rgba(255,90,31,.055) inset}
 .rae-root[data-rae-polish="v5"] .rae-panel__status{display:inline-flex;align-items:center;gap:.36rem;padding:.38rem .56rem}
 .rae-root[data-rae-polish="v5"] .rae-panel__status:before{content:"";width:.34rem;height:.34rem;border-radius:50%;background:#8e938e;box-shadow:0 0 0 .16rem rgba(255,255,255,.035)}
 .rae-root[data-rae-polish="v5"][data-rae-state="thinking"] .rae-panel__status:before,.rae-root[data-rae-polish="v5"][data-rae-state="listening"] .rae-panel__status:before{background:#ff6a20;animation:raeV5StatusPulse 1.15s ease-in-out infinite}

@@ -59,7 +59,10 @@ body.home-v19 #contact .close__orb i:last-child{rotate:var(--v19-contact-orb-b-r
 
 body.home-v19 .site-nav__progress i{filter:drop-shadow(0 0 .35rem rgba(255,90,31,.3))}
 
+body.home-v19 main [data-scene]:not(.is-scene-live) *{will-change:auto!important}
+
 @media(max-width:760px){
+  body.home-v19 main [data-scene] *{will-change:auto!important}
   body.home-v19 #work .v12-project-row:hover{padding-left:0;padding-right:0}
   body.home-v19 #ai-systems .v12-product-card:nth-child(1),body.home-v19 #ai-systems .v12-product-card:nth-child(2){rotate:0deg}
   body.home-v19 #studio .founder-preview__portrait{rotate:0deg}

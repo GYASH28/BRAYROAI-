@@ -1,0 +1,153 @@
+
+Running 37 tests using 2 workers
+
+(node:12322) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/37] [firefox-smoke] › tests/cinematic-v20.spec.mjs:53:1 › scene rail, selector and film polish respond to one continuous journey
+(node:12321) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[2/37] [firefox-smoke] › tests/cinematic-v20.spec.mjs:27:1 › V20 adds cinematic components without adding homepage sections
+[3/37] [firefox-smoke] › tests/cinematic-v20.spec.mjs:71:1 › spring pointer polish follows live element positions without layout regression
+[4/37] [firefox-smoke] › tests/cinematic-v20.spec.mjs:94:1 › V20 stays free of runtime errors while traversing the full homepage
+[5/37] [firefox-smoke] › tests/cinematic-v20.spec.mjs:107:1 › V20 overlays do not create horizontal overflow across key viewports
+[6/37] [firefox-smoke] › tests/cinematic-v20.spec.mjs:115:1 › reduced motion keeps decorative motion static and core interactions usable
+[7/37] [firefox-smoke] › tests/cinematic-v20.spec.mjs:136:1 › final polish keeps homepage lean and skip links keyboard-only
+[8/37] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /
+[9/37] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /plans
+[10/37] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /founder
+  1) [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /founder
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-rae-root]')
+    Expected: 1
+    Received: 0
+    Timeout:  8000ms
+
+    Call log:
+      - Expect "toHaveCount" with timeout 8000ms
+      - waiting for locator('[data-rae-root]')
+        - waiting for navigation to finish...
+        - navigated to "http://127.0.0.1:4175/founder"
+        17 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      25 | async function loadRae(page,route='/'){
+      26 |   await page.goto(route,{waitUntil:'domcontentloaded'});
+    > 27 |   await expect(page.locator('[data-rae-root]')).toHaveCount(1);
+         |                                                 ^
+      28 |   await page.evaluate(()=>{
+      29 |     const shell=document.querySelector('[data-rae-shell]');
+      30 |     if(shell)shell.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true,pointerType:'mouse'}));
+        at loadRae (/home/yashg/.codex/worktrees/brayroai-major-redesign/BRAYROAI AGENCY/tests/rae.spec.mjs:27:49)
+        at /home/yashg/.codex/worktrees/brayroai-major-redesign/BRAYROAI AGENCY/tests/rae.spec.mjs:39:77
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-founder-firefox-smoke/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-founder-firefox-smoke/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-founder-firefox-smoke/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-founder-firefox-smoke/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-founder-firefox-smoke/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:14844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+  2) [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /plans ──
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-rae-toggle]')
+    Expected: 1
+    Received: 0
+    Timeout:  8000ms
+
+    Call log:
+      - Expect "toHaveCount" with timeout 8000ms
+      - waiting for locator('[data-rae-toggle]')
+        18 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      30 |     if(shell)shell.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true,pointerType:'mouse'}));
+      31 |   });
+    > 32 |   await expect(page.locator('[data-rae-toggle]')).toHaveCount(1,{timeout:8000});
+         |                                                   ^
+      33 |   await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-app-ready','true',{timeout:8000});
+      34 | }
+      35 | async function openRae(page,route='/'){await loadRae(page,route);await page.locator('[data-rae-toggle]').click();await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false')}
+        at loadRae (/home/yashg/.codex/worktrees/brayroai-major-redesign/BRAYROAI AGENCY/tests/rae.spec.mjs:32:51)
+        at /home/yashg/.codex/worktrees/brayroai-major-redesign/BRAYROAI AGENCY/tests/rae.spec.mjs:39:77
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-plans-firefox-smoke/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-plans-firefox-smoke/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-plans-firefox-smoke/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-plans-firefox-smoke/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/rae-Rae-mounts-once-and-becomes-page-aware-on-plans-firefox-smoke/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[11/37] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /terms
+(node:14860) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[12/37] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /ai-workflow-audit
+[13/37] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /company-second-brain
+[14/37] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /clients
+[15/37] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /clients/fakhrimart
+[16/37] [firefox-smoke] › tests/rae.spec.mjs:42:1 › free-text conversation uses the real streaming transport and renders progressively
+[17/37] [firefox-smoke] › tests/rae.spec.mjs:52:1 › Rae can stop an in-flight streamed answer immediately
+[18/37] [firefox-smoke] › tests/rae.spec.mjs:63:1 › Rae retries after provider failure without losing the transcript
+[19/37] [firefox-smoke] › tests/rae.spec.mjs:67:1 › Clear chat removes Rae transcript, profile memory and retry state
+[20/37] [firefox-smoke] › tests/rae.spec.mjs:71:1 › server metadata can render verified case UI and safe allowlisted actions
+[21/37] [firefox-smoke] › tests/rae.spec.mjs:75:1 › project handoff is editable and never auto-opens WhatsApp
+[22/37] [firefox-smoke] › tests/rae.spec.mjs:79:1 › Rae guides a project to an editable handoff without contacting the AI provider
+[23/37] [firefox-smoke] › tests/rae.spec.mjs:92:1 › Rae compares published offers and opens verified work without calling AI
+[24/37] [firefox-smoke] › tests/rae.spec.mjs:104:1 › Rae respects the chosen project type when an outcome could also suggest AI
+[25/37] [firefox-smoke] › tests/rae.spec.mjs:113:1 › model HTML is rendered as inert text, never executable markup
+[26/37] [firefox-smoke] › tests/rae.spec.mjs:117:1 › keyboard open/close restores focus and Escape works
+[27/37] [firefox-smoke] › tests/rae.spec.mjs:121:1 › all Rae V3 emotional states are addressable without breaking the rig
+[28/37] [firefox-smoke] › tests/rae.spec.mjs:126:1 › Rae has no serious accessibility violations while open
+[29/37] [firefox-smoke] › tests/rae.spec.mjs:130:44 › Rae has no horizontal overflow and remains usable at 320px
+[30/37] [firefox-smoke] › tests/rae.spec.mjs:130:44 › Rae has no horizontal overflow and remains usable at 390px
+[31/37] [firefox-smoke] › tests/rae.spec.mjs:130:44 › Rae has no horizontal overflow and remains usable at 768px
+[32/37] [firefox-smoke] › tests/rae.spec.mjs:130:44 › Rae has no horizontal overflow and remains usable at 1440px
+[33/37] [firefox-smoke] › tests/rae.spec.mjs:130:44 › Rae has no horizontal overflow and remains usable at 1920px
+[34/37] [firefox-smoke] › tests/rae.spec.mjs:134:1 › Rae respects reduced motion while all chat functionality remains
+[35/37] [firefox-smoke] › tests/rae.spec.mjs:138:1 › Rae reserves real space above the WhatsApp and email contact dock and owns the corner while open
+[36/37] [firefox-smoke] › tests/rae.spec.mjs:145:1 › launcher dynamically lifts above another fixed bottom-right control
+[37/37] [firefox-smoke] › tests/rae.spec.mjs:149:1 › provider unavailable leaves Rae as an honest deterministic site guide
+  2 failed
+    [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /plans ───
+    [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /founder ─
+  1 skipped
+  34 passed (6.3m)

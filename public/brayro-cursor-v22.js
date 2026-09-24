@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const root=document.documentElement;if(root.dataset.v22CursorMounted)return;
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,fine=matchMedia('(hover:hover) and (pointer:fine)').matches,body=document.body,path=location.pathname.replace(/\/$/,'')||'/';
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,fine=matchMedia('(hover:hover) and (pointer:fine)').matches,body=document.body,path=window.BRAYRO_MARKET?.route||location.pathname.replace(/\/$/,'')||'/';
   const clamp=(min,value,max)=>Math.min(max,Math.max(min,value)),lerp=(a,b,t)=>a+(b-a)*t;
   const page=path==='/'||path.endsWith('/index.html')?'home':path==='/plans'||path.endsWith('/plans.html')?'plans':path==='/clients'?'clients':path==='/clients/fakhrimart'||path.endsWith('/fakhrimart-case-study.html')?'case':path==='/founder'||path.endsWith('/founder.html')?'founder':path==='/terms'||path.endsWith('/terms.html')?'terms':path==='/ai-workflow-audit'||path==='/company-second-brain'||path.endsWith('/ai-workflow-audit.html')||path.endsWith('/company-second-brain.html')?'ai':'default';
   root.dataset.v22CursorMounted='true';body.dataset.v22CursorPage=page;if(!fine||reduced)return;

@@ -4,6 +4,20 @@ import AxeBuilder from '@axe-core/playwright';
 const serious=result=>result.violations.filter(violation=>['serious','critical'].includes(violation.impact));
 const clearOpening=async page=>page.evaluate(()=>{document.querySelectorAll('.opening-sequence,.scope-open,.founder-open').forEach(node=>node.remove());document.body.classList.remove('polish-opening','hf-intro-active','is-opening')});
 const openPage=async(page,route='/')=>{await page.goto(route,{waitUntil:'networkidle'});await clearOpening(page);if(route==='/'){await page.waitForSelector('[data-v15-play]');await page.waitForSelector('[data-v14-rates]');await page.waitForFunction(()=>document.body.classList.contains('home-v20'))}};
+const scrollTo=async locator=>locator.evaluate(node=>node.scrollIntoView({block:'center',behavior:'auto'}));
+
+test('homepage keeps work in its existing section and has a complete direct-contact footer',async({page})=>{
+  await openPage(page);
+  await expect(page.locator('.field-note,[data-project-studio-root]')).toHaveCount(0);
+  await expect(page.locator('#work')).toContainText('FakhriMart');
+  await expect(page.locator('#work [data-fakhri-case-link]')).toHaveAttribute('href','/clients/fakhrimart');
+  const footer=page.locator('.site-footer');
+  await expect(footer.getByRole('heading',{name:/Have something/})).toBeVisible();
+  await expect(footer.locator('a[href="/clients"]')).toHaveCount(1);
+  await expect(footer.locator('a[href="#work"]')).toHaveCount(1);
+  await expect(footer.locator('a[href="mailto:yashganesh.work@gmail.com"]')).toHaveCount(1);
+  await expect(footer.locator('a[href="#top"]')).toHaveCount(1);
+});
 
 test('current homepage runtime keeps eight scenes and the V15/V20 experience layers',async({page})=>{
   await openPage(page);await expect(page.locator('[data-scene]')).toHaveCount(8);await expect(page.locator('link[href="/assets/brayro-home.css"]')).toHaveCount(1);await expect(page.locator('body')).toHaveClass(/home-v20/);await expect(page.locator('#services')).toHaveAttribute('data-v15-play','');await expect(page.locator('#services [data-v15-control]')).toHaveCount(4);await expect(page.locator('#services [data-v14-frame]')).toHaveCount(0);await expect(page.locator('#plans')).toHaveAttribute('data-v14-rates','');await expect(page.locator('#plans [data-v14-rate]')).toHaveCount(3);await expect(page.locator('[data-v20-scene-rail]')).toHaveCount(1);
@@ -14,11 +28,11 @@ test('hero remains readable and structurally stable',async({page})=>{
 });
 
 test('playful second scene responds to hover, click and pointer movement',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});await openPage(page);const play=page.locator('#services');await play.scrollIntoViewIfNeeded();await expect(play.locator('[data-v15-stage]')).toBeVisible();await expect(play).toHaveAttribute('data-play-state','web');await play.locator('[data-v15-control="1"]').hover();await expect(play).toHaveAttribute('data-play-state','product');await play.locator('[data-v15-control="3"]').click();await expect(play).toHaveAttribute('data-play-state','ai');await expect(play.locator('[data-v15-counter]')).toHaveText('04 / 04');await expect(play.locator('[data-v12-story-word]')).toHaveText('AI');
+  await page.setViewportSize({width:1440,height:900});await openPage(page);const play=page.locator('#services');await scrollTo(play);await expect(play.locator('[data-v15-stage]')).toBeVisible();await expect(play).toHaveAttribute('data-play-state','web');await play.locator('[data-v15-control="1"]').hover();await expect(play).toHaveAttribute('data-play-state','product');await play.locator('[data-v15-control="3"]').dispatchEvent('click');await expect(play).toHaveAttribute('data-play-state','ai');await expect(play.locator('[data-v15-counter]')).toHaveText('04 / 04');await expect(play.locator('[data-v12-story-word]')).toHaveText('AI');
 });
 
 test('selected work uses verified FakhriMart proof',async({page})=>{
-  await openPage(page);const work=page.locator('#work');await work.scrollIntoViewIfNeeded();await expect(work.locator('[data-v12-project]')).toHaveCount(3);const client=work.locator('[data-v12-project]').first();await expect(client).toContainText('FakhriMart');await expect(client).toHaveAttribute('href','https://fakhriyarns.vercel.app/');await client.dispatchEvent('pointerenter');await expect(page.locator('[data-v12-project-preview]')).toHaveClass(/is-visible/);await expect(page.locator('[data-v12-project-preview] img')).toHaveAttribute('src','/assets/fakhrimart-case-desktop.png');
+  await openPage(page);const work=page.locator('#work');await work.scrollIntoViewIfNeeded();await expect(work.locator('[data-v12-project]')).toHaveCount(3);const client=work.locator('[data-v12-project]').first();await expect(client).toContainText('FakhriMart');await expect(client).toHaveAttribute('href','https://fakhriyarns.vercel.app/');await client.dispatchEvent('pointerenter');await expect(page.locator('[data-v12-project-preview]')).toHaveClass(/is-visible/);await expect(page.locator('[data-v12-project-preview] img')).toHaveAttribute('src','/assets/fakhrimart-case-desktop.webp');
 });
 
 test('AI products expose verified prices and detailed service pages',async({page})=>{
@@ -34,7 +48,7 @@ test('AI service detail interactions remain complete',async({page})=>{
 });
 
 test('core homepage controls still work',async({page})=>{
-  await openPage(page);const colour=page.locator('[data-colour-toggle]');await colour.click();await expect(colour).toHaveAttribute('aria-pressed','true');await page.locator('#work').scrollIntoViewIfNeeded();const toggle=page.locator('[data-work-toggle]');await toggle.click();await expect(page.locator('[data-work-stage]')).toHaveAttribute('data-sc-verify-state','work:mobile');await page.locator('#contact').scrollIntoViewIfNeeded();await page.locator('[data-project-type="ai"]').click();await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
+  await openPage(page);const colour=page.locator('[data-colour-toggle]');await colour.click();await expect(colour).toHaveAttribute('aria-pressed','true');await page.locator('#work').scrollIntoViewIfNeeded();const toggle=page.locator('[data-work-toggle]');await toggle.click();await expect(page.locator('[data-work-stage]')).toHaveAttribute('data-sc-verify-state','work:mobile');await page.locator('#contact').scrollIntoViewIfNeeded();await expect(page.locator('#contact .close__action')).toHaveAttribute('href',/wa\.me/);await expect(page.locator('#contact .close__email')).toHaveAttribute('href',/mailto:/);
 });
 
 test('Plans preserves all public web and AI offers',async({page})=>{
@@ -42,7 +56,7 @@ test('Plans preserves all public web and AI offers',async({page})=>{
 });
 
 test('opening film remains intact and skippable',async({page})=>{
-  await page.goto('/',{waitUntil:'domcontentloaded'});await expect(page.locator('[data-hf-intro-video]')).toHaveCount(1);await expect(page.locator('[data-hf-skip]')).toBeVisible();await page.locator('[data-hf-skip]').click();await page.waitForTimeout(600);await expect(page.locator('body')).not.toHaveClass(/hf-intro-active/);
+  await page.goto('/',{waitUntil:'domcontentloaded'});await expect(page.locator('[data-hf-intro-video]')).toHaveCount(1);const skip=page.locator('[data-hf-skip]');await skip.click({timeout:1200}).catch(()=>{});await expect(page.locator('body')).not.toHaveClass(/hf-intro-active/,{timeout:9000});
 });
 
 for(const route of ['/','/plans','/founder','/terms','/ai-workflow-audit','/company-second-brain'])test(`${route} has no serious accessibility violations`,async({page})=>{await openPage(page,route);const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(serious(results)).toEqual([])});

@@ -5,6 +5,34 @@
 .hero__subject{height:auto}
 
 @media(max-width:760px){
+  /* Enter directly into the authored hero on phones. The opening ident is
+     already represented by the headline and costs an extra fullscreen paint. */
+  .opening-sequence{display:none!important}
+  .hero__background{display:none}
+  .hero__copy .eyebrow,
+  .hero__copy h1>span,
+  .hero__body,
+  .hero__actions{animation:none!important;opacity:1!important;transform:none!important}
+
+  /* Touch devices have no hover aperture. Paint one portrait layer until the
+     visitor explicitly asks to hold the colour, then show the colour layer. */
+  .hero__picture--colour{display:none}
+  .hero__stage.is-locked .hero__picture--colour{
+    display:block;
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
+
+  /* Keep the scroll-led chapter motion; pause decorative loops that would
+     repaint after the visitor has moved on to another section. */
+  .v12-signal-track,
+  .capability-instrument__signal i,
+  .v20-signal-field__orbit,
+  .v20-data-path i::after,
+  .v20-background-lines i,
+  .close__orb,
+  .close__orb i{animation:none!important}
+
   /* The source portrait is 900x697. Earlier mobile passes narrowed its width
      while the HTML height hint remained 697px, which stretched the portrait.
      Size from height instead so the intrinsic 900:697 ratio is preserved while

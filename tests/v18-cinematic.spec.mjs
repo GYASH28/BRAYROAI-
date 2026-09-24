@@ -56,7 +56,7 @@ test('hero, services, pricing, founder and contact keep their current UI while g
   await expect(page.locator('#services [data-v15-control]')).toHaveCount(4);
   await expect(page.locator('#plans [data-v14-rate]')).toHaveCount(3);
   await expect(page.locator('#studio .founder-preview__portrait img')).toHaveCount(1);
-  await expect(page.locator('#contact [data-project-type]')).toHaveCount(3);
+  await expect(page.locator('#contact .close__action')).toHaveAttribute('href',/wa\.me/);
 
   for(const selector of ['#services','#plans','#studio','#contact']){
     await page.locator(selector).scrollIntoViewIfNeeded();
@@ -75,8 +75,7 @@ test('reduced motion keeps the original page static and operable',async({browser
   await page.locator('#services [data-v15-control="3"]').click();
   await expect(page.locator('#services')).toHaveAttribute('data-play-state','ai');
   await page.locator('#contact').scrollIntoViewIfNeeded();
-  await page.locator('[data-project-type="ai"]').click();
-  await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
+  await expect(page.locator('#contact .close__email')).toHaveAttribute('href',/mailto:/);
   const founderTranslate=await page.locator('#studio .founder-preview__portrait').evaluate(node=>getComputedStyle(node).translate);
   expect(['none','0px','0px 0px'].includes(founderTranslate)).toBeTruthy();
   await context.close();

@@ -14,8 +14,8 @@
       services: ['Strategy', 'UX/UI', 'React', 'Frontend', 'Catalogue architecture', 'SEO', 'QA'],
       caseStudy: '/clients/fakhrimart',
       live: 'https://fakhriyarns.vercel.app/',
-      previewDesktop: '/assets/fakhrimart-case-desktop.png',
-      previewMobile: '/assets/fakhrimart-case-mobile.png',
+      previewDesktop: '/assets/fakhrimart-case-desktop.webp',
+      previewMobile: '/assets/fakhrimart-case-mobile.webp',
       proof: 'Verified client work'
     }
   ];
@@ -38,44 +38,56 @@
       if (!this.grid) return;
       this.filters = qsa('[data-client-filter]');
       this.count = qs('[data-client-count]');
+      this.search = qs('[data-client-search]');
+      this.empty = qs('[data-client-empty]');
+      this.status='all';
       this.render();
       this.filters.forEach(button => button.addEventListener('click', () => this.filter(button.dataset.clientFilter)));
+      this.search?.addEventListener('input',()=>this.apply());
+      qs('[data-client-reset]')?.addEventListener('click',()=>{this.search.value='';this.filter('all');this.search.focus()});
       this.filter('all');
     }
 
     render() {
       this.grid.innerHTML = CLIENTS.map((client, index) => `
         <article class="client-card" data-client-card data-status="${client.status}" data-sector="${client.sector.toLowerCase()}" style="--client-index:${index}">
-          <a class="client-card__media" href="${client.caseStudy}" aria-label="Read the ${client.name} case study">
+          <a class="client-card__media" href="${window.BRAYRO_MARKET?.link(client.caseStudy)||client.caseStudy}" aria-label="Read the ${client.name} case study">
             <img src="${client.previewDesktop}" width="1440" height="900" loading="${index ? 'lazy' : 'eager'}" alt="${client.name} website shown on desktop.">
             <span class="client-card__badge">${client.proof}</span>
             <span class="client-card__visit">Open case study ↗</span>
           </a>
           <div class="client-card__body">
             <div class="client-card__meta"><span>${String(index + 1).padStart(2, '0')}</span><span>${client.year}</span><span class="client-card__status">${client.statusLabel}</span></div>
-            <h2><a href="${client.caseStudy}">${client.name}</a></h2>
+            <h2><a href="${window.BRAYRO_MARKET?.link(client.caseStudy)||client.caseStudy}">${client.name}</a></h2>
             <p>${client.summary}</p>
             <div class="client-card__details"><span>${client.sector}</span><span>${client.location}</span></div>
             <div class="client-card__services">${client.services.map(service => `<span>${service}</span>`).join('')}</div>
-            <div class="client-card__actions"><a href="${client.caseStudy}">Read the case study <span>↗</span></a><a href="${client.live}" target="_blank" rel="noreferrer">View live site <span>↗</span></a></div>
+            <div class="client-card__actions"><a href="${window.BRAYRO_MARKET?.link(client.caseStudy)||client.caseStudy}">Read the case study <span>↗</span></a><a href="${client.live}" target="_blank" rel="noreferrer">View live site <span>↗</span></a></div>
           </div>
         </article>
       `).join('');
     }
 
     filter(status) {
+      this.status=status;
       this.filters.forEach(button => {
         const active = button.dataset.clientFilter === status;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-pressed', String(active));
       });
+      this.apply();
+    }
+
+    apply(){
+      const query=(this.search?.value||'').trim().toLocaleLowerCase();
       let visible = 0;
       qsa('[data-client-card]', this.grid).forEach(card => {
-        const show = status === 'all' || card.dataset.status === status;
+        const show = (this.status === 'all' || card.dataset.status === this.status) && (!query || card.textContent.toLocaleLowerCase().includes(query));
         card.hidden = !show;
         if (show) visible += 1;
       });
       if (this.count) this.count.textContent = `${visible} ${visible === 1 ? 'project' : 'projects'}`;
+      if(this.empty)this.empty.hidden=visible>0;
     }
   }
 

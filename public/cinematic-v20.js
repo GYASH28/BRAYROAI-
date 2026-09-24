@@ -1,15 +1,35 @@
 (() => {
   'use strict';
   if(document.documentElement.dataset.v20PolishMounted)return;
-  const path=location.pathname.replace(/\/$/,'')||'/';if(path!=='/'&&!path.endsWith('/index.html'))return;
+  const path=window.BRAYRO_MARKET?.route||location.pathname.replace(/\/$/,'')||'/';if(path!=='/'&&!path.endsWith('/index.html'))return;
   const root=document.documentElement,body=document.body;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const compact=matchMedia('(max-width:760px), (pointer:coarse)').matches;
   const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));const clamp01=value=>clamp(0,value,1);const lerp=(a,b,t)=>a+(b-a)*t;
   root.dataset.v20PolishMounted='true';body.classList.add('home-v20');
   const create=(tag,className,html='')=>{const node=document.createElement(tag);node.className=className;if(html)node.innerHTML=html;return node};
 
   class ComponentMounts{
-    constructor(){this.mountHeroLens();this.mountHeroTextCycle();this.mountServicesSignal();this.mountSelectorIndicator();this.mountFilmGate();this.mountWorkAperture();this.mountAIPaths();this.mountPricingLights();this.mountFounderScan();this.mountContactLines();this.mountShineButtons();this.mountSceneRail()}
+    constructor(){
+      this.mountHeroLens();this.mountHeroTextCycle();this.mountShineButtons();if(!compact)this.mountSceneRail();
+      const mounts={
+        '#services':()=>{this.mountServicesSignal();this.mountSelectorIndicator();new SelectorDirector()},
+        '.editorial-sequence':()=>this.mountFilmGate(),
+        '#work':()=>this.mountWorkAperture(),
+        '#ai-systems':()=>this.mountAIPaths(),
+        '#plans':()=>this.mountPricingLights(),
+        '#studio':()=>this.mountFounderScan(),
+        '#contact':()=>this.mountContactLines()
+      };
+      if(!('IntersectionObserver'in window)){Object.values(mounts).forEach(mount=>mount());return}
+      const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+        if(!entry.isIntersecting)return;
+        const selector=Object.keys(mounts).find(key=>document.querySelector(key)===entry.target);
+        if(!selector)return;
+        observer.unobserve(entry.target);mounts[selector]();delete mounts[selector];
+      }),{rootMargin:'600px 0px'});
+      Object.keys(mounts).forEach(selector=>{const target=document.querySelector(selector);if(target)observer.observe(target)});
+    }
     mountHeroLens(){const stage=document.querySelector('.hero__stage');if(!stage||stage.querySelector('[data-v20-lens]'))return;const lens=create('div','v20-lens','<i class="v20-lens__ring"></i><i class="v20-lens__axis"></i><i class="v20-lens__tick v20-lens__tick--a"></i><i class="v20-lens__tick v20-lens__tick--b"></i><i class="v20-lens__tick v20-lens__tick--c"></i><i class="v20-lens__tick v20-lens__tick--d"></i>');lens.dataset.v20Lens='';lens.setAttribute('aria-hidden','true');stage.appendChild(lens)}
     mountHeroTextCycle(){const meta=document.querySelector('.v12-hero-meta');if(!meta||document.querySelector('[data-v20-text-cycle]'))return;const cycle=create('div','v20-text-cycle','<span>BUILT FOR</span><strong><i data-v20-cycle-word>BRANDS</i><b aria-hidden="true"></b></strong>');cycle.dataset.v20TextCycle='';cycle.setAttribute('aria-hidden','true');meta.after(cycle)}
     mountServicesSignal(){const canvas=document.querySelector('#services .play-scene__canvas');if(!canvas||canvas.querySelector('[data-v20-signal]'))return;const field=create('div','v20-signal-field','<i class="v20-signal-field__orbit"></i><i class="v20-signal-field__orbit"></i><i class="v20-signal-field__orbit"></i>');field.dataset.v20Signal='';field.setAttribute('aria-hidden','true');canvas.prepend(field)}
@@ -60,6 +80,5 @@
 
   new ComponentMounts();
   new HeroTextCycle();
-  new SelectorDirector();
-  new PolishDirector();
+  if(!compact)new PolishDirector();
 })();

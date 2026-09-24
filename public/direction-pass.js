@@ -20,14 +20,14 @@
       .hf-intro__button{appearance:none;border:1px solid rgba(242,239,232,.18);background:rgba(7,8,9,.72);color:rgba(242,239,232,.72);padding:9px 11px;border-radius:999px;font:500 9px/1 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:color .18s ease,border-color .18s ease,background .18s ease,transform .2s cubic-bezier(.16,1,.3,1)}.hf-intro__button:hover,.hf-intro__button:focus-visible{color:#f2efe8;border-color:rgba(242,239,232,.42);background:rgba(7,8,9,.88);outline:none}.hf-intro__button:active{transform:scale(.96)}
       .hf-intro__progress{position:absolute;z-index:5;left:0;right:0;bottom:0;height:2px;background:rgba(242,239,232,.08);overflow:hidden}.hf-intro__progress i{display:block;width:100%;height:100%;background:#ff5a1f;transform:scaleX(var(--hf-progress,0));transform-origin:left}
       .hf-intro__lite{position:absolute;inset:0;display:grid;align-content:end;padding:1.25rem 1.2rem max(2rem,env(safe-area-inset-bottom));overflow:hidden;background:#070809;color:#f3f0ea}.hf-intro__lite::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 8%,rgba(255,255,255,.05) 8% calc(8% + 1px),transparent calc(8% + 1px) 92%,rgba(255,255,255,.05) 92% calc(92% + 1px),transparent calc(92% + 1px)),linear-gradient(180deg,transparent 0 14%,rgba(255,255,255,.04) 14% calc(14% + 1px),transparent calc(14% + 1px));pointer-events:none}
-      .hf-intro__lite-meta{position:absolute;top:max(1.2rem,env(safe-area-inset-top));left:1.2rem;right:1.2rem;display:flex;justify-content:space-between;color:rgba(243,240,234,.5);font:500 .56rem/1 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase}.hf-intro__lite-copy{position:relative;z-index:2;padding-bottom:1.7rem}.hf-intro__lite-copy small{display:block;margin-bottom:.9rem;color:rgba(243,240,234,.52);font:500 .58rem/1 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;animation:hfLiteMeta .52s .06s both cubic-bezier(.16,1,.3,1)}.hf-intro__lite-copy strong{display:block;max-width:8ch;font:600 clamp(3.8rem,18vw,6.6rem)/.77 'Space Grotesk',Manrope,sans-serif;letter-spacing:-.075em;text-transform:uppercase;animation:hfLiteWord .68s .08s both cubic-bezier(.16,1,.3,1)}.hf-intro__lite-copy i{display:block;width:5rem;height:2px;margin-top:1.4rem;background:#ff6b2c;transform-origin:left;animation:hfLiteRule .9s .26s both cubic-bezier(.16,1,.3,1)}.hf-intro--lite .hf-intro__progress i{animation:hfLiteProgress 2.15s linear both}
+      .hf-intro__lite-meta{position:absolute;top:max(1.2rem,env(safe-area-inset-top));left:1.2rem;right:1.2rem;display:flex;justify-content:space-between;color:rgba(243,240,234,.5);font:500 .56rem/1 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase}.hf-intro__lite-copy{position:relative;z-index:2;padding-bottom:1.7rem}.hf-intro__lite-copy small{display:block;margin-bottom:.9rem;color:rgba(243,240,234,.52);font:500 .58rem/1 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;animation:hfLiteMeta .35s .02s both cubic-bezier(.16,1,.3,1)}.hf-intro__lite-copy strong{display:block;max-width:8ch;font:600 clamp(3.8rem,18vw,6.6rem)/.77 'Space Grotesk',Manrope,sans-serif;letter-spacing:-.075em;text-transform:uppercase;animation:hfLiteWord .42s .03s both cubic-bezier(.16,1,.3,1)}.hf-intro__lite-copy i{display:block;width:5rem;height:2px;margin-top:1.4rem;background:#ff6b2c;transform-origin:left;animation:hfLiteRule .48s .08s both cubic-bezier(.16,1,.3,1)}.hf-intro--lite .hf-intro__progress i{animation:hfLiteProgress .65s linear both}.hf-intro--lite{transition:opacity .25s ease,visibility .25s!important}
       @keyframes hfLoad{from{transform:scaleX(.18);opacity:.38}to{transform:scaleX(1);opacity:1}}@keyframes hfLiteMeta{from{opacity:0;transform:translate3d(0,.7rem,0)}}@keyframes hfLiteWord{from{opacity:0;transform:translate3d(0,1.4rem,0)}}@keyframes hfLiteRule{from{transform:scaleX(0)}}@keyframes hfLiteProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
       @media(max-width:700px){.hf-intro__video{object-fit:contain}.hf-intro__controls{top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right))}.hf-intro__button{padding:8px 10px;font-size:8px}}
       @media(prefers-reduced-motion:reduce){.hf-intro{display:none!important}.scope-open,.founder-open{display:none!important}}
     `;
     document.head.append(style);
   };
-  installIntroStyles();
+  if(!introMobile)installIntroStyles();
 
   class HyperFramesIntro{
     constructor(){
@@ -37,17 +37,17 @@
       document.querySelectorAll('.scope-open,.founder-open').forEach(overlay=>overlay.remove());
       body.classList.remove('polish-opening');
       if(!this.opening)return;
+      if(introMobile){
+        // The mobile opening is already drawn and dismissed by critical CSS.
+        // Keep it out of JavaScript's layout path and let the hero appear at once.
+        document.querySelectorAll('footer a[href="#top"]').forEach(link=>{if(link.textContent.trim().toLowerCase()==='replay')link.textContent='Back to top'});
+        return;
+      }
       body.classList.add('hf-intro-mode');
-      if(reduced){this.opening.remove();return}
-      this.opening.className=`opening-sequence hf-intro${introMobile?' hf-intro--lite':''}`;
+      if(reduced||navigator.connection?.saveData){this.opening.remove();return}
+      this.opening.className='opening-sequence hf-intro';
       this.opening.removeAttribute('aria-hidden');this.opening.setAttribute('role','presentation');
-      if(introMobile){this.mountLite();return}
       this.mountFilm();
-    }
-    mountLite(){
-      this.opening.innerHTML=`<div class="hf-intro__lite" aria-hidden="true"><div class="hf-intro__lite-meta"><span>BRAYROAI / MOBILE CUT</span><span>01</span></div><div class="hf-intro__lite-copy"><small>Creative technology studio</small><strong>Make the difference.</strong><i></i></div></div><div class="hf-intro__controls" aria-label="Opening controls"><button class="hf-intro__button" type="button" data-hf-skip>Skip</button></div><div class="hf-intro__progress" aria-hidden="true"><i></i></div>`;
-      this.skip=this.opening.querySelector('[data-hf-skip]');this.skip?.addEventListener('click',()=>this.finish(false,true));
-      this.bindEscape();this.startedAt=performance.now();body.classList.add('hf-intro-active');this.timer=setTimeout(()=>this.finish(false,true),2150);this.bindReplay();
     }
     mountFilm(){
       this.opening.innerHTML=`<video class="hf-intro__video" data-hf-intro-video preload="auto" muted playsinline src="/assets/brayroai-cinematic-opening-silent.mp4" data-full-src="/assets/brayroai-cinematic-opening.mp4"></video><div class="hf-intro__loading" aria-hidden="true"><span><i></i>BRAYROAI / OPENING FILM</span></div><div class="hf-intro__controls" aria-label="Opening film controls"><button class="hf-intro__button" type="button" data-hf-sound aria-pressed="false">Sound off</button><button class="hf-intro__button" type="button" data-hf-skip>Skip</button></div><div class="hf-intro__progress" aria-hidden="true"><i></i></div>`;
@@ -105,7 +105,6 @@
     replay(){
       if(!this.opening||reduced)return;
       this.finishing=false;clearTimeout(this.timer);clearTimeout(this.finishTimer);this.cancelProgress();window.scrollTo({top:0,behavior:'auto'});this.opening.classList.remove('is-complete','is-exiting');this.opening.setAttribute('aria-hidden','false');this.opening.style.setProperty('--hf-progress','0');this.startedAt=performance.now();body.classList.add('hf-intro-active');
-      if(introMobile){this.timer=setTimeout(()=>this.finish(false,true),2150);return}
       if(!this.video)return;this.video.currentTime=0;this.video.muted=true;this.syncSoundLabel();this.video.play().then(()=>this.start()).catch(()=>this.finish(true));this.timer=setTimeout(()=>this.finish(true),8500);
     }
     bindReplay(){document.querySelectorAll('footer a[href="#top"]').forEach(link=>{if(link.textContent.trim().toLowerCase()!=='replay')return;link.addEventListener('click',event=>{event.preventDefault();this.replay()})})}
@@ -141,6 +140,13 @@
   }
 
   new HyperFramesIntro();
-  new EditorialSequence();
+  const editorial=document.querySelector('[data-editorial-sequence]');
+  if(editorial&&'IntersectionObserver'in window){
+    const observer=new IntersectionObserver(entries=>{
+      if(!entries.some(entry=>entry.isIntersecting))return;
+      observer.disconnect();new EditorialSequence();
+    },{rootMargin:'500px 0px'});
+    observer.observe(editorial);
+  }else new EditorialSequence();
   new SectionTextMotion();
 })();

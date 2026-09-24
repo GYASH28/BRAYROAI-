@@ -137,9 +137,9 @@ body{background:#070809}
 .editorial-sequence__word{position:absolute;left:clamp(1rem,3vw,3rem);right:clamp(1rem,3vw,3rem);top:50%;font-family:"Archivo Black",sans-serif;font-size:clamp(5rem,17.8vw,18rem);line-height:.72;letter-spacing:-.085em;text-transform:uppercase;white-space:nowrap;transform:translate3d(0,-50%,0);transform-origin:left center;opacity:0;clip-path:inset(0 100% 0 0);transition:opacity .52s ease,clip-path .92s var(--dir-ease),transform .92s var(--dir-ease)}
 .editorial-sequence__word em{font-style:normal;color:var(--dir-accent)}
 .editorial-sequence__copy{position:absolute;right:clamp(1rem,3vw,3rem);top:clamp(4rem,9vh,7rem);width:min(28rem,38vw);z-index:5;opacity:0;transform:translate3d(0,1rem,0);transition:opacity .52s ease,transform .8s var(--dir-ease)}
-.editorial-sequence__copy small{font:500 .67rem/1.2 "DM Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:rgba(10,11,12,.48)}
+.editorial-sequence__copy small{font:500 .67rem/1.2 "DM Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:#565551}
 .editorial-sequence__copy p{margin:1rem 0 0;font:600 clamp(1.05rem,1.8vw,1.7rem)/1.15 Manrope,sans-serif;letter-spacing:-.035em;text-wrap:balance}
-.editorial-sequence__index{position:absolute;left:clamp(1rem,3vw,3rem);bottom:clamp(4rem,8vh,6rem);z-index:5;font:500 .68rem/1 "DM Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:rgba(10,11,12,.5)}
+.editorial-sequence__index{position:absolute;left:clamp(1rem,3vw,3rem);bottom:clamp(4rem,8vh,6rem);z-index:5;font:500 .68rem/1 "DM Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:#565551}
 .editorial-sequence__join{position:absolute;inset:0;z-index:8;display:grid;place-content:center;text-align:center;pointer-events:none;opacity:0;transform:scale(.965);transition:opacity .7s ease,transform 1s var(--dir-ease)}
 .editorial-sequence__join small{font:500 .68rem/1 "DM Mono",monospace;letter-spacing:.15em;text-transform:uppercase;color:rgba(10,11,12,.46)}
 .editorial-sequence__join strong{display:block;margin:.7rem 0 .9rem;font-family:"Archivo Black",sans-serif;font-size:clamp(4rem,11vw,11rem);line-height:.79;letter-spacing:-.075em;text-transform:uppercase}

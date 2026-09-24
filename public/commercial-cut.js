@@ -84,39 +84,6 @@ class WorkFocus{
   }
 }
 
-class ProjectIntent{
-  constructor(){
-    this.root=document.querySelector('[data-project-intent]');
-    this.buttons=[...document.querySelectorAll('[data-project-type]')];
-    this.cta=document.querySelector('[data-project-cta]');
-    this.whatsapp=document.querySelector('[data-project-whatsapp]');
-    this.label=document.querySelector('[data-project-label]');
-    if(!this.root||!this.cta||!this.buttons.length)return;
-    this.buttons.forEach(button=>{
-      button.addEventListener('click',()=>this.select(button.dataset.projectType));
-      button.addEventListener('keydown',event=>this.navigate(event,button));
-    });
-    this.select('website');
-  }
-  navigate(event,button){
-    if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
-    event.preventDefault();
-    const direction=event.key==='ArrowRight'?1:-1;
-    const next=this.buttons[(this.buttons.indexOf(button)+direction+this.buttons.length)%this.buttons.length];
-    next.focus();this.select(next.dataset.projectType);
-  }
-  select(type){
-    const names={website:'website',product:'digital product',ai:'useful AI'};
-    if(!names[type])return;
-    this.buttons.forEach(button=>{const active=button.dataset.projectType===type;button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active))});
-    if(this.label)this.label.textContent=names[type];
-    const brief=['Hi Yash,','',`I would like help with a ${names[type]} project.`,'','Business / brand:','What needs to improve:','What should the website or product help people do:','Target launch date:','Approximate budget:','','Best way to reach me:'].join('\n');
-    this.cta.href=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`Start a BRAYROAI ${names[type]} project`)}&body=${encodeURIComponent(brief)}`;
-    if(this.whatsapp)this.whatsapp.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I would like to discuss a ${names[type]} project with BRAYROAI.`)}`;
-    this.root.dataset.scVerifyState=`project:${type}`;
-  }
-}
-
 class PageProgress{
   constructor(){
     this.progress=document.querySelector('[data-progress]');
@@ -125,7 +92,8 @@ class PageProgress{
     this.schedule=this.schedule.bind(this);
     addEventListener('scroll',this.schedule,{passive:true});
     addEventListener('resize',this.schedule,{passive:true});
-    this.bindAnchors();this.schedule();
+    addEventListener('pageshow',event=>{if(event.persisted)this.schedule()},{passive:true});
+    this.bindAnchors();
   }
   bindAnchors(){
     document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{
@@ -145,9 +113,14 @@ class PageProgress{
   }
 }
 
-new RevealDirector();
+const startReveals=()=>{
+  const mount=()=>new RevealDirector();
+  if('requestIdleCallback'in window)requestIdleCallback(mount,{timeout:1500});
+  else setTimeout(mount,0);
+};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startReveals,{once:true});
+else startReveals();
 new MobileMenu();
 new ColourDirector();
 new WorkFocus();
-new ProjectIntent();
 new PageProgress();

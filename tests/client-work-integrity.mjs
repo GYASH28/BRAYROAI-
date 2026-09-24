@@ -13,7 +13,7 @@ const pkg=read('package.json');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 
-for(const token of ['BRAYROAI / CLIENT ARCHIVE','data-client-filter="live"','data-client-filter="in-progress"','data-client-filter="upcoming"','data-client-grid','No invented outcome metrics'])expect(clients.includes(token),`Client archive missing ${token}`);
+for(const token of ['BRAYROAI / CLIENT ARCHIVE','data-client-filter="all"','data-client-filter="live"','data-client-search','data-client-grid','No invented outcome metrics'])expect(clients.includes(token),`Client archive missing ${token}`);
 for(const token of ['FakhriMart','VERIFIED CLIENT / 2026 / PUNE · INDIA','Not a fake ecommerce store.','CATALOGUE ARCHITECTURE','DECISION SUPPORT','ENQUIRY FLOW','React 19','Vite 6','React Router 8','No fabricated conversion uplift','https://fakhriyarns.vercel.app/'])expect(fakhri.includes(token),`FakhriMart case study missing ${token}`);
 for(const token of ['const CLIENTS = [','slug: \'fakhrimart\'','status: \'live\'','caseStudy: \'/clients/fakhrimart\'','window.BRAYRO_CLIENTS','class ClientArchive','class CaseStudyTimeline','ensureAccessibilityStyles','/client-work-accessibility.css'])expect(js.includes(token),`Client registry/runtime missing ${token}`);
 for(const token of ['.client-grid','.client-card','.case-hero','.case-flow','.case-outcome','@media(prefers-reduced-motion:reduce)'])expect(css.includes(token),`Client work CSS missing ${token}`);

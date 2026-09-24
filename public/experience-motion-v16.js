@@ -6,7 +6,7 @@
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));
   const body=document.body;
-  const path=location.pathname.replace(/\/$/,'')||'/';
+  const path=window.BRAYRO_MARKET?.route||location.pathname.replace(/\/$/,'')||'/';
   const isHome=path==='/'||path.endsWith('/index.html');
 
   body.classList.add('v16-motion');
@@ -15,6 +15,9 @@
   else if(path==='/founder'||path.endsWith('/founder.html'))body.classList.add('founder-v16');
   else if(path==='/terms'||path.endsWith('/terms.html'))body.classList.add('terms-v16');
   else if(path==='/ai-workflow-audit'||path==='/company-second-brain'||path.endsWith('/ai-workflow-audit.html')||path.endsWith('/company-second-brain.html'))body.classList.add('ai-v16');
+  // Native mobile scene motion and the homepage interaction scripts already
+  // cover this route. Avoid decorating every section during its first paint.
+  if(isHome&&matchMedia('(max-width:760px), (pointer:coarse)').matches)return;
 
   class PageCurtain{
     constructor(){

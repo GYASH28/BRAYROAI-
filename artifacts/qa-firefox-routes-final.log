@@ -1,0 +1,10 @@
+
+Running 2 tests using 1 worker
+
+(node:19402) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /plans
+[2/2] [firefox-smoke] › tests/rae.spec.mjs:39:3 › Rae mounts once and becomes page-aware on /founder
+  2 passed (28.3s)

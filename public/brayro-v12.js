@@ -59,7 +59,7 @@
         this.nav.classList.toggle('v12-scrolled',next);
       };
       addEventListener('scroll',this.onScroll,{passive:true});
-      this.onScroll();
+      addEventListener('pageshow',event=>{if(event.persisted)this.onScroll()},{passive:true});
       if(!this.sections.length||!('IntersectionObserver'in window))return;
       this.observer=new IntersectionObserver(entries=>{
         const live=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
@@ -147,24 +147,10 @@
     }
   }
 
-  class HeroTextGuard {
-    constructor(){
-      const title=document.querySelector('.v12-hero-title');
-      if(!title)return;
-      const fit=()=>{
-        const max=innerWidth<=760?innerWidth-32:innerWidth*.88;
-        title.style.maxWidth=`${Math.max(280,max)}px`;
-      };
-      addEventListener('resize',fit,{passive:true});
-      fit();
-    }
-  }
-
   new IntroPerformanceGuard();
   new V12Reveal();
   new FloatingHeader();
   new FlipLinks();
   new CurtainReveal();
   new ProjectPreview();
-  new HeroTextGuard();
 })();

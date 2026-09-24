@@ -2,10 +2,11 @@ import {characterMarkup} from './rae-character.js';
 
 const clean=value=>String(value??'').replace(/\u0000/g,'').trim();
 const safeText=value=>clean(value).slice(0,5000);
+const arabicChoices={'A website':'موقع إلكتروني','A digital product':'منتج رقمي','An internal AI workflow':'سير عمل داخلي بالذكاء الاصطناعي','I’m not sure yet':'لست متأكداً بعد','More qualified enquiries':'استفسارات أنسب','Clearer product discovery':'عرض أوضح للمنتج','Less manual work':'عمل يدوي أقل','A stronger first impression':'انطباع أول أقوى','As soon as possible':'في أقرب وقت','This month':'هذا الشهر','Still exploring':'ما زلت أستكشف','Cancel':'إلغاء','Show plans':'شاهد الخطط','Show client work':'شاهد أعمال العملاء','Open FakhriMart':'افتح دراسة FakhriMart','Contact':'تواصل','Compare these plans':'قارن هذه الخطط','Which one fits me?':'ما الخيار الأنسب لي؟','What is included?':'ماذا يشمل السعر؟','Start a project':'ابدأ مشروعاً','What can BRAYROAI build?':'ماذا تبني BRAYROAI؟','Which plan fits my project?':'ما الخطة المناسبة لمشروعي؟','Show me your work':'شاهد أعمال الاستوديو','I have a project idea':'لدي فكرة مشروع','Show me FakhriMart':'شاهد FakhriMart','What changed for the client?':'ما الذي تغير للعميل؟','Can you build something similar?':'هل يمكنك بناء شيء مشابه؟','What did BRAYROAI do here?':'ما الذي قدمته BRAYROAI؟','Show me the process':'اشرح العملية','Who is Yash?':'من ياش؟','Why a small studio?':'لماذا استوديو صغير؟','How does BRAYRO work?':'كيف تعمل BRAYROAI؟','Give me the human version':'اشرح الشروط ببساطة','What about payments?':'كيف تتم الدفعات؟','What counts as extra?':'ما الذي يُسعّر منفصلاً؟','I have a project question':'لدي سؤال عن المشروع','Explain this simply':'اشرح هذا ببساطة','Is this right for my business?':'هل يناسب شركتي؟','What do I get?':'ماذا سأحصل عليه؟','Audit or Second Brain?':'التدقيق أم ذاكرة الشركة؟','Would this help my team?':'هل سيفيد فريقي؟','What sources can it use?':'ما المصادر التي يستخدمها؟'};
 
 export class RaeUI{
-  constructor(root,{pageInfo,onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear}={}){
-    this.root=root;this.pageInfo=pageInfo;this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;this.resizeHandler=null;this.focusTimer=0;
+  constructor(root,{pageInfo,onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear,onGuideStart,onGuideAnswer,onCompare,onProof}={}){
+    this.root=root;this.pageInfo=pageInfo;this.arabic=window.BRAYRO_MARKET?.id==='ae-ar';this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear,onGuideStart,onGuideAnswer,onCompare,onProof};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;this.resizeHandler=null;this.focusTimer=0;this.focusRecoveryTimer=0;
     this.build();this.syncLauncherPosition(false);this.bind();this.renderStarter();
   }
   build(){
@@ -14,7 +15,7 @@ export class RaeUI{
         <span class="rae-presence__actor">${characterMarkup('launcher')}</span>
         <span class="rae-presence__copy"><strong>Rae</strong><small>BRAYROAI companion</small></span><i class="rae-presence__ping" aria-hidden="true"></i>
       </button>
-      <button class="rae-nudge" data-rae-nudge type="button" aria-label="Open Rae suggestion"><span data-rae-nudge-copy></span><i aria-hidden="true">×</i></button>
+      <div class="rae-nudge" data-rae-nudge><button type="button" data-rae-nudge-open aria-label="Open Rae suggestion"><span data-rae-nudge-copy></span></button><button type="button" data-rae-nudge-dismiss aria-label="Dismiss Rae suggestion">×</button></div>
       <section class="rae-panel" id="rae-panel" data-rae-panel role="dialog" aria-modal="true" aria-label="Chat with Rae" aria-hidden="true">
         <header class="rae-panel__head">
           <div class="rae-panel__mini">${characterMarkup('header')}</div>
@@ -38,16 +39,28 @@ export class RaeUI{
         <div class="rae-sr-status" data-rae-live role="status" aria-live="polite"></div>
       </section>`;
     this.toggle=this.root.querySelector('[data-rae-toggle]');this.panel=this.root.querySelector('[data-rae-panel]');this.feed=this.root.querySelector('[data-rae-feed]');this.input=this.root.querySelector('[data-rae-input]');this.status=this.root.querySelector('[data-rae-status]');this.chips=this.root.querySelector('[data-rae-suggestions]');this.stage=this.root.querySelector('[data-rae-stage]');this.live=this.root.querySelector('[data-rae-live]');this.jump=this.root.querySelector('[data-rae-jump]');
+    if(this.arabic){
+      const labels={'[data-rae-toggle]':'تحدث مع راي، مساعد BRAYROAI','[data-rae-nudge-open]':'افتح اقتراح راي','[data-rae-nudge-dismiss]':'تجاهل اقتراح راي','[data-rae-panel]':'المحادثة مع راي','[data-rae-close]':'أغلق راي','[data-rae-feed]':'المحادثة مع راي','[data-rae-suggestions]':'أسئلة مقترحة','[data-rae-input]':'اكتب رسالة إلى راي','[data-rae-send]':'أرسل الرسالة','[data-rae-stop]':'أوقف رد راي'};
+      for(const [selector,label] of Object.entries(labels))this.root.querySelector(selector)?.setAttribute('aria-label',label);
+      this.input.placeholder='اسأل راي عن مشروعك…';this.root.querySelectorAll('.rae-presence__copy small,.rae-panel__identity span').forEach(node=>node.textContent='رفيقتك الإبداعية');
+      this.root.querySelector('[data-rae-stage-title]').textContent='أنا راي.';this.root.querySelector('[data-rae-stage-copy]').textContent='أساعدك في فهم الخدمات ومقارنة الخيارات وتخطيط الخطوة التالية.';
+      this.jump.textContent='اذهب إلى الأحدث ↓';this.root.querySelector('.rae-panel__foot span').textContent='مساعدة ذكية · معلومات موثقة عن BRAYROAI';this.root.querySelector('[data-rae-clear]').textContent='امسح المحادثة';this.status.textContent='جاهزة';
+    }
   }
   bind(){
     this.root.addEventListener('click',event=>{
       if(event.target.closest('[data-rae-toggle]'))return this.setOpen(!this.open);
       if(event.target.closest('[data-rae-close]'))return this.setOpen(false);
-      if(event.target.closest('[data-rae-nudge]'))return this.setOpen(true);
+      if(event.target.closest('[data-rae-nudge-dismiss]')){this.root.classList.remove('has-nudge');try{sessionStorage.setItem('rae:v2:nudge-shown','dismissed')}catch{}return}
+      if(event.target.closest('[data-rae-nudge-open]'))return this.setOpen(true);
       if(event.target.closest('[data-rae-stop]'))return this.handlers.onStop?.();
       if(event.target.closest('[data-rae-retry]'))return this.handlers.onRetry?.();
       if(event.target.closest('[data-rae-clear]')){this.handlers.onClear?.();this.resetConversation();return}
       if(event.target.closest('[data-rae-jump]'))return this.scrollLatest(true);
+      if(event.target.closest('[data-rae-guide-start]'))return this.handlers.onGuideStart?.();
+      if(event.target.closest('[data-rae-compare]'))return this.handlers.onCompare?.();
+      if(event.target.closest('[data-rae-proof]'))return this.handlers.onProof?.();
+      const answer=event.target.closest('[data-rae-guide-answer]');if(answer)return this.handlers.onGuideAnswer?.(answer.dataset.raeGuideAnswer||'');
       const chip=event.target.closest('[data-rae-prompt]');if(chip)return this.submit(chip.dataset.raePrompt||'');
       const action=event.target.closest('[data-rae-action]');if(action)return this.handlers.onAction?.(action.dataset.raeAction,JSON.parse(action.dataset.raeArgs||'{}'),action);
     });
@@ -64,9 +77,12 @@ export class RaeUI{
     if(event.key!=='Tab')return;const focusable=[...this.panel.querySelectorAll('button:not([hidden]),textarea,a[href],[tabindex="0"]')].filter(node=>!node.disabled&&node.offsetParent!==null);if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
   }
   settleFocus(target,expectOpen){
-    clearTimeout(this.focusTimer);const delays=[0,72,180,360,620];let index=0;
+    clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer);const delays=[0,72,180,360,620];let index=0;
     const apply=()=>{if(this.open!==expectOpen||!target?.isConnected)return;try{target.focus({preventScroll:true})}catch{}if(index<delays.length-1){index+=1;this.focusTimer=setTimeout(apply,delays[index])}};
     queueMicrotask(apply);
+    // Heavy page transitions can finish after the short focus retries. Recover only
+    // when focus has fallen outside the open dialog or remained inside the closed one.
+    this.focusRecoveryTimer=setTimeout(()=>{if(this.open!==expectOpen||!target?.isConnected)return;const active=document.activeElement;const lost=expectOpen?!this.panel.contains(active):active===document.body||this.panel.contains(active);if(lost)try{target.focus({preventScroll:true})}catch{}},2000);
   }
   focusComposer(){if(!this.generating&&!this.input.disabled)this.settleFocus(this.input,true)}
   preparePanelTransition(next){
@@ -86,15 +102,22 @@ export class RaeUI{
     if(this.open)this.focusComposer();else{const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;this.settleFocus(target,false)}
   }
   renderStarter(){
-    const wrap=document.createElement('article');wrap.className='rae-welcome';const title=document.createElement('strong');title.textContent='Ask me the useful version.';const copy=document.createElement('p');copy.textContent=`You’re on ${this.pageInfo?.label||'BRAYROAI'}. ${this.pageInfo?.summary||''}`;wrap.append(title,copy);this.feed.append(wrap);this.setChips(this.pageInfo?.chips||[]);
+    const wrap=document.createElement('article');wrap.className='rae-welcome';const title=document.createElement('strong');title.textContent=this.arabic?'لنجعل الخطوة التالية أوضح.':'Make the next step clearer.';const copy=document.createElement('p');copy.textContent=this.arabic?'أستطيع شرح الخيارات والأسعار المنشورة، ومساعدتك في إعداد فكرة مشروع قبل التواصل مع ياش.':`You’re on ${this.pageInfo?.label||'BRAYROAI'}. ${this.pageInfo?.summary||''}`;
+    const guide=document.createElement('button');guide.type='button';guide.className='rae-welcome__guide';guide.dataset.raeGuideStart='';guide.innerHTML=`<span><b>${this.arabic?'خطط لمشروعك مع راي':'Plan a project with Rae'}</b><small>${this.arabic?'ثلاثة أسئلة · موجز أولي مفيد':'Three questions · a useful starting brief'}</small></span><i aria-hidden="true">↗</i>`;
+    const paths=document.createElement('div');paths.className='rae-welcome__paths';
+    const compare=document.createElement('button');compare.type='button';compare.dataset.raeCompare='';compare.innerHTML=`<b>${this.arabic?'قارن الخدمات':'Compare the offers'}</b><small>${this.arabic?'النطاق والأسعار المنشورة':'Published scope and starting prices'}</small>`;
+    const proof=document.createElement('button');proof.type='button';proof.dataset.raeProof='';proof.innerHTML=`<b>${this.arabic?'شاهد عملاً حقيقياً':'Explore real work'}</b><small>${this.arabic?'FakhriMart مع المصادر':'FakhriMart, with sources'}</small>`;
+    paths.append(compare,proof);wrap.append(title,copy,guide,paths);this.feed.append(wrap);this.setChips(this.pageInfo?.chips||[]);
   }
   restore(messages=[]){for(const message of messages.slice(-8))this.addMessage(message.role,message.text,{announce:false})}
   resetConversation(){this.feed.replaceChildren();this.streamNode=null;this.lastUserNearBottom=true;this.input.value='';this.resizeComposer();this.renderStarter();this.live.textContent='Chat cleared.'}
   submit(value){const text=clean(value);if(!text||this.generating)return;this.input.value='';this.resizeComposer();this.handlers.onSend?.(text)}
-  setChips(items=[]){this.chips.replaceChildren();for(const label of items.slice(0,4)){const button=document.createElement('button');button.type='button';button.className='rae-chip';button.dataset.raePrompt=label;button.textContent=label;this.chips.append(button)}}
+  localizePrompt(label){return this.arabic?(arabicChoices[label]||label):label}
+  setChips(items=[]){this.chips.replaceChildren();for(const label of items.slice(0,4)){const button=document.createElement('button');button.type='button';button.className='rae-chip';button.dataset.raePrompt=label;button.textContent=this.localizePrompt(label);this.chips.append(button)}}
+  setGuideOptions(items=[]){this.chips.replaceChildren();for(const label of items){const button=document.createElement('button');button.type='button';button.className='rae-chip rae-chip--guide';button.dataset.raeGuideAnswer=label;button.textContent=this.localizePrompt(label);this.chips.append(button)}this.scrollLatest(true)}
   addMessage(role,text,{actions=[],card=null,announce=true,partial=false}={}){
     const article=document.createElement('article');article.className='rae-message';article.dataset.who=role==='user'?'user':'rae';if(partial)article.dataset.partial='true';
-    const meta=document.createElement('span');meta.className='rae-message__meta';meta.textContent=role==='user'?'YOU':'RAE';const bubble=document.createElement('div');bubble.className='rae-message__bubble';bubble.textContent=safeText(text);article.append(meta,bubble);
+    const meta=document.createElement('span');meta.className='rae-message__meta';meta.textContent=role==='user'?(this.arabic?'أنت':'YOU'):'RAE';const bubble=document.createElement('div');bubble.className='rae-message__bubble';bubble.textContent=role==='user'&&this.arabic?(arabicChoices[text]||safeText(text)):safeText(text);article.append(meta,bubble);
     if(card)this.appendCard(article,card);if(actions.length)this.appendActions(article,actions);this.feed.append(article);if(this.lastUserNearBottom)this.scrollLatest();if(announce&&role!=='user'){this.live.textContent='Rae replied.'}return{article,bubble};
   }
   beginStream(){const node=this.addMessage('assistant','',{announce:false,partial:true});this.streamNode=node;return node}
@@ -106,16 +129,30 @@ export class RaeUI{
   }
   appendActions(article,actions){const row=document.createElement('div');row.className='rae-message__actions';for(const action of actions.slice(0,3)){if(!action?.label||!action?.name)continue;const button=document.createElement('button');button.type='button';button.className='rae-action';button.dataset.raeAction=action.name;button.dataset.raeArgs=JSON.stringify(action.args||{});button.textContent=action.label;row.append(button)}if(row.children.length)article.append(row)}
   appendCard(article,card){
-    if(!card||!['plan','case','project'].includes(card.type))return;const box=document.createElement('section');box.className=`rae-card rae-card--${card.type}`;const eyebrow=document.createElement('span');eyebrow.textContent=card.eyebrow||card.type.toUpperCase();const title=document.createElement('strong');title.textContent=safeText(card.title||'');const copy=document.createElement('p');copy.textContent=safeText(card.copy||'');box.append(eyebrow,title,copy);
+    if(!card||!['plan','case','project','compare'].includes(card.type))return;const box=document.createElement('section');box.className=`rae-card rae-card--${card.type}`;const eyebrow=document.createElement('span');eyebrow.textContent=card.eyebrow||card.type.toUpperCase();const title=document.createElement('strong');title.textContent=safeText(card.title||'');const copy=document.createElement('p');copy.textContent=safeText(card.copy||'');box.append(eyebrow,title,copy);
     if(card.price){const price=document.createElement('b');price.textContent=safeText(card.price);box.append(price)}
-    if(card.type==='project'){const area=document.createElement('textarea');area.className='rae-card__brief';area.rows=5;area.value=safeText(card.brief||'');area.setAttribute('aria-label','Editable project brief');box.append(area);const button=document.createElement('button');button.type='button';button.className='rae-card__cta';button.textContent='Continue on WhatsApp ↗';button.addEventListener('click',()=>this.handlers.onAction?.('startProject',{brief:area.value},button));box.append(button)}
+    if(card.type==='compare'){
+      const list=document.createElement('div');list.className='rae-compare-list';
+      for(const option of (card.options||[]).slice(0,4)){
+        const route=['/plans','/ai-workflow-audit','/company-second-brain'].includes(option.route)?option.route:'/plans';
+        const button=document.createElement('button');button.type='button';button.dataset.raeAction='navigateToRoute';button.dataset.raeArgs=JSON.stringify({route});
+        const name=document.createElement('strong');name.textContent=safeText(option.name);const price=document.createElement('b');price.textContent=safeText(option.price);const detail=document.createElement('small');detail.textContent=safeText(option.detail);button.append(name,price,detail);list.append(button);
+      }
+      box.append(list);
+    }else if(card.type==='project'){
+      const area=document.createElement('textarea');area.className='rae-card__brief';area.rows=5;area.value=safeText(card.brief||'');area.setAttribute('aria-label','Editable project brief');box.append(area);
+      const handoff=document.createElement('div');handoff.className='rae-card__handoff';
+      const chat=document.createElement('button');chat.type='button';chat.className='rae-card__cta';chat.textContent=this.arabic?'تابع عبر واتساب ↗':'Continue on WhatsApp ↗';chat.addEventListener('click',()=>this.handlers.onAction?.('startProject',{brief:area.value},chat));
+      const email=document.createElement('button');email.type='button';email.className='rae-card__cta';email.textContent=this.arabic?'أرسل مسودة بالبريد ↗':'Email draft ↗';email.addEventListener('click',()=>this.handlers.onAction?.('emailProject',{brief:area.value},email));
+      handoff.append(chat,email);box.append(handoff);
+    }
     else if(card.action?.name){const button=document.createElement('button');button.type='button';button.className='rae-card__cta';button.dataset.raeAction=card.action.name;button.dataset.raeArgs=JSON.stringify(card.action.args||{});button.textContent=card.action.label||'View';box.append(button)}article.append(box);
   }
-  setGenerating(value,status='THINKING'){this.generating=Boolean(value);this.status.textContent=status;this.root.querySelector('[data-rae-send]').hidden=this.generating;this.root.querySelector('[data-rae-stop]').hidden=!this.generating;this.input.disabled=this.generating;this.input.setAttribute('aria-busy',String(this.generating))}
-  setStatus(value){this.status.textContent=String(value||'READY').toUpperCase().slice(0,28)}
+  setGenerating(value,status='THINKING'){this.generating=Boolean(value);this.setStatus(status);this.root.querySelector('[data-rae-send]').hidden=this.generating;this.root.querySelector('[data-rae-stop]').hidden=!this.generating;this.input.disabled=this.generating;this.input.setAttribute('aria-busy',String(this.generating))}
+  setStatus(value){const status=String(value||'READY').toUpperCase().slice(0,28);this.status.textContent=this.arabic?({'READY':'جاهزة','LISTENING':'أستمع','THINKING':'أفكر','SPEAKING':'أجيب','OFFLINE':'غير متصلة'}[status]||status):status}
   setStage(title,copy){const titleNode=this.root.querySelector('[data-rae-stage-title]'),copyNode=this.root.querySelector('[data-rae-stage-copy]');if(titleNode)titleNode.textContent=title;if(copyNode)copyNode.textContent=copy}
   scrollLatest(force=false){if(!force&&!this.lastUserNearBottom)return;requestAnimationFrame(()=>{this.feed.scrollTop=this.feed.scrollHeight;this.jump.hidden=true;this.lastUserNearBottom=true})}
   resizeComposer(){this.input.style.height='auto';this.input.style.height=`${Math.min(128,Math.max(42,this.input.scrollHeight))}px`}
   showNudge(text){const node=this.root.querySelector('[data-rae-nudge-copy]');if(node)node.textContent=safeText(text);this.root.classList.add('has-nudge');setTimeout(()=>this.root.classList.remove('has-nudge'),7000)}
-  destroy(){clearTimeout(this.focusTimer);this.panel.style.removeProperty('transition');this.root.style.removeProperty('bottom');if(this.resizeHandler)removeEventListener('resize',this.resizeHandler);if(this.visualViewportHandler)visualViewport?.removeEventListener('resize',this.visualViewportHandler);document.body.classList.remove('rae-dialog-open')}
+  destroy(){clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer);this.panel.style.removeProperty('transition');this.root.style.removeProperty('bottom');if(this.resizeHandler)removeEventListener('resize',this.resizeHandler);if(this.visualViewportHandler)visualViewport?.removeEventListener('resize',this.visualViewportHandler);document.body.classList.remove('rae-dialog-open')}
 }

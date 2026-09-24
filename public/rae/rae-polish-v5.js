@@ -4,17 +4,17 @@ export function mountRaePolish(root,app){
   if(!root||root.dataset.raePolish==='v5')return()=>{};
   root.dataset.raePolish='v5';
   const feed=root.querySelector('[data-rae-feed]'),input=root.querySelector('[data-rae-input]'),status=root.querySelector('[data-rae-status]');
-  if(input)input.placeholder=matchMedia('(max-width:700px)').matches?'Ask Rae about your project…':'Ask Rae about your project, plans or AI workflow…';
-  if(status&&status.textContent==='READY')status.textContent='ONLINE';
+  if(input)input.placeholder=app?.ui?.arabic?'اسأل راي عن مشروعك…':matchMedia('(max-width:700px)').matches?'Ask Rae about your project…':'Ask Rae about your project, plans or AI workflow…';
+  if(status&&status.textContent==='READY')status.textContent=app?.ui?.arabic?'جاهزة':'ONLINE';
 
   const enhanceStarter=()=>{
     if(!feed)return;const welcome=feed.querySelector('.rae-welcome');if(!welcome)return;
     feed.dataset.raeEmpty='true';welcome.classList.add('rae-welcome--v5');
-    if(!welcome.querySelector('.rae-welcome__eyebrow')){const eyebrow=document.createElement('span');eyebrow.className='rae-welcome__eyebrow';eyebrow.textContent='USE RAE FOR';welcome.prepend(eyebrow)}
+    if(!welcome.querySelector('.rae-welcome__eyebrow')){const eyebrow=document.createElement('span');eyebrow.className='rae-welcome__eyebrow';eyebrow.textContent=app?.ui?.arabic?'اسأل راي عن':'USE RAE FOR';welcome.prepend(eyebrow)}
     if(!welcome.querySelector('.rae-welcome__actions')){
       const actions=document.createElement('div');actions.className='rae-welcome__actions';
       const prompts=(app?.ui?.pageInfo?.chips||['Compare plans','Show relevant work','Think through my project']).slice(0,3);
-      for(const label of prompts){const button=document.createElement('button');button.type='button';button.className='rae-welcome__prompt';button.dataset.raePrompt=clean(label);button.textContent=clean(label);actions.append(button)}
+      for(const label of prompts){const button=document.createElement('button');button.type='button';button.className='rae-welcome__prompt';button.dataset.raePrompt=clean(label);button.textContent=app?.ui?.localizePrompt?.(clean(label))||clean(label);actions.append(button)}
       welcome.append(actions);
     }
   };
@@ -24,8 +24,8 @@ export function mountRaePolish(root,app){
   };
   const onRecovery=event=>{
     const attempt=Math.max(2,Number(event.detail?.attempt)||2);root.dataset.raeRecovering='true';
-    if(status)status.textContent='RECONNECTING';
-    app?.ui?.setStage?.('Switching connection…',attempt>2?'The first backups were busy too. I’m trying one last AI route instead of dropping your question.':'That AI route is busy. I’m trying a backup connection and keeping your question intact.');
+    if(status)status.textContent=app?.ui?.arabic?'أعيد الاتصال':'RECONNECTING';
+    app?.ui?.setStage?.(app?.ui?.arabic?'أعيد الاتصال…':'Switching connection…',app?.ui?.arabic?'المسار الحالي مشغول. أحاول اتصالاً بديلاً مع الاحتفاظ بسؤالك.':attempt>2?'The first backups were busy too. I’m trying one last AI route instead of dropping your question.':'That AI route is busy. I’m trying a backup connection and keeping your question intact.');
     clearTimeout(root.__raeRecoveryTimer);root.__raeRecoveryTimer=setTimeout(()=>root.removeAttribute('data-rae-recovering'),5000);
   };
   enhanceStarter();

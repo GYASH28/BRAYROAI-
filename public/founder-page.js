@@ -189,9 +189,10 @@ new FounderSurfaceLight();
 new FounderTimeline();
 const founderProjectCta=document.querySelector('[data-founder-project-cta]');
 if(founderProjectCta){
+  const market=window.BRAYRO_MARKET;
   const brief=['Hi Yash,','','I would like to discuss a project with BRAYROAI.','','Business / brand:','What needs to improve:','What should the website or product help people do:','Approximate budget and target date:','','Best way to reach me:'].join('\\n');
-  const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent('Start a project with Yash at BRAYROAI')}&body=${encodeURIComponent(brief)}`;
-  founderProjectCta.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I would like to discuss a project with BRAYROAI.\n\n${brief}`)}`;founderProjectCta.target='_blank';founderProjectCta.rel='noreferrer';founderProjectCta.innerHTML='Chat on WhatsApp <span>↗</span>';
+  const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`BRAYROAI / ${market?.id||'India'} / founder project`)}&body=${encodeURIComponent(`Market: ${market?.id||'India'} / ${market?.currency||'INR'}.\n${brief}`)}`;
+  founderProjectCta.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Market: ${market?.id||'India'} / ${market?.currency||'INR'}.\n${brief}`)}`;founderProjectCta.target='_blank';founderProjectCta.rel='noreferrer';founderProjectCta.innerHTML='Chat on WhatsApp <span>↗</span>';
   const email=document.createElement('a');email.className='founder-email-fallback';email.href=emailHref;email.textContent='Prefer email? Send the project brief ↗';founderProjectCta.after(email);
 }
 let founderScrollCraftMounted = false;

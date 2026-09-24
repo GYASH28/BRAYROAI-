@@ -12,7 +12,7 @@ const cleanRouteMap=Object.freeze({'/plans':'/plans.html','/founder':'/founder.h
 // V5 is intentionally absent: its homepage runtime exits immediately beneath V15,
 // so its home-only CSS/JS is stripped instead of downloaded and parsed.
 const homeStyleFiles=Object.freeze([
-  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css','rae.css','home-performance.css'
+  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css','rae.css','home-performance.css','experience-upgrade.css'
 ]);
 const readHomeStyles=()=>homeStyleFiles.map(file=>`/* ${file} */\n${readFileSync(resolve(process.cwd(),'public',file),'utf8')}`).join('\n\n');
 // The homepage sheet is emitted manually, so it bypasses Vite's normal CSS optimizer.
@@ -21,16 +21,34 @@ const buildHomeStyles=()=>readHomeStyles().replace(/\/\*[\s\S]*?\*\//g,'').repla
 
 const normalisePath=(url='/')=>{const parsed=new URL(url,'http://brayro.local');return{parsed,pathname:parsed.pathname.length>1?parsed.pathname.replace(/\/$/,''):parsed.pathname}};
 const mountCleanRoutes=server=>{server.middlewares.use((req,_res,next)=>{if(!req.url)return next();const{parsed,pathname}=normalisePath(req.url),target=cleanRouteMap[pathname];if(target)req.url=`${target}${parsed.search}`;next()})};
+const mountLocalePreviewRoutes=server=>{server.middlewares.use((req,_res,next)=>{if(!req.url)return next();const{parsed,pathname}=normalisePath(req.url);if(/^\/(?:ae(?:\/ar)?|au)(?:\/.*)?$/.test(pathname)&&!pathname.includes('.'))req.url=`${pathname.replace(/\/$/,'')}/index.html${parsed.search}`;next()})};
 const serveHomeStyleBundle=server=>{server.middlewares.use((req,res,next)=>{if(!req.url)return next();const{pathname}=normalisePath(req.url);if(pathname!=='/assets/brayro-home.css')return next();res.statusCode=200;res.setHeader('Content-Type','text/css; charset=utf-8');res.setHeader('Cache-Control','no-cache');res.end(readHomeStyles())})};
 const pagePathFor=(filename='')=>filename.endsWith('/plans.html')?'/plans':filename.endsWith('/founder.html')?'/founder':filename.endsWith('/terms.html')?'/terms':filename.endsWith('/ai-workflow-audit.html')?'/ai-workflow-audit':filename.endsWith('/company-second-brain.html')?'/company-second-brain':filename.endsWith('/clients.html')?'/clients':filename.endsWith('/fakhrimart-case-study.html')?'/clients/fakhrimart':'/';
+const globalLinks=Object.freeze([['Home','/'],['Capabilities','/#services'],['Clients','/clients'],['AI','/plans#ai-systems'],['Plans','/plans'],['Founder','/founder'],['Terms','/terms'],['Contact','/#contact']]);
+const chapterLinks=Object.freeze({
+  '/':[['Start','#top'],['Capabilities','#services'],['Work','#work'],['AI systems','#ai-systems'],['Plans','#plans'],['Contact','#contact']],
+  '/plans':[['Choose','#choose'],['Monthly','#monthly'],['One-time','#builds'],['AI systems','#ai-systems'],['Compare','#compare']],
+  '/founder':[['Story','#story'],['Principles','#principles'],['Method','#method'],['Contact','#contact']],
+  '/clients':[['Index','#client-index'],['FakhriMart','/clients/fakhrimart']],
+  '/clients/fakhrimart':[['Overview','#overview'],['Approach','#approach'],['Experience','#experience'],['Outcome','#outcome']],
+  '/ai-workflow-audit':[['How it works','#how'],['Deliverables','#deliverables'],['Fit','#fit'],['FAQ','#faq']],
+  '/company-second-brain':[['Architecture','#architecture'],['Integration','#integration'],['Scope','#scope'],['FAQ','#faq']],
+  '/terms':[['Services','#services'],['Pricing','#pricing'],['Payments','#payments'],['Ownership','#ownership'],['Liability','#liability']]
+});
+const globalShell=path=>{
+  const links=globalLinks.map(([label,href])=>`<a href="${href}"${href===path?' aria-current="page"':''}>${label}</a>`).join('');
+  const chapter=(chapterLinks[path]||[]).map(([label,href])=>`<a href="${href}">${label}</a>`).join('');
+  return `<header class="global-nav" data-global-nav><a class="global-nav__brand" href="/" aria-label="BRAYROAI home">BRAYRO<span>AI</span><small>CREATIVE TECHNOLOGY STUDIO</small></a><nav class="global-nav__links" aria-label="Global navigation">${links}</nav><div class="global-nav__right"><button class="market-trigger" type="button" data-market-trigger aria-haspopup="dialog" aria-controls="market-sheet">Choose market <span aria-hidden="true">⌄</span></button><a class="market-language" data-market-language-link hidden href="#" aria-label="Switch UAE language">EN / العربية</a><a class="global-nav__cta" href="https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI." target="_blank" rel="noreferrer">Start a project <span aria-hidden="true">↗</span></a><button class="global-nav__toggle" type="button" aria-label="Open navigation" aria-controls="global-menu" aria-expanded="false" data-global-toggle><span></span><span></span></button></div><span class="global-nav__progress" aria-hidden="true"><i data-global-progress></i></span></header><nav class="chapter-nav" aria-label="On this page"><span>${path==='/'?'INDEX':path.slice(1).replaceAll('/',' / ').toUpperCase()}</span><div>${chapter}</div></nav><div class="global-menu" id="global-menu" hidden data-global-menu><nav aria-label="Mobile global navigation">${links}</nav><button class="global-menu__market" type="button" data-market-trigger>Choose market · currency</button><a class="global-menu__language" data-market-language-link hidden href="#" aria-label="Switch UAE language">EN / العربية</a><a class="global-menu__cta" href="https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI." target="_blank" rel="noreferrer">Start a project ↗</a></div>`;
+};
+const innerFooter=`<footer class="global-footer" aria-label="BRAYROAI site footer"><div class="global-footer__top"><div><small>BRAYROAI / PUNE · INDIA</small><h2>Make something<br><em>worth returning to.</em></h2><p>Strategy, interface, engineering and practical AI with the person making the work.</p><a class="global-footer__cta" href="https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI." target="_blank" rel="noreferrer">Tell us what you are building <span>↗</span></a></div><nav aria-label="Footer navigation"><div><small>EXPLORE</small><a href="/">Home</a><a href="/#services">Capabilities</a><a href="/clients">Client work</a><a href="/plans">Plans</a></div><div><small>GO DEEPER</small><a href="/ai-workflow-audit">AI Workflow Audit</a><a href="/company-second-brain">Company Second Brain</a><a href="/founder">Founder</a><a href="/terms">Terms</a></div><div><small>REACH US</small><a href="mailto:yashganesh.work@gmail.com">Email Yash ↗</a><a href="https://wa.me/919175524637" target="_blank" rel="noreferrer">WhatsApp ↗</a><button type="button" data-footer-rae>Ask Rae ↗</button><span>Pune, India · Working worldwide</span></div></nav></div><div class="global-footer__word" aria-hidden="true">BRAYRO<span>AI</span></div><div class="global-footer__base"><span>© 2026 BRAYROAI · DESIGN · ENGINEERING · USEFUL AI</span><a href="#">BACK TO TOP ↑</a></div></footer>`;
 const injectBefore=(html,marker,value)=>html.replace(marker,`${value}\n${marker}`);
-const optimiseFonts=html=>{const blocking=`<link href="${googleFontsHref}" rel="stylesheet">`;if(!html.includes(blocking))return html;const nonBlocking=`<link rel="preload" as="style" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'" data-layout-stable-fonts>\n  <noscript><link href="${googleFontsHref}" rel="stylesheet"></noscript>`;return html.replace(blocking,nonBlocking)};
+const optimiseFonts=html=>{const blocking=`<link href="${googleFontsHref}" rel="stylesheet">`;if(!html.includes(blocking))return html;const nonBlocking=`<link rel="preload" as="style" media="(min-width: 761px)" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'" data-layout-stable-fonts>\n  <noscript><link href="${googleFontsHref}" rel="stylesheet" media="(min-width: 761px)"></noscript>`;return html.replace(blocking,nonBlocking)};
 const removeHomepageStyleLinks=html=>{let next=html;for(const file of homeStyleFiles){const escaped=file.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');next=next.replace(new RegExp(`\\s*<link rel="stylesheet" href="/${escaped}"(?: [^>]*)?>\\s*`,'g'),'\n  ')}return next};
 
 const experienceTransform={
   name:'brayro-experience-transform',
   configureServer(server){mountCleanRoutes(server);serveHomeStyleBundle(server)},
-  configurePreviewServer:mountCleanRoutes,
+  configurePreviewServer(server){mountLocalePreviewRoutes(server);mountCleanRoutes(server)},
   generateBundle(){this.emitFile({type:'asset',fileName:'assets/brayro-home.css',source:buildHomeStyles()})},
   transformIndexHtml:{order:'pre',handler(html,context){
     const filename=context?.filename||'',isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html'),isPlans=filename.endsWith('/plans.html'),isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html'),isFakhriCase=filename.endsWith('/fakhrimart-case-study.html'),canonicalUrl=`${productionOrigin}${pagePathFor(filename)}`,shareImage=isFakhriCase?`${productionOrigin}/assets/fakhrimart-case-desktop.png`:`${productionOrigin}/assets/hero-background.webp`;
@@ -59,10 +77,11 @@ const experienceTransform={
       html=html.replace('A catalogue-led yarn website designed for confident browsing and direct enquiries across desktop and mobile.','A live catalogue-led yarn website shaped around clear product browsing, responsive usability and direct enquiries across desktop and mobile.');
       html=html.replace('Yash leads strategy, interface and implementation. The idea stays intact because it does not disappear between departments.','Yash leads strategy, interface and implementation, so clients stay close to the person making the decisions instead of being passed between departments.');
       html=html.replace('WhatsApp is fastest. A short project brief is ready in email if you need it.','WhatsApp is fastest. Tell us what needs to improve and we will recommend the smallest sensible scope—not force a bigger package.');
-      html=html.replace('<a href="#work">Work</a>','<a href="/clients">Clients</a>').replace('<a href="#work">Work <span>02</span></a>','<a href="/clients">Clients <span>02</span></a>');
+      // The main navigation stays on the homepage journey. The full client
+      // archive remains linked from the Work section and the footer.
 
-      if(!html.includes('data-client-archive-link'))html=html.replace('Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.</p>','Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together. <a data-client-archive-link class="text-link" href="/clients">Explore all client work ↗</a></p>');
-      if(!html.includes('data-fakhri-case-link'))html=html.replace('<a class="text-link magnetic" data-cursor-label="LIVE ↗" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">','<a data-fakhri-case-link class="text-link magnetic" data-cursor-label="CASE ↗" href="/clients/fakhrimart">Read the case study <span>↗</span></a><a class="text-link magnetic" data-cursor-label="LIVE ↗" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">');
+      if(!html.includes('data-client-archive-link'))html=html.replace('Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together.</p>','Real client work stays first. BRAYROAI studio studies are labelled separately so client proof and internal experimentation never blur together. <a data-client-archive-link class="text-link" href="/clients">Explore all client work <span aria-hidden="true">→</span></a></p>');
+      if(!html.includes('data-fakhri-case-link'))html=html.replace('<a class="text-link magnetic" data-cursor-label="LIVE →" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">','<a data-fakhri-case-link class="text-link magnetic" data-cursor-label="CASE" href="/clients/fakhrimart">Read the case study <span aria-hidden="true">→</span></a><a class="text-link magnetic" data-cursor-label="LIVE" href="https://fakhriyarns.vercel.app/" target="_blank" rel="noreferrer">');
       if(!html.includes('data-v20-text-cycle'))html=html.replace('<div class="v12-hero-meta" aria-label="BRAYROAI disciplines"><span>Web Experiences</span><span>Product Design</span><span>Frontend Engineering</span><span>AI Systems</span></div>','<div class="v12-hero-meta" aria-label="BRAYROAI disciplines"><span>Web Experiences</span><span>Product Design</span><span>Frontend Engineering</span><span>AI Systems</span></div>\n          <div class="v20-text-cycle" data-v20-text-cycle aria-hidden="true"><span>BUILT FOR</span><strong><i data-v20-cycle-word>BRANDS</i><b aria-hidden="true"></b></strong></div>');
 
       html=html.replaceAll('<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" alt="">','<img class="hero__background" src="/assets/hero-background.webp" width="1440" height="810" loading="eager" fetchpriority="high" alt="">');
@@ -73,7 +92,6 @@ const experienceTransform={
     @media(max-width:760px){.opening-sequence{animation-delay:.80s}.opening-sequence__mark{animation-duration:.54s}.opening-sequence__shutter--top,.opening-sequence__shutter--bottom{animation-duration:.57s;animation-delay:.17s}.opening-sequence>span{animation-duration:.43s;animation-delay:.10s}.site-nav{animation-delay:.42s}}
   </style>`);
 
-      html=html.replace('<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img src="/assets/fakhrimart-case-desktop.png" alt=""></div>','<div class="v12-project-preview" data-v12-project-preview data-label="VIEW" aria-hidden="true"><img alt=""></div>');
       if(!html.includes('src="/brayro-v14.js"'))html=html.replace('<script src="/brayro-v12.js"></script>','<script src="/brayro-v12.js"></script>\n  <script src="/brayro-v14.js"></script>');
       if(!html.includes('src="/brayro-v15.js"'))html=html.replace('<script src="/brayro-v14.js"></script>','<script src="/brayro-v14.js"></script>\n  <script src="/brayro-v15.js"></script>');
     }
@@ -88,6 +106,17 @@ const experienceTransform={
     if(isHome&&!html.includes('src="/cinematic-v20.js"'))html=html.replace('</body>','  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
     if(!html.includes('src="/brayro-cursor-v22.js"'))html=html.replace('</body>','  <script src="/brayro-cursor-v22.js" data-v22-cursor></script>\n</body>');
     if(!html.includes('src="/rae.js"'))html=html.replace('</body>','  <script src="/rae.js" data-rae></script>\n</body>');
+    const route=pagePathFor(filename);
+    if(!html.includes('data-global-shell')){
+      html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/global-shell.css" data-global-shell>');
+      html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/experience-pages.css">');
+      html=html.replace(/(<body\b[^>]*>)/,`$1\n  ${globalShell(route)}`);
+      if(!isHome)html=injectBefore(html,'</body>',innerFooter);
+      html=injectBefore(html,'</body>','  <script src="/global-shell.js" defer></script>');
+      html=injectBefore(html,'</body>','  <script type="module" src="/src/market-switcher.js"></script>');
+      html=injectBefore(html,'</body>','  <script src="/market-events.js" defer></script>');
+    }
+    if(!html.includes('data-market-context'))html=injectBefore(html,'</head>',`  <script data-market-context>${readFileSync(resolve(process.cwd(),'public/market-context.js'),'utf8')}</script>`);
     return html;
   }}
 };

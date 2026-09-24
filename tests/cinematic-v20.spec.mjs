@@ -15,7 +15,7 @@ const openHome=async page=>{
 
 // Native scroll avoids Playwright's element-stability gate. These sections are intentionally
 // continuously animated, so waiting for them to become visually "stable" is the wrong contract.
-const scrollTo=async(page,selector)=>page.locator(selector).evaluate(node=>node.scrollIntoView({block:'center',behavior:'auto'}));
+const scrollTo=async(page,selector)=>page.locator(selector).evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));
 const cssNumber=async(locator,name)=>Number.parseFloat(await locator.evaluate((node,name)=>getComputedStyle(node).getPropertyValue(name)||'0',name))||0;
 const dispatchPointer=async(locator,x=.7,y=.3)=>locator.evaluate((node,{x,y})=>{
   const rect=node.getBoundingClientRect();
@@ -31,6 +31,13 @@ test('V20 adds cinematic components without adding homepage sections',async({pag
   await expect(page.locator('[data-v18-reel],.v18-reel')).toHaveCount(0);
   await expect(page.locator('[data-v20-lens]')).toHaveCount(1);
   await expect(page.locator('[data-v20-text-cycle]')).toHaveCount(1);
+  // Offscreen decoration mounts as its scene approaches the viewport.
+  for(const [scene,decoration] of [
+    ['#services','[data-v20-signal]'],['.editorial-sequence','[data-v20-film-gate]'],
+    ['#work','[data-v20-aperture]'],['#ai-systems','[data-v20-data-path]'],
+    ['#plans','[data-v20-rate-light]'],['#studio','[data-v20-portrait-scan]'],
+    ['#contact','[data-v20-lines]']
+  ]){await scrollTo(page,scene);await expect(page.locator(decoration).first()).toHaveCount(1)}
   await expect(page.locator('[data-v20-signal]')).toHaveCount(1);
   await expect(page.locator('[data-v20-selector]')).toHaveCount(1);
   await expect(page.locator('[data-v20-film-gate]')).toHaveCount(1);
@@ -49,6 +56,7 @@ test('scene rail, selector and film polish respond to one continuous journey',as
   await scrollTo(page,'#services');
   const selector=page.locator('[data-v20-selector]');
   const before=await selector.evaluate(node=>getComputedStyle(node).transform);
+  await scrollTo(page,'[data-v15-control="2"]');
   await page.locator('[data-v15-control="2"]').click();
   await expect(page.locator('#services')).toHaveAttribute('data-play-state','build');
   await expect.poll(()=>selector.evaluate(node=>getComputedStyle(node).transform)).not.toBe(before);
@@ -109,16 +117,19 @@ test('reduced motion keeps decorative motion static and core interactions usable
   const page=await context.newPage();
   await openHome(page);
   await expect(page.locator('[data-scene]')).toHaveCount(8);
+  await scrollTo(page,'#contact');
   await expect(page.locator('[data-v20-lines]')).toHaveCount(1);
+  await scrollTo(page,'#plans');
   await expect(page.locator('[data-v20-rate-light]')).toHaveCount(3);
+  await scrollTo(page,'#services');
   expect(await page.locator('.v20-signal-field__orbit').first().evaluate(node=>getComputedStyle(node).animationName)).toBe('none');
+  await scrollTo(page,'#ai-systems');
   expect(await page.locator('.v20-data-path i').first().evaluate(node=>getComputedStyle(node,'::after').animationName)).toBe('none');
   expect(await page.locator('.v20-background-lines i').first().evaluate(node=>getComputedStyle(node).animationName)).toBe('none');
   await page.locator('#services [data-v15-control="3"]').click();
   await expect(page.locator('#services')).toHaveAttribute('data-play-state','ai');
   await scrollTo(page,'#contact');
-  await page.locator('[data-project-type="ai"]').click();
-  await expect(page.locator('[data-project-intent]')).toHaveAttribute('data-sc-verify-state','project:ai');
+  await expect(page.locator('#contact .close__action')).toHaveAttribute('href',/wa\.me/);
   await context.close();
 });
 

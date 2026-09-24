@@ -9,6 +9,10 @@
     {"source":"/case-studies/fakhrimart.html","destination":"/clients/fakhrimart","permanent":true}
   ],
   "rewrites":[
+    {"source":"/ae","destination":"/ae/index.html"},
+    {"source":"/ae/:path*","destination":"/ae/:path*/index.html"},
+    {"source":"/au","destination":"/au/index.html"},
+    {"source":"/au/:path*","destination":"/au/:path*/index.html"},
     {"source":"/plans","destination":"/plans.html"},
     {"source":"/founder","destination":"/founder.html"},
     {"source":"/terms","destination":"/terms.html"},

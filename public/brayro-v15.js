@@ -8,12 +8,23 @@
     {key:'build',index:'03',label:'BUILD',kicker:'FRONTEND ENGINEERING',title:'Keep the idea intact.',accent:'intact.',body:'The browser should preserve the concept without sacrificing mobile UX, accessibility or performance.',ticker:'FAST · RESPONSIVE · ACCESSIBLE · SHIPPED · FAST · RESPONSIVE · ACCESSIBLE · SHIPPED ·'},
     {key:'ai',index:'04',label:'AI',kicker:'PRACTICAL AI SYSTEMS',title:'Solve one real problem.',accent:'real problem.',body:'Audit the workflow. Ground the knowledge. Automate only where it removes real friction. Useful beats futuristic.',ticker:'SOURCE · CONTEXT · ANSWER · ACTION · SOURCE · CONTEXT · ANSWER · ACTION ·'}
   ];
+  if(window.BRAYRO_MARKET?.id==='ae-ar'){
+    const arabic=[
+      {label:'الويب',kicker:'تجارب الويب',title:'اصنع تجربة حيّة.',accent:'حيّة.',body:'مواقع تتجاوب مع الناس والأجهزة، لا صفحات جامدة تُكدّس فوق بعضها.',ticker:'فكرة · إيقاع · تجربة · وضوح ·'},
+      {label:'المنتج',kicker:'تصميم المنتجات',title:'اجعل المسار واضحاً.',accent:'واضحاً.',body:'تشرح الواجهة نفسها من خلال الترتيب والحركة والتغذية الراجعة المناسبة.',ticker:'تدفق · حالة · وضوح · قرار ·'},
+      {label:'التنفيذ',kicker:'هندسة الواجهة',title:'احفظ جوهر الفكرة.',accent:'الفكرة.',body:'تنفيذ يحافظ على التصميم ويخدم الهاتف وإمكانية الوصول والأداء الحقيقي.',ticker:'سريع · متجاوب · متاح · جاهز ·'},
+      {label:'الذكاء',kicker:'ذكاء اصطناعي عملي',title:'حلّ مشكلة حقيقية.',accent:'حقيقية.',body:'نراجع سير العمل، ونربط المعرفة بمصادر معتمدة، ونؤتمت ما يخفف الاحتكاك فعلاً.',ticker:'مصدر · سياق · إجابة · خطوة ·'}
+    ];
+    items.forEach((item,index)=>Object.assign(item,arabic[index]));
+  }
 
   class PlayfulCapabilities{
     constructor(){
       this.section=document.querySelector('#services[data-scene="services"]');if(!this.section)return;
+      const originalArt=[...this.section.querySelectorAll('.capability-art')].map(node=>node.outerHTML).join('');
       this.current=0;this.touchX=0;this.pointerFrame=0;this.rect=null;this.pointerTarget={nx:0,ny:0};this.pointerCurrent={nx:0,ny:0};
       this.build();this.stage=this.section.querySelector('[data-v15-stage]');this.ghost=this.section.querySelector('[data-v15-ghost]');this.kicker=this.section.querySelector('[data-v15-kicker]');this.title=this.section.querySelector('[data-v15-title]');this.body=this.section.querySelector('[data-v15-body]');this.counter=this.section.querySelector('[data-v15-counter]');this.ticker=[...this.section.querySelectorAll('[data-v15-ticker]')];this.controls=[...this.section.querySelectorAll('[data-v15-control]')];
+      if(originalArt)this.section.querySelector('.play-scene__canvas')?.insertAdjacentHTML('afterbegin',`<div class="capability-art-field" aria-hidden="true">${originalArt}</div>`);
       this.bind();this.set(0,false);
     }
     build(){
@@ -60,7 +71,7 @@
   class AIServiceLinks{
     constructor(){
       const cards=[...document.querySelectorAll('#ai-systems .v12-product-card')],details=[{href:'/ai-workflow-audit',label:'See the full audit process'},{href:'/company-second-brain',label:'See how integration works'}];
-      cards.forEach((card,index)=>{if(!details[index]||card.querySelector('[data-v15-ai-detail]'))return;const primary=card.querySelector('.v12-product-card__cta');if(!primary)return;const link=document.createElement('a');link.className='v12-product-card__cta v15-detail-link';link.dataset.v15AiDetail='';link.href=details[index].href;link.innerHTML=`${details[index].label} <span>↗</span>`;primary.after(link)});
+      cards.forEach((card,index)=>{if(!details[index]||card.querySelector('[data-v15-ai-detail]'))return;const primary=card.querySelector('.v12-product-card__cta');if(!primary)return;const link=document.createElement('a');link.className='v12-product-card__cta v15-detail-link';link.dataset.v15AiDetail='';link.href=window.BRAYRO_MARKET?.link(details[index].href)||details[index].href;link.innerHTML=`${details[index].label} <span>↗</span>`;primary.after(link)});
     }
   }
 

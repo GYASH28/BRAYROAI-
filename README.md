@@ -23,7 +23,7 @@ Legacy `/case-studies/fakhrimart` URLs redirect to `/clients/fakhrimart` through
 
 ## Current architecture
 
-The site is a Vite multi-page build using semantic HTML, CSS and vanilla JavaScript. React, GSAP, Lenis and Three.js are intentionally not runtime dependencies.
+The site is a Vite multi-page build using semantic HTML, CSS and vanilla JavaScript for its core routes. Rae uses one compact 2.5D illustration across the launcher, chat header and conversation stage, with a vector visor expression layer. The body artwork is 66 KiB WebP; a 12 KiB thumbnail keeps the immediate launcher responsive. Facial states and small body transforms use CSS; reduced-motion visitors receive the same art without continuous animation.
 
 The homepage has accumulated several visual/runtime layers over the life of the project. Their **source files remain modular for maintenance**, but production no longer ships a long CSS request waterfall. `vite.config.mjs` combines the active homepage layers in their exact cascade order into:
 
@@ -55,6 +55,32 @@ The portfolio follows an evidence rule:
 - live destinations and real project captures are preferred over mock proof.
 
 FakhriMart is the first full case study and documents the actual catalogue/discovery/enquiry system rather than presenting a generic redesign story.
+
+The homepage keeps the featured client work in the Work section, using WebP versions of the shipped desktop and mobile captures. It links to both the detailed case study and live website while keeping studio experiments separately labelled. The close offers direct WhatsApp and email contact, followed by a complete footer with section navigation and supporting pages.
+
+## Rae project companion
+
+Rae retains her streaming, page-aware chat and safe route actions. Her welcome screen now offers three useful paths without an AI provider: a guided project conversation, a comparison of published offers, and verified client work. Three guided answers produce a cautious starting option and an editable brief for WhatsApp or email. Guided answers remain in the browser session; a later freeform AI question sends relevant session context to Rae's server as before. Rae never automatically opens an external contact channel.
+
+Rae uses the attached robot design sheet as character direction: ivory shell, deep visor, orange ear fins and readable expression changes. Her illustrated rig has readable idle, listening, thinking, speaking, happy, playful and resting expressions. A transparent WebP body and SVG visor layer avoid a render loop, so guidance, chat, keyboard controls and contact handoff work consistently across devices.
+
+## Markets and published prices
+
+The original routes remain the default India experience. A production build also emits English UAE at `/ae`, Arabic UAE at `/ae/ar`, and English Australia at `/au`, each with the same eight route families. Each generated page inlines only its own market and fixed price book, avoiding a blocking runtime request and keeping other currencies out of its HTML. Market switching preserves the current route and anchor. Prices come from fixed independent INR, AED and AUD books in `data/pricing.js`, rather than a live exchange conversion. The plans page presents market prices, WhatsApp and email enquiry drafts, and a stacked offer comparison on phones.
+
+Arabic pages use RTL layout and translated conversion paths, including the AI offer interactions and Rae's guided flow. The terms page provides an Arabic summary while its detailed English contract text awaits specialist legal translation and review before any Arabic legal publication.
+
+`public/market-events.js` emits consent-neutral in-page events for market selection, language selection, plan views, plan enquiries, Rae opens and lead starts. It forwards them to an existing `dataLayer` if one is configured; this repository does not install a remote analytics provider.
+
+Run `npm run test:localization` and `npx playwright test tests/market-journeys.spec.mjs` to verify prices, leads, metadata and the key market journeys.
+
+## Motion and mobile performance
+
+The homepage uses progressive motion. Desktop keeps the cinematic opening and scene direction; phones enter the hero immediately, keep scroll-led chapter motion, and pause ambient decorative loops. Phone typography uses stable system font metrics to prevent a late web-font layout shift; the desktop keeps the brand font stack. The near-invisible hero background image is omitted from the phone composition while the real founder portrait remains. Reduced motion keeps all content and controls usable. Offscreen section decoration mounts as visitors approach it. Source captures ship as smaller WebP images with PNG fallbacks. New interactive capability art lives in the existing Services section, not in an added homepage section.
+
+The shared navigation, chapter links, market controls and editorial footer are injected by `vite.config.mjs` for all route families. `docs/EXPERIENCE_BASELINE.md` records the route and viewport audit, and `docs/ART_DIRECTION.md` records the visual and motion decisions.
+
+The homepage styles still contain legacy layers. Before adding a visual rule, update its owning source and check both mobile rendering and Lighthouse style/layout cost. Performance reports are local measurements, not production guarantees.
 
 ## Stack
 

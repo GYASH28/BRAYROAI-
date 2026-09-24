@@ -12,7 +12,7 @@ for(const route of routes){
   });
 }
 
-test('client archive renders verified work and future status filters',async({page})=>{
+test('client archive filters verified work and handles an empty search',async({page})=>{
   await page.goto('/clients',{waitUntil:'networkidle'});
   await expect(page.locator('h1')).toContainText('Client work');
   await expect(page.locator('[data-client-card]')).toHaveCount(1);
@@ -21,9 +21,13 @@ test('client archive renders verified work and future status filters',async({pag
   await expect(card.locator('.client-card__media[href="/clients/fakhrimart"]')).toHaveCount(1);
   await expect(card.locator('h2 a[href="/clients/fakhrimart"]')).toHaveCount(1);
   await expect(card.locator('.client-card__actions a[href="/clients/fakhrimart"]')).toHaveCount(1);
-  await page.locator('[data-client-filter="upcoming"]').click();
+  await page.locator('[data-client-filter="live"]').click();
+  await expect(page.locator('[data-client-card]:visible')).toHaveCount(1);
+  await page.locator('.client-search input').fill('no matching client');
   await expect(page.locator('[data-client-card]:visible')).toHaveCount(0);
   await expect(page.locator('[data-client-count]')).toHaveText('0 projects');
+  await expect(page.locator('.client-empty')).toBeVisible();
+  await page.locator('.client-search input').fill('');
   await page.locator('[data-client-filter="all"]').click();
   await expect(page.locator('[data-client-card]:visible')).toHaveCount(1);
 });

@@ -140,3 +140,19 @@
   .rae-character[data-rae-rig="v3"],.rae-character[data-rae-rig="v3"] *{animation:none!important;transition:none!important}
   .rae-character[data-rae-rig="v3"] .rae-character__body,.rae-character[data-rae-rig="v3"] .rae-character__head-wrap,.rae-character[data-rae-rig="v3"] .rae-character__arm,.rae-character[data-rae-rig="v3"] .rae-character__hand,.rae-character[data-rae-rig="v3"] .rae-character__leg{transform:none!important}
 }
+
+
+/* V25 vector-body finish. The live character is geometry, not an image plate. */
+.rae-character[data-rae-vector="full-body"] .rae-character__panel-line{opacity:.72}
+.rae-character[data-rae-vector="full-body"] .rae-character__shell-hi{mix-blend-mode:screen}
+.rae-character[data-rae-vector="full-body"] .rae-character__arm-light{transition:opacity .25s ease}
+.rae-character[data-rae-vector="full-body"] .rae-character__finger{vector-effect:non-scaling-stroke}
+.rae-character[data-rae-vector="full-body"] :is(.rae-character__chest-light,.rae-character__ear-ring-light,.rae-character__leg-light,.rae-character__foot-light,.rae-character__arm-light){filter:drop-shadow(0 0 4px rgba(255,111,20,.42))}
+.rae-character[data-rae-vector="full-body"][data-state="playful"] .rae-character__head-wrap{transform:translateY(-3px) rotate(6deg)}
+.rae-character[data-rae-vector="full-body"][data-state="playful"] .rae-character__arm--l{transform:translate(8px,-18px) rotate(24deg)}
+.rae-character[data-rae-vector="full-body"][data-state="playful"] .rae-character__hand--l{animation:raeV3Wave .62s var(--rae-ease) 2}
+.rae-character[data-rae-vector="full-body"][data-state="playful"] .rae-character__cheek{opacity:.58}
+.rae-character[data-rae-vector="full-body"][data-state="confused"] .rae-character__thought{opacity:1;transform:rotate(-8deg)}
+.rae-character[data-rae-vector="full-body"][data-state="error"] .rae-character__chest-light{opacity:.42}
+@media(max-width:700px){.rae-character[data-rae-vector="full-body"] :is(.rae-character__panel-line,.rae-character__shell-hi){opacity:.38}}
+@media(prefers-reduced-motion:reduce){.rae-character[data-rae-vector="full-body"] :is(.rae-character__chest-light,.rae-character__ear-ring-light,.rae-character__leg-light,.rae-character__foot-light,.rae-character__arm-light){filter:none}}

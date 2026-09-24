@@ -61,3 +61,27 @@
     observer.observe(footer);
   }
 })();
+
+
+/* BRAYROAI V25 / restore compact-on-scroll header without disturbing menu state. */
+(() => {
+  const nav=document.querySelector('[data-global-nav]');
+  const chapter=document.querySelector('.chapter-nav');
+  if(!nav)return;
+  let frame=0,compact=null;
+  const apply=()=>{
+    frame=0;
+    const next=scrollY>72;
+    if(next===compact)return;
+    compact=next;
+    nav.classList.toggle('is-compact',next);
+    document.documentElement.classList.toggle('global-nav-compact',next);
+    chapter?.classList.toggle('is-nav-compact',next);
+  };
+  const schedule=()=>{if(!frame)frame=requestAnimationFrame(apply)};
+  addEventListener('scroll',schedule,{passive:true});
+  addEventListener('resize',schedule,{passive:true});
+  addEventListener('pageshow',apply);
+  addEventListener('popstate',()=>requestAnimationFrame(apply));
+  apply();
+})();

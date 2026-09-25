@@ -34,12 +34,15 @@ expect((caseStudy.match(/fakhrimart-case-desktop\.webp/g)||[]).length>=3&&(caseS
 expect(home.includes('src="/assets/fakhrimart-case-desktop.webp"')&&home.includes('src="/assets/fakhrimart-case-mobile.webp"'),'homepage client proof renders WebP imagery');
 expect(shellCss.includes('prefers-reduced-motion')&&homeCss.includes('prefers-reduced-motion')&&pagesCss.includes('prefers-reduced-motion'),'motion layers expose reduced-motion fallbacks');
 expect(homeCss.includes('editorial finish')&&homeCss.includes('.v12-project-row'),'homepage has authored V25 visual refinement');
-expect(pagesCss.includes('one art direction across existing inner routes')&&pagesCss.includes('content-visibility:auto'),'inner routes share the V25 system and offscreen rendering optimization');\nexpect(pagesCss.includes('BRAYROAI V36 / desktop founder copy must arrive fully resolved')&&pagesCss.includes('body.founder-v16 .founder-hero__copy{')&&pagesCss.includes('opacity:1!important'),'founder hero wrapper is fully opaque on arrival');
+expect(pagesCss.includes('one art direction across existing inner routes')&&pagesCss.includes('content-visibility:auto'),'inner routes share the V25 system and offscreen rendering optimization');
+expect(pagesCss.includes('BRAYROAI V36 / desktop founder copy must arrive fully resolved')&&pagesCss.includes('body.founder-v16 .founder-hero__copy{')&&pagesCss.includes('opacity:1!important'),'founder hero wrapper is fully opaque on arrival');
 expect(rae.includes('data-rae-vector="full-body"')&&!rae.includes('<image')&&!rae.includes('rae-illustration.webp'),'Rae full character is vector-only');
 expect(boot.includes('data-rae-vector-launcher')&&!boot.includes('rae-illustration-thumb.webp'),'Rae launcher is vector-only');
 const raePolish=read('public/rae/rae-polish-v5.css');
-const raeBase=read('public/rae.css');\nconst raeUi=read('public/rae/rae-ui.js');
-expect(raeBase.includes('contain:none!important')&&raeBase.includes('inset:0!important')&&raeBase.includes('width:auto!important')&&!raeBase.includes('right:auto!important')&&!raeBase.includes('bottom:auto!important'),'mobile Rae fills the viewport from all four inset edges without dynamic-viewport drift or shrink-to-fit collapse');\nexpect(raeBase.includes('html.rae-dialog-open,body.rae-dialog-open')&&raeUi.includes("document.documentElement.classList.toggle('rae-dialog-open',this.open)"),'Rae locks both root scroll surfaces while open to prevent Firefox sub-pixel page overflow');
+const raeBase=read('public/rae.css');
+const raeUi=read('public/rae/rae-ui.js');
+expect(raeBase.includes('contain:none!important')&&raeBase.includes('inset:0!important')&&raeBase.includes('width:auto!important')&&!raeBase.includes('right:auto!important')&&!raeBase.includes('bottom:auto!important'),'mobile Rae fills the viewport from all four inset edges without dynamic-viewport drift or shrink-to-fit collapse');
+expect(raeBase.includes('html.rae-dialog-open,body.rae-dialog-open')&&raeUi.includes("document.documentElement.classList.toggle('rae-dialog-open',this.open)"),'Rae locks both root scroll surfaces while open to prevent Firefox sub-pixel page overflow');
 expect(Buffer.byteLength(raePolish,'utf8')<8192,'Rae lazy polish stays below its 8KB source guardrail');
 expect(raePolish.includes("body.rae-dialog-open .global-nav{transform:translateX(-50%) translateY(-.5rem)!important}"),'mobile Rae preserves the global-nav horizontal centering transform while hiding site chrome');
 expect(!shellCss.includes('scroll-behavior:smooth!important'),'navigation polish does not force motion globally');

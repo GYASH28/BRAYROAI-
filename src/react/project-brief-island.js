@@ -18,7 +18,8 @@ const COPY={
 };
 
 function ProjectBrief({whatsapp,email,language,marketLabel,source}){
-  const copy=language==='ar'?COPY.ar:COPY.en;
+  const arabic=String(language||'').toLowerCase().startsWith('ar');
+  const copy=arabic?COPY.ar:COPY.en;
   const [type,setType]=useState(copy.types[0][0]);
   const [stage,setStage]=useState(copy.stages[0][0]);
   const typeLabel=copy.types.find(item=>item[0]===type)?.[1]||'';
@@ -26,12 +27,12 @@ function ProjectBrief({whatsapp,email,language,marketLabel,source}){
   const href=useMemo(()=>{
     try{
       const url=new URL(whatsapp,location.href);
-      const message=language==='ar'
+      const message=arabic
         ? `مرحباً Yash، أريد مناقشة مشروع مع BRAYROAI. النوع: ${typeLabel}. المرحلة: ${stageLabel}. السوق: ${marketLabel}. المصدر: ${source}.`
         : `Hi Yash, I want to discuss a project with BRAYROAI. Project type: ${typeLabel}. Current stage: ${stageLabel}. Market: ${marketLabel}. Source: ${source}.`;
       url.searchParams.set('text',message);return url.href;
     }catch{return whatsapp}
-  },[whatsapp,language,typeLabel,stageLabel]);
+  },[whatsapp,arabic,typeLabel,stageLabel,marketLabel,source]);
   const group=(label,items,value,setter)=>h('fieldset',null,h('legend',null,label),h('div',{className:'brief-react__chips'},items.map(item=>h('button',{
     key:item[0],type:'button','aria-pressed':String(value===item[0]),className:value===item[0]?'is-active':'',onClick:()=>setter(item[0])
   },item[1]))));

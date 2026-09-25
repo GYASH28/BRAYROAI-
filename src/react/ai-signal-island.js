@@ -9,7 +9,8 @@ const COPY={
 
 function SignalOrb({kind,language}){
   const root=useRef(null);
-  const copy=(COPY[kind]||COPY.audit)[language==='ar'?'ar':'en'];
+  const arabic=String(language||'').toLowerCase().startsWith('ar');
+  const copy=(COPY[kind]||COPY.audit)[arabic?'ar':'en'];
   useEffect(()=>{
     const node=root.current;if(!node||matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
     const move=event=>{const rect=node.getBoundingClientRect();node.style.setProperty('--signal-x',((event.clientX-rect.left)/Math.max(rect.width,1)*100).toFixed(2)+'%');node.style.setProperty('--signal-y',((event.clientY-rect.top)/Math.max(rect.height,1)*100).toFixed(2)+'%')};

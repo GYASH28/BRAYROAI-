@@ -8,13 +8,14 @@ function PlanFinder({items,language}){
   const [active,setActive]=useState(Math.min(1,items.length-1));
   const refs=useRef([]);
   const item=items[active]||items[0];
-  const copy=language==='ar'
+  const arabic=String(language||'').toLowerCase().startsWith('ar');
+  const copy=arabic
     ? {eyebrow:'مسار سريع',title:'ماذا تريد أن تبني أو تحسّن؟',selected:'المسار المختار',cta:'افتح هذا المسار'}
     : {eyebrow:'QUICK ROUTE FINDER',title:'What do you need to build or improve?',selected:'SELECTED DIRECTION',cta:'Explore this route'};
   const move=(event,index)=>{
     if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(event.key))return;
     event.preventDefault();
-    const forward=['ArrowRight','ArrowDown'].includes(event.key);
+    const forward=event.key==='ArrowDown'||(event.key==='ArrowRight'&&!arabic)||(event.key==='ArrowLeft'&&arabic);
     const next=event.key==='Home'?0:event.key==='End'?items.length-1:(index+(forward?1:-1)+items.length)%items.length;
     setActive(next);requestAnimationFrame(()=>refs.current[next]?.focus());
   };

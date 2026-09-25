@@ -11,7 +11,7 @@
     if(choice){
       const next=choice.dataset.marketChoice||(market.id==='ae-ar'?'ae':'ae-ar');
       if(next!==market.id)emit(next.startsWith('ae')&&market.id.startsWith('ae')?'language_selected':'market_selected',{
-        from_market:market.id,to_market:next,from_lang:market.locale,to_lang:next==='ae-ar'?'ar-AE':next==='ae'?'en-AE':'en-AU'
+        from_market:market.id,to_market:next,from_lang:market.locale,to_lang:next==='ae-ar'?'ar-AE':next==='ae'?'en-AE':next==='in'?'en-IN':'en-AU'
       });
     }
     const lead=click.target.closest('a[href^="https://wa.me/"],a[href^="mailto:"]');

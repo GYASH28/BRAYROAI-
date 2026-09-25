@@ -7,7 +7,7 @@ const routes=[
   '/','/plans','/founder','/terms','/ai-workflow-audit','/company-second-brain','/clients','/clients/fakhrimart',
   '/assets/brayro-home.css','/commercial-cut.js','/direction-pass.js','/brayro-v12.js','/brayro-v14.js','/brayro-v15.js','/experience-motion-v16.js','/cinematic-v18.js','/cinematic-v20.js','/brayro-cursor-v22.js','/rae.js',
   '/rae/rae-app.js','/rae/rae-director.js','/rae/rae-chat-client.js','/rae/rae-ui.js','/rae/rae-actions.js','/rae/rae-context.js','/rae/rae-character.js',
-  '/ai-service-pages.css','/ai-service-pages.js','/client-work.css','/client-work.js','/plans-page.js','/founder-page.js','/terms-page.js','/assets/hero-background.webp','/assets/yash-cutout.webp','/assets/about-yash.webp','/assets/fakhrimart-case-desktop.png','/assets/fakhrimart-case-mobile.png','/assets/brayroai-cinematic-opening-silent.mp4'
+  '/ai-service-pages.css','/ai-service-pages.js','/client-work.css','/client-work.js','/plans-page.js','/founder-page.js','/terms-page.js','/assets/hero-background.webp','/assets/yash-cutout.webp','/assets/about-yash.webp','/assets/fakhrimart-case-desktop.webp','/assets/fakhrimart-case-mobile.webp','/assets/brayroai-cinematic-opening-silent.mp4'
 ];
 const failures=[],timings=[];const assert=(condition,message)=>{if(!condition)failures.push(message)};
 
@@ -43,7 +43,7 @@ async function browserLoad(){
 
   await page.locator('[data-rae-toggle]').click();assert((await page.locator('[data-rae-panel]').getAttribute('aria-hidden'))==='false','Rae panel did not open under load');assert(await page.locator('[data-rae-input]').count()===1,'Rae composer missing under load');assert(await page.locator('[data-rae-suggestions] .rae-chip').count()>=3,'Rae starter chips missing under load');assert(await page.locator('[data-rae-character]').count()>=3,'Rae actor layers missing under load');await page.keyboard.press('Escape');assert((await page.locator('[data-rae-panel]').getAttribute('aria-hidden'))==='true','Rae panel did not close under load');
 
-  await page.locator('#work').scrollIntoViewIfNeeded();const workToggle=page.locator('[data-work-toggle]');for(let i=0;i<15;i++)await workToggle.click();assert((await page.locator('.work__mobile img').getAttribute('src'))==='/assets/fakhrimart-case-mobile.png','client mobile proof regressed');
+  await page.locator('#work').scrollIntoViewIfNeeded();const workToggle=page.locator('[data-work-toggle]');for(let i=0;i<15;i++)await workToggle.click();assert((await page.locator('.work__mobile img').getAttribute('src'))==='/assets/fakhrimart-case-mobile.webp','client mobile proof regressed');
   await page.goto(`${base}/plans`,{waitUntil:'networkidle'});await clearOpening(page);await waitLegacy(page);assert(await page.locator('[data-plan-scene]').count()===7,'plans scene count');assert(await page.locator('.build-card').count()===6,'website plans card count');assert(await page.locator('.ai-plan-card').count()===2,'AI plans card count');assert(await page.locator('[data-rae-root]').count()===1,'Rae missing on Plans');
   await page.goto(`${base}/clients`,{waitUntil:'networkidle'});await waitRaeApp(page);assert(await page.locator('[data-client-grid]').count()===1,'client archive missing');assert(await page.locator('[data-rae-root]').count()===1,'Rae missing on Clients');
   await page.goto(`${base}/clients/fakhrimart`,{waitUntil:'networkidle'});await waitRaeApp(page);assert((await page.locator('body').textContent()).includes('Not a fake ecommerce store.'),'FakhriMart case missing');

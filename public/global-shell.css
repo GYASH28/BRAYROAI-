@@ -232,6 +232,3 @@ html.global-nav-compact .chapter-nav{top:68px;background:rgba(11,12,15,.9);box-s
 a,button,input,textarea,select{-webkit-tap-highlight-color:rgba(255,138,0,.18)}
 .global-menu{overscroll-behavior:contain}
 
-
-/* BRAYROAI V33 / geometry polish for overlays and bidirectional chrome. */
-@supports(scrollbar-gutter:stable){html{scrollbar-gutter:stable}}

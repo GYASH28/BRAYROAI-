@@ -59,6 +59,5 @@ expect(shellJs.includes("menu.querySelectorAll('a,button')")&&!shellJs.includes(
 expect(vite.includes('aria-controls="global-menu" aria-haspopup="dialog"')&&vite.includes('role="dialog" aria-modal="true" aria-label="Site navigation"'),'full navigation overlay exposes dialog semantics');
 expect(shellCss.includes('-webkit-tap-highlight-color')&&shellCss.includes('overscroll-behavior:contain'),'global shell includes quiet touch and overlay overscroll polish');
 expect(shellCss.includes('padding-inline:20px 8px')&&shellCss.includes('border-inline-end')&&shellCss.includes('margin-inline-start:auto'),'global shell uses logical spacing for RTL-safe chrome');
-expect(shellCss.includes('scrollbar-gutter:stable'),'modal navigation preserves page geometry on classic-scrollbar platforms');
 expect(rtlCss.includes('bidirectional shell progress')&&rtlCss.includes('transform-origin:right'),'RTL progress indicators advance from the reading-direction edge');
 expect(marketSwitcher.includes("setAttribute('aria-expanded','false')")&&marketSwitcher.includes("dialog.addEventListener('close'")&&marketSwitcher.includes('marketOpener?.focus')&&vite.includes('global-menu__market\" type=\"button\" data-market-trigger aria-haspopup=\"dialog\" aria-controls=\"market-sheet\" aria-expanded=\"false\"'),'market dialog exposes expanded state and restores focus');

@@ -44,7 +44,7 @@ test('homepage pricing stays concise while /plans stays detailed',async({page})=
 });
 
 test('AI service detail interactions remain complete',async({page})=>{
-  await openPage(page,'/ai-workflow-audit');const tabs=page.locator('[data-process-tab]');await expect(tabs).toHaveCount(5);await expect(tabs.first()).toHaveAttribute('tabindex','0');await expect(tabs.nth(1)).toHaveAttribute('tabindex','-1');await expect(tabs.first()).toHaveAttribute('aria-controls','audit-process-stage');await expect(page.locator('#audit-process-stage')).toHaveAttribute('role','tabpanel');await tabs.nth(2).click();await expect(tabs.nth(2)).toHaveAttribute('tabindex','0');await expect(page.locator('[data-process-title]')).toContainText('Score opportunities');await expect(page.locator('.deliver')).toHaveCount(6);await openPage(page,'/company-second-brain');await expect(page.locator('[data-arch-node]')).toHaveCount(5);await page.locator('[data-arch-node="drive"]').click();await expect(page.locator('[data-arch-status]')).toContainText('Drive folders');await expect(page.locator('main')).toContainText('14 days of launch support');
+  await openPage(page,'/ai-workflow-audit');const tabs=page.locator('[data-process-tab]');await expect(tabs).toHaveCount(5);await expect(tabs.first()).toHaveAttribute('tabindex','0');await expect(tabs.nth(1)).toHaveAttribute('tabindex','-1');await expect(tabs.first()).toHaveAttribute('aria-controls','audit-process-stage');await expect(page.locator('#audit-process-stage')).toHaveAttribute('role','tabpanel');await tabs.nth(2).click();await expect(tabs.nth(2)).toHaveAttribute('tabindex','0');await tabs.nth(2).press('End');await expect(tabs.last()).toHaveAttribute('tabindex','0');await tabs.last().press('Home');await expect(tabs.first()).toHaveAttribute('tabindex','0');await expect(page.locator('[data-process-title]')).toContainText('Choose one workflow');await expect(page.locator('.deliver')).toHaveCount(6);await openPage(page,'/company-second-brain');const nodes=page.locator('[data-arch-node]');await expect(nodes).toHaveCount(5);await expect(page.locator('[data-arch-status]')).toHaveAttribute('aria-live','polite');await page.locator('[data-arch-node="drive"]').click();await expect(page.locator('[data-arch-node="drive"]')).toHaveAttribute('aria-pressed','true');await expect(page.locator('[data-arch-node="docs"]')).toHaveAttribute('aria-pressed','false');await expect(page.locator('[data-arch-status]')).toContainText('Drive folders');await expect(page.locator('main')).toContainText('14 days of launch support');
 });
 
 test('core homepage controls still work',async({page})=>{
@@ -65,4 +65,30 @@ for(const [width,height] of [[320,720],[390,844],[768,1024],[1440,900],[1920,108
 
 test('reduced motion keeps the site readable and operable',async({browser})=>{
   const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:1280,height:800}});const page=await context.newPage();await page.goto('/',{waitUntil:'networkidle'});await expect(page.locator('.opening-sequence')).toBeHidden();await expect(page.locator('[data-v15-play]')).toBeVisible();await expect(page.locator('[data-v15-control]')).toHaveCount(4);await page.locator('[data-v15-control="3"]').click();await expect(page.locator('#services')).toHaveAttribute('data-play-state','ai');await context.close();
+});
+
+
+test('desktop menu remains open through harmless viewport resizing',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Desktop navigation interaction only needs one engine');
+  await page.setViewportSize({width:1440,height:900});
+  await openPage(page,'/plans');
+  await page.locator('[data-global-toggle]').click();
+  await expect(page.locator('[data-global-menu]')).toBeVisible();
+  await page.setViewportSize({width:1400,height:900});
+  await expect(page.locator('[data-global-menu]')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('[data-global-menu]')).toBeHidden();
+});
+
+test('Terms desktop first fold stays compact and intentional',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Terms first-fold geometry only needs one engine');
+  await page.setViewportSize({width:1440,height:1000});
+  await openPage(page,'/terms');
+  const hero=await page.locator('.terms-hero').boundingBox();
+  const copy=await page.locator('.terms-hero__copy').boundingBox();
+  expect(hero).not.toBeNull();
+  expect(copy).not.toBeNull();
+  expect(hero.height).toBeLessThan(760);
+  expect(copy.y).toBeLessThan(420);
+  await expect(page.locator('.terms-hero h1')).toContainText('Clear terms');
 });

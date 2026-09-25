@@ -25,7 +25,6 @@
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
   });
-  addEventListener('resize',()=>{if(innerWidth>1280&&!menu.hidden)setOpen(false)},{passive:true});
   const update=()=>{
     frame=0;
     if(!progress)return;

@@ -52,10 +52,10 @@
         tab.setAttribute('aria-controls',this.stage.id);
         tab.addEventListener('click', () => this.set(index));
         tab.addEventListener('keydown', event => {
-          if (!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(event.key)) return;
+          if (!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
           event.preventDefault();
           const delta = ['ArrowRight','ArrowDown'].includes(event.key) ? 1 : -1;
-          const next = (index + delta + this.tabs.length) % this.tabs.length;
+          const next = event.key==='Home'?0:event.key==='End'?this.tabs.length-1:(index + delta + this.tabs.length) % this.tabs.length;
           this.tabs[next].focus();
           this.set(next);
         });
@@ -97,6 +97,7 @@
       if (!this.root) return;
       this.nodes = [...this.root.querySelectorAll('[data-arch-node]')];
       this.status = this.root.querySelector('[data-arch-status]');
+      this.status?.setAttribute('aria-live','polite');
       this.copy = this.root.dataset.archCopy ? JSON.parse(this.root.dataset.archCopy) : {
         docs:'Approved PDFs, SOPs, policies and internal documents become searchable knowledge.',
         drive:'Selected Drive folders can be connected as expanded scope while respecting the agreed access model.',
@@ -113,7 +114,11 @@
       if (this.nodes[0]) this.set(this.nodes[0].dataset.archNode);
     }
     set(key) {
-      this.nodes.forEach(node => node.classList.toggle('is-active', node.dataset.archNode === key));
+      this.nodes.forEach(node => {
+        const active=node.dataset.archNode===key;
+        node.classList.toggle('is-active',active);
+        node.setAttribute('aria-pressed',String(active));
+      });
       if (this.status) this.status.textContent = this.copy[key] || 'Approved company knowledge becomes retrievable context for grounded answers.';
     }
   }

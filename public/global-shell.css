@@ -222,3 +222,7 @@ html.global-nav-compact .chapter-nav{top:68px;background:rgba(11,12,15,.9);box-s
 @media(max-width:700px){
   .chapter-nav a{min-height:28px;display:inline-flex;align-items:center}
 }
+
+
+/* BRAYROAI V31 / finishing details that should disappear into the experience. */
+::selection{background:#ff8a00;color:#090a0d;text-shadow:none}

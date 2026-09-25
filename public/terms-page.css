@@ -14,5 +14,5 @@ body.terms-body{margin:0;background:var(--terms-bg);color:var(--terms-paper);fon
 
 /* BRAYROAI V28 / keep the legal hero editorial without wasting the desktop first fold. */
 @media(min-width:821px){
-  .terms-hero{min-height:78svh}
+  .terms-hero{min-height:68svh;padding-top:9rem;padding-bottom:3.5rem}
 }

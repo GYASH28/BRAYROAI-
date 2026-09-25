@@ -19,6 +19,8 @@ expect(shellCss.includes('@view-transition')&&shellCss.includes('.global-nav.is-
 expect(shellJs.includes('scrollY>72')&&shellJs.includes('global-nav-compact'),'global shell restores compact-on-scroll behavior');
 expect(shellCss.includes('BRAYROAI V27')&&shellCss.includes('.global-nav__links a:nth-child(7)')&&shellCss.includes('scroll-snap-type:x proximity'),'V27 simplifies desktop chrome and improves mobile chapter navigation');
 expect(shellJs.includes('keep the active chapter centered')&&shellJs.includes("track.scrollTo"),'mobile chapter rail follows the active section');
+expect(!shellJs.includes("if(innerWidth>1280&&!menu.hidden)setOpen(false)"),'desktop menu is not dismissed by incidental wide-screen resizes');
+expect(shellCss.includes('::selection{background:#ff8a00'),'brand selection treatment is consistent across routes');
 expect(shellJs.includes('syncInitialChapter')&&shellJs.includes("addEventListener('hashchange'"),'chapter navigation has an immediate and hash-aware active state');
 expect(shellCss.includes('micro-navigation details from cross-browser QA')&&shellCss.includes('env(safe-area-inset-top)'), 'mobile navigation respects safe-area chrome');
 expect(vite.includes("'/company-second-brain':'AI BRAIN'")&&vite.includes("${chapterTitles[path]||'INDEX'}"),'chapter rail uses short human route labels');
@@ -39,11 +41,13 @@ expect(Buffer.byteLength(raePolish,'utf8')<8192,'Rae lazy polish stays below its
 expect(!shellCss.includes('scroll-behavior:smooth!important'),'navigation polish does not force motion globally');
 expect(vite.includes("if(!isHome)html=injectBefore(html,'</head>','  <link rel=\"stylesheet\" href=\"/experience-pages.css\">');"),'homepage skips the inner-route stylesheet');
 expect(aiCss.includes('reserve the bottom-right assistant lane')&&aiCss.includes('margin-right:clamp(7rem,12vw,11.5rem)'),'AI offer pricing reserves room for Rae on wide screens');
-expect(termsCss.includes('min-height:78svh'),'desktop Terms hero uses a tighter first fold');
+expect(termsCss.includes('min-height:68svh')&&termsCss.includes('padding-bottom:3.5rem'),'desktop Terms hero uses the measured compact first fold');
 
 if(process.exitCode)process.exit(process.exitCode);
 
 expect(aiCss.includes('BRAYROAI V30')&&aiCss.includes('scroll-snap-type:x proximity'),'AI process tabs expose a tactile mobile rail');
+expect(aiCss.includes('BRAYROAI V31')&&aiCss.includes('.faq summary:focus-visible'),'custom AI controls restore visible focus');
 const aiJs=read('public/ai-service-pages.js');
-expect(aiJs.includes("this.stage.setAttribute('role','tabpanel')")&&aiJs.includes("tab.setAttribute('aria-controls',this.stage.id)")&&aiJs.includes('tab.tabIndex=active?0:-1'),'AI process tabs use roving focus and tabpanel semantics');
+expect(aiJs.includes("this.stage.setAttribute('role','tabpanel')")&&aiJs.includes("tab.setAttribute('aria-controls',this.stage.id)")&&aiJs.includes('tab.tabIndex=active?0:-1')&&aiJs.includes("event.key==='Home'")&&aiJs.includes("event.key==='End'"),'AI process tabs use complete roving-focus keyboard semantics');
+expect(aiJs.includes("this.status?.setAttribute('aria-live','polite')")&&aiJs.includes("node.setAttribute('aria-pressed',String(active))"),'AI architecture controls expose selection and live status semantics');
 expect(home.includes('fakhrimart-case-desktop.webp" width="1440" height="1000" loading="lazy" decoding="async"'),'homepage proof imagery decodes asynchronously below the fold');

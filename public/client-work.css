@@ -25,3 +25,15 @@
 @media(max-width:900px){.client-nav{grid-template-columns:auto auto;justify-content:space-between}.client-nav nav{display:none}.client-nav__cta{font-size:.6rem}.client-hero{min-height:auto;padding-top:9rem}.client-hero__grid,.case-hero__header,.client-publishing__grid,.case-intro__grid,.case-section__head,.case-stack,.case-outcome__grid{grid-template-columns:1fr}.client-hero__grid{gap:2.5rem}.client-card{grid-template-columns:1fr;gap:1.6rem}.client-card__body{padding-bottom:2rem}.case-hero__phone{width:min(28vw,220px)}.case-decisions{grid-template-columns:1fr}.case-decision{min-height:18rem}.case-flow{grid-template-columns:1fr}.case-flow__step{min-height:auto;padding:1.3rem}.case-flow__step strong{margin-top:1.5rem}.case-flow__step:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-.72rem}.case-gallery{grid-template-columns:1fr}.case-gallery figure:last-child{width:min(68%,300px)}.case-outcome__truth{grid-template-columns:1fr}.case-reading{display:none}.client-close__inner{grid-template-columns:1fr}.client-close__action{min-width:8rem;min-height:8rem}}
 @media(max-width:560px){.client-shell{width:min(100% - 2rem,1540px)}.client-nav{padding-inline:1rem}.client-nav__cta{padding:.65rem .75rem}.client-hero h1{font-size:clamp(3.6rem,20vw,6.2rem)}.client-hero__stats{grid-template-columns:1fr 1fr}.client-index__bar{align-items:flex-start;flex-direction:column}.client-filters{gap:.4rem}.client-filters button{padding:.6rem .72rem;font-size:.57rem}.client-card h2{font-size:3.1rem}.client-card__visit{display:none}.client-card__actions{flex-direction:column;align-items:flex-start}.client-publishing h2,.case-intro h2,.case-section__head h2{font-size:clamp(3rem,16vw,5.1rem)}.client-publishing__rule{grid-template-columns:2.5rem 1fr}.case-hero h1{font-size:clamp(4.4rem,23vw,7rem)}.case-hero__media{width:100vw;border-left:0;border-right:0;padding:.55rem}.case-hero__phone{width:31vw;right:1rem;bottom:.8rem;padding:.28rem;border-radius:.8rem}.case-hero__phone img{border-radius:.55rem}.case-hero__meta{grid-template-columns:1fr 1fr}.case-gallery figure:last-child{width:58%}.case-stack__copy article{grid-template-columns:2.4rem 1fr}.case-outcome h2{font-size:clamp(3.7rem,20vw,6.8rem)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}[data-client-reveal]{clip-path:none!important;transform:none!important;transition:none!important}.client-card__media img,.client-card__visit,.client-close__action,.client-filters button,.client-nav__cta{transition:none!important}.client-card__media:hover img,.client-close__action:hover,.client-filters button:hover,.client-nav__cta:hover{transform:none!important}}
+
+
+/* BRAYROAI V40 / keyboard polish for client work and case-study surfaces. */
+.client-page main :where(a,button,input):focus-visible,
+.case-page main :where(a,button,input):focus-visible{
+  outline:2px solid var(--cw-orange);
+  outline-offset:4px
+}
+.client-card__media:focus-visible{
+  outline:2px solid var(--cw-orange);
+  outline-offset:5px
+}

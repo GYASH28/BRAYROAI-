@@ -13,6 +13,7 @@ const rtlCss=read('public/market-rtl.css');
 const marketSwitcher=read('src/market-switcher.js');
 const aiCss=read('public/ai-service-pages.css');
 const termsCss=read('public/terms-page.css');
+const clientCss=read('public/client-work.css');
 const termsJs=read('public/terms-page.js');
 const vite=read('vite.config.mjs');
 const caseStudy=read('fakhrimart-case-study.html');
@@ -56,6 +57,7 @@ expect(vite.includes("if(!isHome)html=injectBefore(html,'</head>','  <link rel=\
 expect(aiCss.includes('reserve the bottom-right assistant lane')&&aiCss.includes('margin-right:clamp(7rem,12vw,11.5rem)'),'AI offer pricing reserves room for Rae on wide screens');
 expect(termsCss.includes('.terms-hero{box-sizing:border-box}')&&termsCss.includes('min-height:68svh')&&termsCss.includes('padding-bottom:3.5rem'),'desktop Terms hero includes its padding inside the measured compact first fold');
 expect(termsCss.includes('max-width:72ch')&&termsCss.includes('padding-inline-end:clamp(6rem,11vw,10.5rem)'),'legal copy uses a readable measure and reserves the assistant lane');
+expect(clientCss.includes('BRAYROAI V40 / keyboard polish for client work')&&termsCss.includes('BRAYROAI V40 / legal-page focus polish'),'client and legal surfaces use branded visible keyboard focus');
 expect(termsJs.includes('setTermsCurrent')&&termsJs.includes("setAttribute('aria-current','location')")&&termsJs.includes("history.pushState(null,'',link.hash)"),'Terms table of contents exposes shareable hashes and current-location semantics');
 
 if(process.exitCode)process.exit(process.exitCode);

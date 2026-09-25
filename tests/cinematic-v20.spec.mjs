@@ -138,6 +138,21 @@ test('final polish keeps homepage lean and skip links keyboard-only',async({page
   await page.goto('/',{waitUntil:'networkidle'});
   await expect(page.locator('link[href="/scrollcraft.css"]')).toHaveCount(0);
   await expect(page.locator('script[src="/scrollcraft.js"]')).toHaveCount(0);
+  await expect(page.locator('link[href="/experience-pages.css"]')).toHaveCount(0);
+  await expect(page.locator('.chapter-nav a').first()).toHaveAttribute('aria-current','location');
+  const globalToggle=page.locator('[data-global-toggle]');
+  await expect(globalToggle).toHaveAttribute('aria-haspopup','dialog');
+  await globalToggle.click();
+  const globalMenu=page.locator('[data-global-menu]');
+  await expect(globalMenu).toHaveAttribute('role','dialog');
+  await expect(globalMenu).toHaveAttribute('aria-modal','true');
+  const menuLinks=globalMenu.locator('a,button');
+  await expect(menuLinks.first()).toBeFocused();
+  await menuLinks.first().press('Shift+Tab');
+  await expect(menuLinks.last()).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(globalMenu).toBeHidden();
+  await expect(globalToggle).toBeFocused();
   await expect(page.locator('[data-v20-text-cycle]')).toHaveCount(1);
   await expect(page.locator('img.hero__background').first()).toHaveAttribute('fetchpriority','high');
 

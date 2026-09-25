@@ -36,12 +36,12 @@ expect(rae.includes('data-rae-vector="full-body"')&&!rae.includes('<image')&&!ra
 expect(boot.includes('data-rae-vector-launcher')&&!boot.includes('rae-illustration-thumb.webp'),'Rae launcher is vector-only');
 const raePolish=read('public/rae/rae-polish-v5.css');
 const raeBase=read('public/rae.css');
-expect(raeBase.includes('contain:none!important')&&raeBase.includes('width:100dvw!important'),'mobile Rae uses the viewport as its containing block');
+expect(raeBase.includes('contain:none!important')&&raeBase.includes('inset:0!important')&&raeBase.includes('width:auto!important'),'mobile Rae fills the viewport by inset without dynamic-viewport width drift');
 expect(Buffer.byteLength(raePolish,'utf8')<8192,'Rae lazy polish stays below its 8KB source guardrail');
 expect(!shellCss.includes('scroll-behavior:smooth!important'),'navigation polish does not force motion globally');
 expect(vite.includes("if(!isHome)html=injectBefore(html,'</head>','  <link rel=\"stylesheet\" href=\"/experience-pages.css\">');"),'homepage skips the inner-route stylesheet');
 expect(aiCss.includes('reserve the bottom-right assistant lane')&&aiCss.includes('margin-right:clamp(7rem,12vw,11.5rem)'),'AI offer pricing reserves room for Rae on wide screens');
-expect(termsCss.includes('min-height:68svh')&&termsCss.includes('padding-bottom:3.5rem'),'desktop Terms hero uses the measured compact first fold');
+expect(termsCss.includes('.terms-hero{box-sizing:border-box}')&&termsCss.includes('min-height:68svh')&&termsCss.includes('padding-bottom:3.5rem'),'desktop Terms hero includes its padding inside the measured compact first fold');
 
 if(process.exitCode)process.exit(process.exitCode);
 
@@ -50,4 +50,9 @@ expect(aiCss.includes('BRAYROAI V31')&&aiCss.includes('.faq summary:focus-visibl
 const aiJs=read('public/ai-service-pages.js');
 expect(aiJs.includes("this.stage.setAttribute('role','tabpanel')")&&aiJs.includes("tab.setAttribute('aria-controls',this.stage.id)")&&aiJs.includes('tab.tabIndex=active?0:-1')&&aiJs.includes("event.key==='Home'")&&aiJs.includes("event.key==='End'"),'AI process tabs use complete roving-focus keyboard semantics');
 expect(aiJs.includes("this.status?.setAttribute('aria-live','polite')")&&aiJs.includes("node.setAttribute('aria-pressed',String(active))"),'AI architecture controls expose selection and live status semantics');
-expect(home.includes('fakhrimart-case-desktop.webp" width="1440" height="1000" loading="lazy" decoding="async"'),'homepage proof imagery decodes asynchronously below the fold');
+expect(home.includes('fakhrimart-case-desktop.webp" width="1440" height="900" loading="lazy" decoding="async"')&&home.includes('fakhrimart-case-mobile.webp" width="520" height="1040" loading="lazy" decoding="async"'),'homepage proof imagery uses the source aspect ratios and async decoding');
+
+expect(shellJs.includes("setAttribute('aria-current','location')")&&shellJs.includes('chapter.includes(link)?link:chapter[0]'),'chapter navigation exposes screen-reader current-location state and resets correctly at top');
+expect(shellJs.includes("menu.querySelectorAll('a,button')")&&!shellJs.includes("[toggle,...menu.querySelectorAll('a,button')]"),'modal navigation traps keyboard focus inside the dialog');
+expect(vite.includes('aria-controls="global-menu" aria-haspopup="dialog"')&&vite.includes('role="dialog" aria-modal="true" aria-label="Site navigation"'),'full navigation overlay exposes dialog semantics');
+expect(shellCss.includes('-webkit-tap-highlight-color')&&shellCss.includes('overscroll-behavior:contain'),'global shell includes quiet touch and overlay overscroll polish');

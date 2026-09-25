@@ -103,9 +103,9 @@
     inset:0!important;
     right:auto!important;
     bottom:auto!important;
-    width:100dvw!important;
+    width:auto!important;
     height:100dvh!important;
-    max-width:none!important;
+    max-width:100%!important;
     contain:none!important;
     overflow:clip;
   }

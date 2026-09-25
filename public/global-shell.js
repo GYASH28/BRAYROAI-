@@ -20,7 +20,8 @@
     if(menu.hidden)return;
     if(event.key==='Escape'){event.preventDefault();setOpen(false);return}
     if(event.key!=='Tab')return;
-    const focusables=[toggle,...menu.querySelectorAll('a,button')];
+    const focusables=[...menu.querySelectorAll('a,button')].filter(node=>!node.hidden);
+    if(!focusables.length)return;
     const first=focusables[0],last=focusables.at(-1);
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
@@ -38,23 +39,29 @@
   // handler updates the indicator once the visitor actually moves.
   const chapter=[...document.querySelectorAll('.chapter-nav a[href^="#"]')];
   const targets=chapter.map(link=>({link,node:document.getElementById(link.hash.slice(1))})).filter(item=>item.node);
+  const setChapterActive=active=>chapter.forEach(link=>{
+    const current=link===active;
+    link.classList.toggle('is-active',current);
+    if(current)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');
+  });
   const syncInitialChapter=()=>{
     if(!chapter.length)return;
     const hash=location.hash;
     const preferred=hash?chapter.find(link=>link.hash===hash):chapter[0];
-    if(!chapter.some(link=>link.classList.contains('is-active')))preferred?.classList.add('is-active');
+    const current=chapter.find(link=>link.classList.contains('is-active'))||preferred;
+    if(current)setChapterActive(current);
   };
   syncInitialChapter();
   addEventListener('hashchange',()=>{
     const active=chapter.find(link=>link.hash===location.hash);
     if(!active)return;
-    chapter.forEach(link=>link.classList.toggle('is-active',link===active));
+    setChapterActive(active);
   });
   if('IntersectionObserver'in window&&targets.length){
     const observer=new IntersectionObserver(entries=>{
       const current=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
       if(!current)return;
-      chapter.forEach(link=>link.classList.toggle('is-active',link.hash==='#'+current.target.id));
+      setChapterActive(chapter.find(link=>link.hash==='#'+current.target.id));
     },{rootMargin:'-24% 0px -55% 0px',threshold:[0,.15,.45]});
     targets.forEach(item=>observer.observe(item.node));
   }
@@ -63,7 +70,7 @@
     if(!target)return;
     event.preventDefault();
     if(!link.matches('[data-back-to-top]'))history.pushState(null,'',link.hash);
-    chapter.forEach(item=>item.classList.toggle('is-active',item===link));
+    setChapterActive(chapter.includes(link)?link:chapter[0]);
     target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   }));
   document.querySelectorAll('[data-footer-rae]').forEach(button=>button.addEventListener('click',()=>document.querySelector('[data-rae-toggle],[data-rae-shell]')?.click()));

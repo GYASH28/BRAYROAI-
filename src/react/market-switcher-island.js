@@ -58,7 +58,7 @@ function MarketSwitcherIsland({state}){
           type:'button',
           className:'market-react__choice'+(isCurrent?' is-current':'')+(isDetected?' is-detected':''),
           role:'radio',
-          'aria-checked':String(isCurrent),
+          'aria-checked':String(isCurrent),\n          'data-market-choice':item.id,
           onKeyDown:event=>move(event,index),
           onClick:()=>window.BRAYRO_MARKET_SWITCHER?.select(item.id,'manual')
         },

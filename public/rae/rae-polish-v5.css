@@ -45,29 +45,3 @@ body.rae-dialog-open{overflow-x:clip}
   .rae-root[data-rae-polish="v5"].is-open .rae-stage__actor{height:9rem}
   .rae-root[data-rae-polish="v5"].is-open .rae-character--stage[data-rae-rig="v3"]{width:9rem;height:9rem}
 }
-
-
-/* BRAYROAI V29 / make the mobile assistant's containing block the viewport itself.
-   This removes sub-pixel Firefox drift caused by fixed descendants inside the
-   launcher's contained, bottom-right root. */
-@media(max-width:700px){
-  .rae-root[data-rae-polish="v5"].is-open{
-    position:fixed!important;
-    inset:0!important;
-    right:auto!important;
-    bottom:auto!important;
-    width:100dvw!important;
-    height:100dvh!important;
-    max-width:none!important;
-    contain:none!important;
-    overflow:clip;
-  }
-  .rae-root[data-rae-polish="v5"].is-open .rae-panel{
-    position:absolute!important;
-    inset:0!important;
-    width:100%!important;
-    max-width:none!important;
-    height:min(100dvh,var(--rae-vv-height))!important;
-    margin:0!important;
-  }
-}

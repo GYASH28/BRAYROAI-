@@ -68,6 +68,10 @@
     target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   }));
   document.querySelectorAll('[data-footer-rae]').forEach(button=>button.addEventListener('click',()=>document.querySelector('[data-rae-toggle],[data-rae-shell]')?.click()));
+  document.querySelectorAll('[data-back-to-top]').forEach(link=>link.addEventListener('click',event=>{
+    event.preventDefault();
+    scrollTo({top:0,left:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  }));
   const footer=document.querySelector('.site-footer,.global-footer');
   if(footer&&'IntersectionObserver'in window){
     const observer=new IntersectionObserver(entries=>document.body.classList.toggle('rae-footer-visible',entries[0].isIntersecting));

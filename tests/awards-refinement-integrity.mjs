@@ -20,6 +20,8 @@ expect(shellJs.includes('keep the active chapter centered')&&shellJs.includes("t
 expect(shellJs.includes('syncInitialChapter')&&shellJs.includes("addEventListener('hashchange'"),'chapter navigation has an immediate and hash-aware active state');
 expect(shellCss.includes('micro-navigation details from cross-browser QA')&&shellCss.includes('env(safe-area-inset-top)'), 'mobile navigation respects safe-area chrome');
 expect(vite.includes("'/company-second-brain':'AI BRAIN'")&&vite.includes("${chapterTitles[path]||'INDEX'}"),'chapter rail uses short human route labels');
+expect(vite.includes("label==='Clients'&&path.startsWith('/clients')")&&vite.includes("path==='/ai-workflow-audit'"),'global navigation preserves nested Clients and AI context');
+expect(vite.includes('data-back-to-top')&&shellJs.includes("document.querySelectorAll('[data-back-to-top]')"),'back-to-top is handled without URL hash pollution');
 expect(caseStudy.includes('fakhrimart-case-desktop.webp\" as=\"image\" type=\"image/webp\"')&&!caseStudy.includes('preload\" href=\"/assets/fakhrimart-case-desktop.png'), 'case study preloads the compact WebP instead of the 1.3MB PNG');
 expect((caseStudy.match(/fakhrimart-case-desktop\.webp/g)||[]).length>=3&&(caseStudy.match(/fakhrimart-case-mobile\.webp/g)||[]).length>=2,'case study renders WebP proof imagery');
 expect(home.includes('src="/assets/fakhrimart-case-desktop.webp"')&&home.includes('src="/assets/fakhrimart-case-mobile.webp"'),'homepage client proof renders WebP imagery');
@@ -29,7 +31,9 @@ expect(pagesCss.includes('one art direction across existing inner routes')&&page
 expect(rae.includes('data-rae-vector="full-body"')&&!rae.includes('<image')&&!rae.includes('rae-illustration.webp'),'Rae full character is vector-only');
 expect(boot.includes('data-rae-vector-launcher')&&!boot.includes('rae-illustration-thumb.webp'),'Rae launcher is vector-only');
 const raePolish=read('public/rae/rae-polish-v5.css');
-expect(raePolish.includes('contain:none!important')&&raePolish.includes('width:100dvw!important'),'mobile Rae uses the viewport as its containing block');
+const raeBase=read('public/rae.css');
+expect(raeBase.includes('contain:none!important')&&raeBase.includes('width:100dvw!important'),'mobile Rae uses the viewport as its containing block');
+expect(Buffer.byteLength(raePolish,'utf8')<8192,'Rae lazy polish stays below its 8KB source guardrail');
 expect(!shellCss.includes('scroll-behavior:smooth!important'),'navigation polish does not force motion globally');
 
 if(process.exitCode)process.exit(process.exitCode);

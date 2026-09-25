@@ -143,6 +143,18 @@ jobs:
             grep -q '/brayro-cursor-v22.js' "dist/$page"
             grep -q '/rae.js' "dist/$page"
           done
+          # Secondary routes must ship one coherent global shell. Historical
+          # page-specific nav/footer shells are intentionally retired.
+          for page in plans.html founder.html terms.html ai-workflow-audit.html company-second-brain.html clients.html fakhrimart-case-study.html; do
+            test "$(grep -o 'class="global-nav"' "dist/$page" | wc -l)" -eq 1
+            test "$(grep -o 'class="chapter-nav"' "dist/$page" | wc -l)" -eq 1
+            test "$(grep -o 'class="global-footer"' "dist/$page" | wc -l)" -eq 1
+          done
+          ! grep -R -E '<header class="(plans-nav|founder-nav|terms-nav|ai-nav|client-nav)"' dist --include='*.html'
+          ! grep -R -E '<footer class="(terms-footer|ai-footer|client-footer)"' dist --include='*.html'
+          ! grep -R -F '<footer><span>BRAYROAI / PLANS</span>' dist --include='*.html'
+          ! grep -R -F 'YASH GANESH / FOUNDER OF BRAYROAI</span><a href="/plans"' dist --include='*.html'
+
           grep -q '/rae.js' dist/index.html
           grep -q '/brayro-cursor-v22.js' dist/index.html
           grep -q '/brayro-v15.js' dist/index.html

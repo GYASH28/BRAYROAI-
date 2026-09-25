@@ -39,3 +39,21 @@ for(const viewport of [{width:360,height:800},{width:390,height:844}]){
     expect(overflow).toBeLessThanOrEqual(1);
   });
 }
+
+
+test('Founder hero copy is present immediately on desktop',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Founder first-fold timing only needs one rendering engine');
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto('/founder',{waitUntil:'domcontentloaded'});
+  await page.waitForTimeout(700);
+  const copy=page.locator('.founder-hero__copy');
+  await expect(copy.locator('h1')).toBeVisible();
+  await expect(copy.locator('h1')).toContainText('The work stays');
+  const state=await copy.evaluate(node=>{
+    const box=node.getBoundingClientRect(),style=getComputedStyle(node);
+    return{opacity:parseFloat(style.opacity),top:box.top,bottom:box.bottom,height:innerHeight};
+  });
+  expect(state.opacity).toBeGreaterThan(.95);
+  expect(state.top).toBeLessThan(state.height*.72);
+  expect(state.bottom).toBeGreaterThan(state.height*.55);
+});

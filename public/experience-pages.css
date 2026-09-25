@@ -56,3 +56,47 @@ body:not(.home-v20) main a:focus-visible,body:not(.home-v20) main button:focus-v
 html[dir="rtl"] body:not(.home-v20) main>section:first-child::after{right:auto;left:-.025em}
 @media(max-width:760px){body:not(.home-v20) main>section:first-child::after{font-size:34vw;top:.24em}.plans-hero,.founder-hero,.client-hero,.ai-hero,.terms-hero,.client-page main>section:first-child,.ai-detail main>section:first-child{background-size:44px 44px}}
 @media(prefers-reduced-motion:reduce){.plan-decision__card,.client-index__item,.client-project,.ai-card,.scope-card,.deliverable-card{transition:none!important}}
+
+
+/* BRAYROAI V26 / Founder first-fold correction.
+   The route transition already provides arrival motion; the hero copy should
+   not wait ~2.7s behind a retired opening ident before becoming useful. */
+body.founder-v16 .founder-hero__copy .eyebrow,
+body.founder-v16 .founder-hero__copy h1 span,
+body.founder-v16 .founder-hero__copy>p:last-of-type,
+body.founder-v16 .founder-hero__copy>a,
+body.founder-v16 .founder-hero__reveal,
+body.founder-v16 .founder-hero__note{
+  animation:none!important;
+  opacity:1!important;
+  transform:none!important
+}
+@media(max-width:700px){
+  body.founder-v16 .founder-hero{min-height:100svh;height:100svh}
+  body.founder-v16 .founder-hero__portrait{inset:0 0 34%}
+  body.founder-v16 .founder-hero__image{object-position:58% 20%}
+  body.founder-v16 .founder-hero__shade{
+    background:linear-gradient(180deg,rgba(5,6,8,.08) 0,rgba(5,6,8,.02) 31%,rgba(5,6,8,.3) 48%,rgba(5,6,8,.9) 64%,#050608 88%)
+  }
+  body.founder-v16 .founder-hero__copy{
+    top:auto;right:0;bottom:0;left:0;width:auto;min-height:49%;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:clamp(2.7rem,7svh,4rem) 1rem calc(1.45rem + env(safe-area-inset-bottom))!important;
+    background:linear-gradient(180deg,transparent,rgba(5,6,8,.6) 18%,rgba(5,6,8,.94) 56%,#050608 100%);
+    text-shadow:0 3px 24px rgba(0,0,0,.58)
+  }
+  body.founder-v16 .founder-hero__copy .eyebrow{margin-bottom:.55rem;font-size:.55rem}
+  body.founder-v16 .founder-hero__copy h1{
+    max-width:none;margin:0;font-size:clamp(2.3rem,10.2vw,3rem);line-height:.9;letter-spacing:-.07em
+  }
+  body.founder-v16 .founder-hero__copy h1 span{white-space:nowrap;overflow:visible}
+  body.founder-v16 .founder-hero__copy>p:last-of-type{
+    max-width:32rem;margin:.78rem 0 0;font-size:.76rem;line-height:1.5;color:rgba(255,255,255,.76)
+  }
+  body.founder-v16 .founder-hero__copy>a{
+    align-self:flex-start;margin-top:.75rem;padding-bottom:.32rem;gap:1.1rem;font-size:.61rem
+  }
+}
+@media(max-width:340px){
+  body.founder-v16 .founder-hero__copy{padding-inline:.8rem!important}
+  body.founder-v16 .founder-hero__copy h1{font-size:9.8vw}
+}

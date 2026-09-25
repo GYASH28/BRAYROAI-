@@ -33,7 +33,7 @@
     constructor(){
       this.opening=document.querySelector('.opening-sequence');
       this.timer=0;this.finishTimer=0;this.finishing=false;this.startedAt=0;this.progressHandle=0;this.progressMode='';this.audioLoading=false;
-      this.minimumWatchMs=2450;
+      this.minimumWatchMs=2450;this.seenKey='brayro_intro_seen';
       document.querySelectorAll('.scope-open,.founder-open').forEach(overlay=>overlay.remove());
       body.classList.remove('polish-opening');
       if(!this.opening)return;
@@ -50,7 +50,7 @@
       this.mountFilm();
     }
     mountFilm(){
-      this.opening.innerHTML=`<video class="hf-intro__video" data-hf-intro-video preload="auto" muted playsinline src="/assets/brayroai-cinematic-opening-silent.mp4" data-full-src="/assets/brayroai-cinematic-opening.mp4"></video><div class="hf-intro__loading" aria-hidden="true"><span><i></i>BRAYROAI / OPENING FILM</span></div><div class="hf-intro__controls" aria-label="Opening film controls"><button class="hf-intro__button" type="button" data-hf-sound aria-pressed="false">Sound off</button><button class="hf-intro__button" type="button" data-hf-skip>Skip</button></div><div class="hf-intro__progress" aria-hidden="true"><i></i></div>`;
+      this.opening.innerHTML=`<video class="hf-intro__video" data-hf-intro-video preload="metadata" muted playsinline src="/assets/brayroai-cinematic-opening-silent.mp4" data-full-src="/assets/brayroai-cinematic-opening.mp4"></video><div class="hf-intro__loading" aria-hidden="true"><span><i></i>BRAYROAI / OPENING FILM</span></div><div class="hf-intro__controls" aria-label="Opening film controls"><button class="hf-intro__button" type="button" data-hf-sound aria-pressed="false">Sound off</button><button class="hf-intro__button" type="button" data-hf-skip>Skip</button></div><div class="hf-intro__progress" aria-hidden="true"><i></i></div>`;
       this.video=this.opening.querySelector('[data-hf-intro-video]');this.sound=this.opening.querySelector('[data-hf-sound]');this.skip=this.opening.querySelector('[data-hf-skip]');
       if(!this.video)return this.finish(true);
       this.video.volume=.9;this.video.muted=true;
@@ -98,7 +98,7 @@
       if(this.finishing)return;
       const elapsed=this.startedAt?performance.now()-this.startedAt:0;const remaining=!force&&!immediate?Math.max(0,this.minimumWatchMs-elapsed):0;
       if(remaining){if(!this.finishTimer)this.finishTimer=setTimeout(()=>{this.finishTimer=0;this.finish(false,true)},remaining);return}
-      this.finishing=true;clearTimeout(this.timer);clearTimeout(this.finishTimer);this.cancelProgress();body.classList.remove('hf-intro-active');this.opening?.classList.add('is-exiting');
+      this.finishing=true;try{sessionStorage.setItem(this.seenKey,'1')}catch{}clearTimeout(this.timer);clearTimeout(this.finishTimer);this.cancelProgress();body.classList.remove('hf-intro-active');this.opening?.classList.add('is-exiting');
       const done=()=>{if(!this.opening)return;this.opening.classList.add('is-complete');this.opening.classList.remove('is-exiting','is-playing');this.opening.setAttribute('aria-hidden','true');this.video?.pause()};
       if(immediate)done();else setTimeout(done,400);
     }

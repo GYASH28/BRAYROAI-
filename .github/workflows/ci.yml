@@ -48,7 +48,8 @@ jobs:
           done
           test -f api/rae.js
           test -f api/rae-chat.js
-          test -f api/_rae-knowledge.js\n          test -f api/market.js
+          test -f api/_rae-knowledge.js
+          test -f api/market.js
           test -f dist/assets/brayro-home.css
           test -f dist/assets/brayroai-cinematic-opening.mp4
           test -f dist/assets/brayroai-cinematic-opening-silent.mp4
@@ -65,7 +66,8 @@ jobs:
           ! grep -q 'href="/rae.css"' dist/index.html
           ! grep -q 'href="/brayro-cursor-v22.css"' dist/index.html
           grep -q 'data-layout-stable-fonts' dist/index.html
-          grep -q 'name="x-brayro-commit"' dist/index.html\n          grep -q 'data-react-islands' dist/index.html
+          grep -q 'name="x-brayro-commit"' dist/index.html
+          grep -q 'data-react-islands' dist/index.html
 
           grep -q '.v12-project-index' dist/assets/brayro-home.css
           ! grep -q '.brayro-ledger' dist/assets/brayro-home.css

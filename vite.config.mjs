@@ -121,6 +121,7 @@ const experienceTransform={
       if(!isHome)html=injectBefore(html,'</body>',innerFooter);
       html=injectBefore(html,'</body>','  <script src="/global-shell.js" defer></script>');
       html=injectBefore(html,'</body>','  <script type="module" src="/src/market-switcher.js"></script>');
+      html=injectBefore(html,'</body>','  <script type="module" src="/src/react-islands.js" data-react-islands></script>');
       html=injectBefore(html,'</body>','  <script src="/market-events.js" defer></script>');
     }
     if(!html.includes('data-market-context'))html=injectBefore(html,'</head>',`  <script data-market-context>${readFileSync(resolve(process.cwd(),'public/market-context.js'),'utf8')}</script>`);

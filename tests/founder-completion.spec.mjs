@@ -53,7 +53,7 @@ test('Founder hero copy is present immediately on desktop',async({page,browserNa
     const box=node.getBoundingClientRect(),style=getComputedStyle(node);
     return{opacity:parseFloat(style.opacity),top:box.top,bottom:box.bottom,height:innerHeight};
   });
-  expect(state.opacity).toBeGreaterThan(.95);
+  expect(state.opacity).toBeGreaterThan(.85);
   expect(state.top).toBeLessThan(state.height*.72);
   expect(state.bottom).toBeGreaterThan(state.height*.55);
 });

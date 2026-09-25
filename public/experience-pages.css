@@ -100,3 +100,18 @@ body.founder-v16 .founder-hero__note{
   body.founder-v16 .founder-hero__copy{padding-inline:.8rem!important}
   body.founder-v16 .founder-hero__copy h1{font-size:9.8vw}
 }
+
+
+/* V26.1 / lift founder mobile identity into the first fold after measured QA. */
+@media(max-width:700px){
+  body.founder-v16 .founder-hero__copy{
+    padding-bottom:calc(4rem + env(safe-area-inset-bottom))!important
+  }
+}
+@media(max-height:740px) and (max-width:700px){
+  body.founder-v16 .founder-hero__copy{
+    padding-bottom:calc(2.9rem + env(safe-area-inset-bottom))!important
+  }
+  body.founder-v16 .founder-hero__copy h1{font-size:9.7vw}
+  body.founder-v16 .founder-hero__copy>p:last-of-type{font-size:.72rem;line-height:1.44}
+}

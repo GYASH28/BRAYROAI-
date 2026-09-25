@@ -29,6 +29,7 @@ jobs:
       - name: Guard production bundle
         run: |
           set -euo pipefail
+          trap 'echo "::error::Bundle guard failed at line ${LINENO}: ${BASH_COMMAND}"' ERR
 
           for f in \
             index.html plans.html founder.html terms.html \

@@ -20,3 +20,14 @@ body.founder-v16 .founder-hero__shade{background:linear-gradient(90deg,rgba(5,6,
 body.terms-v16 .terms-hero__copy>p{line-height:1.68}body.terms-v16 .terms-quick a{border-radius:1rem;box-shadow:0 12px 30px rgba(20,16,12,.06)}body.terms-v16 .terms-section{scroll-margin-top:7rem}body.terms-v16 .terms-section p,body.terms-v16 .terms-section li{line-height:1.75}body.ai-v16 :is(.process-stage,.matrix,.architecture,.scope-table,.faq){border-color:rgba(255,255,255,.14)}body.ai-v16 .ai-hero>p{max-width:50rem;line-height:1.72}
 @media(max-width:700px){body.v16-motion :is(.plans-nav,.founder-nav,.terms-nav){top:.45rem;width:calc(100% - .8rem);border-radius:.92rem}body.plans-v16 .plans-hero__copy{max-width:none}body.plans-v16 .plans-hero__copy>p{font-size:.96rem;line-height:1.72}body.plans-v16 :is(.build-card,.ai-plan-card){border-radius:1.12rem}body.plans-v16 .build-card>section,body.plans-v16 .ai-plan-card{font-size:max(.78rem,12px)}body.plans-v16 :is(.build-card,.ai-plan-card) a{min-height:3rem}body.founder-v16 .founder-hero__shade{background:linear-gradient(180deg,rgba(5,6,8,.18),rgba(5,6,8,.06) 30%,rgba(5,6,8,.96) 70%)}body.founder-v16 .founder-hero__copy{padding:1rem 0 .35rem;text-shadow:0 3px 24px rgba(0,0,0,.55)}body.founder-v16 .founder-hero__copy>p:last-of-type{font-size:.86rem;line-height:1.62}body.founder-v16 .principle-instrument__choices{gap:.35rem}body.founder-v16 .principle-instrument__choices button{border-color:rgba(255,255,255,.18)}body.terms-v16 .terms-section{padding-left:.8rem}body.terms-v16 .terms-section p,body.terms-v16 .terms-section li{font-size:.96rem;line-height:1.72}}
 @media(prefers-reduced-motion:reduce){body.v16-motion :is(.founder-close__copy a){transition:none!important}}
+
+
+/* V28 / fast cross-document continuity without delaying navigation in JavaScript */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:v28PageOut .16s ease both}
+::view-transition-new(root){animation:v28PageIn .24s cubic-bezier(.16,1,.3,1) both}
+@keyframes v28PageOut{to{opacity:.72;transform:translateY(-3px)}}
+@keyframes v28PageIn{from{opacity:.72;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  ::view-transition-old(root),::view-transition-new(root){animation:none!important}
+}

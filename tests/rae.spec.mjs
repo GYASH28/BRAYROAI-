@@ -158,3 +158,17 @@ test('launcher dynamically lifts above another fixed bottom-right control',async
 test('provider unavailable leaves Rae as an honest deterministic site guide',async({page})=>{
   await mockAI(page,{status:503,errorCode:'provider_not_configured',errorMessage:'Rae AI is not configured on this deployment.'});await openRae(page,'/');await page.locator('[data-rae-input]').fill('Can you advise me?');await page.locator('[data-rae-form]').press('Enter');await expect(page.locator('[data-rae-feed]')).toContainText('not configured');await expect(page.locator('[data-rae-suggestions]')).toContainText('Show plans');await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-state','offline');
 });
+
+
+test('desktop AI offer pricing stays clear of Rae launcher',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Desktop collision geometry only needs one rendering engine');
+  await page.setViewportSize({width:1440,height:1000});
+  await loadRae(page,'/ai-workflow-audit');
+  const [price,launcher]=await Promise.all([
+    page.locator('.ai-price').boundingBox(),
+    page.locator('[data-rae-toggle]').boundingBox()
+  ]);
+  expect(price).not.toBeNull();
+  expect(launcher).not.toBeNull();
+  expect(price.x+price.width+20).toBeLessThanOrEqual(launcher.x);
+});

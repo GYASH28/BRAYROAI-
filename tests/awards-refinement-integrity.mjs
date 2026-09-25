@@ -9,6 +9,8 @@ const homeCss=read('public/experience-upgrade.css');
 const pagesCss=read('public/experience-pages.css');
 const rae=read('public/rae/rae-character.js');
 const boot=read('public/rae.js');
+const aiCss=read('public/ai-service-pages.css');
+const termsCss=read('public/terms-page.css');
 const vite=read('vite.config.mjs');
 const caseStudy=read('fakhrimart-case-study.html');
 const home=read('index.html');
@@ -35,5 +37,8 @@ const raeBase=read('public/rae.css');
 expect(raeBase.includes('contain:none!important')&&raeBase.includes('width:100dvw!important'),'mobile Rae uses the viewport as its containing block');
 expect(Buffer.byteLength(raePolish,'utf8')<8192,'Rae lazy polish stays below its 8KB source guardrail');
 expect(!shellCss.includes('scroll-behavior:smooth!important'),'navigation polish does not force motion globally');
+expect(vite.includes("if(!isHome)html=injectBefore(html,'</head>','  <link rel=\"stylesheet\" href=\"/experience-pages.css\">');"),'homepage skips the inner-route stylesheet');
+expect(aiCss.includes('reserve the bottom-right assistant lane')&&aiCss.includes('margin-right:clamp(7rem,12vw,11.5rem)'),'AI offer pricing reserves room for Rae on wide screens');
+expect(termsCss.includes('min-height:78svh'),'desktop Terms hero uses a tighter first fold');
 
 if(process.exitCode)process.exit(process.exitCode);

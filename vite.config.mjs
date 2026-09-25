@@ -115,7 +115,7 @@ const experienceTransform={
     const route=pagePathFor(filename);
     if(!html.includes('data-global-shell')){
       html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/global-shell.css" data-global-shell>');
-      html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/experience-pages.css">');
+      if(!isHome)html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/experience-pages.css">');
       html=html.replace(/(<body\b[^>]*>)/,`$1\n  ${globalShell(route)}`);
       if(!isHome)html=injectBefore(html,'</body>',innerFooter);
       html=injectBefore(html,'</body>','  <script src="/global-shell.js" defer></script>');

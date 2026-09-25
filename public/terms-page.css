@@ -10,3 +10,9 @@ body.terms-body{margin:0;background:var(--terms-bg);color:var(--terms-paper);fon
 @media(max-width:820px){.terms-nav nav{display:none}.terms-layout{grid-template-columns:1fr;padding-top:3rem}.terms-toc{position:relative;top:auto}.terms-toc nav{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}.terms-hero{min-height:76svh}.terms-section{padding:2.5rem 0}.terms-quick__grid{grid-template-columns:1fr}}
 @media(max-width:520px){.terms-toc nav{grid-template-columns:1fr}.terms-nav{border-radius:1rem}.terms-hero{padding-left:1.2rem;padding-right:1.2rem}.terms-layout{padding-left:1.2rem;padding-right:1.2rem}.terms-close{padding-left:1.2rem;padding-right:1.2rem}}
 @media(prefers-reduced-motion:reduce){.terms-toc a,.terms-card::before{transition:none!important}}
+
+
+/* BRAYROAI V28 / keep the legal hero editorial without wasting the desktop first fold. */
+@media(min-width:821px){
+  .terms-hero{min-height:78svh}
+}

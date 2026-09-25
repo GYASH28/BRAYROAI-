@@ -6,10 +6,16 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 const marketSwitcher=read('src/market-switcher.js');
 const reactLoader=read('src/react-islands.js');
 const reactIsland=read('src/react/market-switcher-island.js');
+const planIsland=read('src/react/plan-finder-island.js');
+const briefIsland=read('src/react/project-brief-island.js');
 const marketApi=read('api/market.js');
 const vite=read('vite.config.mjs');
 const direction=read('public/direction-pass.js');
 const motion=read('public/experience-motion-v16.js');
+const cinematic=read('public/cinematic-v18.js');
+const polish=read('public/cinematic-v20.js');
+const home=read('index.html');
+const plans=read('plans.html');
 const config=JSON.parse(read('vercel.json'));
 const pkg=JSON.parse(read('package.json'));
 
@@ -19,6 +25,11 @@ assert(marketSwitcher.includes("brayro_market_manual"),'Manual market selection 
 assert(marketSwitcher.includes("fetch('/api/market'"),'Browser market detection fallback is missing');
 assert(reactLoader.includes("import('./react/market-switcher-island.js')"),'React market island must stay lazy');
 assert(reactIsland.includes("from 'react-dom/client'"),'React market island is not using React DOM');
+assert(reactLoader.includes("import('./react/plan-finder-island.js')")&&reactLoader.includes("import('./react/project-brief-island.js')"),'Decision React islands must stay lazy');
+assert(planIsland.includes("from 'react-dom/client'")&&briefIsland.includes("from 'react-dom/client'"),'Decision islands are not using React DOM');
+assert(plans.includes('data-react-plan-island')&&home.includes('data-react-brief-island'),'React island hosts are missing from source pages');
+assert(polish.includes('class SceneVisibilityDirector')&&!polish.includes("addEventListener('scroll'"),'V20 duplicate homepage scroll director returned');
+assert(cinematic.includes("'--v20-page'")&&cinematic.includes("'--v20-film-scan'")&&cinematic.includes("'--v20-founder-scan'"),'V18 must own the shared scroll-derived polish variables');
 assert(vite.includes('data-react-islands'),'React island entry is not injected into built pages');
 assert(marketApi.includes("x-vercel-ip-country"),'Market API must use Vercel country data');
 assert(pkg.dependencies?.react==='19.3.0'&&pkg.dependencies?.['react-dom']==='19.3.0','React dependencies drifted from the audited version');
@@ -35,4 +46,4 @@ for(const [country,prefix] of [['AE','/ae'],['AU','/au']]){
   }
 }
 
-console.log('V28 market/performance integrity passed: India, edge detection, lazy React and navigation performance guards are intact.');
+console.log('V29 market/performance integrity passed: India, edge detection, lazy React islands and one homepage scroll director are intact.');

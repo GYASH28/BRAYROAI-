@@ -44,6 +44,7 @@ const raeBase=read('public/rae.css');
 const raeUi=read('public/rae/rae-ui.js');
 expect(raeBase.includes('contain:none!important')&&raeBase.includes('inset:0!important')&&raeBase.includes('width:auto!important')&&!raeBase.includes('right:auto!important')&&!raeBase.includes('bottom:auto!important'),'mobile Rae fills the viewport from all four inset edges without dynamic-viewport drift or shrink-to-fit collapse');
 expect(raeBase.includes('html.rae-dialog-open,body.rae-dialog-open')&&raeUi.includes("document.documentElement.classList.toggle('rae-dialog-open',this.open)"),'Rae locks both root scroll surfaces while open to prevent Firefox sub-pixel page overflow');
+expect(raeUi.includes('aria-modal="false"')&&raeUi.includes("this.panel.setAttribute('aria-modal',String(modal))")&&raeUi.includes("this.panel.getAttribute('aria-modal')!=='true'"),'Rae switches modality by viewport instead of blocking desktop browsing');
 expect(Buffer.byteLength(raePolish,'utf8')<8192,'Rae lazy polish stays below its 8KB source guardrail');
 expect(raePolish.includes("body.rae-dialog-open .global-nav{transform:translateX(-50%) translateY(-.5rem)!important}"),'mobile Rae preserves the global-nav horizontal centering transform while hiding site chrome');
 expect(!shellCss.includes('scroll-behavior:smooth!important'),'navigation polish does not force motion globally');
@@ -69,6 +70,7 @@ expect(vite.includes('aria-controls="global-menu" aria-haspopup="dialog"')&&vite
 expect(vite.includes('data-global-close')&&shellCss.includes('global-menu__close')&&shellJs.includes("querySelector('[data-global-close]')?.focus()"),'full-screen navigation has a visible in-overlay exit and deliberate initial focus');
 expect(shellCss.includes('BRAYROAI V37 / modal layering and desktop geometry')&&shellCss.includes('.global-menu{z-index:1310}')&&shellCss.includes('@media(min-width:701px){html{scrollbar-gutter:stable}}'),'full-screen navigation layer sits above the persistent header while desktop scrollbars keep page geometry stable');
 expect(shellJs.includes("event.target.closest('a')||event.target===menu"),'blank full-screen navigation backdrop can dismiss the overlay');
+expect(shellJs.includes("[data-rae-panel][aria-hidden=\"false\"] [data-rae-close]")&&marketSwitcher.includes("[data-rae-panel][aria-hidden=\"false\"] [data-rae-close]")&&raeUi.includes('blockedByOverlay'),'global menu and market sheet take exclusive overlay ownership from Rae');
 expect(shellCss.includes('-webkit-tap-highlight-color')&&shellCss.includes('overscroll-behavior:contain'),'global shell includes quiet touch and overlay overscroll polish');
 expect(shellCss.includes('BRAYROAI V35 / safe-area polish')&&shellCss.includes('env(safe-area-inset-bottom)')&&shellCss.includes('env(safe-area-inset-right)'),'safe-area polish covers menu, market sheet and remembered-market suggestion');
 expect(shellCss.includes('padding-inline:20px 8px')&&shellCss.includes('border-inline-end')&&shellCss.includes('margin-inline-start:auto'),'global shell uses logical spacing for RTL-safe chrome');

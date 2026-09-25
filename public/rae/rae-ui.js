@@ -7,7 +7,7 @@ const arabicChoices={'A website':'موقع إلكتروني','A digital product'
 export class RaeUI{
   constructor(root,{pageInfo,onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear,onGuideStart,onGuideAnswer,onCompare,onProof}={}){
     this.root=root;this.pageInfo=pageInfo;this.arabic=window.BRAYRO_MARKET?.id==='ae-ar';this.handlers={onSend,onStop,onRetry,onAction,onOpenChange,onFocus,onClear,onGuideStart,onGuideAnswer,onCompare,onProof};this.open=false;this.generating=false;this.streamNode=null;this.lastUserNearBottom=true;this.lastFocused=null;this.visualViewportHandler=null;this.resizeHandler=null;this.focusTimer=0;this.focusRecoveryTimer=0;
-    this.build();this.syncLauncherPosition(false);this.bind();this.renderStarter();
+    this.build();this.syncLauncherPosition(false);this.syncModality();this.bind();this.renderStarter();
   }
   build(){
     this.root.innerHTML=`
@@ -16,7 +16,7 @@ export class RaeUI{
         <span class="rae-presence__copy"><strong>Rae</strong><small>BRAYROAI companion</small></span><i class="rae-presence__ping" aria-hidden="true"></i>
       </button>
       <div class="rae-nudge" data-rae-nudge><button type="button" data-rae-nudge-open aria-label="Open Rae suggestion"><span data-rae-nudge-copy></span></button><button type="button" data-rae-nudge-dismiss aria-label="Dismiss Rae suggestion">×</button></div>
-      <section class="rae-panel" id="rae-panel" data-rae-panel role="dialog" aria-modal="true" aria-label="Chat with Rae" aria-hidden="true">
+      <section class="rae-panel" id="rae-panel" data-rae-panel role="dialog" aria-modal="false" aria-label="Chat with Rae" aria-hidden="true">
         <header class="rae-panel__head">
           <div class="rae-panel__mini">${characterMarkup('header')}</div>
           <div class="rae-panel__identity"><strong>Rae</strong><span>BRAYROAI companion</span></div>
@@ -70,19 +70,25 @@ export class RaeUI{
     this.feed.addEventListener('scroll',()=>{const gap=this.feed.scrollHeight-this.feed.scrollTop-this.feed.clientHeight;this.lastUserNearBottom=gap<90;this.jump.hidden=this.lastUserNearBottom},{passive:true});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&this.open){event.preventDefault();this.setOpen(false)}});
     this.panel.addEventListener('keydown',event=>this.trapFocus(event));
-    this.resizeHandler=()=>this.syncLauncherPosition(this.open);addEventListener('resize',this.resizeHandler,{passive:true});
+    this.resizeHandler=()=>{this.syncLauncherPosition(this.open);this.syncModality()};addEventListener('resize',this.resizeHandler,{passive:true});
     if(window.visualViewport){this.visualViewportHandler=()=>{this.root.style.setProperty('--rae-vv-height',`${visualViewport.height}px`);this.root.toggleAttribute('data-keyboard',visualViewport.height<innerHeight*.78);this.syncLauncherPosition(this.open)};visualViewport.addEventListener('resize',this.visualViewportHandler);this.visualViewportHandler()}
   }
+  syncModality(){
+    const modal=this.open&&matchMedia('(max-width:700px)').matches;
+    this.panel.setAttribute('aria-modal',String(modal));
+    this.root.toggleAttribute('data-rae-modal',modal);
+  }
   trapFocus(event){
-    if(event.key!=='Tab')return;const focusable=[...this.panel.querySelectorAll('button:not([hidden]),textarea,a[href],[tabindex="0"]')].filter(node=>!node.disabled&&node.offsetParent!==null);if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+    if(this.panel.getAttribute('aria-modal')!=='true'||event.key!=='Tab')return;const focusable=[...this.panel.querySelectorAll('button:not([hidden]),textarea,a[href],[tabindex="0"]')].filter(node=>!node.disabled&&node.offsetParent!==null);if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
   }
   settleFocus(target,expectOpen){
     clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer);const delays=[0,72,180,360,620];let index=0;
-    const apply=()=>{if(this.open!==expectOpen||!target?.isConnected)return;try{target.focus({preventScroll:true})}catch{}if(index<delays.length-1){index+=1;this.focusTimer=setTimeout(apply,delays[index])}};
+    const blockedByOverlay=()=>!expectOpen&&(document.documentElement.classList.contains('global-menu-open')||document.querySelector('#market-sheet[open]'));
+    const apply=()=>{if(this.open!==expectOpen||!target?.isConnected||blockedByOverlay())return;try{target.focus({preventScroll:true})}catch{}if(index<delays.length-1){index+=1;this.focusTimer=setTimeout(apply,delays[index])}};
     queueMicrotask(apply);
     // Heavy page transitions can finish after the short focus retries. Recover only
     // when focus has fallen outside the open dialog or remained inside the closed one.
-    this.focusRecoveryTimer=setTimeout(()=>{if(this.open!==expectOpen||!target?.isConnected)return;const active=document.activeElement;const lost=expectOpen?!this.panel.contains(active):active===document.body||this.panel.contains(active);if(lost)try{target.focus({preventScroll:true})}catch{}},2000);
+    this.focusRecoveryTimer=setTimeout(()=>{if(this.open!==expectOpen||!target?.isConnected||blockedByOverlay())return;const active=document.activeElement,modal=this.panel.getAttribute('aria-modal')==='true';const lost=expectOpen?(modal?!this.panel.contains(active):active===document.body):active===document.body||this.panel.contains(active);if(lost)try{target.focus({preventScroll:true})}catch{}},2000);
   }
   focusComposer(){if(!this.generating&&!this.input.disabled)this.settleFocus(this.input,true)}
   preparePanelTransition(next){
@@ -97,7 +103,7 @@ export class RaeUI{
   }
   setOpen(value){
     const next=Boolean(value);this.preparePanelTransition(next);this.syncLauncherPosition(next);this.open=next;if(this.open)this.lastFocused=document.activeElement;
-    this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));document.body.classList.toggle('rae-dialog-open',this.open);document.documentElement.classList.toggle('rae-dialog-open',this.open);
+    this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));this.syncModality();document.body.classList.toggle('rae-dialog-open',this.open);document.documentElement.classList.toggle('rae-dialog-open',this.open);
     this.handlers.onOpenChange?.(this.open);
     if(this.open)this.focusComposer();else{const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;this.settleFocus(target,false)}
   }

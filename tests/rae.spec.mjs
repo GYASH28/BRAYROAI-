@@ -172,3 +172,32 @@ test('desktop AI offer pricing stays clear of Rae launcher',async({page,browserN
   expect(launcher).not.toBeNull();
   expect(price.x+price.width+20).toBeLessThanOrEqual(launcher.x);
 });
+
+
+test('Rae is a non-modal desktop sidecar but a modal mobile conversation',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Responsive modality contract only needs one engine');
+  await page.setViewportSize({width:1440,height:900});
+  await mockAI(page);await openRae(page,'/plans');
+  const panel=page.locator('[data-rae-panel]');
+  await expect(panel).toHaveAttribute('aria-modal','false');
+  await page.locator('[data-rae-clear]').focus();
+  await page.keyboard.press('Tab');
+  expect(await page.evaluate(()=>!document.querySelector('[data-rae-panel]').contains(document.activeElement))).toBe(true);
+  await page.locator('[data-rae-close]').click();
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('[data-rae-toggle]').click();
+  await expect(panel).toHaveAttribute('aria-modal','true');
+  await page.locator('[data-rae-clear]').focus();
+  await page.keyboard.press('Tab');
+  expect(await page.evaluate(()=>document.querySelector('[data-rae-panel]').contains(document.activeElement))).toBe(true);
+});
+
+test('opening full-screen navigation closes Rae before taking focus',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Overlay ownership only needs one engine');
+  await page.setViewportSize({width:1440,height:900});
+  await mockAI(page);await openRae(page,'/plans');
+  await page.locator('[data-global-toggle]').click();
+  await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','true');
+  await expect(page.locator('[data-global-menu]')).toBeVisible();
+  await expect(page.locator('[data-global-close]')).toBeFocused();
+});

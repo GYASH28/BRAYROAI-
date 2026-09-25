@@ -7,7 +7,10 @@
   let priorFocus=null,frame=0;
   const setOpen=(open)=>{
     if(open===!menu.hidden)return;
-    if(open)priorFocus=document.activeElement;
+    if(open){
+      priorFocus=toggle;
+      document.querySelector('[data-rae-panel][aria-hidden="false"] [data-rae-close]')?.click();
+    }
     menu.hidden=!open;
     toggle.setAttribute('aria-expanded',String(open));
     toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');

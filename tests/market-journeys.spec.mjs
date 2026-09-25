@@ -120,3 +120,19 @@ test('market dialog reports its state and restores focus',async({page,browserNam
   await expect(trigger).toHaveAttribute('aria-expanded','false');
   await expect(trigger).toBeFocused();
 });
+
+
+test('market dialog closes Rae before becoming the active modal',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Modal ownership only needs one engine');
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/plans',{waitUntil:'domcontentloaded'});
+  await page.evaluate(()=>document.querySelector('[data-rae-shell]')?.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true,pointerType:'mouse'})));
+  await expect(page.locator('[data-rae-toggle]')).toHaveCount(1,{timeout:8000});
+  await page.locator('[data-rae-toggle]').click();
+  await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','false');
+  const trigger=page.locator('.global-nav [data-market-trigger]');
+  await trigger.click();
+  await expect(page.locator('[data-rae-panel]')).toHaveAttribute('aria-hidden','true');
+  await expect(page.locator('#market-sheet')).toBeVisible();
+  await expect(trigger).toHaveAttribute('aria-expanded','true');
+});

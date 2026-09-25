@@ -28,6 +28,7 @@ for(const link of dialog.querySelectorAll('[data-market-choice]')){
 }
 let marketOpener=null;
 triggers.forEach(button=>button.addEventListener('click',()=>{
+  document.querySelector('[data-rae-panel][aria-hidden="false"] [data-rae-close]')?.click();
   const fromGlobalMenu=Boolean(button.closest('[data-global-menu]'));
   if(document.querySelector('[data-global-menu]')?.hidden===false)document.querySelector('[data-global-toggle]')?.click();
   marketOpener=fromGlobalMenu?document.querySelector('[data-global-toggle]'):button;

@@ -17,7 +17,8 @@ const remember=(next,source='manual')=>{
   const nextBase=baseMarket(next);
   if(source==='manual'){
     save('brayro_market',nextBase);
-    save('brayro_market_source','manual');\n    try{document.cookie=`brayro_market_manual=${nextBase}; Path=/; Max-Age=31536000; SameSite=Lax`}catch{}
+    save('brayro_market_source','manual');
+    try{document.cookie=`brayro_market_manual=${nextBase}; Path=/; Max-Age=31536000; SameSite=Lax`}catch{}
   }
   save('brayro_lang',next==='ae-ar'?'ar':'en');
   if(source==='auto')saveSession('brayro_auto_market',nextBase);

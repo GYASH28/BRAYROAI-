@@ -12,6 +12,8 @@ const boot=read('public/rae.js');
 
 expect(shellCss.includes('@view-transition')&&shellCss.includes('.global-nav.is-compact'),'global shell has route continuity and compact navigation styling');
 expect(shellJs.includes('scrollY>72')&&shellJs.includes('global-nav-compact'),'global shell restores compact-on-scroll behavior');
+expect(shellCss.includes('BRAYROAI V27')&&shellCss.includes('.global-nav__links a:nth-child(7)')&&shellCss.includes('scroll-snap-type:x proximity'),'V27 simplifies desktop chrome and improves mobile chapter navigation');
+expect(shellJs.includes('keep the active chapter centered')&&shellJs.includes("track.scrollTo"),'mobile chapter rail follows the active section');
 expect(shellCss.includes('prefers-reduced-motion')&&homeCss.includes('prefers-reduced-motion')&&pagesCss.includes('prefers-reduced-motion'),'motion layers expose reduced-motion fallbacks');
 expect(homeCss.includes('editorial finish')&&homeCss.includes('.v12-project-row'),'homepage has authored V25 visual refinement');
 expect(pagesCss.includes('one art direction across existing inner routes')&&pagesCss.includes('content-visibility:auto'),'inner routes share the V25 system and offscreen rendering optimization');

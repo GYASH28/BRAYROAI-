@@ -120,3 +120,56 @@ html.global-nav-compact .chapter-nav{top:68px;background:rgba(11,12,15,.9);box-s
   ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
   .global-nav,.global-nav *,.chapter-nav{transition:none!important}
 }
+
+
+/* BRAYROAI V27 / calmer chrome: core links first, everything else one tap away. */
+@media(min-width:1281px){
+  .global-nav__links a:nth-child(1),
+  .global-nav__links a:nth-child(7),
+  .global-nav__links a:nth-child(8){display:none}
+  .global-nav__links{gap:clamp(18px,1.75vw,30px)}
+  .global-nav__links a{font-size:11px;letter-spacing:.055em}
+  .global-nav__toggle{
+    display:flex;width:42px;height:42px;flex:none;border-radius:999px;
+    background:rgba(247,241,230,.035);transition:border-color .25s ease,background-color .25s ease,transform .3s var(--brayro-ease)
+  }
+  .global-nav__toggle:hover,.global-nav__toggle:focus-visible{border-color:rgba(255,138,0,.7);background:rgba(255,138,0,.07);transform:translateY(-1px)}
+  .global-nav__right{gap:7px}
+}
+.chapter-nav a{
+  position:relative;padding:5px 2px;border-radius:999px;
+  transition:color .2s ease,background-color .24s ease,padding .35s var(--brayro-ease)
+}
+.chapter-nav a::after{
+  content:"";position:absolute;left:50%;bottom:0;width:4px;height:4px;border-radius:50%;
+  background:var(--shell-orange);opacity:0;transform:translate(-50%,5px) scale(.4);
+  transition:opacity .2s ease,transform .3s var(--brayro-ease)
+}
+.chapter-nav a.is-active{
+  color:var(--shell-bone);padding-inline:8px;background:rgba(255,138,0,.075)
+}
+.chapter-nav a.is-active::after{opacity:1;transform:translate(-50%,4px) scale(1)}
+@media(max-width:700px){
+  .chapter-nav{
+    gap:9px;padding:8px 9px 8px 11px;border-radius:12px;
+    box-shadow:0 9px 28px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.035)
+  }
+  .chapter-nav>span{
+    max-width:none;padding-right:10px;border-right:1px solid rgba(247,241,230,.12);
+    overflow:visible;text-overflow:clip;font-size:8px;letter-spacing:.1em
+  }
+  .chapter-nav>div{
+    gap:7px;padding:1px 10px 1px 0;scroll-snap-type:x proximity;
+    mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 22px),transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 22px),transparent 100%)
+  }
+  .chapter-nav a{
+    flex:none;scroll-snap-align:center;padding:7px 8px;
+    color:rgba(247,241,230,.6);font-size:10.5px;letter-spacing:.015em
+  }
+  .chapter-nav a.is-active{padding-inline:10px;background:rgba(255,138,0,.1)}
+  .chapter-nav a.is-active::after{bottom:2px;width:3px;height:3px;transform:translate(-50%,5px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .global-nav__toggle,.chapter-nav a,.chapter-nav a::after{transition:none!important}
+}

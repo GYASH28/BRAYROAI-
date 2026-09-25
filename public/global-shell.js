@@ -85,3 +85,29 @@
   addEventListener('popstate',()=>requestAnimationFrame(apply));
   apply();
 })();
+
+
+/* BRAYROAI V27 / keep the active chapter centered in the compact mobile rail. */
+(() => {
+  const track=document.querySelector('.chapter-nav>div');
+  if(!track)return;
+  const links=[...track.querySelectorAll('a')];
+  if(!links.length)return;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  let frame=0,last=null;
+  const center=()=>{
+    frame=0;
+    if(innerWidth>700)return;
+    const active=track.querySelector('a.is-active');
+    if(!active||active===last)return;
+    last=active;
+    const left=active.offsetLeft-(track.clientWidth-active.offsetWidth)/2;
+    track.scrollTo({left:Math.max(0,left),behavior:reduced.matches?'auto':'smooth'});
+  };
+  const schedule=()=>{if(!frame)frame=requestAnimationFrame(center)};
+  const observer=new MutationObserver(schedule);
+  links.forEach(link=>observer.observe(link,{attributes:true,attributeFilter:['class']}));
+  addEventListener('resize',schedule,{passive:true});
+  addEventListener('pageshow',schedule);
+  schedule();
+})();

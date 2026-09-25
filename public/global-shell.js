@@ -16,7 +16,7 @@
   };
   toggle.addEventListener('click',()=>setOpen(menu.hidden));
   menu.querySelector('[data-global-close]')?.addEventListener('click',()=>setOpen(false));
-  menu.addEventListener('click',event=>{if(event.target.closest('a'))setOpen(false)});
+  menu.addEventListener('click',event=>{if(event.target.closest('a')||event.target===menu)setOpen(false)});
   addEventListener('keydown',event=>{
     if(menu.hidden)return;
     if(event.key==='Escape'){event.preventDefault();setOpen(false);return}

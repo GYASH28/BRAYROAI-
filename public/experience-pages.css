@@ -121,3 +121,15 @@ body.founder-v16 .founder-hero__note{
 body.founder-v16 .founder-hero__copy{
   opacity:1!important
 }
+
+
+/* BRAYROAI V37 / founder interaction hint belongs to precise pointers only. */
+body.founder-v16 .founder-hero__note{display:none}
+@media(min-width:1101px) and (hover:hover) and (pointer:fine){
+  body.founder-v16 .founder-hero__note{
+    display:block;
+    right:clamp(14rem,17vw,18rem);
+    bottom:1.9rem;
+    pointer-events:none
+  }
+}

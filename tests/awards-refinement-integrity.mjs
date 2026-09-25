@@ -36,6 +36,7 @@ expect(shellCss.includes('prefers-reduced-motion')&&homeCss.includes('prefers-re
 expect(homeCss.includes('editorial finish')&&homeCss.includes('.v12-project-row'),'homepage has authored V25 visual refinement');
 expect(pagesCss.includes('one art direction across existing inner routes')&&pagesCss.includes('content-visibility:auto'),'inner routes share the V25 system and offscreen rendering optimization');
 expect(pagesCss.includes('BRAYROAI V36 / desktop founder copy must arrive fully resolved')&&pagesCss.includes('body.founder-v16 .founder-hero__copy{')&&pagesCss.includes('opacity:1!important'),'founder hero wrapper is fully opaque on arrival');
+expect(pagesCss.includes('BRAYROAI V37 / founder interaction hint')&&pagesCss.includes('(hover:hover) and (pointer:fine)')&&pagesCss.includes('right:clamp(14rem,17vw,18rem)'),'founder hover hint is limited to precise pointers and reserves the contact-control corner');
 expect(rae.includes('data-rae-vector="full-body"')&&!rae.includes('<image')&&!rae.includes('rae-illustration.webp'),'Rae full character is vector-only');
 expect(boot.includes('data-rae-vector-launcher')&&!boot.includes('rae-illustration-thumb.webp'),'Rae launcher is vector-only');
 const raePolish=read('public/rae/rae-polish-v5.css');
@@ -66,6 +67,8 @@ expect(shellJs.includes("addEventListener('pageshow',()=>{if(scrollY>0"),'restor
 expect(shellJs.includes("menu.querySelectorAll('a,button')")&&!shellJs.includes("[toggle,...menu.querySelectorAll('a,button')]"),'modal navigation traps keyboard focus inside the dialog');
 expect(vite.includes('aria-controls="global-menu" aria-haspopup="dialog"')&&vite.includes('role="dialog" aria-modal="true" aria-label="Site navigation"'),'full navigation overlay exposes dialog semantics');
 expect(vite.includes('data-global-close')&&shellCss.includes('global-menu__close')&&shellJs.includes("querySelector('[data-global-close]')?.focus()"),'full-screen navigation has a visible in-overlay exit and deliberate initial focus');
+expect(shellCss.includes('BRAYROAI V37 / modal layering and desktop geometry')&&shellCss.includes('.global-menu{z-index:1310}')&&shellCss.includes('@media(min-width:701px){html{scrollbar-gutter:stable}}'),'full-screen navigation layer sits above the persistent header while desktop scrollbars keep page geometry stable');
+expect(shellJs.includes("event.target.closest('a')||event.target===menu"),'blank full-screen navigation backdrop can dismiss the overlay');
 expect(shellCss.includes('-webkit-tap-highlight-color')&&shellCss.includes('overscroll-behavior:contain'),'global shell includes quiet touch and overlay overscroll polish');
 expect(shellCss.includes('BRAYROAI V35 / safe-area polish')&&shellCss.includes('env(safe-area-inset-bottom)')&&shellCss.includes('env(safe-area-inset-right)'),'safe-area polish covers menu, market sheet and remembered-market suggestion');
 expect(shellCss.includes('padding-inline:20px 8px')&&shellCss.includes('border-inline-end')&&shellCss.includes('margin-inline-start:auto'),'global shell uses logical spacing for RTL-safe chrome');

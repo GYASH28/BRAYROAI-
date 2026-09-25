@@ -71,3 +71,18 @@ test('Global back-to-top is progressive and does not leak a hash',async({page,br
   expect(new URL(page.url()).hash).toBe('');
   expect(errors.filter(message=>message.includes('querySelector')||message.includes("not a valid selector"))).toEqual([]);
 });
+
+
+test('Founder pointer hint stays clear of fixed contact controls',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Founder pointer-hint collision only needs one engine');
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto('/founder',{waitUntil:'domcontentloaded'});
+  const hint=page.locator('.founder-hero__note');
+  await expect(hint).toBeVisible();
+  const dock=page.locator('.brayro-contact-dock');
+  await expect(dock).toBeVisible();
+  const [hintBox,dockBox]=await Promise.all([hint.boundingBox(),dock.boundingBox()]);
+  expect(hintBox).not.toBeNull();
+  expect(dockBox).not.toBeNull();
+  expect(hintBox.x+hintBox.width+16).toBeLessThanOrEqual(dockBox.x);
+});

@@ -77,6 +77,10 @@ test('desktop menu remains open through harmless viewport resizing',async({page,
   const close=page.locator('[data-global-close]');
   await expect(close).toBeVisible();
   await expect(close).toBeFocused();
+  const closeBox=await close.boundingBox();
+  expect(closeBox).not.toBeNull();
+  const closeIsTopmost=await page.evaluate(({x,y})=>Boolean(document.elementFromPoint(x,y)?.closest('[data-global-close]')),{x:closeBox.x+closeBox.width/2,y:closeBox.y+closeBox.height/2});
+  expect(closeIsTopmost).toBe(true);
   await page.setViewportSize({width:1400,height:900});
   await expect(page.locator('[data-global-menu]')).toBeVisible();
   await page.keyboard.press('Escape');
@@ -143,4 +147,16 @@ test('restored scroll positions refresh the global progress bar',async({page,bro
   await page.goBack({waitUntil:'domcontentloaded'});
   const value=await page.locator('[data-global-progress]').evaluate(node=>getComputedStyle(node).transform);
   expect(value).not.toBe('none');
+});
+
+
+test('blank full-screen navigation backdrop can dismiss the menu',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Overlay dismissal contract only needs one engine');
+  await page.setViewportSize({width:1440,height:900});
+  await openPage(page,'/plans');
+  await page.locator('[data-global-toggle]').click();
+  const menu=page.locator('[data-global-menu]');
+  await expect(menu).toBeVisible();
+  await menu.evaluate(node=>node.click());
+  await expect(menu).toBeHidden();
 });

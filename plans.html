@@ -50,12 +50,12 @@
         <h1><span>Choose the relationship.</span><span>Keep the <em>ambition.</em></span></h1>
         <p>Use a monthly partnership for ongoing website attention, a one-time build for a complete launch, or a focused AI system when the work inside the company needs to become easier.</p>
         <div class="plan-mode-switch" data-plan-mode-director data-default-mode="onetime" data-sc-verify-state="mode:onetime">
-          <button type="button" data-plan-mode="monthly" aria-pressed="false">Monthly partnership</button>
-          <button type="button" class="is-active" data-plan-mode="onetime" aria-pressed="true">One-time build</button>
+          <button type="button" data-plan-mode="monthly" aria-pressed="false" aria-controls="plan-mode-output">Monthly partnership</button>
+          <button type="button" class="is-active" data-plan-mode="onetime" aria-pressed="true" aria-controls="plan-mode-output">One-time build</button>
         </div>
         <a class="text-link" href="#ai-systems">Looking for AI systems? See the AI offers <span>↘</span></a>
       </div>
-      <div class="scope-switch glass-panel" data-plan-mode-output aria-live="polite">
+      <div class="scope-switch glass-panel" id="plan-mode-output" data-plan-mode-output aria-live="polite" aria-atomic="true">
         <p>THE CURRENT FIT</p>
         <section>
           <small>ONE-TIME / COMPLETE BUILD</small>

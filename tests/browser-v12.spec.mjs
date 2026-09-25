@@ -183,3 +183,17 @@ test('client archive filters announce only the compact result count',async({page
   await expect(page.locator('[data-client-filter="live"]')).toHaveAttribute('aria-controls','client-grid');
   await expect(page.locator('[data-client-search]')).toHaveAttribute('aria-controls','client-grid');
 });
+
+
+test('plan mode switch exposes its live output relationship',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Plan mode semantics only need one engine');
+  await openPage(page,'/plans');
+  const output=page.locator('#plan-mode-output');
+  await expect(output).toHaveAttribute('aria-live','polite');
+  await expect(output).toHaveAttribute('aria-atomic','true');
+  const monthly=page.locator('[data-plan-mode="monthly"]');
+  await expect(monthly).toHaveAttribute('aria-controls','plan-mode-output');
+  await monthly.click();
+  await expect(monthly).toHaveAttribute('aria-pressed','true');
+  await expect(output).toContainText(/Monthly Growth|monthly/i);
+});

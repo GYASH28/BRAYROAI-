@@ -180,6 +180,8 @@ test('Rae is a non-modal desktop sidecar but a modal mobile conversation',async(
   await mockAI(page);await openRae(page,'/plans');
   const panel=page.locator('[data-rae-panel]');
   await expect(panel).toHaveAttribute('aria-modal','false');
+  expect(await page.locator('[data-global-nav]').evaluate(node=>node.inert)).toBe(false);
+  await expect(page.locator('[data-global-toggle]')).toBeEnabled();
   await page.locator('[data-rae-clear]').focus();
   await page.keyboard.press('Tab');
   expect(await page.evaluate(()=>!document.querySelector('[data-rae-panel]').contains(document.activeElement))).toBe(true);
@@ -187,6 +189,7 @@ test('Rae is a non-modal desktop sidecar but a modal mobile conversation',async(
   await page.setViewportSize({width:390,height:844});
   await page.locator('[data-rae-toggle]').click();
   await expect(panel).toHaveAttribute('aria-modal','true');
+  expect(await page.locator('[data-global-nav]').evaluate(node=>node.inert)).toBe(true);
   await page.locator('[data-rae-clear]').focus();
   await page.keyboard.press('Tab');
   expect(await page.evaluate(()=>document.querySelector('[data-rae-panel]').contains(document.activeElement))).toBe(true);

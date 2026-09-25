@@ -9,7 +9,7 @@ const isCoarse=()=>matchMedia('(pointer:coarse)').matches;
 
 class RaeApp{
   constructor(root){
-    this.root=root;this.pageKey=getPageKey();this.session=new RaeSession();this.pageContext=new RaePageContext(section=>this.onSection(section));this.actions=new RaeActions(this.session);this.client=new RaeChatClient('/api/rae-chat');this.pendingMeta={};this.lastPrompt='';this.firstToken=false;this.guide=null;this.collisionFrame=0;this.collisionObserver=null;this.collisionResizeObserver=null;this.nudgeTimer=0;this.thinkTimer=0;this.slowTimer=0;this.inerted=[];
+    this.root=root;this.pageKey=getPageKey();this.session=new RaeSession();this.pageContext=new RaePageContext(section=>this.onSection(section));this.actions=new RaeActions(this.session);this.client=new RaeChatClient('/api/rae-chat');this.pendingMeta={};this.lastPrompt='';this.firstToken=false;this.guide=null;this.collisionFrame=0;this.collisionObserver=null;this.collisionResizeObserver=null;this.nudgeTimer=0;this.thinkTimer=0;this.slowTimer=0;this.inerted=[];this.backgroundInert=false;
     const pageInfo={...(PAGE_INFO[this.pageKey]||PAGE_INFO.default)};
     if(this.pageKey==='audit')pageInfo.summary=`A ${window.BRAYRO_MARKET?.price('ai-workflow-audit')||'₹9,999'} workflow audit that maps the current process and prioritises useful AI opportunities.`;
     if(this.pageKey==='brain')pageInfo.summary=`A grounded internal knowledge system starting at ${window.BRAYRO_MARKET?.price('company-second-brain')||'₹29,999'}.`;
@@ -17,15 +17,16 @@ class RaeApp{
     this.director=new RaeDirector(root);this.ui.restore(this.session.history());this.pageContext.start();this.bind();this.applyDeferredPlanHighlight();this.installCollisionObservers();this.resolveCollisions();this.scheduleNudge();emitRae('rae:boot');
   }
   bind(){
-    this.onPointer=event=>this.director.pointer(event);this.onResize=()=>this.queueCollision();this.onOnline=()=>{this.ui.setStatus('READY');emitRae('rae:wake')};this.onOffline=()=>{this.ui.setStatus('OFFLINE');emitRae('rae:offline')};this.onDockReady=()=>this.refreshCollisionTargets();
+    this.onPointer=event=>this.director.pointer(event);this.onResize=()=>{this.queueCollision();this.setBackgroundInert(this.ui.open&&matchMedia('(max-width:700px)').matches)};this.onOnline=()=>{this.ui.setStatus('READY');emitRae('rae:wake')};this.onOffline=()=>{this.ui.setStatus('OFFLINE');emitRae('rae:offline')};this.onDockReady=()=>this.refreshCollisionTargets();
     if(!isCoarse())addEventListener('pointermove',this.onPointer,{passive:true});else this.root.querySelector('[data-rae-toggle]')?.addEventListener('pointerdown',()=>this.director.touchReact(),{passive:true});
     addEventListener('resize',this.onResize,{passive:true});addEventListener('online',this.onOnline);addEventListener('offline',this.onOffline);document.addEventListener('brayro:contact-dock-ready',this.onDockReady);this.root.querySelector('[data-rae-toggle]')?.addEventListener('mouseenter',()=>emitRae('rae:user-focus'));if(!navigator.onLine)this.onOffline();
   }
   openChanged(open){
-    document.body.classList.toggle('rae-conversation-open',open);this.setBackgroundInert(open);emitRae(open?'rae:opened':'rae:closed');this.resolveCollisions();if(open){this.root.classList.remove('has-nudge');setTimeout(()=>{if(this.ui.open&&this.director.state==='opening')this.director.setState('idle')},620)}
+    document.body.classList.toggle('rae-conversation-open',open);this.setBackgroundInert(open&&matchMedia('(max-width:700px)').matches);emitRae(open?'rae:opened':'rae:closed');this.resolveCollisions();if(open){this.root.classList.remove('has-nudge');setTimeout(()=>{if(this.ui.open&&this.director.state==='opening')this.director.setState('idle')},620)}
   }
-  setBackgroundInert(open){
-    if(open){this.inerted=[];for(const node of document.body.children){if(node===this.root||!(node instanceof HTMLElement))continue;this.inerted.push([node,node.inert]);node.inert=true}}
+  setBackgroundInert(active){
+    const next=Boolean(active);if(next===this.backgroundInert)return;this.backgroundInert=next;
+    if(next){this.inerted=[];for(const node of document.body.children){if(node===this.root||!(node instanceof HTMLElement))continue;this.inerted.push([node,node.inert]);node.inert=true}}
     else{for(const [node,previous] of this.inerted){if(document.contains(node))node.inert=previous}this.inerted=[]}
   }
   async send(text,{retry=false}={}){

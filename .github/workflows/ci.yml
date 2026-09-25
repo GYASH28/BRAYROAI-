@@ -67,7 +67,8 @@ jobs:
           ! grep -q 'href="/brayro-cursor-v22.css"' dist/index.html
           grep -q 'data-layout-stable-fonts' dist/index.html
           grep -q 'name="x-brayro-commit"' dist/index.html
-          grep -q 'data-react-islands' dist/index.html
+          test -n "$(find dist/assets -maxdepth 1 -name 'react-islands-*.js' -print -quit)"
+          test -n "$(find dist/assets -maxdepth 1 -name 'market-switcher-island-*.js' -print -quit)"
 
           grep -q '.v12-project-index' dist/assets/brayro-home.css
           ! grep -q '.brayro-ledger' dist/assets/brayro-home.css

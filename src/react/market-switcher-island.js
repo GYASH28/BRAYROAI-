@@ -82,6 +82,6 @@ export function mountMarketSwitcherIsland(){
   host.dataset.reactMounted='true';
   host.hidden=false;
   const fallback=document.querySelector('[data-market-fallback]');
-  fallback?.classList.add('is-react-mounted');
   createRoot(host).render(h(MarketSwitcherIsland,{state:controller.getState()}));
+  fallback?.remove();
 }

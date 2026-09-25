@@ -115,3 +115,9 @@ body.founder-v16 .founder-hero__note{
   body.founder-v16 .founder-hero__copy h1{font-size:9.7vw}
   body.founder-v16 .founder-hero__copy>p:last-of-type{font-size:.72rem;line-height:1.44}
 }
+
+
+/* BRAYROAI V36 / desktop founder copy must arrive fully resolved. */
+body.founder-v16 .founder-hero__copy{
+  opacity:1!important
+}

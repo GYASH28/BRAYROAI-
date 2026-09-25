@@ -97,7 +97,7 @@ export class RaeUI{
   }
   setOpen(value){
     const next=Boolean(value);this.preparePanelTransition(next);this.syncLauncherPosition(next);this.open=next;if(this.open)this.lastFocused=document.activeElement;
-    this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));document.body.classList.toggle('rae-dialog-open',this.open);
+    this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));document.body.classList.toggle('rae-dialog-open',this.open);document.documentElement.classList.toggle('rae-dialog-open',this.open);
     this.handlers.onOpenChange?.(this.open);
     if(this.open)this.focusComposer();else{const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;this.settleFocus(target,false)}
   }
@@ -154,5 +154,5 @@ export class RaeUI{
   scrollLatest(force=false){if(!force&&!this.lastUserNearBottom)return;requestAnimationFrame(()=>{this.feed.scrollTop=this.feed.scrollHeight;this.jump.hidden=true;this.lastUserNearBottom=true})}
   resizeComposer(){this.input.style.height='auto';this.input.style.height=`${Math.min(128,Math.max(42,this.input.scrollHeight))}px`}
   showNudge(text){const node=this.root.querySelector('[data-rae-nudge-copy]');if(node)node.textContent=safeText(text);this.root.classList.add('has-nudge');setTimeout(()=>this.root.classList.remove('has-nudge'),7000)}
-  destroy(){clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer);this.panel.style.removeProperty('transition');this.root.style.removeProperty('bottom');if(this.resizeHandler)removeEventListener('resize',this.resizeHandler);if(this.visualViewportHandler)visualViewport?.removeEventListener('resize',this.visualViewportHandler);document.body.classList.remove('rae-dialog-open')}
+  destroy(){clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer);this.panel.style.removeProperty('transition');this.root.style.removeProperty('bottom');if(this.resizeHandler)removeEventListener('resize',this.resizeHandler);if(this.visualViewportHandler)visualViewport?.removeEventListener('resize',this.visualViewportHandler);document.body.classList.remove('rae-dialog-open');document.documentElement.classList.remove('rae-dialog-open')}
 }

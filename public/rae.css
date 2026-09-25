@@ -60,7 +60,7 @@
   .rae-panel{position:fixed;left:0;right:0;bottom:0;width:100%;height:min(88dvh,var(--rae-vv-height));max-height:none;border-radius:1.2rem 1.2rem 0 0;transform-origin:50% 100%;grid-template-rows:auto auto minmax(0,1fr) auto auto auto;padding-bottom:env(safe-area-inset-bottom)}
   .rae-panel__head{padding:.5rem max(.7rem,env(safe-area-inset-left))}.rae-panel__status{display:none}.rae-stage{grid-template-columns:7rem 1fr;min-height:6.6rem;padding:0 .8rem}.rae-stage__actor{height:6.5rem}.rae-character--stage{width:7rem;height:7rem}.rae-stage__copy strong{font-size:.98rem}.rae-stage__copy span{font-size:.69rem}.rae-feed{padding:.85rem .72rem 1.1rem}.rae-message{max-width:94%}.rae-message__bubble{font-size:.82rem}.rae-suggestions{padding:.62rem .7rem}.rae-chip{font-size:.5rem}.rae-composer{padding:.62rem .68rem}.rae-panel__foot{padding-left:.72rem;padding-right:.72rem}.rae-nudge{right:0;width:min(18rem,calc(100vw - 1.4rem))}
   .rae-root[data-keyboard] .rae-stage{display:none}.rae-root[data-keyboard] .rae-panel{height:min(var(--rae-vv-height),100dvh);border-radius:.8rem .8rem 0 0}
-  body.rae-dialog-open{overflow:hidden;touch-action:none}
+  html.rae-dialog-open,body.rae-dialog-open{max-width:100%!important;overflow-x:hidden!important}\n  body.rae-dialog-open{overflow-y:hidden;touch-action:none}
 }
 @media(max-width:360px){.rae-panel__identity span{font-size:.44rem}.rae-stage{grid-template-columns:5.8rem 1fr}.rae-stage__actor{height:5.8rem}.rae-character--stage{width:6rem;height:6rem}.rae-feed{padding-left:.58rem;padding-right:.58rem}.rae-composer{padding-left:.55rem;padding-right:.55rem}.rae-panel__foot span{max-width:13rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
 @media(prefers-reduced-motion:reduce){

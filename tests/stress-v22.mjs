@@ -30,7 +30,7 @@ async function verifyLazyHomeArt(page,width){
 }
 
 async function browserLoad(){
-  const browser=await chromium.launch({headless:true}),context=await browser.newContext({viewport:{width:1440,height:900}}),page=await context.newPage(),runtime=[];
+  const browser=await chromium.launch({headless:true}),context=await browser.newContext({viewport:{width:1440,height:900}});\n  // Vite preview does not execute the Vercel /api directory. Mock the first-visit\n  // market probe here so the stress suite measures the site instead of recording\n  // a deliberate local 404 from /api/market. Dedicated market journey tests still\n  // exercise AU/AE auto-detection and manual overrides independently.\n  await context.route('**/api/market',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({country:'IN',market:'in',language:'en',source:'ci-preview'})}));\n  const page=await context.newPage(),runtime=[];
   page.on('pageerror',error=>runtime.push(error.message));page.on('console',message=>{if(message.type()==='error'&&!message.text().includes('Rae failed to load'))runtime.push(message.text())});
   await page.goto(`${base}/`,{waitUntil:'networkidle'});await page.waitForSelector('[data-hf-intro-video]');assert(await page.locator('[data-hf-intro-video]').count()===1,'opening film missing');await page.locator('[data-hf-skip]').click();await page.waitForTimeout(450);
 

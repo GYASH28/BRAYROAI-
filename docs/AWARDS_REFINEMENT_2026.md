@@ -8,7 +8,7 @@ This pass preserves the approved dark editorial system, bone typography and sign
 ## Rae
 The live Rae body and launcher no longer reference the raster illustration assets. The full character is a structured SVG rig: shell and visor, fins and ear modules, luminous eyes, face states, neck, torso, chest signal, shoulders, articulated arms, hands/fingers, pelvis, hips, legs, knees and feet. Existing director states remain compatible: idle, opening, attention/curious, listening, thinking, speaking, positive, confused, playful, error/offline, celebrate and sleep.
 
-The old raster files remain in repository history/assets only; they are not used by the live character.
+The retired raster character files have been removed from `public/`, so Vite no longer copies dead Rae artwork into the production build. They remain recoverable through Git history only.
 
 ## Research and runtime choices
 - MDN View Transition API and `@view-transition` for progressive multi-page continuity.

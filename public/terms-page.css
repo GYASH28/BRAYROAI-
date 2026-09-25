@@ -17,3 +17,8 @@ body.terms-body{margin:0;background:var(--terms-bg);color:var(--terms-paper);fon
 @media(min-width:821px){
   .terms-hero{min-height:68svh;padding-top:9rem;padding-bottom:3.5rem}
 }
+
+
+/* BRAYROAI V35 / readable legal measure and a clear assistant-safe text lane. */
+.terms-intro p,.terms-section>p,.terms-section>ul{max-width:72ch;text-wrap:pretty}
+@media(min-width:1100px){.terms-intro{padding-inline-end:clamp(6rem,11vw,10.5rem)}}

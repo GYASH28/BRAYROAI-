@@ -30,9 +30,10 @@ body.rae-dialog-open{overflow-x:clip}
   body.rae-dialog-open :is(.global-nav,.chapter-nav){
     opacity:0!important;
     visibility:hidden!important;
-    pointer-events:none!important;
-    transform:translateY(-.5rem)!important
+    pointer-events:none!important
   }
+  body.rae-dialog-open .global-nav{transform:translateX(-50%) translateY(-.5rem)!important}
+  body.rae-dialog-open .chapter-nav{transform:translateY(-.5rem)!important}
   .rae-root[data-rae-polish="v5"].is-open .rae-panel{
     top:0!important;bottom:auto!important;height:min(100dvh,var(--rae-vv-height))!important;max-height:none!important;
     border-radius:0!important;border-inline:0!important

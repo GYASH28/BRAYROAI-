@@ -252,3 +252,13 @@ a,button,input,textarea,select{-webkit-tap-highlight-color:rgba(255,138,0,.18)}
   .global-menu__close b{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 }
 @media(prefers-reduced-motion:reduce){.global-menu__close{transition:none!important}}
+
+
+/* BRAYROAI V35 / safe-area polish for real phones, not just rectangular test viewports. */
+.global-menu{padding-bottom:max(28px,env(safe-area-inset-bottom))}
+.market-suggestion{left:max(16px,env(safe-area-inset-left));bottom:max(16px,env(safe-area-inset-bottom))}
+@media(max-width:700px){
+  .global-menu__close{inset-inline-end:max(14px,env(safe-area-inset-right))}
+  .market-sheet{margin-bottom:max(12px,env(safe-area-inset-bottom))}
+  .market-sheet__head button{width:44px;height:44px}
+}

@@ -119,3 +119,28 @@ test('mobile full-screen menu exposes a direct close control',async({page,browse
   await expect(menu).toBeHidden();
   await expect(toggle).toBeFocused();
 });
+
+
+test('Terms contents create shareable section links and current-location semantics',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Terms TOC semantics only need one rendering engine');
+  await openPage(page,'/terms');
+  const ownership=page.locator('.terms-toc a[href="#ownership"]');
+  await ownership.click();
+  await expect(page).toHaveURL(/\/terms#ownership$/);
+  await expect(ownership).toHaveAttribute('aria-current','location');
+  await expect(page.locator('#ownership')).toBeVisible();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/terms$/);
+});
+
+
+test('restored scroll positions refresh the global progress bar',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Progress restoration only needs one engine');
+  await page.setViewportSize({width:1440,height:900});
+  await openPage(page,'/plans');
+  await page.evaluate(()=>scrollTo(0,document.documentElement.scrollHeight*.55));
+  await page.goto('/founder',{waitUntil:'domcontentloaded'});
+  await page.goBack({waitUntil:'domcontentloaded'});
+  const value=await page.locator('[data-global-progress]').evaluate(node=>getComputedStyle(node).transform);
+  expect(value).not.toBe('none');
+});

@@ -35,6 +35,7 @@
   };
   addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(update)},{passive:true});
   addEventListener('resize',()=>{if(!frame)frame=requestAnimationFrame(update)},{passive:true});
+  addEventListener('pageshow',()=>{if(scrollY>0&&!frame)frame=requestAnimationFrame(update)});
   // The page starts at progress zero. Measuring scrollHeight here forces a
   // synchronous layout of every chapter before the first frame; the scroll
   // handler updates the indicator once the visitor actually moves.

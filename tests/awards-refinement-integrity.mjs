@@ -13,6 +13,7 @@ const rtlCss=read('public/market-rtl.css');
 const marketSwitcher=read('src/market-switcher.js');
 const aiCss=read('public/ai-service-pages.css');
 const termsCss=read('public/terms-page.css');
+const termsJs=read('public/terms-page.js');
 const vite=read('vite.config.mjs');
 const caseStudy=read('fakhrimart-case-study.html');
 const home=read('index.html');
@@ -40,10 +41,13 @@ const raePolish=read('public/rae/rae-polish-v5.css');
 const raeBase=read('public/rae.css');
 expect(raeBase.includes('contain:none!important')&&raeBase.includes('inset:0!important')&&raeBase.includes('width:auto!important')&&!raeBase.includes('right:auto!important')&&!raeBase.includes('bottom:auto!important'),'mobile Rae fills the viewport from all four inset edges without dynamic-viewport drift or shrink-to-fit collapse');
 expect(Buffer.byteLength(raePolish,'utf8')<8192,'Rae lazy polish stays below its 8KB source guardrail');
+expect(raePolish.includes("body.rae-dialog-open .global-nav{transform:translateX(-50%) translateY(-.5rem)!important}"),'mobile Rae preserves the global-nav horizontal centering transform while hiding site chrome');
 expect(!shellCss.includes('scroll-behavior:smooth!important'),'navigation polish does not force motion globally');
 expect(vite.includes("if(!isHome)html=injectBefore(html,'</head>','  <link rel=\"stylesheet\" href=\"/experience-pages.css\">');"),'homepage skips the inner-route stylesheet');
 expect(aiCss.includes('reserve the bottom-right assistant lane')&&aiCss.includes('margin-right:clamp(7rem,12vw,11.5rem)'),'AI offer pricing reserves room for Rae on wide screens');
 expect(termsCss.includes('.terms-hero{box-sizing:border-box}')&&termsCss.includes('min-height:68svh')&&termsCss.includes('padding-bottom:3.5rem'),'desktop Terms hero includes its padding inside the measured compact first fold');
+expect(termsCss.includes('max-width:72ch')&&termsCss.includes('padding-inline-end:clamp(6rem,11vw,10.5rem)'),'legal copy uses a readable measure and reserves the assistant lane');
+expect(termsJs.includes('setTermsCurrent')&&termsJs.includes("setAttribute('aria-current','location')")&&termsJs.includes("history.pushState(null,'',link.hash)"),'Terms table of contents exposes shareable hashes and current-location semantics');
 
 if(process.exitCode)process.exit(process.exitCode);
 
@@ -55,10 +59,12 @@ expect(aiJs.includes("this.status?.setAttribute('aria-live','polite')")&&aiJs.in
 expect(home.includes('fakhrimart-case-desktop.webp" width="1440" height="900" loading="lazy" decoding="async"')&&home.includes('fakhrimart-case-mobile.webp" width="520" height="1040" loading="lazy" decoding="async"'),'homepage proof imagery uses the source aspect ratios and async decoding');
 
 expect(shellJs.includes("setAttribute('aria-current','location')")&&shellJs.includes('chapter.includes(link)?link:chapter[0]'),'chapter navigation exposes screen-reader current-location state and resets correctly at top');
+expect(shellJs.includes("addEventListener('pageshow',()=>{if(scrollY>0"),'restored scroll positions repaint the global progress indicator');
 expect(shellJs.includes("menu.querySelectorAll('a,button')")&&!shellJs.includes("[toggle,...menu.querySelectorAll('a,button')]"),'modal navigation traps keyboard focus inside the dialog');
 expect(vite.includes('aria-controls="global-menu" aria-haspopup="dialog"')&&vite.includes('role="dialog" aria-modal="true" aria-label="Site navigation"'),'full navigation overlay exposes dialog semantics');
 expect(vite.includes('data-global-close')&&shellCss.includes('global-menu__close')&&shellJs.includes("querySelector('[data-global-close]')?.focus()"),'full-screen navigation has a visible in-overlay exit and deliberate initial focus');
 expect(shellCss.includes('-webkit-tap-highlight-color')&&shellCss.includes('overscroll-behavior:contain'),'global shell includes quiet touch and overlay overscroll polish');
+expect(shellCss.includes('BRAYROAI V35 / safe-area polish')&&shellCss.includes('env(safe-area-inset-bottom)')&&shellCss.includes('env(safe-area-inset-right)'),'safe-area polish covers menu, market sheet and remembered-market suggestion');
 expect(shellCss.includes('padding-inline:20px 8px')&&shellCss.includes('border-inline-end')&&shellCss.includes('margin-inline-start:auto'),'global shell uses logical spacing for RTL-safe chrome');
 expect(rtlCss.includes('bidirectional shell progress')&&rtlCss.includes('transform-origin:right'),'RTL progress indicators advance from the reading-direction edge');
 expect(marketSwitcher.includes("setAttribute('aria-expanded','false')")&&marketSwitcher.includes("dialog.addEventListener('close'")&&marketSwitcher.includes('marketOpener?.focus')&&vite.includes('global-menu__market\" type=\"button\" data-market-trigger aria-haspopup=\"dialog\" aria-controls=\"market-sheet\" aria-expanded=\"false\"'),'market dialog exposes expanded state and restores focus');

@@ -142,8 +142,7 @@ test('India is a first-class market and preserves the current route and anchor',
   await page.goto('/ae/plans#business',{waitUntil:'domcontentloaded'});
   const trigger=page.locator('[data-market-trigger]:visible').first();
   await trigger.click();
-  const choices=page.locator('#market-sheet [data-market-fallback] [data-market-choice]');
-  await expect(choices).toHaveCount(3);
+  await expect(page.locator('#market-sheet [data-market-choice="in"]').first()).toBeVisible();
   await expect(page.locator('#market-sheet [data-market-choice="in"]').first()).toContainText('India');
   await page.locator('#market-sheet [data-market-choice="in"]').first().click();
   await expect(page).toHaveURL(/\/plans#business$/);

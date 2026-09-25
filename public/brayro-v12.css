@@ -14,6 +14,7 @@
 
 /* V12 / recent.design × 21st.dev inspired direction — authored for BRAYROAI */
 body{background:var(--v12-ink)}
+.site-nav__cta span,.primary-action span,.v12-project-row i,.v12-product-card__cta span,.pricing-mini i,.text-link span{rotate:-45deg}
 .scene-shell{width:min(92rem,calc(100% - 8vw))}
 
 /* Floating header: less SaaS pill, more quiet editorial instrument */
@@ -41,6 +42,7 @@ body{background:var(--v12-ink)}
 .hero__copy .eyebrow{margin-bottom:1rem}
 .hero__copy h1.v12-hero-title{
   width:min(74rem,92vw);
+  max-width:calc(100vw - 2rem);
   margin:0;
   font-family:var(--v12-display);
   font-weight:600;
@@ -59,8 +61,8 @@ body{background:var(--v12-ink)}
 .hero__shade{background:linear-gradient(90deg,rgba(5,6,8,.93) 0,rgba(5,6,8,.56) 39%,rgba(5,6,8,.05) 71%),linear-gradient(180deg,rgba(5,6,8,.32),transparent 34%,rgba(5,6,8,.7))}
 
 /* Blur/mask reveal system */
-[data-v12-reveal]{opacity:0;filter:blur(12px);transform:translate3d(0,24px,0);transition:opacity .8s var(--v12-ease),filter .9s var(--v12-ease),transform .9s var(--v12-ease)}
-[data-v12-reveal].is-visible{opacity:1;filter:blur(0);transform:none}
+[data-v12-reveal]{opacity:0;transform:translate3d(0,24px,0);transition:opacity .65s var(--v12-ease),transform .7s var(--v12-ease)}
+[data-v12-reveal].is-visible{opacity:1;transform:none}
 [data-v12-reveal][data-delay="1"]{transition-delay:80ms}[data-v12-reveal][data-delay="2"]{transition-delay:160ms}[data-v12-reveal][data-delay="3"]{transition-delay:240ms}
 
 /* Signal marquee */
@@ -145,3 +147,28 @@ body{background:var(--v12-ink)}
 @media(prefers-reduced-motion:reduce){
   [data-v12-reveal]{opacity:1;filter:none;transform:none;transition:none}.v12-signal-track{animation:none;flex-wrap:wrap;width:auto}.v12-story-step{opacity:1}.v12-project-preview,.v12-cursor{display:none!important}.v12-product-card,.v12-project-row,.site-nav{transition:none!important}
 }
+
+/* The current motion score uses scroll-driven compositor transforms. Elements
+   remain visible in browsers without view timelines and under reduced motion. */
+#services .v12-capabilities__head,#work .v12-work-head,#ai-systems .v12-ai-head{position:relative;padding-top:1.5rem;border-top:1px solid rgba(243,240,234,.35)}
+#services .v12-capabilities__head::before,#work .v12-work-head::before,#ai-systems .v12-ai-head::before{content:"";position:absolute;top:-1px;left:0;width:clamp(4rem,12vw,12rem);height:2px;background:#ff6a20}
+#work .v12-work-head h2{max-width:12ch;letter-spacing:-.085em}
+#work .v12-project-row h3{letter-spacing:-.085em}
+#work .v12-project-row>i{font-size:clamp(1.3rem,2.5vw,2.8rem);transition:translate .3s ease}
+#work .v12-project-row:hover>i{translate:.3rem -.3rem}
+#ai-systems .v12-product-card{border-radius:.45rem;background:#14181b;box-shadow:0 1.4rem 3.5rem rgba(0,0,0,.2)}
+#ai-systems .v12-product-card::before{width:100%;height:1px;top:0;right:0;border-radius:0;background:linear-gradient(90deg,#ff6a20,transparent 75%)}
+#ai-systems .v12-product-card--brain::before{background:linear-gradient(90deg,#6c9cba,transparent 75%)}
+#ai-systems .v12-product-card h3{font-weight:700;letter-spacing:-.085em}
+
+@supports (animation-timeline:view()) {
+  @keyframes brayro-enter { from {opacity:.5;translate:0 3rem} to {opacity:1;translate:0 0} }
+  @keyframes brayro-frame { from {opacity:.7;scale:.93} to {opacity:1;scale:1} }
+  @keyframes brayro-image { from {scale:1.08} to {scale:1} }
+  @keyframes brayro-rule { from {scale:0 1} to {scale:1 1} }
+  #services .v12-capabilities__head,#work .v12-work-head,#ai-systems .v12-ai-head,#studio .founder-preview__layout{animation:brayro-enter 1s both linear;animation-timeline:view(block);animation-range:entry 0% cover 32%}
+  #work .v12-project-row{animation:brayro-enter 1s both linear;animation-timeline:view(block);animation-range:entry 0% cover 22%}
+  #ai-systems .v12-product-card,#plans .pricing-band{animation:brayro-frame 1s both linear;animation-timeline:view(block);animation-range:entry 0% cover 34%}
+  #services .v12-capabilities__head::before,#work .v12-work-head::before,#ai-systems .v12-ai-head::before{transform-origin:left;animation:brayro-rule 1s both linear;animation-timeline:view(block);animation-range:entry 0% cover 28%}
+}
+@media(prefers-reduced-motion:reduce){#services .v12-capabilities__head,#work .v12-work-head,#work .v12-project-row,#ai-systems .v12-ai-head,#ai-systems .v12-product-card,#plans .pricing-band,#studio .founder-preview__layout{animation:none!important;opacity:1!important;scale:1!important;translate:0 0!important}}

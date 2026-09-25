@@ -39,3 +39,50 @@ for(const viewport of [{width:360,height:800},{width:390,height:844}]){
     expect(overflow).toBeLessThanOrEqual(1);
   });
 }
+
+
+test('Founder hero copy is present immediately on desktop',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Founder first-fold timing only needs one rendering engine');
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto('/founder',{waitUntil:'domcontentloaded'});
+  await page.waitForTimeout(700);
+  const copy=page.locator('.founder-hero__copy');
+  await expect(copy.locator('h1')).toBeVisible();
+  await expect(copy.locator('h1')).toContainText('The work stays');
+  const state=await copy.evaluate(node=>{
+    const box=node.getBoundingClientRect(),style=getComputedStyle(node);
+    return{opacity:parseFloat(style.opacity),top:box.top,bottom:box.bottom,height:innerHeight};
+  });
+  expect(state.opacity).toBeGreaterThan(.85);
+  expect(state.top).toBeLessThan(state.height*.72);
+  expect(state.bottom).toBeGreaterThan(state.height*.55);
+});
+
+
+test('Global back-to-top is progressive and does not leak a hash',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Navigation contract only needs one engine');
+  const errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('/founder',{waitUntil:'domcontentloaded'});
+  await page.evaluate(()=>scrollTo(0,document.documentElement.scrollHeight));
+  await expect(page.locator('[data-back-to-top]')).toHaveAttribute('href','#top');
+  await page.locator('[data-back-to-top]').click();
+  await expect.poll(()=>page.evaluate(()=>Math.round(scrollY)),{timeout:3000}).toBeLessThan(5);
+  expect(new URL(page.url()).hash).toBe('');
+  expect(errors.filter(message=>message.includes('querySelector')||message.includes("not a valid selector"))).toEqual([]);
+});
+
+
+test('Founder pointer hint stays clear of fixed contact controls',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Founder pointer-hint collision only needs one engine');
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto('/founder',{waitUntil:'domcontentloaded'});
+  const hint=page.locator('.founder-hero__note');
+  await expect(hint).toBeVisible();
+  const dock=page.locator('.brayro-contact-dock');
+  await expect(dock).toBeVisible();
+  const [hintBox,dockBox]=await Promise.all([hint.boundingBox(),dock.boundingBox()]);
+  expect(hintBox).not.toBeNull();
+  expect(dockBox).not.toBeNull();
+  expect(hintBox.x+hintBox.width+16).toBeLessThanOrEqual(dockBox.x);
+});

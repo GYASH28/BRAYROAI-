@@ -1,0 +1,2051 @@
+{
+  "label": "after",
+  "base": "http://127.0.0.1:4175",
+  "recordedAt": "2026-09-24T03:14:29.877Z",
+  "routes": {
+    "/": {
+      "status": 200,
+      "title": "BRAYROAI · Creative Technology Studio",
+      "errors": [],
+      "viewports": {
+        "phone-360": {
+          "documentWidth": 360,
+          "viewportWidth": 360,
+          "overflow": 0,
+          "pageHeight": 10691,
+          "heading": "Digital, designedto feel different.",
+          "headingRect": {
+            "x": 64,
+            "y": 222,
+            "width": 328,
+            "height": 381
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 328,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Start a project →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Book the audit →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Plan the system →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            },
+            {
+              "text": "Start on WhatsApp →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Or email Yash →",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20project%20enquiry"
+            }
+          ]
+        },
+        "phone-390": {
+          "documentWidth": 390,
+          "viewportWidth": 390,
+          "overflow": 0,
+          "pageHeight": 10337,
+          "heading": "Digital, designedto feel different.",
+          "headingRect": {
+            "x": 16,
+            "y": 239,
+            "width": 358,
+            "height": 220
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 370,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Start a project →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Book the audit →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Plan the system →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            },
+            {
+              "text": "Start on WhatsApp →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Or email Yash →",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20project%20enquiry"
+            }
+          ]
+        },
+        "tablet-768": {
+          "documentWidth": 768,
+          "viewportWidth": 768,
+          "overflow": 0,
+          "pageHeight": 10321,
+          "heading": "Digital, designedto feel different.",
+          "headingRect": {
+            "x": 16,
+            "y": 359,
+            "width": 707,
+            "height": 117
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 748,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Start a project →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Book the audit →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Plan the system →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            },
+            {
+              "text": "Start on WhatsApp →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Or email Yash →",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20project%20enquiry"
+            }
+          ]
+        },
+        "tablet-1024": {
+          "documentWidth": 1024,
+          "viewportWidth": 1024,
+          "overflow": 0,
+          "pageHeight": 10073,
+          "heading": "Digital, designedto feel different.",
+          "headingRect": {
+            "x": 51,
+            "y": 315,
+            "width": 942,
+            "height": 163
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 992,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Start a project →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Book the audit →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Plan the system →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            },
+            {
+              "text": "Start on WhatsApp →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Or email Yash →",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20project%20enquiry"
+            }
+          ]
+        },
+        "desktop-1440": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 11081,
+          "heading": "Digital, designedto feel different.",
+          "headingRect": {
+            "x": 72,
+            "y": 341,
+            "width": 1184,
+            "height": 229
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Start a project →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Book the audit →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Plan the system →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            },
+            {
+              "text": "Start on WhatsApp →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Or email Yash →",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20project%20enquiry"
+            }
+          ]
+        },
+        "landscape-phone": {
+          "documentWidth": 667,
+          "viewportWidth": 667,
+          "overflow": 0,
+          "pageHeight": 11417,
+          "heading": "Digital, designedto feel different.",
+          "headingRect": {
+            "x": 72,
+            "y": 210,
+            "width": 635,
+            "height": 429
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 635,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Start a project →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Book the audit →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Plan the system →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            },
+            {
+              "text": "Start on WhatsApp →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Or email Yash →",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20project%20enquiry"
+            }
+          ]
+        },
+        "tall-desktop": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 12650,
+          "heading": "Digital, designedto feel different.",
+          "headingRect": {
+            "x": 72,
+            "y": 611,
+            "width": 1184,
+            "height": 229
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Start a project →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Book the audit →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Plan the system →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            },
+            {
+              "text": "Start on WhatsApp →",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Or email Yash →",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20project%20enquiry"
+            }
+          ]
+        }
+      }
+    },
+    "/plans": {
+      "status": 200,
+      "title": "BRAYROAI Plans · Websites + AI Systems",
+      "errors": [],
+      "viewports": {
+        "phone-360": {
+          "documentWidth": 360,
+          "viewportWidth": 360,
+          "overflow": 0,
+          "pageHeight": 11374,
+          "heading": "Choose the relationship.Keep the ambition.",
+          "headingRect": {
+            "x": 51,
+            "y": 190,
+            "width": 1152,
+            "height": 219
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 328,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Discuss Monthly Starter on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Starter%20%2F%20%E2%82%B92%2C599%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Growth on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Growth%20%2F%20%E2%82%B93%2C999%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Studio on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Studio%20%2F%20%E2%82%B95%2C999%2B%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Launch Website on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Launch%20Website%20%2F%20%E2%82%B99%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Business Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Business%20Experience%20%2F%20%E2%82%B917%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Premium Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Premium%20Experience%20%2F%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "phone-390": {
+          "documentWidth": 390,
+          "viewportWidth": 390,
+          "overflow": 0,
+          "pageHeight": 10425,
+          "heading": "Choose the relationship.Keep the ambition.",
+          "headingRect": {
+            "x": 16,
+            "y": 205,
+            "width": 358,
+            "height": 128
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 370,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Discuss Monthly Starter on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Starter%20%2F%20%E2%82%B92%2C599%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Growth on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Growth%20%2F%20%E2%82%B93%2C999%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Studio on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Studio%20%2F%20%E2%82%B95%2C999%2B%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Launch Website on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Launch%20Website%20%2F%20%E2%82%B99%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Business Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Business%20Experience%20%2F%20%E2%82%B917%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Premium Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Premium%20Experience%20%2F%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "tablet-768": {
+          "documentWidth": 768,
+          "viewportWidth": 768,
+          "overflow": 0,
+          "pageHeight": 12327,
+          "heading": "Choose the relationship.Keep the ambition.",
+          "headingRect": {
+            "x": 16,
+            "y": 230,
+            "width": 691,
+            "height": 346
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 736,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Discuss Monthly Starter on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Starter%20%2F%20%E2%82%B92%2C599%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Growth on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Growth%20%2F%20%E2%82%B93%2C999%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Studio on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Studio%20%2F%20%E2%82%B95%2C999%2B%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Launch Website on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Launch%20Website%20%2F%20%E2%82%B99%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Business Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Business%20Experience%20%2F%20%E2%82%B917%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Premium Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Premium%20Experience%20%2F%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "tablet-1024": {
+          "documentWidth": 1024,
+          "viewportWidth": 1024,
+          "overflow": 0,
+          "pageHeight": 10752,
+          "heading": "Choose the relationship.Keep the ambition.",
+          "headingRect": {
+            "x": 16,
+            "y": 230,
+            "width": 691,
+            "height": 346
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 992,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Discuss Monthly Starter on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Starter%20%2F%20%E2%82%B92%2C599%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Growth on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Growth%20%2F%20%E2%82%B93%2C999%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Studio on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Studio%20%2F%20%E2%82%B95%2C999%2B%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Launch Website on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Launch%20Website%20%2F%20%E2%82%B99%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Business Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Business%20Experience%20%2F%20%E2%82%B917%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Premium Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Premium%20Experience%20%2F%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "desktop-1440": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 10994,
+          "heading": "Choose the relationship.Keep the ambition.",
+          "headingRect": {
+            "x": 16,
+            "y": 230,
+            "width": 691,
+            "height": 346
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Discuss Monthly Starter on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Starter%20%2F%20%E2%82%B92%2C599%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Growth on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Growth%20%2F%20%E2%82%B93%2C999%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Studio on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Studio%20%2F%20%E2%82%B95%2C999%2B%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Launch Website on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Launch%20Website%20%2F%20%E2%82%B99%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Business Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Business%20Experience%20%2F%20%E2%82%B917%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Premium Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Premium%20Experience%20%2F%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "landscape-phone": {
+          "documentWidth": 667,
+          "viewportWidth": 667,
+          "overflow": 0,
+          "pageHeight": 12455,
+          "heading": "Choose the relationship.Keep the ambition.",
+          "headingRect": {
+            "x": 58,
+            "y": 208,
+            "width": 1232,
+            "height": 246
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 635,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Discuss Monthly Starter on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Starter%20%2F%20%E2%82%B92%2C599%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Growth on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Growth%20%2F%20%E2%82%B93%2C999%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Studio on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Studio%20%2F%20%E2%82%B95%2C999%2B%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Launch Website on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Launch%20Website%20%2F%20%E2%82%B99%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Business Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Business%20Experience%20%2F%20%E2%82%B917%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Premium Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Premium%20Experience%20%2F%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "tall-desktop": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 12470,
+          "heading": "Choose the relationship.Keep the ambition.",
+          "headingRect": {
+            "x": 58,
+            "y": 209,
+            "width": 1183,
+            "height": 492
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Discuss Monthly Starter on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Starter%20%2F%20%E2%82%B92%2C599%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Starter%20(monthly%20partnership)%20shown%20at%20%E2%82%B92%2C599%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Growth on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Growth%20%2F%20%E2%82%B93%2C999%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Growth%20(monthly%20partnership)%20shown%20at%20%E2%82%B93%2C999%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Monthly Studio on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Monthly%20Studio%20%2F%20%E2%82%B95%2C999%2B%2Fmo&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Monthly%20Studio%20(monthly%20partnership)%20shown%20at%20%E2%82%B95%2C999%2B%2Fmo.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Launch Website on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Launch%20Website%20%2F%20%E2%82%B99%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Launch%20Website%20(one-time%20build)%20shown%20at%20%E2%82%B99%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Business Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Business%20Experience%20%2F%20%E2%82%B917%2C999&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Business%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B917%2C999.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Discuss Premium Experience on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send this brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20India%20%2F%20Premium%20Experience%20%2F%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B&body=Hi%20Yash%2C%0A%0AI%20am%20interested%20in%20the%20Premium%20Experience%20(one-time%20build)%20shown%20at%20%E2%82%B925K%E2%80%93%E2%82%B935K%2B.%20Market%3A%20India.%0A%0ABusiness%20%2F%20brand%3A%0AWhat%20needs%20to%20improve%20or%20be%20built%3A%0ACurrent%20website%2C%20if%20any%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        }
+      }
+    },
+    "/founder": {
+      "status": 200,
+      "title": "Yash Ganesh · Founder of BRAYROAI",
+      "errors": [],
+      "viewports": {
+        "phone-360": {
+          "documentWidth": 360,
+          "viewportWidth": 360,
+          "overflow": 0,
+          "pageHeight": 7935,
+          "heading": "The work staysclose to the idea.",
+          "headingRect": {
+            "x": 64,
+            "y": -231,
+            "width": 240,
+            "height": 639
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 328,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Chat on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send the project brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20in%20%2F%20founder%20project&body=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "phone-390": {
+          "documentWidth": 390,
+          "viewportWidth": 390,
+          "overflow": 0,
+          "pageHeight": 7339,
+          "heading": "The work staysclose to the idea.",
+          "headingRect": {
+            "x": 0,
+            "y": 578,
+            "width": 263,
+            "height": 147
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 370,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Chat on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send the project brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20in%20%2F%20founder%20project&body=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "tablet-768": {
+          "documentWidth": 768,
+          "viewportWidth": 768,
+          "overflow": 0,
+          "pageHeight": 7319,
+          "heading": "The work staysclose to the idea.",
+          "headingRect": {
+            "x": 0,
+            "y": 427,
+            "width": 538,
+            "height": 73
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 748,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Chat on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send the project brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20in%20%2F%20founder%20project&body=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "tablet-1024": {
+          "documentWidth": 1024,
+          "viewportWidth": 1024,
+          "overflow": 0,
+          "pageHeight": 7242,
+          "heading": "The work staysclose to the idea.",
+          "headingRect": {
+            "x": 0,
+            "y": 366,
+            "width": 538,
+            "height": 68
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 992,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Chat on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send the project brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20in%20%2F%20founder%20project&body=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "desktop-1440": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 7242,
+          "heading": "The work staysclose to the idea.",
+          "headingRect": {
+            "x": 0,
+            "y": 366,
+            "width": 538,
+            "height": 68
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Chat on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send the project brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20in%20%2F%20founder%20project&body=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "landscape-phone": {
+          "documentWidth": 667,
+          "viewportWidth": 667,
+          "overflow": 0,
+          "pageHeight": 7904,
+          "heading": "The work staysclose to the idea.",
+          "headingRect": {
+            "x": 72,
+            "y": 288,
+            "width": 928,
+            "height": 308
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 635,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Chat on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send the project brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20in%20%2F%20founder%20project&body=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        },
+        "tall-desktop": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 8801,
+          "heading": "The work staysclose to the idea.",
+          "headingRect": {
+            "x": 72,
+            "y": 438,
+            "width": 928,
+            "height": 308
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Chat on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Prefer email? Send the project brief ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20%2F%20in%20%2F%20founder%20project&body=Market%3A%20in%20%2F%20INR.%0AHi%20Yash%2C%5Cn%5CnI%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI.%5Cn%5CnBusiness%20%2F%20brand%3A%5CnWhat%20needs%20to%20improve%3A%5CnWhat%20should%20the%20website%20or%20product%20help%20people%20do%3A%5CnApproximate%20budget%20and%20target%20date%3A%5Cn%5CnBest%20way%20to%20reach%20me%3A"
+            }
+          ]
+        }
+      }
+    },
+    "/clients": {
+      "status": 200,
+      "title": "Client Work · BRAYROAI",
+      "errors": [],
+      "viewports": {
+        "phone-360": {
+          "documentWidth": 360,
+          "viewportWidth": 360,
+          "overflow": 0,
+          "pageHeight": 4767,
+          "heading": "Client work,in the open.",
+          "headingRect": {
+            "x": 16,
+            "y": 166,
+            "width": 328,
+            "height": 236
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 340,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            }
+          ]
+        },
+        "phone-390": {
+          "documentWidth": 390,
+          "viewportWidth": 390,
+          "overflow": 0,
+          "pageHeight": 4597,
+          "heading": "Client work,in the open.",
+          "headingRect": {
+            "x": 16,
+            "y": 166,
+            "width": 358,
+            "height": 256
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 370,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            }
+          ]
+        },
+        "tablet-768": {
+          "documentWidth": 768,
+          "viewportWidth": 768,
+          "overflow": 0,
+          "pageHeight": 3804,
+          "heading": "Client work,in the open.",
+          "headingRect": {
+            "x": 27,
+            "y": 166,
+            "width": 550,
+            "height": 139
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 736,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            }
+          ]
+        },
+        "tablet-1024": {
+          "documentWidth": 1024,
+          "viewportWidth": 1024,
+          "overflow": 0,
+          "pageHeight": 3485,
+          "heading": "Client work,in the open.",
+          "headingRect": {
+            "x": 36,
+            "y": 450,
+            "width": 588,
+            "height": 185
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 992,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            }
+          ]
+        },
+        "desktop-1440": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 4195,
+          "heading": "Client work,in the open.",
+          "headingRect": {
+            "x": 50,
+            "y": 467,
+            "width": 826,
+            "height": 260
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            }
+          ]
+        },
+        "landscape-phone": {
+          "documentWidth": 667,
+          "viewportWidth": 667,
+          "overflow": 0,
+          "pageHeight": 4157,
+          "heading": "Client work,in the open.",
+          "headingRect": {
+            "x": 23,
+            "y": 166,
+            "width": 470,
+            "height": 120
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 647,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            }
+          ]
+        },
+        "tall-desktop": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 4471,
+          "heading": "Client work,in the open.",
+          "headingRect": {
+            "x": 50,
+            "y": 743,
+            "width": 826,
+            "height": 260
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            }
+          ]
+        }
+      }
+    },
+    "/clients/fakhrimart": {
+      "status": 200,
+      "title": "FakhriMart Case Study · BRAYROAI",
+      "errors": [],
+      "viewports": {
+        "phone-360": {
+          "documentWidth": 360,
+          "viewportWidth": 360,
+          "overflow": 0,
+          "pageHeight": 13623,
+          "heading": "FakhriMart.",
+          "headingRect": {
+            "x": 16,
+            "y": 151,
+            "width": 328,
+            "height": 129
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 340,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20saw%20the%20FakhriMart%20case%20study%20and%20want%20to%20discuss%20my%20project."
+            }
+          ]
+        },
+        "phone-390": {
+          "documentWidth": 390,
+          "viewportWidth": 390,
+          "overflow": 0,
+          "pageHeight": 13295,
+          "heading": "FakhriMart.",
+          "headingRect": {
+            "x": 16,
+            "y": 151,
+            "width": 358,
+            "height": 140
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 370,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20saw%20the%20FakhriMart%20case%20study%20and%20want%20to%20discuss%20my%20project."
+            }
+          ]
+        },
+        "tablet-768": {
+          "documentWidth": 768,
+          "viewportWidth": 768,
+          "overflow": 0,
+          "pageHeight": 11578,
+          "heading": "FakhriMart.",
+          "headingRect": {
+            "x": 27,
+            "y": 166,
+            "width": 714,
+            "height": 156
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 736,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20saw%20the%20FakhriMart%20case%20study%20and%20want%20to%20discuss%20my%20project."
+            }
+          ]
+        },
+        "tablet-1024": {
+          "documentWidth": 1024,
+          "viewportWidth": 1024,
+          "overflow": 0,
+          "pageHeight": 9628,
+          "heading": "FakhriMart.",
+          "headingRect": {
+            "x": 36,
+            "y": 337,
+            "width": 572,
+            "height": 208
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 992,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20saw%20the%20FakhriMart%20case%20study%20and%20want%20to%20discuss%20my%20project."
+            }
+          ]
+        },
+        "desktop-1440": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 11568,
+          "heading": "FakhriMart.",
+          "headingRect": {
+            "x": 50,
+            "y": 271,
+            "width": 805,
+            "height": 292
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20saw%20the%20FakhriMart%20case%20study%20and%20want%20to%20discuss%20my%20project."
+            }
+          ]
+        },
+        "landscape-phone": {
+          "documentWidth": 667,
+          "viewportWidth": 667,
+          "overflow": 0,
+          "pageHeight": 11935,
+          "heading": "FakhriMart.",
+          "headingRect": {
+            "x": 23,
+            "y": 151,
+            "width": 620,
+            "height": 135
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 647,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20saw%20the%20FakhriMart%20case%20study%20and%20want%20to%20discuss%20my%20project."
+            }
+          ]
+        },
+        "tall-desktop": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 11608,
+          "heading": "FakhriMart.",
+          "headingRect": {
+            "x": 50,
+            "y": 311,
+            "width": 805,
+            "height": 292
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Starta project ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20saw%20the%20FakhriMart%20case%20study%20and%20want%20to%20discuss%20my%20project."
+            }
+          ]
+        }
+      }
+    },
+    "/ai-workflow-audit": {
+      "status": 200,
+      "title": "AI Workflow Audit · BRAYROAI",
+      "errors": [],
+      "viewports": {
+        "phone-360": {
+          "documentWidth": 360,
+          "viewportWidth": 360,
+          "overflow": 0,
+          "pageHeight": 9878,
+          "heading": "Find the work AI can actually improve.",
+          "headingRect": {
+            "x": 18,
+            "y": 197,
+            "width": 324,
+            "height": 213
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 340,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Book on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Use email instead ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20AI%20Workflow%20Audit%20%E2%82%B99%2C999"
+            }
+          ]
+        },
+        "phone-390": {
+          "documentWidth": 390,
+          "viewportWidth": 390,
+          "overflow": 0,
+          "pageHeight": 10004,
+          "heading": "Find the work AI can actually improve.",
+          "headingRect": {
+            "x": 20,
+            "y": 288,
+            "width": 351,
+            "height": 231
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 370,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Book on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Use email instead ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20AI%20Workflow%20Audit%20%E2%82%B99%2C999"
+            }
+          ]
+        },
+        "tablet-768": {
+          "documentWidth": 768,
+          "viewportWidth": 768,
+          "overflow": 0,
+          "pageHeight": 8888,
+          "heading": "Find the work AI can actually improve.",
+          "headingRect": {
+            "x": 38,
+            "y": 517,
+            "width": 537,
+            "height": 194
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 736,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Book on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Use email instead ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20AI%20Workflow%20Audit%20%E2%82%B99%2C999"
+            }
+          ]
+        },
+        "tablet-1024": {
+          "documentWidth": 1024,
+          "viewportWidth": 1024,
+          "overflow": 0,
+          "pageHeight": 7182,
+          "heading": "Find the work AI can actually improve.",
+          "headingRect": {
+            "x": 51,
+            "y": 300,
+            "width": 717,
+            "height": 259
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 992,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Book on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Use email instead ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20AI%20Workflow%20Audit%20%E2%82%B99%2C999"
+            }
+          ]
+        },
+        "desktop-1440": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 8120,
+          "heading": "Find the work AI can actually improve.",
+          "headingRect": {
+            "x": 72,
+            "y": 346,
+            "width": 1008,
+            "height": 364
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Book on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Use email instead ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20AI%20Workflow%20Audit%20%E2%82%B99%2C999"
+            }
+          ]
+        },
+        "landscape-phone": {
+          "documentWidth": 667,
+          "viewportWidth": 667,
+          "overflow": 0,
+          "pageHeight": 8389,
+          "heading": "Find the work AI can actually improve.",
+          "headingRect": {
+            "x": 33,
+            "y": 147,
+            "width": 477,
+            "height": 172
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 647,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Book on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Use email instead ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20AI%20Workflow%20Audit%20%E2%82%B99%2C999"
+            }
+          ]
+        },
+        "tall-desktop": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 9020,
+          "heading": "Find the work AI can actually improve.",
+          "headingRect": {
+            "x": 72,
+            "y": 629,
+            "width": 1008,
+            "height": 364
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Book on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20book%20the%20BRAYROAI%20AI%20Workflow%20Audit%20for%20%E2%82%B99%2C999."
+            },
+            {
+              "text": "Use email instead ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20AI%20Workflow%20Audit%20%E2%82%B99%2C999"
+            }
+          ]
+        }
+      }
+    },
+    "/company-second-brain": {
+      "status": 200,
+      "title": "Company Second Brain · BRAYROAI",
+      "errors": [],
+      "viewports": {
+        "phone-360": {
+          "documentWidth": 360,
+          "viewportWidth": 360,
+          "overflow": 0,
+          "pageHeight": 12383,
+          "heading": "Turn approved knowledge into usable answers.",
+          "headingRect": {
+            "x": 18,
+            "y": 163,
+            "width": 324,
+            "height": 267
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 340,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Plan it on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            }
+          ]
+        },
+        "phone-390": {
+          "documentWidth": 390,
+          "viewportWidth": 390,
+          "overflow": 0,
+          "pageHeight": 12253,
+          "heading": "Turn approved knowledge into usable answers.",
+          "headingRect": {
+            "x": 20,
+            "y": 181,
+            "width": 351,
+            "height": 289
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 370,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Plan it on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            }
+          ]
+        },
+        "tablet-768": {
+          "documentWidth": 768,
+          "viewportWidth": 768,
+          "overflow": 0,
+          "pageHeight": 11712,
+          "heading": "Turn approved knowledge into usable answers.",
+          "headingRect": {
+            "x": 38,
+            "y": 387,
+            "width": 461,
+            "height": 323
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 736,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Plan it on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            }
+          ]
+        },
+        "tablet-1024": {
+          "documentWidth": 1024,
+          "viewportWidth": 1024,
+          "overflow": 0,
+          "pageHeight": 8912,
+          "heading": "Turn approved knowledge into usable answers.",
+          "headingRect": {
+            "x": 51,
+            "y": 273,
+            "width": 717,
+            "height": 259
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 992,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Plan it on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            }
+          ]
+        },
+        "desktop-1440": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 9847,
+          "heading": "Turn approved knowledge into usable answers.",
+          "headingRect": {
+            "x": 72,
+            "y": 324,
+            "width": 1008,
+            "height": 364
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Plan it on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            }
+          ]
+        },
+        "landscape-phone": {
+          "documentWidth": 667,
+          "viewportWidth": 667,
+          "overflow": 0,
+          "pageHeight": 10991,
+          "heading": "Turn approved knowledge into usable answers.",
+          "headingRect": {
+            "x": 33,
+            "y": 147,
+            "width": 477,
+            "height": 172
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 647,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Plan it on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            }
+          ]
+        },
+        "tall-desktop": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 10849,
+          "heading": "Turn approved knowledge into usable answers.",
+          "headingRect": {
+            "x": 72,
+            "y": 607,
+            "width": 1008,
+            "height": 364
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Plan it on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20want%20to%20plan%20a%20BRAYROAI%20Company%20Second%20Brain%20starting%20from%20%E2%82%B929%2C999."
+            }
+          ]
+        }
+      }
+    },
+    "/terms": {
+      "status": 200,
+      "title": "BRAYROAI · Terms & Conditions",
+      "errors": [],
+      "viewports": {
+        "phone-360": {
+          "documentWidth": 360,
+          "viewportWidth": 360,
+          "overflow": 0,
+          "pageHeight": 11896,
+          "heading": "Clear terms.Better work.",
+          "headingRect": {
+            "x": 19,
+            "y": 226,
+            "width": 322,
+            "height": 105
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 340,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Tell me what is not working ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20BRAYROAI%20website&body=Hi%20Yash%2C%0A%0AThe%20main%20thing%20I%20want%20to%20improve%20is%3A%20People%20do%20not%20get%20it%20fast%20enough.%0A%0AMy%20business%20%2F%20brand%3A%0AWhat%20visitors%20currently%20find%20difficult%3A%0AThe%20action%20I%20want%20people%20to%20take%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Ask on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Prefer email? Ask about the terms ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20terms%20question"
+            }
+          ]
+        },
+        "phone-390": {
+          "documentWidth": 390,
+          "viewportWidth": 390,
+          "overflow": 0,
+          "pageHeight": 11418,
+          "heading": "Clear terms.Better work.",
+          "headingRect": {
+            "x": 19,
+            "y": 241,
+            "width": 352,
+            "height": 105
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 370,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Tell me what is not working ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20BRAYROAI%20website&body=Hi%20Yash%2C%0A%0AThe%20main%20thing%20I%20want%20to%20improve%20is%3A%20People%20do%20not%20get%20it%20fast%20enough.%0A%0AMy%20business%20%2F%20brand%3A%0AWhat%20visitors%20currently%20find%20difficult%3A%0AThe%20action%20I%20want%20people%20to%20take%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Ask on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Prefer email? Ask about the terms ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20terms%20question"
+            }
+          ]
+        },
+        "tablet-768": {
+          "documentWidth": 768,
+          "viewportWidth": 768,
+          "overflow": 0,
+          "pageHeight": 9747,
+          "heading": "Clear terms.Better work.",
+          "headingRect": {
+            "x": 38,
+            "y": 644,
+            "width": 691,
+            "height": 126
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 736,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Tell me what is not working ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20BRAYROAI%20website&body=Hi%20Yash%2C%0A%0AThe%20main%20thing%20I%20want%20to%20improve%20is%3A%20People%20do%20not%20get%20it%20fast%20enough.%0A%0AMy%20business%20%2F%20brand%3A%0AWhat%20visitors%20currently%20find%20difficult%3A%0AThe%20action%20I%20want%20people%20to%20take%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Ask on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Prefer email? Ask about the terms ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20terms%20question"
+            }
+          ]
+        },
+        "tablet-1024": {
+          "documentWidth": 1024,
+          "viewportWidth": 1024,
+          "overflow": 0,
+          "pageHeight": 11017,
+          "heading": "Clear terms.Better work.",
+          "headingRect": {
+            "x": 51,
+            "y": 511,
+            "width": 922,
+            "height": 168
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 992,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Tell me what is not working ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20BRAYROAI%20website&body=Hi%20Yash%2C%0A%0AThe%20main%20thing%20I%20want%20to%20improve%20is%3A%20People%20do%20not%20get%20it%20fast%20enough.%0A%0AMy%20business%20%2F%20brand%3A%0AWhat%20visitors%20currently%20find%20difficult%3A%0AThe%20action%20I%20want%20people%20to%20take%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Ask on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Prefer email? Ask about the terms ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20terms%20question"
+            }
+          ]
+        },
+        "desktop-1440": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 10856,
+          "heading": "Clear terms.Better work.",
+          "headingRect": {
+            "x": 72,
+            "y": 510,
+            "width": 1000,
+            "height": 236
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Tell me what is not working ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20BRAYROAI%20website&body=Hi%20Yash%2C%0A%0AThe%20main%20thing%20I%20want%20to%20improve%20is%3A%20People%20do%20not%20get%20it%20fast%20enough.%0A%0AMy%20business%20%2F%20brand%3A%0AWhat%20visitors%20currently%20find%20difficult%3A%0AThe%20action%20I%20want%20people%20to%20take%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Ask on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Prefer email? Ask about the terms ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20terms%20question"
+            }
+          ]
+        },
+        "landscape-phone": {
+          "documentWidth": 667,
+          "viewportWidth": 667,
+          "overflow": 0,
+          "pageHeight": 9514,
+          "heading": "Clear terms.Better work.",
+          "headingRect": {
+            "x": 19,
+            "y": 217,
+            "width": 629,
+            "height": 109
+          },
+          "headerRect": {
+            "x": 10,
+            "y": 8,
+            "width": 647,
+            "height": 56
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Tell me what is not working ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20BRAYROAI%20website&body=Hi%20Yash%2C%0A%0AThe%20main%20thing%20I%20want%20to%20improve%20is%3A%20People%20do%20not%20get%20it%20fast%20enough.%0A%0AMy%20business%20%2F%20brand%3A%0AWhat%20visitors%20currently%20find%20difficult%3A%0AThe%20action%20I%20want%20people%20to%20take%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Ask on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Prefer email? Ask about the terms ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20terms%20question"
+            }
+          ]
+        },
+        "tall-desktop": {
+          "documentWidth": 1440,
+          "viewportWidth": 1440,
+          "overflow": 0,
+          "pageHeight": 11114,
+          "heading": "Clear terms.Better work.",
+          "headingRect": {
+            "x": 72,
+            "y": 767,
+            "width": 1000,
+            "height": 236
+          },
+          "headerRect": {
+            "x": 16,
+            "y": 12,
+            "width": 1408,
+            "height": 64
+          },
+          "missingLocalFragments": [],
+          "primaryContacts": [
+            {
+              "text": "Tell me what is not working ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=Help%20me%20scope%20my%20BRAYROAI%20website&body=Hi%20Yash%2C%0A%0AThe%20main%20thing%20I%20want%20to%20improve%20is%3A%20People%20do%20not%20get%20it%20fast%20enough.%0A%0AMy%20business%20%2F%20brand%3A%0AWhat%20visitors%20currently%20find%20difficult%3A%0AThe%20action%20I%20want%20people%20to%20take%3A%0AApproximate%20budget%20and%20target%20date%3A%0A%0ABest%20way%20to%20reach%20me%3A"
+            },
+            {
+              "text": "Ask on WhatsApp ↗",
+              "href": "https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI."
+            },
+            {
+              "text": "Prefer email? Ask about the terms ↗",
+              "href": "mailto:yashganesh.work@gmail.com?subject=BRAYROAI%20terms%20question"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

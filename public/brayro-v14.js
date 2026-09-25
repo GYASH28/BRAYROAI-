@@ -16,6 +16,9 @@
     build(){
       this.section.className='scene brayro-rates';
       this.section.dataset.v14Rates='';
+      const market=window.BRAYRO_MARKET;
+      const price=id=>(market?.price(id)||({"monthly-starter":"₹2,599","monthly-growth":"₹3,999","monthly-studio":"₹5,999+","launch-website":"₹9,999","business-experience":"₹17,999","premium-experience":"₹25K–₹35K+","ai-workflow-audit":"₹9,999","company-second-brain":"₹29,999+"}[id])).replace(/\/(?:month|mo)$/,'');
+      const link=(target,hash='')=>market?.link(target,hash)||target+hash;
       this.section.innerHTML=`
         <div class="scene-shell">
           <header class="brayro-rates__head">
@@ -24,31 +27,31 @@
             <p>The detailed pricing page stays detailed. Here, you only need the three decisions that matter.</p>
           </header>
           <div class="brayro-rates__list">
-            <a class="brayro-rate is-active" data-v14-rate="monthly" href="/plans#monthly">
+            <a class="brayro-rate is-active" data-v14-rate="monthly" href="${link('/plans','#monthly')}">
               <span class="brayro-rate__index">01 / MONTHLY</span>
               <div class="brayro-rate__name"><small>KEEP IT MOVING</small><h3>Website partnership</h3></div>
-              <div class="brayro-rate__price"><small>FROM</small><strong>₹2,599</strong><i>/mo</i></div>
+              <div class="brayro-rate__price"><small>FROM</small><strong>${price('monthly-starter')}</strong><i>/mo</i></div>
               <p>Ongoing updates, refinement and growth.</p>
-              <span class="brayro-rate__levels">₹2,599 · ₹3,999 · ₹5,999+</span><b>VIEW MONTHLY ↗</b>
+              <span class="brayro-rate__levels">${price('monthly-starter')} · ${price('monthly-growth')} · ${price('monthly-studio')}</span><b>VIEW MONTHLY ↗</b>
             </a>
-            <a class="brayro-rate" data-v14-rate="build" href="/plans#builds">
+            <a class="brayro-rate" data-v14-rate="build" href="${link('/plans','#builds')}">
               <span class="brayro-rate__index">02 / ONE-TIME</span>
               <div class="brayro-rate__name"><small>MAKE THE WHOLE THING</small><h3>Complete website build</h3></div>
-              <div class="brayro-rate__price"><small>FROM</small><strong>₹9,999</strong></div>
+              <div class="brayro-rate__price"><small>FROM</small><strong>${price('launch-website')}</strong></div>
               <p>Direction, interface, development and launch.</p>
-              <span class="brayro-rate__levels">₹9,999 · ₹17,999 · ₹25K–₹35K+</span><b>VIEW BUILDS ↗</b>
+              <span class="brayro-rate__levels">${price('launch-website')} · ${price('business-experience')} · ${price('premium-experience')}</span><b>VIEW BUILDS ↗</b>
             </a>
-            <a class="brayro-rate" data-v14-rate="ai" href="/plans#ai-systems">
+            <a class="brayro-rate" data-v14-rate="ai" href="${link('/plans','#ai-systems')}">
               <span class="brayro-rate__index">03 / PRACTICAL AI</span>
               <div class="brayro-rate__name"><small>SOLVE ONE REAL PROBLEM</small><h3>AI systems</h3></div>
-              <div class="brayro-rate__price"><small>FROM</small><strong>₹9,999</strong></div>
+              <div class="brayro-rate__price"><small>FROM</small><strong>${price('ai-workflow-audit')}</strong></div>
               <p>Audit first. Build only what proves useful.</p>
-              <span class="brayro-rate__levels">₹9,999 audit · ₹29,999+ build</span><b>VIEW AI ↗</b>
+              <span class="brayro-rate__levels">${price('ai-workflow-audit')} audit · ${price('company-second-brain')}+ build</span><b>VIEW AI ↗</b>
             </a>
           </div>
           <footer class="brayro-rates__foot">
             <p>Domains, hosting, API usage and paid third-party services remain separate unless included in writing.</p>
-            <a href="/plans" data-cursor-label="PRICING ↗">Open the full pricing page <span>↗</span></a>
+            <a href="${link('/plans')}" data-cursor-label="PRICING ↗">Open the full pricing page <span>↗</span></a>
           </footer>
         </div>`;
     }

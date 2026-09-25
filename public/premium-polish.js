@@ -24,7 +24,7 @@
   });
   buckets.forEach(items=>items.forEach((item,index)=>item.style.setProperty('--reveal-delay',`${Math.min(index*72,216)}ms`)));
 
-  let lastY=scrollY,frame=0;
+  let lastY=0,frame=0;
   const paint=()=>{
     frame=0;
     const y=scrollY,delta=y-lastY;
@@ -36,7 +36,7 @@
     }
   };
   addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(paint)},{passive:true});
-  paint();
+  addEventListener('pageshow',event=>{if(event.persisted)paint()},{passive:true});
 
   document.querySelectorAll('.build-ribbon__item,.build-card,.care-grid article,.compare-table>div').forEach((element,index)=>element.style.setProperty('--polish-item',String(index)));
 })();

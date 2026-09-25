@@ -17,7 +17,7 @@ export const PAGE_INFO=Object.freeze({
 });
 
 export function getPageKey(pathname=location.pathname){
-  const path=pathname.replace(/\/$/,'')||'/';
+  const path=(pathname.replace(/^\/(?:ae\/ar|ae|au)(?=\/|$)/,'')||'/').replace(/\/$/,'')||'/';
   if(path==='/'||path.endsWith('/index.html'))return 'home';
   if(path==='/plans'||path.endsWith('/plans.html'))return 'plans';
   if(path==='/clients')return 'clients';
@@ -31,7 +31,7 @@ export function getPageKey(pathname=location.pathname){
 
 export class RaeSession{
   constructor(){
-    this.key='rae:v2:session';
+    this.key=`rae:v2:session:${typeof window==='undefined'?'in':window.BRAYRO_MARKET?.id||'in'}`;
     this.state=this.read()||{messages:[],summary:'',profile:{},recentAction:'',createdAt:Date.now()};
   }
   read(){try{return JSON.parse(sessionStorage.getItem(this.key)||'null')}catch{return null}}
@@ -97,7 +97,7 @@ export class RaePageContext{
     [...new Set(nodes)].forEach(node=>this.observer.observe(node));
   }
   payload(recentAction=''){
-    return{pathname:location.pathname,section:this.section,pageTitle:document.title.slice(0,120),pageKey:this.pageKey,recentRaeAction:recentAction||''};
+    return{pathname:location.pathname,section:this.section,pageTitle:document.title.slice(0,120),pageKey:this.pageKey,market:window.BRAYRO_MARKET?.id||'in',language:document.documentElement.lang,recentRaeAction:recentAction||''};
   }
   dispose(){this.observer?.disconnect()}
 }

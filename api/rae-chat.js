@@ -1,4 +1,6 @@
 import {RAE_KNOWLEDGE,RAE_ALLOWED_ACTIONS} from './_rae-knowledge.js';
+import {splitMarketPath} from '../data/markets.js';
+import {priceFor} from '../data/pricing.js';
 
 const windows=new Map();
 const WINDOW_MS=60_000;
@@ -28,7 +30,8 @@ function parseBody(req){
   return body&&typeof body==='object'&&!Array.isArray(body)?body:null;
 }
 function safeContext(input={}){
-  return{pageKey:clean(input.pageKey).slice(0,30),pathname:clean(input.pathname).slice(0,120),section:clean(input.section).slice(0,100),pageTitle:clean(input.pageTitle).slice(0,140),recentRaeAction:clean(input.recentRaeAction).slice(0,120)};
+  const pathname=clean(input.pathname).slice(0,120),market=splitMarketPath(pathname).market;
+  return{pageKey:clean(input.pageKey).slice(0,30),pathname,market,language:market==='ae-ar'?'ar-AE':market==='au'?'en-AU':market==='ae'?'en-AE':'en-IN',section:clean(input.section).slice(0,100),pageTitle:clean(input.pageTitle).slice(0,140),recentRaeAction:clean(input.recentRaeAction).slice(0,120)};
 }
 function safeSession(input={}){
   const profile=input?.profile&&typeof input.profile==='object'?input.profile:{};
@@ -80,8 +83,13 @@ SITE ACTIONS
 
 Keep Rae feeling like a clever friend who lives inside BRAYROAI, not a generic chatbot with a mascot beside it.`;
 
+function localizedKnowledge(market){
+  const price=entry=>({...entry,price:(/\bfrom\b/i.test(entry.price)?'from ':'')+priceFor(entry.id,market)});
+  return{...RAE_KNOWLEDGE,websitePlans:RAE_KNOWLEDGE.websitePlans.map(price),aiOffers:RAE_KNOWLEDGE.aiOffers.map(price),market:{id:market,currency:market==='au'?'AUD':market.startsWith('ae')?'AED':'INR',scope:'BRAYROAI is based in Pune, India and serves the selected market remotely. Applicable taxes and third-party costs are separate unless written into the proposal.'}};
+}
 function systemPrompt(context,session){
-  return `${BEHAVIOR}\n\nPROMPT VERSION: ${PROMPT_VERSION}\n\nVERIFIED BRAYROAI KNOWLEDGE (source of truth):\n${JSON.stringify(RAE_KNOWLEDGE)}\n\nALLOWLISTED SITE ACTION CAPABILITIES (application-owned; do not claim execution):\n${JSON.stringify(RAE_ALLOWED_ACTIONS)}\n\nCURRENT SAFE PAGE CONTEXT:\n${JSON.stringify(context)}\n\nKNOWN SESSION CONTEXT (visitor-provided, may be incomplete):\n${JSON.stringify(session)}`;
+  const languageRule=context.market==='ae-ar'?'The visitor is on the UAE Arabic experience. Reply in natural Arabic by default. Keep BRAYROAI, Rae and product names consistent. Use only the AED prices in this market catalog.':'Use only the prices for the explicit URL market in this catalog; do not convert currencies or quote another market unless asked.';
+  return `${BEHAVIOR}\n\nMARKET AND LANGUAGE RULE: ${languageRule}\n\nPROMPT VERSION: ${PROMPT_VERSION}\n\nVERIFIED BRAYROAI KNOWLEDGE (source of truth):\n${JSON.stringify(localizedKnowledge(context.market))}\n\nALLOWLISTED SITE ACTION CAPABILITIES (application-owned; do not claim execution):\n${JSON.stringify(RAE_ALLOWED_ACTIONS)}\n\nCURRENT SAFE PAGE CONTEXT:\n${JSON.stringify(context)}\n\nKNOWN SESSION CONTEXT (visitor-provided, may be incomplete):\n${JSON.stringify(session)}`;
 }
 
 function providerCandidates(){
@@ -104,14 +112,14 @@ function providerCandidates(){
 }
 
 const planCard=plan=>plan?{type:'plan',eyebrow:'CURRENT VERIFIED PLAN',title:plan.name,copy:plan.summary||plan.kind||'',price:plan.price,action:{name:plan.id==='ai-workflow-audit'?'navigateToRoute':plan.id==='company-second-brain'?'navigateToRoute':'showPlan',args:plan.id==='ai-workflow-audit'?{route:'/ai-workflow-audit'}:plan.id==='company-second-brain'?{route:'/company-second-brain'}:{planId:plan.id},label:'View this option'}}:null;
-function matchedPlan(lower){
-  const all=[...RAE_KNOWLEDGE.websitePlans,...RAE_KNOWLEDGE.aiOffers];
-  if(/workflow audit|ai audit/.test(lower))return all.find(plan=>plan.id==='ai-workflow-audit');
+function matchedPlan(lower,market){
+  const knowledge=localizedKnowledge(market),all=[...knowledge.websitePlans,...knowledge.aiOffers];
+  if(/workflow audit|ai audit|تدقيق سير العمل|تدقيق الذكاء/.test(lower))return all.find(plan=>plan.id==='ai-workflow-audit');
   if(/second brain|company brain/.test(lower))return all.find(plan=>plan.id==='company-second-brain');
   if(/2[,\s]?599|starter partnership|cheapest.*monthly/.test(lower))return all.find(plan=>plan.id==='monthly-starter');
   if(/3[,\s]?999|growth partnership/.test(lower))return all.find(plan=>plan.id==='monthly-growth');
   if(/5[,\s]?999|studio partnership/.test(lower))return all.find(plan=>plan.id==='monthly-studio');
-  if(/17[,\s]?999|business experience/.test(lower))return all.find(plan=>plan.id==='business-experience');
+  if(/17[,\s]?999|business experience|خطة الأعمال|تجربة الأعمال|موقع الأعمال/.test(lower))return all.find(plan=>plan.id==='business-experience');
   if(/25\s?k|35\s?k|premium experience/.test(lower))return all.find(plan=>plan.id==='premium-experience');
   if(/9[,\s]?999|launch website/.test(lower)&&!/audit/.test(lower))return all.find(plan=>plan.id==='launch-website');
   return null;
@@ -130,12 +138,12 @@ function socialEmotion(lower,fallback='neutral'){
   return fallback;
 }
 function buildMeta(message,context,session){
-  const lower=message.toLowerCase(),quick=[],actions=[];let card=null,emotion='neutral';const exactPlan=matchedPlan(lower);
+  const lower=message.toLowerCase(),quick=[],actions=[];let card=null,emotion='neutral';const exactPlan=matchedPlan(lower,context.market);
   if(exactPlan){card=planCard(exactPlan);quick.push('What does it include?','Is there a smaller option?','Show relevant work');emotion='positive';}
   else if(/fakhri|case stud|client work|portfolio/.test(lower)){
     card={type:'case',eyebrow:'VERIFIED CLIENT WORK',title:'FakhriMart',copy:RAE_KNOWLEDGE.verifiedWork[0].summary,action:{name:'openProject',args:{name:'fakhrimart'},label:'View case study'}};quick.push('Can you build something similar?','Show me the process');emotion='positive';
-  }else if(/price|pricing|plan|budget|cost|package/.test(lower)){
-    actions.push({name:'navigateToRoute',args:{route:'/plans'},label:'View plans'});quick.push('Which plan fits me?','What does the ₹9,999 build include?','Audit or Second Brain?');
+  }else if(/price|pricing|plan|budget|cost|package|سعر|تكلفة|خطة|كم/.test(lower)){
+    actions.push({name:'navigateToRoute',args:{route:'/plans'},label:'View plans'});quick.push('Which plan fits me?',`What does the ${priceFor('launch-website',context.market)} build include?`,'Audit or Second Brain?');
   }else if(/start a project|hire|work with|project idea|need a website|build me|redesign my/.test(lower)){
     const profile=session.profile||{};const brief=[`Project: ${clean(profile.goal||message).slice(0,260)}`,profile.business?`Business: ${profile.business}`:'',profile.timeline?`Timeline: ${profile.timeline}`:'',profile.budget?`Budget: ${profile.budget}`:''].filter(Boolean).join('\n');
     card={type:'project',eyebrow:'PROJECT HANDOFF',title:'A useful starting brief',copy:'Edit this before you continue. Rae will never auto-open WhatsApp.',brief};quick.push('Which plan sounds closest?','Show relevant work');emotion='curious';
@@ -144,6 +152,7 @@ function buildMeta(message,context,session){
   }
   if(!quick.length)quick.push('Show relevant work','Compare plans','What should I do next?');
   if(context.pageKey==='case'&&!quick.includes('Can you build something similar?'))quick.unshift('Can you build something similar?');
+  if(context.market==='ae-ar')quick.splice(0,quick.length,...['ما الخطة المناسبة لي؟','اعرض أعمال العملاء','كيف أبدأ مشروعاً؟']);
   emotion=socialEmotion(lower,emotion);
   return{quickReplies:[...new Set(quick)].slice(0,4),actions:actions.slice(0,3),card,emotion};
 }

@@ -39,19 +39,27 @@
       this.root = document.querySelector('[data-process-lab]');
       if (!this.root) return;
       this.tabs = [...this.root.querySelectorAll('[data-process-tab]')];
+      this.tablist = this.root.querySelector('[role="tablist"]');
       this.stage = this.root.querySelector('[data-process-stage]');
       this.title = this.root.querySelector('[data-process-title]');
       this.body = this.root.querySelector('[data-process-body]');
       this.label = this.root.querySelector('[data-process-label]');
       this.outputs = this.root.querySelector('[data-process-outputs]');
       this.items = JSON.parse(this.root.dataset.processItems || '[]');
+      this.stage.id ||= 'audit-process-stage';
+      this.stage.setAttribute('role','tabpanel');
+      this.syncOrientation=()=>this.tablist?.setAttribute('aria-orientation',innerWidth<=900?'horizontal':'vertical');
+      this.syncOrientation();
+      addEventListener('resize',this.syncOrientation,{passive:true});
       this.tabs.forEach((tab, index) => {
+        tab.id ||= `audit-process-tab-${index + 1}`;
+        tab.setAttribute('aria-controls',this.stage.id);
         tab.addEventListener('click', () => this.set(index));
         tab.addEventListener('keydown', event => {
-          if (!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(event.key)) return;
+          if (!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
           event.preventDefault();
           const delta = ['ArrowRight','ArrowDown'].includes(event.key) ? 1 : -1;
-          const next = (index + delta + this.tabs.length) % this.tabs.length;
+          const next = event.key==='Home'?0:event.key==='End'?this.tabs.length-1:(index + delta + this.tabs.length) % this.tabs.length;
           this.tabs[next].focus();
           this.set(next);
         });
@@ -61,7 +69,14 @@
     set(index, animate = true) {
       const item = this.items[index];
       if (!item) return;
-      this.tabs.forEach((tab, i) => tab.setAttribute('aria-selected', String(i === index)));
+      this.tabs.forEach((tab, i) => {
+        const active=i===index;
+        tab.setAttribute('aria-selected',String(active));
+        tab.tabIndex=active?0:-1;
+      });
+      const activeTab=this.tabs[index];
+      this.stage.setAttribute('aria-labelledby',activeTab.id);
+      if(animate&&innerWidth<=900)activeTab.scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest',inline:'center'});
       const apply = () => {
         this.stage.dataset.stageNumber = String(index + 1).padStart(2,'0');
         this.label.textContent = item.label;
@@ -82,7 +97,8 @@
       if (!this.root) return;
       this.nodes = [...this.root.querySelectorAll('[data-arch-node]')];
       this.status = this.root.querySelector('[data-arch-status]');
-      this.copy = {
+      this.status?.setAttribute('aria-live','polite');
+      this.copy = this.root.dataset.archCopy ? JSON.parse(this.root.dataset.archCopy) : {
         docs:'Approved PDFs, SOPs, policies and internal documents become searchable knowledge.',
         drive:'Selected Drive folders can be connected as expanded scope while respecting the agreed access model.',
         crm:'CRM records can be integrated when the use case needs account or pipeline context.',
@@ -91,14 +107,18 @@
       };
       this.nodes.forEach(node => {
         const activate = () => this.set(node.dataset.archNode);
-        node.addEventListener('click', activate);
+        node.addEventListener('click', () => { this.pinned=node.dataset.archNode;activate(); });
         node.addEventListener('focus', activate);
-        node.addEventListener('pointerenter', activate);
+        node.addEventListener('pointerenter', () => { if (!this.pinned) activate(); });
       });
       if (this.nodes[0]) this.set(this.nodes[0].dataset.archNode);
     }
     set(key) {
-      this.nodes.forEach(node => node.classList.toggle('is-active', node.dataset.archNode === key));
+      this.nodes.forEach(node => {
+        const active=node.dataset.archNode===key;
+        node.classList.toggle('is-active',active);
+        node.setAttribute('aria-pressed',String(active));
+      });
       if (this.status) this.status.textContent = this.copy[key] || 'Approved company knowledge becomes retrievable context for grounded answers.';
     }
   }

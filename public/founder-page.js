@@ -2,6 +2,7 @@ document.body.classList.add('js');
 
 const founderReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const founderFinePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+const founderArabic = window.BRAYRO_MARKET?.id === 'ae-ar';
 const founderClamp = (min, value, max) => Math.min(max, Math.max(min, value));
 
 class FounderOpening {
@@ -66,7 +67,9 @@ class PortraitReveal {
     this.stage.dataset.scVerifyState = locked ? 'portrait:colour' : 'portrait:mono';
     if (!this.toggle) return;
     this.toggle.setAttribute('aria-pressed', String(locked));
-    this.toggle.querySelector('span').textContent = locked ? 'Return to monochrome' : 'Reveal the original grade';
+    this.toggle.querySelector('span').textContent = founderArabic
+      ? (locked ? 'العودة إلى الأبيض والأسود' : 'أظهر ألوان الصورة الأصلية')
+      : (locked ? 'Return to monochrome' : 'Reveal the original grade');
   }
 }
 
@@ -77,7 +80,11 @@ class PrincipleInstrument {
     this.index = document.querySelector('[data-principle-index]');
     this.title = document.querySelector('[data-principle-title]');
     this.copy = document.querySelector('[data-principle-copy]');
-    this.states = {
+    this.states = founderArabic ? {
+      clarity: ['٠١ / الوضوح', 'اجعل القرار واضحاً قبل أن تجعله جميلاً.', 'ينبغي أن يعرف الزائر ما المهم ولماذا وما خطوته التالية. يقوي التصميم هذا البناء ولا يحل محله.'],
+      craft: ['٠٢ / الحرفية', 'لا يكتمل التصميم حتى ينجح داخل المتصفح.', 'ينبغي أن تعمل الحركة والكتابة والتفاعلات على الشاشات المختلفة ومع لوحة المفاتيح وفي حدود أداء حقيقية. التنفيذ جزء من التوجيه.'],
+      use: ['٠٣ / الفائدة', 'ينبغي أن تزيل التقنية عائقاً حقيقياً.', 'يستحق الذكاء الاصطناعي مكانه عندما يساعد شخصاً على القرار أو التنظيم أو الاستجابة بوضوح. إذا كان مجرد استعراض فلا حاجة إليه.']
+    } : {
       clarity: ['01 / CLARITY', 'Make the decision clear before making it beautiful.', 'A visitor should know what matters, why it matters and what to do next. Style strengthens that structure; it never replaces it.'],
       craft: ['02 / CRAFT', 'The design is not finished until the browser agrees.', 'Motion, typography and interaction must survive responsive layouts, keyboard input and real performance budgets. Implementation is part of the direction.'],
       use: ['03 / USE', 'Technology should remove friction, not perform intelligence.', 'AI earns its place when it helps someone decide, organise or respond more clearly. If it adds theatre without utility, it does not ship.']
@@ -189,10 +196,11 @@ new FounderSurfaceLight();
 new FounderTimeline();
 const founderProjectCta=document.querySelector('[data-founder-project-cta]');
 if(founderProjectCta){
-  const brief=['Hi Yash,','','I would like to discuss a project with BRAYROAI.','','Business / brand:','What needs to improve:','What should the website or product help people do:','Approximate budget and target date:','','Best way to reach me:'].join('\\n');
-  const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent('Start a project with Yash at BRAYROAI')}&body=${encodeURIComponent(brief)}`;
-  founderProjectCta.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I would like to discuss a project with BRAYROAI.\n\n${brief}`)}`;founderProjectCta.target='_blank';founderProjectCta.rel='noreferrer';founderProjectCta.innerHTML='Chat on WhatsApp <span>↗</span>';
-  const email=document.createElement('a');email.className='founder-email-fallback';email.href=emailHref;email.textContent='Prefer email? Send the project brief ↗';founderProjectCta.after(email);
+  const market=window.BRAYRO_MARKET;
+  const brief=(founderArabic?['مرحباً ياش،','','أود مناقشة مشروع مع BRAYROAI.','','الشركة أو العلامة:','ما الذي يحتاج إلى تحسين:','ما الذي ينبغي أن يساعد الموقع أو المنتج الناس على إنجازه:','الميزانية والموعد التقريبي:','','طريقة التواصل المناسبة:']:['Hi Yash,','','I would like to discuss a project with BRAYROAI.','','Business / brand:','What needs to improve:','What should the website or product help people do:','Approximate budget and target date:','','Best way to reach me:']).join('\n');
+  const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`BRAYROAI / ${market?.id||'India'} / founder project`)}&body=${encodeURIComponent(`Market: ${market?.id||'India'} / ${market?.currency||'INR'}.\n${brief}`)}`;
+  founderProjectCta.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Market: ${market?.id||'India'} / ${market?.currency||'INR'}.\n${brief}`)}`;founderProjectCta.target='_blank';founderProjectCta.rel='noreferrer';founderProjectCta.innerHTML=founderArabic?'تواصل عبر واتساب <span>↗</span>':'Chat on WhatsApp <span>↗</span>';
+  const email=document.createElement('a');email.className='founder-email-fallback';email.href=emailHref;email.textContent=founderArabic?'تفضل البريد؟ أرسل موجز المشروع ↗':'Prefer email? Send the project brief ↗';founderProjectCta.after(email);
 }
 let founderScrollCraftMounted = false;
 const founderMountTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];

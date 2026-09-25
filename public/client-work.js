@@ -1,5 +1,6 @@
 (() => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clientArabic = window.BRAYRO_MARKET?.id === 'ae-ar';
 
   const CLIENTS = [
     {
@@ -7,16 +8,16 @@
       name: 'FakhriMart',
       year: '2026',
       status: 'live',
-      statusLabel: 'Live',
-      sector: 'Yarn & craft supply',
-      location: 'Pune · India',
-      summary: 'A verified catalogue, discovery and WhatsApp-enquiry system for a yarn and craft supplier serving retail, reseller and bulk buyers.',
-      services: ['Strategy', 'UX/UI', 'React', 'Frontend', 'Catalogue architecture', 'SEO', 'QA'],
+      statusLabel: clientArabic ? 'منشور' : 'Live',
+      sector: clientArabic ? 'توريد الخيوط والحرف' : 'Yarn & craft supply',
+      location: clientArabic ? 'بونه · الهند' : 'Pune · India',
+      summary: clientArabic ? 'كتالوج موثق ومسارات اكتشاف واستفسار عبر واتساب لمورّد خيوط ومواد حرفية يخدم المشترين الأفراد والتجار وطلبات الجملة.' : 'A verified catalogue, discovery and WhatsApp-enquiry system for a yarn and craft supplier serving retail, reseller and bulk buyers.',
+      services: clientArabic ? ['الاستراتيجية', 'تجربة المستخدم', 'React', 'الواجهة', 'هيكلة الكتالوج', 'تحسين البحث', 'اختبار الجودة'] : ['Strategy', 'UX/UI', 'React', 'Frontend', 'Catalogue architecture', 'SEO', 'QA'],
       caseStudy: '/clients/fakhrimart',
       live: 'https://fakhriyarns.vercel.app/',
-      previewDesktop: '/assets/fakhrimart-case-desktop.png',
-      previewMobile: '/assets/fakhrimart-case-mobile.png',
-      proof: 'Verified client work'
+      previewDesktop: '/assets/fakhrimart-case-desktop.webp',
+      previewMobile: '/assets/fakhrimart-case-mobile.webp',
+      proof: clientArabic ? 'عمل عميل موثق' : 'Verified client work'
     }
   ];
 
@@ -38,44 +39,56 @@
       if (!this.grid) return;
       this.filters = qsa('[data-client-filter]');
       this.count = qs('[data-client-count]');
+      this.search = qs('[data-client-search]');
+      this.empty = qs('[data-client-empty]');
+      this.status='all';
       this.render();
       this.filters.forEach(button => button.addEventListener('click', () => this.filter(button.dataset.clientFilter)));
+      this.search?.addEventListener('input',()=>this.apply());
+      qs('[data-client-reset]')?.addEventListener('click',()=>{this.search.value='';this.filter('all');this.search.focus()});
       this.filter('all');
     }
 
     render() {
       this.grid.innerHTML = CLIENTS.map((client, index) => `
         <article class="client-card" data-client-card data-status="${client.status}" data-sector="${client.sector.toLowerCase()}" style="--client-index:${index}">
-          <a class="client-card__media" href="${client.caseStudy}" aria-label="Read the ${client.name} case study">
-            <img src="${client.previewDesktop}" width="1440" height="900" loading="${index ? 'lazy' : 'eager'}" alt="${client.name} website shown on desktop.">
+          <a class="client-card__media" href="${window.BRAYRO_MARKET?.link(client.caseStudy)||client.caseStudy}" aria-label="${clientArabic?'اقرأ دراسة حالة':'Read the'} ${client.name}">
+            <img src="${client.previewDesktop}" width="1440" height="900" loading="${index ? 'lazy' : 'eager'}" alt="${clientArabic?`واجهة ${client.name} على الحاسوب`:`${client.name} website shown on desktop.`}">
             <span class="client-card__badge">${client.proof}</span>
-            <span class="client-card__visit">Open case study ↗</span>
+            <span class="client-card__visit">${clientArabic?'افتح دراسة الحالة':'Open case study'} ↗</span>
           </a>
           <div class="client-card__body">
             <div class="client-card__meta"><span>${String(index + 1).padStart(2, '0')}</span><span>${client.year}</span><span class="client-card__status">${client.statusLabel}</span></div>
-            <h2><a href="${client.caseStudy}">${client.name}</a></h2>
+            <h2><a href="${window.BRAYRO_MARKET?.link(client.caseStudy)||client.caseStudy}">${client.name}</a></h2>
             <p>${client.summary}</p>
             <div class="client-card__details"><span>${client.sector}</span><span>${client.location}</span></div>
             <div class="client-card__services">${client.services.map(service => `<span>${service}</span>`).join('')}</div>
-            <div class="client-card__actions"><a href="${client.caseStudy}">Read the case study <span>↗</span></a><a href="${client.live}" target="_blank" rel="noreferrer">View live site <span>↗</span></a></div>
+            <div class="client-card__actions"><a href="${window.BRAYRO_MARKET?.link(client.caseStudy)||client.caseStudy}">${clientArabic?'اقرأ دراسة الحالة':'Read the case study'} <span>↗</span></a><a href="${client.live}" target="_blank" rel="noreferrer">${clientArabic?'شاهد الموقع المباشر':'View live site'} <span>↗</span></a></div>
           </div>
         </article>
       `).join('');
     }
 
     filter(status) {
+      this.status=status;
       this.filters.forEach(button => {
         const active = button.dataset.clientFilter === status;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-pressed', String(active));
       });
+      this.apply();
+    }
+
+    apply(){
+      const query=(this.search?.value||'').trim().toLocaleLowerCase();
       let visible = 0;
       qsa('[data-client-card]', this.grid).forEach(card => {
-        const show = status === 'all' || card.dataset.status === status;
+        const show = (this.status === 'all' || card.dataset.status === this.status) && (!query || card.textContent.toLocaleLowerCase().includes(query));
         card.hidden = !show;
         if (show) visible += 1;
       });
-      if (this.count) this.count.textContent = `${visible} ${visible === 1 ? 'project' : 'projects'}`;
+      if (this.count) this.count.textContent = clientArabic ? (visible===1?'مشروع واحد':`${visible} مشاريع`) : `${visible} ${visible === 1 ? 'project' : 'projects'}`;
+      if(this.empty)this.empty.hidden=visible>0;
     }
   }
 
@@ -138,7 +151,9 @@
       const io = new IntersectionObserver(entries => {
         const active = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (!active) return;
-        this.label.textContent = active.target.dataset.caseSection;
+        const state=active.target.dataset.caseSection;
+        const arabicStates={OVERVIEW:'نظرة عامة','THE BRIEF':'الموجز',CATALOGUE:'الكتالوج',DISCOVERY:'الاكتشاف','ENQUIRY FLOW':'مسار الاستفسار','RESPONSIVE UX':'تجربة متجاوبة',OUTCOME:'النتيجة'};
+        this.label.textContent = clientArabic ? arabicStates[state]||state : state;
       }, { rootMargin: '-25% 0px -55% 0px', threshold: [0, .15, .35, .65] });
       this.sections.forEach(section => io.observe(section));
     }

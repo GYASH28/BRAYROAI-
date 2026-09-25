@@ -99,10 +99,17 @@ class PlansBriefs {
         ? [...heading.childNodes].map((node)=>node.textContent.trim()).filter(Boolean).join(' ').replace(/\s+/g,' ').trim()
         : 'BRAYROAI plan';
       const monthly=card.dataset.planKey.startsWith('monthly');
-      const brief=[
+      const market=window.BRAYRO_MARKET;
+      const offerId=card.dataset.offerId;
+      const displayedPrice=market?.price(offerId)||card.querySelector('div > strong')?.textContent.trim()||'';
+      const marketName=market?.id==='au'?'Australia':market?.id?.startsWith('ae')?'UAE':'India';
+      const arabic=market?.id==='ae-ar';
+      const brief=arabic?[
+        'مرحباً ياش،','',`أهتم بخدمة ${plan} بسعر منشور ${displayedPrice}. السوق: الإمارات / AED.`,`النوع: ${monthly?'شراكة شهرية':'مشروع متكامل'}.`,'','اسم الشركة:','ما أحتاج إلى بنائه أو تحسينه:','الموقع الحالي إن وجد:','الميزانية والموعد المتوقع:','','طريقة التواصل:'
+      ].join('\n'):[
         'Hi Yash,',
         '',
-        `I am interested in the ${plan} (${monthly ? 'monthly partnership' : 'one-time build'}).`,
+        `I am interested in the ${plan} (${monthly ? 'monthly partnership' : 'one-time build'}) shown at ${displayedPrice}. Market: ${marketName}.`,
         '',
         'Business / brand:',
         'What needs to improve or be built:',
@@ -111,18 +118,20 @@ class PlansBriefs {
         '',
         'Best way to reach me:'
       ].join('\n');
-      const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`BRAYROAI ${plan}`)}&body=${encodeURIComponent(brief)}`;
-      cta.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I am interested in the ${plan}.\n\n${brief}`)}`;
+      const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`BRAYROAI / ${marketName} / ${plan} / ${displayedPrice}`)}&body=${encodeURIComponent(brief)}`;
+      cta.href=`https://wa.me/919175524637?text=${encodeURIComponent(brief)}`;
       cta.target='_blank';cta.rel='noreferrer';
-      cta.innerHTML=`Chat about ${plan} <span>↗</span>`;
-      if(!card.querySelector('.plan-email-fallback')){const email=document.createElement('a');email.className='plan-email-fallback';email.href=emailHref;email.textContent='Prefer email? Send this brief ↗';cta.after(email)}
+      cta.dataset.leadPlan=offerId;cta.dataset.leadChannel='whatsapp';
+      cta.innerHTML=arabic?`ناقش ${plan} عبر واتساب <span>↗</span>`:`Discuss ${plan} on WhatsApp <span>↗</span>`;
+      if(!card.querySelector('.plan-email-fallback')){const email=document.createElement('a');email.className='plan-email-fallback';email.href=emailHref;email.dataset.leadPlan=offerId;email.dataset.leadChannel='email';email.textContent=arabic?'تفضل البريد؟ أرسل هذا الموجز ↗':'Prefer email? Send this brief ↗';cta.after(email)}
     });
     const helper=document.querySelector('.plan-close__copy a');
     if(helper){
-      const brief=['Hi Yash,','','I am not sure which BRAYROAI plan fits yet.','','Business / brand:','What I need to improve or build:','Current website, if any:','Approximate budget and target date:','','Best way to reach me:'].join('\n');
-      const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent('Help me choose a BRAYROAI plan')}&body=${encodeURIComponent(brief)}`;
-      helper.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Hi Yash, I need help choosing a BRAYROAI plan.\n\n${brief}`)}`;helper.target='_blank';helper.rel='noreferrer';helper.innerHTML='Ask on WhatsApp <span>↗</span>';
-      if(!helper.parentElement.querySelector('.plan-email-fallback')){const email=document.createElement('a');email.className='plan-email-fallback';email.href=emailHref;email.textContent='Prefer email? Send the brief ↗';helper.after(email)}
+      const market=window.BRAYRO_MARKET;const arabic=market?.id==='ae-ar';const marketName=market?.id==='au'?'Australia':market?.id?.startsWith('ae')?'UAE':'India';
+      const brief=arabic?['مرحباً ياش،','',`أحتاج إلى المساعدة في اختيار خدمة من BRAYROAI. السوق: الإمارات / AED.`,'','اسم الشركة:','ما أريد بناءه أو تحسينه:','الموقع الحالي إن وجد:','الميزانية والوقت المتوقع:','','طريقة التواصل:'].join('\n'):['Hi Yash,','',`I am not sure which BRAYROAI plan fits yet. Market: ${marketName} / ${market?.currency||'INR'}.`,'','Business / brand:','What I need to improve or build:','Current website, if any:','Approximate budget and target date:','','Best way to reach me:'].join('\n');
+      const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`BRAYROAI / ${marketName} / help choosing a plan`)}&body=${encodeURIComponent(brief)}`;
+      helper.href=`https://wa.me/919175524637?text=${encodeURIComponent(brief)}`;helper.target='_blank';helper.rel='noreferrer';helper.innerHTML=arabic?'اسأل عبر واتساب <span>↗</span>':'Ask on WhatsApp <span>↗</span>';
+      if(!helper.parentElement.querySelector('.plan-email-fallback')){const email=document.createElement('a');email.className='plan-email-fallback';email.href=emailHref;email.textContent=arabic?'تفضل البريد؟ أرسل الموجز ↗':'Prefer email? Send the brief ↗';helper.after(email)}
     }
   }
 }
@@ -141,10 +150,37 @@ class AIServiceDetailLinks {
       const detail=document.createElement('a');
       detail.className='plan-email-fallback';
       detail.dataset.aiDetailLink='';
-      detail.href=links[index].href;
-      detail.textContent=links[index].label;
+      detail.href=window.BRAYRO_MARKET?.link(links[index].href)||links[index].href;
+      detail.textContent=window.BRAYRO_MARKET?.id==='ae-ar'?(index===0?'تعرف على خطوات التدقيق ↗':'تعرف على نظام ذاكرة الشركة ↗'):links[index].label;
       primary.after(detail);
     });
+  }
+}
+
+class PlansMobileComparison {
+  constructor(){
+    const tables=[...document.querySelectorAll('#compare .compare-table')];
+    if(!tables.length)return;
+    const arabic=window.BRAYRO_MARKET?.id==='ae-ar';
+    const families=arabic?['الشراكات الشهرية','بناء المواقع','أنظمة الذكاء الاصطناعي']:['Monthly partnerships','One-time builds','AI systems'];
+    tables.forEach((table,index)=>{
+      const rows=[...table.querySelectorAll('[role="row"]')];
+      if(rows.length<3)return;
+      const names=[...rows[0].querySelectorAll('[role="columnheader"]')].slice(1);
+      const prices=[...rows[1].querySelectorAll('[role="cell"]')];
+      const fits=[...rows[2].querySelectorAll('[role="cell"]')];
+      const group=document.createElement('section');group.className='compare-mobile';group.setAttribute('aria-label',families[index]);
+      const heading=document.createElement('h3');heading.textContent=families[index];group.append(heading);
+      names.forEach((name,i)=>{
+        const card=document.createElement('article');card.className='compare-mobile__card';
+        const title=document.createElement('h4');title.textContent=name.textContent.trim();
+        const price=document.createElement('strong');price.textContent=prices[i]?.textContent.trim()||'';
+        const best=document.createElement('p');best.textContent=`${arabic?'الأنسب لـ':'Best for'} · ${fits[i]?.textContent.trim()||''}`;
+        card.append(title,price,best);group.append(card);
+      });
+      table.after(group);
+    });
+    document.body.classList.add('compare-mobile-ready');
   }
 }
 
@@ -153,6 +189,7 @@ new PlansSurfaceLight();
 new PlansTimeline();
 new PlansBriefs();
 new AIServiceDetailLinks();
+new PlansMobileComparison();
 let plansScrollCraftMounted = false;
 const plansMountTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];
 const mountPlansScrollCraft = () => {

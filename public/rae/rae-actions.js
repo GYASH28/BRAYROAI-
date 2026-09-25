@@ -14,6 +14,7 @@ const validInternal=value=>ROUTES.has(value)?value:null;
 export function buildProjectBrief({goal='',business='',timeline='',budget='',suggestion=''}={}){
   return[
     'Hi Yash, I spoke with Rae on the BRAYROAI website.',
+    `Market: ${typeof window==='undefined'?'India':window.BRAYRO_MARKET?.id||'India'} / ${typeof window==='undefined'?'INR':window.BRAYRO_MARKET?.currency||'INR'}.`,
     '',
     business?`Business: ${clean(business).slice(0,120)}`:'',
     goal?`Project: ${clean(goal).slice(0,260)}`:'',
@@ -41,12 +42,12 @@ export class RaeActions{
       emitRae('rae:tool-success',{name,args});return result;
     }catch(error){emitRae('rae:tool-error',{name,error:String(error?.message||error)});throw error}
   }
-  navigateToRoute(route){const safe=validInternal(clean(route));if(!safe)throw new Error('Route is not allowlisted');location.assign(safe);return{ok:true,route:safe}}
+  navigateToRoute(route){const safe=validInternal(clean(route));if(!safe)throw new Error('Route is not allowlisted');const target=window.BRAYRO_MARKET?.link(safe)||safe;location.assign(target);return{ok:true,route:target}}
   scrollToSection(id){
     const safe=clean(id);if(!SECTIONS.has(safe))throw new Error('Section is not allowlisted');const selector=HIGHLIGHTS[safe];const node=document.querySelector(selector);if(!node)throw new Error('Section is not on this page');node.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});this.flash(node);return{ok:true,id:safe};
   }
   openProject(name){const route=PROJECTS[clean(name).toLowerCase()];if(!route)throw new Error('Project is not allowlisted');return this.navigateToRoute(route)}
-  showPlan(planId){const safe=clean(planId).toLowerCase();if(!PLAN_IDS.has(safe))throw new Error('Plan is not allowlisted');try{sessionStorage.setItem('rae:plan-highlight',safe)}catch{}if(location.pathname!=='/plans')return this.navigateToRoute('/plans');const node=document.querySelector(`[data-plan-id="${CSS.escape(safe)}"],#${CSS.escape(safe)}`);if(node){node.scrollIntoView({behavior:'smooth',block:'center'});this.flash(node)}return{ok:true,planId:safe}}
+  showPlan(planId){const safe=clean(planId).toLowerCase();if(!PLAN_IDS.has(safe))throw new Error('Plan is not allowlisted');try{sessionStorage.setItem('rae:plan-highlight',safe)}catch{}if((window.BRAYRO_MARKET?.route||location.pathname)!=='/plans')return this.navigateToRoute('/plans');const node=document.querySelector(`[data-plan-id="${CSS.escape(safe)}"],#${CSS.escape(safe)}`);if(node){node.scrollIntoView({behavior:'smooth',block:'center'});this.flash(node)}return{ok:true,planId:safe}}
   highlightElement(id){const safe=clean(id);if(!SECTIONS.has(safe))throw new Error('Highlight target is not allowlisted');const node=document.querySelector(HIGHLIGHTS[safe]);if(!node)throw new Error('Highlight target unavailable');this.flash(node);return{ok:true,id:safe}}
   flash(node){node.classList.remove('rae-guided-target');void node.offsetWidth;node.classList.add('rae-guided-target');setTimeout(()=>node.classList.remove('rae-guided-target'),1500)}
 }
@@ -56,6 +57,6 @@ export const safeActionFromPrompt=text=>{
   if(/^(show|open|take me to) (client|work|portfolio)/.test(value))return{name:'navigateToRoute',args:{route:'/clients'}};
   if(/^(show|open|take me to) (plans|pricing)/.test(value))return{name:'navigateToRoute',args:{route:'/plans'}};
   if(/^(open|show) fakhri/.test(value))return{name:'openProject',args:{name:'fakhrimart'}};
-  if(/^(contact|open contact|show contact)/.test(value)&&location.pathname==='/')return{name:'scrollToSection',args:{id:'contact'}};
+  if(/^(contact|open contact|show contact)/.test(value)&&(window.BRAYRO_MARKET?.route||location.pathname)==='/')return{name:'scrollToSection',args:{id:'contact'}};
   return null;
 };

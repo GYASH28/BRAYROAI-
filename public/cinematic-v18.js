@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   if(document.documentElement.dataset.v19CinematicMounted)return;
-  const path=location.pathname.replace(/\/$/,'')||'/';if(path!=='/'&&!path.endsWith('/index.html'))return;
+  const path=window.BRAYRO_MARKET?.route||location.pathname.replace(/\/$/,'')||'/';if(path!=='/'&&!path.endsWith('/index.html'))return;
   const root=document.documentElement,body=document.body;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const compact=matchMedia('(max-width:760px)').matches;
@@ -45,5 +45,7 @@
       this.velocity=lerp(this.velocity,0,.16);this.speed=lerp(this.speed,0,.12);const stillMoving=Math.abs(delta)>.01||Math.abs(this.velocity)>.08||this.speed>.012||unsettled>.0025;if(!reduced&&stillMoving)this.schedule();
     }
   }
-  new CinematicScrollDirector();
+  // Small screens use the native scroll timeline and scene transitions instead
+  // of measuring and rewriting every scene throughout a gesture.
+  if(!compact&&!reduced)new CinematicScrollDirector();
 })();

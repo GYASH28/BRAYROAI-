@@ -1,0 +1,14 @@
+# Experience baseline — 23 September 2026
+
+Captured with `node scripts/experience-audit.mjs before` against the production preview at `http://127.0.0.1:4174`. Evidence is in `artifacts/experience/before/`: a route and viewport JSON report plus desktop and mobile first-screen captures for all eight existing routes. The audit covers 360, 390, 768, 1024 and 1440 pixel widths, a landscape phone, and a tall desktop.
+
+## Findings and order of work
+
+1. **One site, eight navigation systems.** The homepage offers section links while inner pages show different partial route menus. A visitor cannot consistently jump among capabilities, clients, AI, plans, founder, terms, and contact. The plans page intercepts same-page links without updating the URL, so history and reload lose the location. Build a shared global navigation, retaining each chapter's local index underneath.
+2. **Visual rhythm needs a stronger point of view.** The recognizable founder hero works, but the four capability steps share one abstract orb, and several routes repeat large dark headings and similar panels. Give each capability its own visual composition and each route a purposeful chapter treatment. Preserve the dark, ivory and signal-orange identity and authentic project material.
+3. **Commercial choices need faster scanning.** Plans offers are detailed but the 390px hero is crowded, and comparison is buried deep down a long page. Put a decision guide and compact comparison early in the journey, then deep-link into the original offer details. Preserve the existing India prices and scope until the market-specific price books are introduced.
+4. **Rae should become a distinct character and useful guide.** The existing SVG robot is recognizable, but there is no source 3D character or model-driven expression system. Build Rae from the supplied brand sheet, lazy-load the stage, link expression states to the existing assistant, and preserve the fast accessible SVG path for unsupported devices.
+5. **Client proof needs restraint and structure.** The client archive and FakhriMart case study are valuable and remain. The archive currently has one verified client; filters that imply a large portfolio should be simplified, and screenshots should use compressed derivatives. Do not invent performance results or clients.
+6. **Performance is vulnerable to the accumulated visual passes.** The homepage still uses many source layers bundled as one CSS file; several scripts run on scroll. The mobile Lighthouse run has varied with host CPU load. Additional motion must be visibility-gated, reduced-motion aware and lazy loaded, with an explicit low-resource fallback.
+
+The baseline reported HTTP 200 on all eight routes, zero document overflow at all measured sizes, zero uncaught page errors, and no missing local hash targets. Those passing conditions are regression gates, not a substitute for visual and interaction review.

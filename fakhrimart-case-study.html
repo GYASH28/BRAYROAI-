@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="preload" href="/assets/fakhrimart-case-desktop.png" as="image" fetchpriority="high">
+  <link rel="preload" href="/assets/fakhrimart-case-desktop.webp" as="image" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="/client-work.css">
 </head>
 <body class="client-page case-page">
@@ -37,7 +37,7 @@
   <div class="case-reading" aria-hidden="true"><span data-case-state>THE BRIEF</span></div>
 
   <main id="case-main">
-    <section class="case-hero" data-case-section="OVERVIEW">
+    <section id="overview" class="case-hero" data-case-section="OVERVIEW">
       <div class="client-shell case-hero__header">
         <div data-client-reveal>
           <p class="client-kicker">VERIFIED CLIENT / 2026 / PUNE · INDIA</p>
@@ -55,12 +55,12 @@
         </div>
       </div>
       <div class="case-hero__media" data-client-surface>
-        <img src="/assets/fakhrimart-case-desktop.png" width="1440" height="900" fetchpriority="high" alt="FakhriMart catalogue website shown on a desktop layout.">
-        <div class="case-hero__phone"><img src="/assets/fakhrimart-case-mobile.png" width="520" height="1040" alt="FakhriMart website on a mobile layout."></div>
+        <img src="/assets/fakhrimart-case-desktop.webp" width="1440" height="900" fetchpriority="high" alt="FakhriMart catalogue website shown on a desktop layout.">
+        <div class="case-hero__phone"><img src="/assets/fakhrimart-case-mobile.webp" width="520" height="1040" alt="FakhriMart website on a mobile layout."></div>
       </div>
     </section>
 
-    <section class="case-intro" data-case-section="THE BRIEF">
+    <section id="approach" class="case-intro" data-case-section="THE BRIEF">
       <div class="client-shell case-intro__grid">
         <div data-client-reveal><p class="client-kicker" style="color:#70747b">01 / THE BUSINESS REALITY</p><h2>Not a fake ecommerce store.</h2></div>
         <div class="case-intro__copy" data-client-reveal>
@@ -72,7 +72,7 @@
       </div>
     </section>
 
-    <section class="case-section" data-case-section="CATALOGUE">
+    <section id="experience" class="case-section" data-case-section="CATALOGUE">
       <div class="client-shell">
         <header class="case-section__head" data-client-reveal>
           <div><p class="client-kicker">02 / CATALOGUE ARCHITECTURE</p><h2>Turn variety into a path.</h2></div>
@@ -123,8 +123,8 @@
           <div><p>The interface was built for both desktop comparison and phone-native enquiry behaviour. Mobile is not a compressed desktop view: navigation, product actions, discovery density and image behaviour are tuned around a smaller screen and touch input.</p></div>
         </header>
         <div class="case-gallery" data-client-reveal>
-          <figure><img src="/assets/fakhrimart-case-desktop.png" width="1440" height="900" loading="lazy" alt="Desktop view of the FakhriMart website."><figcaption>Desktop / catalogue and discovery context</figcaption></figure>
-          <figure><img src="/assets/fakhrimart-case-mobile.png" width="520" height="1040" loading="lazy" alt="Mobile view of the FakhriMart website."><figcaption>Mobile / compact browse and enquiry flow</figcaption></figure>
+          <figure><img src="/assets/fakhrimart-case-desktop.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Desktop view of the FakhriMart website."><figcaption>Desktop / catalogue and discovery context</figcaption></figure>
+          <figure><img src="/assets/fakhrimart-case-mobile.webp" width="520" height="1040" loading="lazy" decoding="async" alt="Mobile view of the FakhriMart website."><figcaption>Mobile / compact browse and enquiry flow</figcaption></figure>
         </div>
       </div>
     </section>
@@ -146,7 +146,7 @@
       </div>
     </section>
 
-    <section class="case-outcome" data-case-section="OUTCOME">
+    <section id="outcome" class="case-outcome" data-case-section="OUTCOME">
       <div class="client-shell case-outcome__grid">
         <div data-client-reveal><p class="client-kicker">07 / OUTCOME</p><h2>A live catalogue system.</h2></div>
         <div class="case-outcome__copy" data-client-reveal>

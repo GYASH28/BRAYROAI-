@@ -1,6 +1,6 @@
 /* BRAYROAI / Rae V5 — conversation-first refinement. Loaded only when Rae wakes. */
 body.rae-dialog-open{overflow-x:clip}
-.rae-root[data-rae-polish="v5"].is-open .rae-panel{height:min(42.5rem,79dvh);border-color:rgba(255,255,255,.17);box-shadow:0 32px 92px rgba(0,0,0,.62),0 0 0 1px rgba(255,90,31,.055) inset}
+.rae-root[data-rae-polish="v5"].is-open .rae-panel{height:min(46rem,84dvh);border-color:rgba(255,255,255,.17);box-shadow:0 32px 92px rgba(0,0,0,.62),0 0 0 1px rgba(255,90,31,.055) inset}
 .rae-root[data-rae-polish="v5"] .rae-panel__status{display:inline-flex;align-items:center;gap:.36rem;padding:.38rem .56rem}
 .rae-root[data-rae-polish="v5"] .rae-panel__status:before{content:"";width:.34rem;height:.34rem;border-radius:50%;background:#8e938e;box-shadow:0 0 0 .16rem rgba(255,255,255,.035)}
 .rae-root[data-rae-polish="v5"][data-rae-state="thinking"] .rae-panel__status:before,.rae-root[data-rae-polish="v5"][data-rae-state="listening"] .rae-panel__status:before{background:#ff6a20;animation:raeV5StatusPulse 1.15s ease-in-out infinite}
@@ -23,3 +23,26 @@ body.rae-dialog-open{overflow-x:clip}
 @keyframes raeV5StatusPulse{0%,100%{opacity:.45;scale:.88}50%{opacity:1;scale:1.08}}@keyframes raeV5StageThink{0%,100%{opacity:.45;transform:translateX(-50%) scale(.92,.38)}50%{opacity:1;transform:translateX(-50%) scale(1.08,.48)}}
 @media(max-width:700px){.rae-root[data-rae-polish="v5"],.rae-root[data-rae-polish="v5"] .rae-panel,.rae-root[data-rae-polish="v5"] .rae-feed,.rae-root[data-rae-polish="v5"] .rae-welcome--v5{max-width:100vw}.rae-root[data-rae-polish="v5"].is-open .rae-panel{height:min(90dvh,var(--rae-vv-height));overflow-x:clip}.rae-root[data-rae-polish="v5"] .rae-feed[data-rae-empty="true"]{padding:.8rem .72rem}.rae-root[data-rae-polish="v5"] .rae-welcome--v5{padding:.86rem}.rae-root[data-rae-polish="v5"] .rae-welcome__actions{grid-template-columns:1fr;gap:.34rem}.rae-root[data-rae-polish="v5"] .rae-welcome__prompt{min-height:2.7rem;padding:.55rem .62rem;font-size:.66rem}.rae-root[data-rae-polish="v5"] .rae-message__bubble{max-width:90%;font-size:.76rem}.rae-root[data-rae-polish="v5"] .rae-chip{min-height:2.35rem;padding:.56rem .72rem}.rae-root[data-rae-polish="v5"] .rae-panel__foot{padding-bottom:max(.52rem,env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){.rae-root[data-rae-polish="v5"] .rae-panel__status:before,.rae-root[data-rae-polish="v5"] .rae-stage__actor:before{animation:none!important}.rae-root[data-rae-polish="v5"] .rae-welcome__prompt{transition:none}}
+
+
+/* BRAYROAI V26 / mobile Rae owns the conversation viewport. */
+@media(max-width:700px){
+  body.rae-dialog-open :is(.global-nav,.chapter-nav){
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important
+  }
+  body.rae-dialog-open .global-nav{transform:translateX(-50%) translateY(-.5rem)!important}
+  body.rae-dialog-open .chapter-nav{transform:translateY(-.5rem)!important}
+  .rae-root[data-rae-polish="v5"].is-open .rae-panel{
+    top:0!important;bottom:auto!important;height:min(100dvh,var(--rae-vv-height))!important;max-height:none!important;
+    border-radius:0!important;border-inline:0!important
+  }
+  .rae-root[data-rae-polish="v5"].is-open .rae-panel__head{
+    min-height:calc(3.75rem + env(safe-area-inset-top));
+    padding-top:max(.55rem,env(safe-area-inset-top))
+  }
+  .rae-root[data-rae-polish="v5"].is-open .rae-stage{min-height:9.6rem}
+  .rae-root[data-rae-polish="v5"].is-open .rae-stage__actor{height:9rem}
+  .rae-root[data-rae-polish="v5"].is-open .rae-character--stage[data-rae-rig="v3"]{width:9rem;height:9rem}
+}

@@ -18,6 +18,7 @@ const termsJs=read('public/terms-page.js');
 const vite=read('vite.config.mjs');
 const caseStudy=read('fakhrimart-case-study.html');
 const home=read('index.html');
+const clientsHtml=read('clients.html');
 
 expect(shellCss.includes('@view-transition')&&shellCss.includes('.global-nav.is-compact'),'global shell has route continuity and compact navigation styling');
 expect(shellJs.includes('scrollY>72')&&shellJs.includes('global-nav-compact'),'global shell restores compact-on-scroll behavior');
@@ -58,6 +59,7 @@ expect(aiCss.includes('reserve the bottom-right assistant lane')&&aiCss.includes
 expect(termsCss.includes('.terms-hero{box-sizing:border-box}')&&termsCss.includes('min-height:68svh')&&termsCss.includes('padding-bottom:3.5rem'),'desktop Terms hero includes its padding inside the measured compact first fold');
 expect(termsCss.includes('max-width:72ch')&&termsCss.includes('padding-inline-end:clamp(6rem,11vw,10.5rem)'),'legal copy uses a readable measure and reserves the assistant lane');
 expect(clientCss.includes('BRAYROAI V40 / keyboard polish for client work')&&termsCss.includes('BRAYROAI V40 / legal-page focus polish'),'client and legal surfaces use branded visible keyboard focus');
+expect(clientsHtml.includes('id="client-grid"')&&clientsHtml.includes('aria-atomic="true"')&&!clientsHtml.includes('data-client-grid data-client-surface aria-live'),'client archive keeps live announcements concise while controls retain an explicit result target');
 expect(termsJs.includes('setTermsCurrent')&&termsJs.includes("setAttribute('aria-current','location')")&&termsJs.includes("history.pushState(null,'',link.hash)"),'Terms table of contents exposes shareable hashes and current-location semantics');
 
 if(process.exitCode)process.exit(process.exitCode);

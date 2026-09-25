@@ -170,3 +170,16 @@ for(const route of ['/ai-workflow-audit','/company-second-brain'])test(`AI detai
   expect(await page.evaluate(()=>Math.round(scrollY))).toBeLessThanOrEqual(2);
   await expect(page.locator('.ai-hero h1')).toBeVisible();
 });
+
+
+test('client archive filters announce only the compact result count',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Client archive semantics only need one engine');
+  await openPage(page,'/clients');
+  const grid=page.locator('#client-grid');
+  const count=page.locator('[data-client-count]');
+  await expect(grid).not.toHaveAttribute('aria-live','polite');
+  await expect(count).toHaveAttribute('aria-live','polite');
+  await expect(count).toHaveAttribute('aria-atomic','true');
+  await expect(page.locator('[data-client-filter="live"]')).toHaveAttribute('aria-controls','client-grid');
+  await expect(page.locator('[data-client-search]')).toHaveAttribute('aria-controls','client-grid');
+});

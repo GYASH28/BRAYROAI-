@@ -10,6 +10,7 @@ if(market!=='in'){save('brayro_market',market.startsWith('ae')?'ae':'au');save('
 // legacy page scripts before they create any dynamic cards or lead messages.
 
 const triggers=[...document.querySelectorAll('[data-market-trigger]')];
+triggers.forEach(button=>{button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-controls','market-sheet');button.setAttribute('aria-expanded','false')});
 const label=MARKETS[market]?.label||'Choose market';
 triggers.forEach(button=>{button.firstChild.textContent=arabic?'الإمارات · AED ':market==='in'?'Choose market':label+' '});
 for(const link of document.querySelectorAll('[data-market-language-link]')){
@@ -25,12 +26,17 @@ for(const link of dialog.querySelectorAll('[data-market-choice]')){
   if(link.dataset.marketChoice===market)link.setAttribute('aria-current','true');
   link.addEventListener('click',()=>{const next=link.dataset.marketChoice;save('brayro_market',next.startsWith('ae')?'ae':'au');save('brayro_lang',next==='ae-ar'?'ar':'en')});
 }
+let marketOpener=null;
 triggers.forEach(button=>button.addEventListener('click',()=>{
+  const fromGlobalMenu=Boolean(button.closest('[data-global-menu]'));
   if(document.querySelector('[data-global-menu]')?.hidden===false)document.querySelector('[data-global-toggle]')?.click();
+  marketOpener=fromGlobalMenu?document.querySelector('[data-global-toggle]'):button;
+  triggers.forEach(trigger=>trigger.setAttribute('aria-expanded',String(trigger===button)));
   language.hidden=!market.startsWith('ae');dialog.showModal();
 }));
 dialog.querySelector('[data-market-close]').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
+dialog.addEventListener('close',()=>{triggers.forEach(trigger=>trigger.setAttribute('aria-expanded','false'));marketOpener?.focus?.();marketOpener=null});
 
 // The root route remains the existing India site. A remembered market is a
 // visible suggestion, never a redirect that overrides an explicit URL.

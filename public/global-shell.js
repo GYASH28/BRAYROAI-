@@ -120,8 +120,7 @@
     const active=track.querySelector('a.is-active');
     if(!active||active===last)return;
     last=active;
-    const left=active.offsetLeft-(track.clientWidth-active.offsetWidth)/2;
-    track.scrollTo({left:Math.max(0,left),behavior:reduced.matches?'auto':'smooth'});
+    active.scrollIntoView({behavior:reduced.matches?'auto':'smooth',block:'nearest',inline:'center'});
   };
   const schedule=()=>{if(!frame)frame=requestAnimationFrame(center)};
   const observer=new MutationObserver(schedule);

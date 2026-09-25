@@ -88,3 +88,35 @@ test('Arabic AI offer pages keep translated interactive content and local prices
   await expect(page.locator('[data-arch-status]')).toContainText('Drive');
   await expect(page.locator('.ai-price strong')).toContainText('AED 7,900');
 });
+
+
+test('Arabic mobile chapter rail keeps its active item visible and directional',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Bidirectional geometry only needs one rendering engine');
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/ae/ar/plans',{waitUntil:'domcontentloaded'});
+  const active=page.locator('.chapter-nav a[aria-current="location"]');
+  await expect(active).toBeVisible();
+  const [trackBox,activeBox,origin]=await Promise.all([
+    page.locator('.chapter-nav>div').boundingBox(),
+    active.boundingBox(),
+    page.locator('.global-nav__progress i').evaluate(node=>getComputedStyle(node).transformOrigin)
+  ]);
+  expect(activeBox.x).toBeGreaterThanOrEqual(trackBox.x-1);
+  expect(activeBox.x+activeBox.width).toBeLessThanOrEqual(trackBox.x+trackBox.width+1);
+  expect(origin.split(' ')[0]).not.toBe('0px');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
+
+test('market dialog reports its state and restores focus',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Modal focus behavior only needs one rendering engine');
+  await page.goto('/plans',{waitUntil:'domcontentloaded'});
+  const trigger=page.locator('.global-nav [data-market-trigger]');
+  await trigger.click();
+  await expect(trigger).toHaveAttribute('aria-expanded','true');
+  await expect(page.locator('#market-sheet')).toBeVisible();
+  await page.locator('#market-sheet [data-market-close]').click();
+  await expect(page.locator('#market-sheet')).toBeHidden();
+  await expect(trigger).toHaveAttribute('aria-expanded','false');
+  await expect(trigger).toBeFocused();
+});

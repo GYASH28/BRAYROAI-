@@ -44,7 +44,7 @@ test('homepage pricing stays concise while /plans stays detailed',async({page})=
 });
 
 test('AI service detail interactions remain complete',async({page})=>{
-  await openPage(page,'/ai-workflow-audit');const tabs=page.locator('[data-process-tab]');await expect(tabs).toHaveCount(5);await expect(tabs.first()).toHaveAttribute('tabindex','0');await expect(tabs.nth(1)).toHaveAttribute('tabindex','-1');await expect(tabs.first()).toHaveAttribute('aria-controls','audit-process-stage');await expect(page.locator('#audit-process-stage')).toHaveAttribute('role','tabpanel');await tabs.nth(2).click();await expect(tabs.nth(2)).toHaveAttribute('tabindex','0');await tabs.nth(2).press('End');await expect(tabs.last()).toHaveAttribute('tabindex','0');await tabs.last().press('Home');await expect(tabs.first()).toHaveAttribute('tabindex','0');await expect(page.locator('[data-process-title]')).toContainText('Choose one workflow');await expect(page.locator('.deliver')).toHaveCount(6);await openPage(page,'/company-second-brain');const nodes=page.locator('[data-arch-node]');await expect(nodes).toHaveCount(5);await expect(page.locator('[data-arch-status]')).toHaveAttribute('aria-live','polite');await page.locator('[data-arch-node="drive"]').click();await expect(page.locator('[data-arch-node="drive"]')).toHaveAttribute('aria-pressed','true');await expect(page.locator('[data-arch-node="docs"]')).toHaveAttribute('aria-pressed','false');await expect(page.locator('[data-arch-status]')).toContainText('Drive folders');await expect(page.locator('main')).toContainText('14 days of launch support');
+  await openPage(page,'/ai-workflow-audit');const tabs=page.locator('[data-process-tab]');await expect(tabs).toHaveCount(5);await expect(tabs.first()).toHaveAttribute('tabindex','0');await expect(tabs.nth(1)).toHaveAttribute('tabindex','-1');await expect(tabs.first()).toHaveAttribute('aria-controls','audit-process-stage');await expect(tabs.first().locator('xpath=..')).toHaveAttribute('aria-orientation','vertical');await expect(page.locator('#audit-process-stage')).toHaveAttribute('role','tabpanel');await tabs.nth(2).click();await expect(tabs.nth(2)).toHaveAttribute('tabindex','0');await tabs.nth(2).press('End');await expect(tabs.last()).toHaveAttribute('tabindex','0');await tabs.last().press('Home');await expect(tabs.first()).toHaveAttribute('tabindex','0');await expect(page.locator('[data-process-title]')).toContainText('Choose one workflow');await expect(page.locator('.deliver')).toHaveCount(6);await openPage(page,'/company-second-brain');const nodes=page.locator('[data-arch-node]');await expect(nodes).toHaveCount(5);await expect(page.locator('[data-arch-status]')).toHaveAttribute('aria-live','polite');await page.locator('[data-arch-node="drive"]').click();await expect(page.locator('[data-arch-node="drive"]')).toHaveAttribute('aria-pressed','true');await expect(page.locator('[data-arch-node="docs"]')).toHaveAttribute('aria-pressed','false');await expect(page.locator('[data-arch-status]')).toContainText('Drive folders');await expect(page.locator('main')).toContainText('14 days of launch support');
 });
 
 test('core homepage controls still work',async({page})=>{
@@ -91,4 +91,12 @@ test('Terms desktop first fold stays compact and intentional',async({page,browse
   expect(hero.height).toBeLessThan(760);
   expect(copy.y).toBeLessThan(420);
   await expect(page.locator('.terms-hero h1')).toContainText('Clear terms');
+});
+
+
+test('AI process tab semantics follow compact-screen orientation',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Responsive tab semantics only need one rendering engine');
+  await page.setViewportSize({width:390,height:844});
+  await openPage(page,'/ai-workflow-audit');
+  await expect(page.locator('.process-tabs')).toHaveAttribute('aria-orientation','horizontal');
 });

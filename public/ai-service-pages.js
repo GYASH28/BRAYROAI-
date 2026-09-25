@@ -39,6 +39,7 @@
       this.root = document.querySelector('[data-process-lab]');
       if (!this.root) return;
       this.tabs = [...this.root.querySelectorAll('[data-process-tab]')];
+      this.tablist = this.root.querySelector('[role="tablist"]');
       this.stage = this.root.querySelector('[data-process-stage]');
       this.title = this.root.querySelector('[data-process-title]');
       this.body = this.root.querySelector('[data-process-body]');
@@ -47,6 +48,9 @@
       this.items = JSON.parse(this.root.dataset.processItems || '[]');
       this.stage.id ||= 'audit-process-stage';
       this.stage.setAttribute('role','tabpanel');
+      this.syncOrientation=()=>this.tablist?.setAttribute('aria-orientation',innerWidth<=900?'horizontal':'vertical');
+      this.syncOrientation();
+      addEventListener('resize',this.syncOrientation,{passive:true});
       this.tabs.forEach((tab, index) => {
         tab.id ||= `audit-process-tab-${index + 1}`;
         tab.setAttribute('aria-controls',this.stage.id);
@@ -72,11 +76,7 @@
       });
       const activeTab=this.tabs[index];
       this.stage.setAttribute('aria-labelledby',activeTab.id);
-      if(innerWidth<=900){
-        const track=activeTab.parentElement;
-        const left=activeTab.offsetLeft-(track.clientWidth-activeTab.offsetWidth)/2;
-        track.scrollTo({left:Math.max(0,left),behavior:reduced?'auto':'smooth'});
-      }
+      if(innerWidth<=900)activeTab.scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest',inline:'center'});
       const apply = () => {
         this.stage.dataset.stageNumber = String(index + 1).padStart(2,'0');
         this.label.textContent = item.label;

@@ -101,8 +101,6 @@
   .rae-root[data-rae-polish="v5"].is-open{
     position:fixed!important;
     inset:0!important;
-    right:auto!important;
-    bottom:auto!important;
     width:auto!important;
     height:100dvh!important;
     max-width:100%!important;

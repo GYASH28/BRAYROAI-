@@ -207,3 +207,18 @@ html.global-nav-compact .chapter-nav{top:68px;background:rgba(11,12,15,.9);box-s
 @media(prefers-reduced-motion:reduce){
   .global-menu:not([hidden]),.global-menu:not([hidden]) nav a{animation:none!important}
 }
+
+
+/* BRAYROAI V29 / micro-navigation details from cross-browser QA. */
+.global-menu nav a[aria-current="page"]{color:var(--shell-orange)}
+.global-menu nav a[aria-current="page"]::after{
+  content:"CURRENT";margin-left:auto;color:rgba(247,241,230,.46);
+  font:600 8px/1 'DM Mono',monospace;letter-spacing:.12em
+}
+@media(max-width:760px){
+  .chapter-nav{top:calc(max(8px,env(safe-area-inset-top)) + 68px)}
+  html.global-nav-compact .chapter-nav{top:calc(max(8px,env(safe-area-inset-top)) + 64px)}
+}
+@media(max-width:700px){
+  .chapter-nav a{min-height:28px;display:inline-flex;align-items:center}
+}

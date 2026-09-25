@@ -17,6 +17,8 @@ expect(shellCss.includes('@view-transition')&&shellCss.includes('.global-nav.is-
 expect(shellJs.includes('scrollY>72')&&shellJs.includes('global-nav-compact'),'global shell restores compact-on-scroll behavior');
 expect(shellCss.includes('BRAYROAI V27')&&shellCss.includes('.global-nav__links a:nth-child(7)')&&shellCss.includes('scroll-snap-type:x proximity'),'V27 simplifies desktop chrome and improves mobile chapter navigation');
 expect(shellJs.includes('keep the active chapter centered')&&shellJs.includes("track.scrollTo"),'mobile chapter rail follows the active section');
+expect(shellJs.includes('syncInitialChapter')&&shellJs.includes("addEventListener('hashchange'"),'chapter navigation has an immediate and hash-aware active state');
+expect(shellCss.includes('micro-navigation details from cross-browser QA')&&shellCss.includes('env(safe-area-inset-top)'), 'mobile navigation respects safe-area chrome');
 expect(vite.includes("'/company-second-brain':'AI BRAIN'")&&vite.includes("${chapterTitles[path]||'INDEX'}"),'chapter rail uses short human route labels');
 expect(caseStudy.includes('fakhrimart-case-desktop.webp\" as=\"image\" type=\"image/webp\"')&&!caseStudy.includes('preload\" href=\"/assets/fakhrimart-case-desktop.png'), 'case study preloads the compact WebP instead of the 1.3MB PNG');
 expect((caseStudy.match(/fakhrimart-case-desktop\.webp/g)||[]).length>=3&&(caseStudy.match(/fakhrimart-case-mobile\.webp/g)||[]).length>=2,'case study renders WebP proof imagery');
@@ -26,6 +28,8 @@ expect(homeCss.includes('editorial finish')&&homeCss.includes('.v12-project-row'
 expect(pagesCss.includes('one art direction across existing inner routes')&&pagesCss.includes('content-visibility:auto'),'inner routes share the V25 system and offscreen rendering optimization');
 expect(rae.includes('data-rae-vector="full-body"')&&!rae.includes('<image')&&!rae.includes('rae-illustration.webp'),'Rae full character is vector-only');
 expect(boot.includes('data-rae-vector-launcher')&&!boot.includes('rae-illustration-thumb.webp'),'Rae launcher is vector-only');
+const raePolish=read('public/rae/rae-polish-v5.css');
+expect(raePolish.includes('contain:none!important')&&raePolish.includes('width:100dvw!important'),'mobile Rae uses the viewport as its containing block');
 expect(!shellCss.includes('scroll-behavior:smooth!important'),'navigation polish does not force motion globally');
 
 if(process.exitCode)process.exit(process.exitCode);

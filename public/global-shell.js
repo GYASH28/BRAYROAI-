@@ -39,6 +39,18 @@
   // handler updates the indicator once the visitor actually moves.
   const chapter=[...document.querySelectorAll('.chapter-nav a[href^="#"]')];
   const targets=chapter.map(link=>({link,node:document.getElementById(link.hash.slice(1))})).filter(item=>item.node);
+  const syncInitialChapter=()=>{
+    if(!chapter.length)return;
+    const hash=location.hash;
+    const preferred=hash?chapter.find(link=>link.hash===hash):chapter[0];
+    if(!chapter.some(link=>link.classList.contains('is-active')))preferred?.classList.add('is-active');
+  };
+  syncInitialChapter();
+  addEventListener('hashchange',()=>{
+    const active=chapter.find(link=>link.hash===location.hash);
+    if(!active)return;
+    chapter.forEach(link=>link.classList.toggle('is-active',link===active));
+  });
   if('IntersectionObserver'in window&&targets.length){
     const observer=new IntersectionObserver(entries=>{
       const current=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
@@ -52,6 +64,7 @@
     if(!target)return;
     event.preventDefault();
     history.pushState(null,'',link.hash);
+    chapter.forEach(item=>item.classList.toggle('is-active',item===link));
     target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   }));
   document.querySelectorAll('[data-footer-rae]').forEach(button=>button.addEventListener('click',()=>document.querySelector('[data-rae-toggle],[data-rae-shell]')?.click()));

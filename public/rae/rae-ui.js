@@ -77,6 +77,8 @@ export class RaeUI{
     const modal=this.open&&matchMedia('(max-width:700px)').matches;
     this.panel.setAttribute('aria-modal',String(modal));
     this.root.toggleAttribute('data-rae-modal',modal);
+    document.body.classList.toggle('rae-dialog-open',modal);
+    document.documentElement.classList.toggle('rae-dialog-open',modal);
   }
   trapFocus(event){
     if(this.panel.getAttribute('aria-modal')!=='true'||event.key!=='Tab')return;const focusable=[...this.panel.querySelectorAll('button:not([hidden]),textarea,a[href],[tabindex="0"]')].filter(node=>!node.disabled&&node.offsetParent!==null);if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
@@ -103,7 +105,7 @@ export class RaeUI{
   }
   setOpen(value){
     const next=Boolean(value);this.preparePanelTransition(next);this.syncLauncherPosition(next);this.open=next;if(this.open)this.lastFocused=document.activeElement;
-    this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));this.syncModality();document.body.classList.toggle('rae-dialog-open',this.open);document.documentElement.classList.toggle('rae-dialog-open',this.open);
+    this.root.classList.toggle('is-open',this.open);this.panel.setAttribute('aria-hidden',String(!this.open));this.toggle.setAttribute('aria-expanded',String(this.open));this.syncModality();
     this.handlers.onOpenChange?.(this.open);
     if(this.open)this.focusComposer();else{const target=this.lastFocused&&document.contains(this.lastFocused)?this.lastFocused:this.toggle;this.settleFocus(target,false)}
   }

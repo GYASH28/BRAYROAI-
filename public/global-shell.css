@@ -274,3 +274,11 @@ a,button,input,textarea,select{-webkit-tap-highlight-color:rgba(255,138,0,.18)}
 @supports(scrollbar-gutter:stable){
   @media(min-width:701px){html{scrollbar-gutter:stable}}
 }
+
+
+/* BRAYROAI V38 / non-modal desktop assistant must never block site chrome. */
+@media(min-width:701px){
+  .global-nav{z-index:2147482500}
+  .chapter-nav{z-index:2147482400}
+  .global-menu{z-index:2147482600}
+}

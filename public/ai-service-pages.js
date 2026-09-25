@@ -45,7 +45,11 @@
       this.label = this.root.querySelector('[data-process-label]');
       this.outputs = this.root.querySelector('[data-process-outputs]');
       this.items = JSON.parse(this.root.dataset.processItems || '[]');
+      this.stage.id ||= 'audit-process-stage';
+      this.stage.setAttribute('role','tabpanel');
       this.tabs.forEach((tab, index) => {
+        tab.id ||= `audit-process-tab-${index + 1}`;
+        tab.setAttribute('aria-controls',this.stage.id);
         tab.addEventListener('click', () => this.set(index));
         tab.addEventListener('keydown', event => {
           if (!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(event.key)) return;
@@ -61,7 +65,18 @@
     set(index, animate = true) {
       const item = this.items[index];
       if (!item) return;
-      this.tabs.forEach((tab, i) => tab.setAttribute('aria-selected', String(i === index)));
+      this.tabs.forEach((tab, i) => {
+        const active=i===index;
+        tab.setAttribute('aria-selected',String(active));
+        tab.tabIndex=active?0:-1;
+      });
+      const activeTab=this.tabs[index];
+      this.stage.setAttribute('aria-labelledby',activeTab.id);
+      if(innerWidth<=900){
+        const track=activeTab.parentElement;
+        const left=activeTab.offsetLeft-(track.clientWidth-activeTab.offsetWidth)/2;
+        track.scrollTo({left:Math.max(0,left),behavior:reduced?'auto':'smooth'});
+      }
       const apply = () => {
         this.stage.dataset.stageNumber = String(index + 1).padStart(2,'0');
         this.label.textContent = item.label;

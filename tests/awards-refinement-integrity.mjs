@@ -23,7 +23,7 @@ expect(shellJs.includes('syncInitialChapter')&&shellJs.includes("addEventListene
 expect(shellCss.includes('micro-navigation details from cross-browser QA')&&shellCss.includes('env(safe-area-inset-top)'), 'mobile navigation respects safe-area chrome');
 expect(vite.includes("'/company-second-brain':'AI BRAIN'")&&vite.includes("${chapterTitles[path]||'INDEX'}"),'chapter rail uses short human route labels');
 expect(vite.includes("label==='Clients'&&path.startsWith('/clients')")&&vite.includes("path==='/ai-workflow-audit'"),'global navigation preserves nested Clients and AI context');
-expect(vite.includes('data-back-to-top')&&shellJs.includes("document.querySelectorAll('[data-back-to-top]')"),'back-to-top is handled without URL hash pollution');
+expect(vite.includes('href="#top" data-back-to-top')&&vite.includes('if(!isHome&&!/<body\\b[^>]*\\bid=/.test(html))')&&shellJs.includes("if(!link.matches('[data-back-to-top]'))history.pushState"),'back-to-top has a progressive target without URL hash pollution');
 expect(caseStudy.includes('fakhrimart-case-desktop.webp\" as=\"image\" type=\"image/webp\"')&&!caseStudy.includes('preload\" href=\"/assets/fakhrimart-case-desktop.png'), 'case study preloads the compact WebP instead of the 1.3MB PNG');
 expect((caseStudy.match(/fakhrimart-case-desktop\.webp/g)||[]).length>=3&&(caseStudy.match(/fakhrimart-case-mobile\.webp/g)||[]).length>=2,'case study renders WebP proof imagery');
 expect(home.includes('src="/assets/fakhrimart-case-desktop.webp"')&&home.includes('src="/assets/fakhrimart-case-mobile.webp"'),'homepage client proof renders WebP imagery');
@@ -42,3 +42,8 @@ expect(aiCss.includes('reserve the bottom-right assistant lane')&&aiCss.includes
 expect(termsCss.includes('min-height:78svh'),'desktop Terms hero uses a tighter first fold');
 
 if(process.exitCode)process.exit(process.exitCode);
+
+expect(aiCss.includes('BRAYROAI V30')&&aiCss.includes('scroll-snap-type:x proximity'),'AI process tabs expose a tactile mobile rail');
+const aiJs=read('public/ai-service-pages.js');
+expect(aiJs.includes("this.stage.setAttribute('role','tabpanel')")&&aiJs.includes("tab.setAttribute('aria-controls',this.stage.id)")&&aiJs.includes('tab.tabIndex=active?0:-1'),'AI process tabs use roving focus and tabpanel semantics');
+expect(home.includes('fakhrimart-case-desktop.webp" width="1440" height="1000" loading="lazy" decoding="async"'),'homepage proof imagery decodes asynchronously below the fold');

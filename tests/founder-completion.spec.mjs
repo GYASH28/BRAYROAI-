@@ -57,3 +57,17 @@ test('Founder hero copy is present immediately on desktop',async({page,browserNa
   expect(state.top).toBeLessThan(state.height*.72);
   expect(state.bottom).toBeGreaterThan(state.height*.55);
 });
+
+
+test('Global back-to-top is progressive and does not leak a hash',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Navigation contract only needs one engine');
+  const errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('/founder',{waitUntil:'domcontentloaded'});
+  await page.evaluate(()=>scrollTo(0,document.documentElement.scrollHeight));
+  await expect(page.locator('[data-back-to-top]')).toHaveAttribute('href','#top');
+  await page.locator('[data-back-to-top]').click();
+  await expect.poll(()=>page.evaluate(()=>Math.round(scrollY)),{timeout:3000}).toBeLessThan(5);
+  expect(new URL(page.url()).hash).toBe('');
+  expect(errors.filter(message=>message.includes('querySelector')||message.includes("not a valid selector"))).toEqual([]);
+});

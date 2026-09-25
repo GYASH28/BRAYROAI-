@@ -12,9 +12,10 @@
     toggle.setAttribute('aria-expanded',String(open));
     toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');
     document.documentElement.classList.toggle('global-menu-open',open);
-    if(open)menu.querySelector('a')?.focus();else priorFocus?.focus?.();
+    if(open)menu.querySelector('[data-global-close]')?.focus();else priorFocus?.focus?.();
   };
   toggle.addEventListener('click',()=>setOpen(menu.hidden));
+  menu.querySelector('[data-global-close]')?.addEventListener('click',()=>setOpen(false));
   menu.addEventListener('click',event=>{if(event.target.closest('a'))setOpen(false)});
   addEventListener('keydown',event=>{
     if(menu.hidden)return;

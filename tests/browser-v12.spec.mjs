@@ -74,6 +74,9 @@ test('desktop menu remains open through harmless viewport resizing',async({page,
   await openPage(page,'/plans');
   await page.locator('[data-global-toggle]').click();
   await expect(page.locator('[data-global-menu]')).toBeVisible();
+  const close=page.locator('[data-global-close]');
+  await expect(close).toBeVisible();
+  await expect(close).toBeFocused();
   await page.setViewportSize({width:1400,height:900});
   await expect(page.locator('[data-global-menu]')).toBeVisible();
   await page.keyboard.press('Escape');
@@ -99,4 +102,20 @@ test('AI process tab semantics follow compact-screen orientation',async({page,br
   await page.setViewportSize({width:390,height:844});
   await openPage(page,'/ai-workflow-audit');
   await expect(page.locator('.process-tabs')).toHaveAttribute('aria-orientation','horizontal');
+});
+
+
+test('mobile full-screen menu exposes a direct close control',async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Mobile menu close control only needs one rendering engine');
+  await page.setViewportSize({width:390,height:844});
+  await openPage(page,'/plans');
+  const toggle=page.locator('[data-global-toggle]');
+  await toggle.click();
+  const menu=page.locator('[data-global-menu]');
+  const close=page.locator('[data-global-close]');
+  await expect(menu).toBeVisible();
+  await expect(close).toBeVisible();
+  await close.click();
+  await expect(menu).toBeHidden();
+  await expect(toggle).toBeFocused();
 });

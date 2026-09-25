@@ -232,3 +232,23 @@ html.global-nav-compact .chapter-nav{top:68px;background:rgba(11,12,15,.9);box-s
 a,button,input,textarea,select{-webkit-tap-highlight-color:rgba(255,138,0,.18)}
 .global-menu{overscroll-behavior:contain}
 
+
+
+/* BRAYROAI V34 / explicit full-screen navigation exit. */
+.global-menu__close{
+  position:absolute;z-index:3;top:max(18px,env(safe-area-inset-top));inset-inline-end:clamp(18px,3vw,36px);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:86px;min-height:44px;padding:0 13px;
+  border:1px solid rgba(247,241,230,.22);border-radius:999px;background:rgba(247,241,230,.045);color:var(--shell-bone);
+  font:600 10px/1 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  transition:border-color .22s ease,background-color .22s ease,transform .28s var(--brayro-ease)
+}
+.global-menu__close span{font:400 22px/1 system-ui,sans-serif;transform:translateY(-1px)}
+.global-menu__close b{font:inherit}
+.global-menu__close:hover,.global-menu__close:focus-visible{
+  border-color:var(--shell-orange);background:rgba(255,138,0,.08);transform:translateY(-1px)
+}
+@media(max-width:700px){
+  .global-menu__close{top:max(14px,env(safe-area-inset-top));inset-inline-end:14px;min-width:44px;width:44px;padding:0}
+  .global-menu__close b{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
+@media(prefers-reduced-motion:reduce){.global-menu__close{transition:none!important}}

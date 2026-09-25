@@ -57,6 +57,7 @@ expect(home.includes('fakhrimart-case-desktop.webp" width="1440" height="900" lo
 expect(shellJs.includes("setAttribute('aria-current','location')")&&shellJs.includes('chapter.includes(link)?link:chapter[0]'),'chapter navigation exposes screen-reader current-location state and resets correctly at top');
 expect(shellJs.includes("menu.querySelectorAll('a,button')")&&!shellJs.includes("[toggle,...menu.querySelectorAll('a,button')]"),'modal navigation traps keyboard focus inside the dialog');
 expect(vite.includes('aria-controls="global-menu" aria-haspopup="dialog"')&&vite.includes('role="dialog" aria-modal="true" aria-label="Site navigation"'),'full navigation overlay exposes dialog semantics');
+expect(vite.includes('data-global-close')&&shellCss.includes('global-menu__close')&&shellJs.includes("querySelector('[data-global-close]')?.focus()"),'full-screen navigation has a visible in-overlay exit and deliberate initial focus');
 expect(shellCss.includes('-webkit-tap-highlight-color')&&shellCss.includes('overscroll-behavior:contain'),'global shell includes quiet touch and overlay overscroll polish');
 expect(shellCss.includes('padding-inline:20px 8px')&&shellCss.includes('border-inline-end')&&shellCss.includes('margin-inline-start:auto'),'global shell uses logical spacing for RTL-safe chrome');
 expect(rtlCss.includes('bidirectional shell progress')&&rtlCss.includes('transform-origin:right'),'RTL progress indicators advance from the reading-direction edge');

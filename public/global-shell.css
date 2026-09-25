@@ -274,3 +274,44 @@ a,button,input,textarea,select{-webkit-tap-highlight-color:rgba(255,138,0,.18)}
 @supports(scrollbar-gutter:stable){
   @media(min-width:701px){html{scrollbar-gutter:stable}}
 }
+
+
+/* V28 / first-class three-market switcher + lazy React enhancement */
+.market-sheet[open]{animation:marketSheetIn .28s cubic-bezier(.16,1,.3,1) both}
+.market-sheet[open]::backdrop{animation:marketBackdropIn .22s ease both}
+.market-sheet__options{grid-template-columns:repeat(3,minmax(0,1fr))}
+.market-sheet__options.is-react-mounted{display:none}
+.market-sheet__options a{position:relative;gap:12px;min-width:0}
+.market-sheet__code{display:grid!important;place-items:center;width:34px;height:24px;border:1px solid rgba(247,241,230,.16);border-radius:999px;color:rgba(247,241,230,.62)!important;font:700 9px/1 'DM Mono',monospace!important;letter-spacing:.12em}
+.market-sheet__meta{margin-top:auto}
+.market-sheet__status{margin:0 0 14px;padding:10px 12px;border:1px solid rgba(247,241,230,.1);border-radius:8px;background:rgba(247,241,230,.035);color:#aaaeb6;font:500 10px/1.45 'DM Mono',monospace}
+.market-react-host[hidden]{display:none!important}
+.market-react{margin:24px 0 18px}
+.market-react__intro{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:10px}
+.market-react__intro strong{font:650 13px/1.2 Manrope,system-ui,sans-serif}
+.market-react__intro span{max-width:250px;color:#92969e;text-align:right;font:500 9px/1.45 'DM Mono',monospace}
+.market-react__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.market-react__choice{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:11px;min-height:104px;padding:15px;border:1px solid rgba(247,241,230,.17);border-radius:11px;background:rgba(247,241,230,.025);color:#f7f1e6;text-align:left;cursor:pointer;overflow:hidden;transition:transform .24s cubic-bezier(.16,1,.3,1),border-color .2s ease,background .2s ease,box-shadow .24s ease}
+.market-react__choice::after{content:"";position:absolute;inset:auto -30% -55% 20%;height:70%;background:radial-gradient(circle,rgba(255,138,0,.18),transparent 68%);opacity:0;transform:translateY(15%);transition:opacity .24s ease,transform .34s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.market-react__choice:hover,.market-react__choice:focus-visible{transform:translateY(-3px);border-color:rgba(255,138,0,.72);background:rgba(255,138,0,.055);box-shadow:0 14px 30px rgba(0,0,0,.22);outline:none}
+.market-react__choice:hover::after,.market-react__choice:focus-visible::after,.market-react__choice.is-current::after{opacity:1;transform:none}
+.market-react__choice.is-current{border-color:#ff8a00;background:rgba(255,138,0,.09)}
+.market-react__choice.is-detected{border-color:rgba(255,174,88,.42)}
+.market-react__code{display:grid;place-items:center;width:36px;height:30px;border:1px solid rgba(247,241,230,.16);border-radius:999px;color:#ffae58;font:700 9px/1 'DM Mono',monospace;letter-spacing:.12em}
+.market-react__copy{display:flex;min-width:0;flex-direction:column;gap:6px}
+.market-react__copy strong{font:700 13px/1.08 Manrope,system-ui,sans-serif}
+.market-react__copy small{color:#999ea6;font:500 8px/1.35 'DM Mono',monospace}
+.market-react__badge{position:absolute;top:8px;right:8px;padding:4px 6px;border-radius:999px;background:rgba(255,138,0,.13);color:#ffae58;font:700 7px/1 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+@keyframes marketSheetIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes marketBackdropIn{from{opacity:0}to{opacity:1}}
+@media(max-width:700px){
+  .market-sheet__options,.market-react__grid{grid-template-columns:1fr}
+  .market-react__intro{align-items:start;flex-direction:column;gap:5px}
+  .market-react__intro span{max-width:none;text-align:left}
+  .market-react__choice{min-height:78px}
+}
+@media(prefers-reduced-motion:reduce){
+  .market-sheet[open],.market-sheet[open]::backdrop{animation:none}
+  .market-react__choice,.market-react__choice::after{transition:none!important}
+  .market-react__choice:hover,.market-react__choice:focus-visible{transform:none}
+}

@@ -115,7 +115,9 @@ jobs:
           ! grep -q 'class PointerFeedback' dist/experience-motion-v16.js
           grep -q 'class CinematicScrollDirector' dist/cinematic-v18.js
           grep -q 'class ComponentMounts' dist/cinematic-v20.js
-          grep -q 'class PolishDirector' dist/cinematic-v20.js
+          grep -q 'class HeroTextCycle' dist/cinematic-v20.js
+          grep -q 'class SelectorDirector' dist/cinematic-v20.js
+          grep -q 'class SceneVisibilityDirector' dist/cinematic-v20.js
           ! grep -q 'class PointerPolish' dist/cinematic-v20.js
           grep -q 'v22CursorMounted' dist/brayro-cursor-v22.js
           grep -q 'class RaeBootstrap' dist/rae.js

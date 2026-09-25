@@ -31,3 +31,22 @@ body.terms-v16 .terms-hero__copy>p{line-height:1.68}body.terms-v16 .terms-quick 
 @media(prefers-reduced-motion:reduce){
   ::view-transition-old(root),::view-transition-new(root){animation:none!important}
 }
+
+
+/* V41 / route-owned scene variables replace duplicate V16 geometry loops. */
+body.plans-v16 .plans-hero__word{translate:0 0;rotate:0deg}
+body.plans-v16 .scope-switch{translate:0 calc((1 - var(--plan-p,1))*1.2rem)}
+body.plans-v16 .build-card:nth-child(odd){translate:calc((1 - var(--plan-p,1))*-.7rem) calc((1 - var(--plan-p,1))*.9rem)}
+body.plans-v16 .build-card:nth-child(even){translate:calc((1 - var(--plan-p,1))*.7rem) calc((1 - var(--plan-p,1))*.9rem)}
+body.plans-v16 .ai-plan-card{translate:0 calc((1 - var(--plan-p,1))*1rem)}
+body.plans-v16 .compare-table{background-position:50% 50%}
+body.founder-v16 .founder-hero__word{translate:0 0}
+body.founder-v16 .founder-hero__portrait{translate:0 calc((1 - var(--founder-p,1))*.7rem)}
+body.founder-v16 .founder-hero__image{scale:calc(1.02 + var(--founder-p,1)*.03)}
+body.founder-v16 .story__copy{translate:0 calc((1 - var(--founder-p,1))*1.2rem)}
+body.founder-v16 .principle-instrument__image img{scale:calc(1.04 + var(--founder-p,1)*.035);translate:0 calc((1 - var(--founder-p,1))*.45rem)}
+body.founder-v16 .method__image img{scale:calc(1.03 + var(--founder-p,1)*.04);translate:0 calc((1 - var(--founder-p,1))*.45rem)}
+body.founder-v16 .conviction__line{transform:scaleX(var(--founder-p,1));transform-origin:left}
+body.founder-v16 .founder-close h2{translate:0 calc((1 - var(--founder-p,1))*1rem)}
+body.ai-v16 main>section:not(.is-v16-live) :is(.arch-arrow,.arch-engine,.ai-signal-react__orb i,.ai-signal-react__orb b),
+html.v16-document-hidden body.ai-v16 :is(.arch-arrow,.arch-engine,.ai-signal-react__orb i,.ai-signal-react__orb b){animation-play-state:paused!important}

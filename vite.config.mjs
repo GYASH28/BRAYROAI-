@@ -108,7 +108,7 @@ const experienceTransform={
     if(!isHome&&!html.includes('href="/experience-motion-v16.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/experience-motion-v16.css" data-v16-motion>');
     if(!isHome&&!html.includes('href="/brayro-cursor-v22.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/brayro-cursor-v22.css" data-v22-cursor>');
     if(!isHome&&!html.includes('href="/rae.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/rae.css" data-rae-style>');
-    if(!html.includes('src="/experience-motion-v16.js"'))html=html.replace('</body>','  <script src="/experience-motion-v16.js" data-v16-motion></script>\n</body>');
+    if(!isHome&&!html.includes('src="/experience-motion-v16.js"'))html=html.replace('</body>','  <script src="/experience-motion-v16.js" data-v16-motion></script>\n</body>');
     if(isHome&&!html.includes('src="/cinematic-v18.js"'))html=html.replace('</body>','  <script src="/cinematic-v18.js" data-v18-cinematic></script>\n</body>');
     if(isHome&&!html.includes('src="/cinematic-v20.js"'))html=html.replace('</body>','  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
     if(!html.includes('src="/brayro-cursor-v22.js"'))html=html.replace('</body>','  <script src="/brayro-cursor-v22.js" data-v22-cursor></script>\n</body>');

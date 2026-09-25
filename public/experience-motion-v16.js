@@ -14,7 +14,10 @@
   else if(path==='/plans'||path.endsWith('/plans.html'))body.classList.add('plans-v16');
   else if(path==='/founder'||path.endsWith('/founder.html'))body.classList.add('founder-v16');
   else if(path==='/terms'||path.endsWith('/terms.html'))body.classList.add('terms-v16');
+  else if(path.startsWith('/clients')||path.endsWith('/clients.html')||path.endsWith('/fakhrimart-case-study.html'))body.classList.add('client-v16');
   else if(path==='/ai-workflow-audit'||path==='/company-second-brain'||path.endsWith('/ai-workflow-audit.html')||path.endsWith('/company-second-brain.html'))body.classList.add('ai-v16');
+  const hasDedicatedSceneRuntime=body.classList.contains('plans-v16')||body.classList.contains('founder-v16');
+
   // Native mobile scene motion and the homepage interaction scripts already
   // cover this route. Avoid decorating every section during its first paint.
   if(isHome&&matchMedia('(max-width:760px), (pointer:coarse)').matches)return;
@@ -68,6 +71,17 @@
     }
   }
 
+  class SceneLifecycle{
+    constructor(){
+      this.scenes=[...document.querySelectorAll('main > section')];
+      const syncVisibility=()=>document.documentElement.classList.toggle('v16-document-hidden',document.hidden);
+      document.addEventListener('visibilitychange',syncVisibility);syncVisibility();
+      if(!this.scenes.length)return;
+      if(!('IntersectionObserver'in window)){this.scenes.forEach(scene=>scene.classList.add('is-v16-live'));return}
+      this.io=new IntersectionObserver(entries=>entries.forEach(entry=>entry.target.classList.toggle('is-v16-live',entry.isIntersecting)),{rootMargin:'35% 0px',threshold:0});
+      this.scenes.forEach(scene=>this.io.observe(scene));
+    }
+  }
   class SurfaceDecorations{
     constructor(){
       const selector='.build-card,.ai-plan-card,.compare-table,.principle-instrument,.terms-quick a,.terms-card,.process-stage,.deliver,.matrix-row,.scope-row,.arch-node,.v12-product-card,[data-v14-rate]';
@@ -86,7 +100,8 @@
 
   new PageCurtain();
   new RevealDirector();
-  if(!isHome)new SceneKinetics();
+  new SceneLifecycle();
+  if(!isHome&&!hasDedicatedSceneRuntime)new SceneKinetics();
   new SurfaceDecorations();
   new InteractionChoreography();
 })();

@@ -37,3 +37,12 @@
   outline:2px solid var(--cw-orange);
   outline-offset:5px
 }
+
+
+/* V41 / efficient spotlight + dual-channel client handoff. */
+.case-decision>*{position:relative;z-index:1}.case-decision::after{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;background:radial-gradient(360px circle at var(--client-x,50%) var(--client-y,50%),rgba(255,107,44,.13),transparent 68%);opacity:0;transition:opacity .24s ease}
+.case-decision:hover::after,.case-decision:focus-within::after{opacity:1}.case-section--bone .case-decision::after{background:radial-gradient(360px circle at var(--client-x,50%) var(--client-y,50%),rgba(217,71,18,.09),transparent 68%)}
+.client-card__media:active,.case-decision:active{transform:scale(.995)}
+.client-close__actions{display:grid;justify-items:center;gap:.85rem}.client-close__email{padding-bottom:.3rem;border-bottom:1px solid rgba(255,255,255,.26);color:var(--cw-steel);font:600 .66rem/1.3 'DM Mono',monospace;text-transform:uppercase;transition:color .22s ease,border-color .22s ease}.client-close__email:hover,.client-close__email:focus-visible{color:#fff;border-color:var(--cw-orange)}
+@media(max-width:900px){.client-close__actions{justify-items:start}}
+@media(prefers-reduced-motion:reduce){.case-decision::after,.client-close__email{transition:none!important}.client-card__media:active,.case-decision:active{transform:none}}

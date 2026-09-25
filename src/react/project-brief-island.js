@@ -17,7 +17,7 @@ const COPY={
   }
 };
 
-function ProjectBrief({whatsapp,email,language}){
+function ProjectBrief({whatsapp,email,language,marketLabel,source}){
   const copy=language==='ar'?COPY.ar:COPY.en;
   const [type,setType]=useState(copy.types[0][0]);
   const [stage,setStage]=useState(copy.stages[0][0]);
@@ -27,8 +27,8 @@ function ProjectBrief({whatsapp,email,language}){
     try{
       const url=new URL(whatsapp,location.href);
       const message=language==='ar'
-        ? `مرحباً Yash، أريد مناقشة مشروع مع BRAYROAI. النوع: ${typeLabel}. المرحلة: ${stageLabel}.`
-        : `Hi Yash, I want to discuss a project with BRAYROAI. Project type: ${typeLabel}. Current stage: ${stageLabel}.`;
+        ? `مرحباً Yash، أريد مناقشة مشروع مع BRAYROAI. النوع: ${typeLabel}. المرحلة: ${stageLabel}. السوق: ${marketLabel}. المصدر: ${source}.`
+        : `Hi Yash, I want to discuss a project with BRAYROAI. Project type: ${typeLabel}. Current stage: ${stageLabel}. Market: ${marketLabel}. Source: ${source}.`;
       url.searchParams.set('text',message);return url.href;
     }catch{return whatsapp}
   },[whatsapp,language,typeLabel,stageLabel]);
@@ -50,5 +50,6 @@ export function mountProjectBriefIsland(){
   const email=section.querySelector('.close__email')?.href;
   if(!whatsapp||!email)return;
   host.dataset.reactMounted='true';section.classList.add('has-react-project-brief');
-  createRoot(host).render(h(ProjectBrief,{whatsapp,email,language:document.documentElement.lang||'en'}));
+  const market=window.BRAYRO_MARKET;const marketLabel=(market?.id||'in')+' / '+(market?.currency||'INR');
+  createRoot(host).render(h(ProjectBrief,{whatsapp,email,language:document.documentElement.lang||'en',marketLabel,source:location.pathname||'/'}));
 }

@@ -155,6 +155,21 @@ jobs:
           ! grep -R -F '<footer><span>BRAYROAI / PLANS</span>' dist --include='*.html'
           ! grep -R -F 'YASH GANESH / FOUNDER OF BRAYROAI</span><a href="/plans"' dist --include='*.html'
 
+          # V41 runtime ownership: retired page runtimes must not return.
+          ! grep -q '/experience-motion-v16.js' dist/index.html
+          ! grep -q '/scrollcraft.js' dist/plans.html
+          ! grep -q '/scrollcraft.js' dist/founder.html
+          ! grep -q '/motion-v5.js' dist/plans.html
+          ! grep -q '/motion-v5.js' dist/founder.html
+          ! grep -q '/motion-v5.js' dist/terms.html
+          ! grep -q 'data-ai-progress' dist/ai-workflow-audit.html
+          ! grep -q 'data-ai-progress' dist/company-second-brain.html
+          grep -q 'class CachedPlansTimeline' dist/plans-page.js
+          grep -q 'class CachedFounderTimeline' dist/founder-page.js
+          grep -q 'hasDedicatedSceneRuntime' dist/experience-motion-v16.js
+          grep -q 'class SceneLifecycle' dist/experience-motion-v16.js
+          test -n "$(find dist/assets -maxdepth 1 -name 'ai-signal-island-*.js' -print -quit)"
+
           grep -q '/rae.js' dist/index.html
           grep -q '/brayro-cursor-v22.js' dist/index.html
           grep -q '/brayro-v15.js' dist/index.html

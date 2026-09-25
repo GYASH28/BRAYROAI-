@@ -1,24 +1,6 @@
 (() => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const progress = document.querySelector('[data-ai-progress]');
   const reveals = [...document.querySelectorAll('.reveal')];
-
-  if (progress && !reduced) {
-    let raf = 0;
-    const paint = () => {
-      raf = 0;
-      const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-      const p = Math.min(1, Math.max(0, scrollY / max));
-      progress.style.transform = `scaleX(${p.toFixed(4)})`;
-    };
-    const schedule = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(paint);
-    };
-    addEventListener('scroll', schedule, { passive:true });
-    addEventListener('resize', schedule, { passive:true });
-    schedule();
-  }
 
   if (reveals.length) {
     if (reduced || !('IntersectionObserver' in window)) reveals.forEach(node => node.classList.add('is-visible'));
@@ -123,6 +105,20 @@
     }
   }
 
+  class LeadHandoff {
+    constructor(){
+      const whatsapp=document.querySelector('.ai-cta__actions a[href*="wa.me"]');if(!whatsapp)return;
+      const market=window.BRAYRO_MARKET,path=location.pathname,brain=path.includes('company-second-brain');
+      const offerId=brain?'company-second-brain':'ai-workflow-audit',title=brain?'Company Second Brain':'AI Workflow Audit';
+      const price=market?.price(offerId)||document.querySelector('.ai-price strong')?.textContent.trim()||'';
+      const marketName=market?.id==='au'?'Australia':market?.id?.startsWith('ae')?'UAE':'India';
+      const source=brain?'/company-second-brain':'/ai-workflow-audit';
+      const brief=(market?.id==='ae-ar'?['مرحباً ياش،','',title+' / '+price,'السوق: '+marketName+' / '+(market?.currency||'AED'),'','الشركة أو الفريق:','المشكلة أو سير العمل:','الأدوات الحالية:','النتيجة المطلوبة:','','المصدر: '+source]:['Hi Yash','',title+' / '+price,'Market: '+marketName+' / '+(market?.currency||'INR'),'','Business / team:','Workflow or knowledge problem:','Current tools:','Outcome we need:','','Source: '+source]).join('\n');
+      whatsapp.href='https://wa.me/919175524637?text='+encodeURIComponent(brief);
+      const email=document.querySelector('.ai-cta__actions a[href^="mailto:"]');
+      if(email)email.href='mailto:yashganesh.work@gmail.com?subject='+encodeURIComponent('BRAYROAI / '+marketName+' / '+title+' / '+price)+'&body='+encodeURIComponent(brief);
+    }
+  }
   class FAQAccordion {
     constructor() {
       const items = [...document.querySelectorAll('.faq details')];
@@ -136,4 +132,5 @@
   new ProcessLab();
   new ArchitectureLab();
   new FAQAccordion();
+  new LeadHandoff();
 })();

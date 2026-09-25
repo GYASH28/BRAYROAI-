@@ -22,15 +22,7 @@
   class PageCurtain{
     constructor(){
       this.node=document.createElement('div');this.node.className='v16-page-transition is-entering';this.node.setAttribute('aria-hidden','true');this.node.innerHTML='<i></i><i></i><i></i><i></i>';body.append(this.node);
-      if(!reduced)setTimeout(()=>this.node.classList.remove('is-entering'),820);else this.node.classList.remove('is-entering');
-      document.addEventListener('click',event=>this.onClick(event));
-    }
-    onClick(event){
-      if(reduced||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
-      const link=event.target.closest('a[href]');if(!link||link.target==='_blank'||link.hasAttribute('download'))return;
-      const href=link.getAttribute('href')||'';if(!href||href.startsWith('#')||href.startsWith('mailto:')||href.startsWith('tel:')||href.startsWith('javascript:'))return;
-      let url;try{url=new URL(link.href,location.href)}catch{return}if(url.origin!==location.origin)return;if(url.pathname===location.pathname&&url.hash)return;
-      event.preventDefault();this.node.classList.remove('is-entering');this.node.classList.add('is-leaving');setTimeout(()=>{location.href=url.href},270);
+      if(!reduced)setTimeout(()=>this.node.classList.remove('is-entering'),520);else this.node.classList.remove('is-entering');
     }
   }
 

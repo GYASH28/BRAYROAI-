@@ -133,3 +133,8 @@ body.founder-v16 .founder-hero__note{display:none}
     pointer-events:none
   }
 }
+
+
+/* BRAYROAI V39 / micro-typography pass: reduce awkward orphan lines without changing copy. */
+body:not(.home-v20) main p,
+body:not(.home-v20) main li{ text-wrap:pretty }

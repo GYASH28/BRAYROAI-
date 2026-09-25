@@ -35,6 +35,7 @@ expect(home.includes('src="/assets/fakhrimart-case-desktop.webp"')&&home.include
 expect(shellCss.includes('prefers-reduced-motion')&&homeCss.includes('prefers-reduced-motion')&&pagesCss.includes('prefers-reduced-motion'),'motion layers expose reduced-motion fallbacks');
 expect(homeCss.includes('editorial finish')&&homeCss.includes('.v12-project-row'),'homepage has authored V25 visual refinement');
 expect(pagesCss.includes('one art direction across existing inner routes')&&pagesCss.includes('content-visibility:auto'),'inner routes share the V25 system and offscreen rendering optimization');
+expect(pagesCss.includes('BRAYROAI V39 / micro-typography pass')&&pagesCss.includes('text-wrap:pretty'),'inner-route prose uses pretty wrapping to avoid obvious orphan lines');
 expect(pagesCss.includes('BRAYROAI V36 / desktop founder copy must arrive fully resolved')&&pagesCss.includes('body.founder-v16 .founder-hero__copy{')&&pagesCss.includes('opacity:1!important'),'founder hero wrapper is fully opaque on arrival');
 expect(pagesCss.includes('BRAYROAI V37 / founder interaction hint')&&pagesCss.includes('(hover:hover) and (pointer:fine)')&&pagesCss.includes('right:clamp(14rem,17vw,18rem)'),'founder hover hint is limited to precise pointers and reserves the contact-control corner');
 expect(rae.includes('data-rae-vector="full-body"')&&!rae.includes('<image')&&!rae.includes('rae-illustration.webp'),'Rae full character is vector-only');
@@ -61,6 +62,7 @@ if(process.exitCode)process.exit(process.exitCode);
 
 expect(aiCss.includes('BRAYROAI V30')&&aiCss.includes('scroll-snap-type:x proximity'),'AI process tabs expose a tactile mobile rail');
 expect(aiCss.includes('BRAYROAI V31')&&aiCss.includes('.faq summary:focus-visible'),'custom AI controls restore visible focus');
+expect(aiCss.includes('BRAYROAI V39 / compact architecture rhythm on phones')&&aiCss.includes('.arch-engine{min-height:22rem}')&&aiCss.includes('.arch-node:hover,.arch-node:focus-visible,.arch-node.is-active{transform:none}'),'mobile Second Brain architecture removes unnecessary dead space and touch-state drift');
 const aiJs=read('public/ai-service-pages.js');
 expect(aiJs.includes("this.stage.setAttribute('role','tabpanel')")&&aiJs.includes("tab.setAttribute('aria-controls',this.stage.id)")&&aiJs.includes('tab.tabIndex=active?0:-1')&&aiJs.includes("event.key==='Home'")&&aiJs.includes("event.key==='End'")&&aiJs.includes("aria-orientation")&&aiJs.includes("if(animate&&innerWidth<=900)activeTab.scrollIntoView"),'AI process tabs use complete roving-focus keyboard semantics and only center after user interaction');
 expect(aiJs.includes("this.status?.setAttribute('aria-live','polite')")&&aiJs.includes("node.setAttribute('aria-pressed',String(active))"),'AI architecture controls expose selection and live status semantics');

@@ -32,3 +32,14 @@
 }
 .process-tab:focus-visible{background:rgba(9,10,12,.075)}
 .arch-node:focus-visible{border-color:var(--orange)}
+
+
+/* BRAYROAI V39 / compact architecture rhythm on phones. */
+@media(max-width:620px){
+  .architecture{gap:0}
+  .arch-col{min-height:0;padding:1.15rem}
+  .arch-engine{min-height:22rem}
+  .arch-status{margin-top:2.5rem}
+  .arch-arrow{height:3rem}
+  .arch-node:hover,.arch-node:focus-visible,.arch-node.is-active{transform:none}
+}

@@ -1,36 +1,402 @@
 {
-  "$schema":"https://openapi.vercel.sh/vercel.json",
-  "framework":"vite",
-  "buildCommand":"npm run build",
-  "outputDirectory":"dist",
-  "cleanUrls":true,
-  "redirects":[
-    {"source":"/case-studies/fakhrimart","destination":"/clients/fakhrimart","permanent":true},
-    {"source":"/case-studies/fakhrimart.html","destination":"/clients/fakhrimart","permanent":true}
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/case-studies/fakhrimart",
+      "destination": "/clients/fakhrimart",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/fakhrimart.html",
+      "destination": "/clients/fakhrimart",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "destination": "/ae",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AE"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/plans",
+      "destination": "/ae/plans",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AE"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/clients",
+      "destination": "/ae/clients",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AE"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/clients/fakhrimart",
+      "destination": "/ae/clients/fakhrimart",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AE"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/ai-workflow-audit",
+      "destination": "/ae/ai-workflow-audit",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AE"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/company-second-brain",
+      "destination": "/ae/company-second-brain",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AE"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/founder",
+      "destination": "/ae/founder",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AE"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/terms",
+      "destination": "/ae/terms",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AE"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "destination": "/au",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AU"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/plans",
+      "destination": "/au/plans",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AU"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/clients",
+      "destination": "/au/clients",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AU"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/clients/fakhrimart",
+      "destination": "/au/clients/fakhrimart",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AU"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/ai-workflow-audit",
+      "destination": "/au/ai-workflow-audit",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AU"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/company-second-brain",
+      "destination": "/au/company-second-brain",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AU"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/founder",
+      "destination": "/au/founder",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AU"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    },
+    {
+      "source": "/terms",
+      "destination": "/au/terms",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "AU"
+        }
+      ],
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "brayro_market_manual"
+        }
+      ]
+    }
   ],
-  "rewrites":[
-    {"source":"/ae","destination":"/ae/index.html"},
-    {"source":"/ae/:path*","destination":"/ae/:path*/index.html"},
-    {"source":"/au","destination":"/au/index.html"},
-    {"source":"/au/:path*","destination":"/au/:path*/index.html"},
-    {"source":"/plans","destination":"/plans.html"},
-    {"source":"/founder","destination":"/founder.html"},
-    {"source":"/terms","destination":"/terms.html"},
-    {"source":"/ai-workflow-audit","destination":"/ai-workflow-audit.html"},
-    {"source":"/company-second-brain","destination":"/company-second-brain.html"},
-    {"source":"/clients","destination":"/clients.html"},
-    {"source":"/clients/fakhrimart","destination":"/fakhrimart-case-study.html"}
+  "rewrites": [
+    {
+      "source": "/ae",
+      "destination": "/ae/index.html"
+    },
+    {
+      "source": "/ae/:path*",
+      "destination": "/ae/:path*/index.html"
+    },
+    {
+      "source": "/au",
+      "destination": "/au/index.html"
+    },
+    {
+      "source": "/au/:path*",
+      "destination": "/au/:path*/index.html"
+    },
+    {
+      "source": "/plans",
+      "destination": "/plans.html"
+    },
+    {
+      "source": "/founder",
+      "destination": "/founder.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/ai-workflow-audit",
+      "destination": "/ai-workflow-audit.html"
+    },
+    {
+      "source": "/company-second-brain",
+      "destination": "/company-second-brain.html"
+    },
+    {
+      "source": "/clients",
+      "destination": "/clients.html"
+    },
+    {
+      "source": "/clients/fakhrimart",
+      "destination": "/fakhrimart-case-study.html"
+    }
   ],
-  "headers":[
-    {"source":"/(.*)","headers":[
-      {"key":"X-Content-Type-Options","value":"nosniff"},
-      {"key":"X-Frame-Options","value":"DENY"},
-      {"key":"Referrer-Policy","value":"strict-origin-when-cross-origin"},
-      {"key":"Permissions-Policy","value":"camera=(), microphone=(), geolocation=(), payment=(), usb=()"},
-      {"key":"Cross-Origin-Opener-Policy","value":"same-origin"},
-      {"key":"Content-Security-Policy","value":"default-src 'self'; img-src 'self' data:; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:; upgrade-insecure-requests"}
-    ]},
-    {"source":"/assets/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"}]},
-    {"source":"/(commercial-cut.css|commercial-cut.js|premium-polish.css|premium-polish.js|direction-pass.css|direction-pass.js|motion-v4.css|motion-v5.css|motion-v5.js|plans-page.css|plans-page.js|founder-page.css|founder-page.js|terms-page.css|terms-page.js|scrollcraft.css|scrollcraft.js|brayro-v12.css|brayro-v12.js|brayro-v13.css|brayro-v14.css|brayro-v14-polish.css|brayro-v14.js|brayro-v15.css|brayro-v15.js|v15-accessibility.css|experience-motion-v16.css|experience-motion-v16.js|cinematic-v18.css|cinematic-v18.js|cinematic-v20.css|cinematic-v20.js|brayro-cursor-v22.css|brayro-cursor-v22.js|rae.css|rae.js|ai-service-pages.css|ai-service-pages.js|client-work.css|client-work-accessibility.css|client-work.js)","headers":[{"key":"Cache-Control","value":"public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600"}]}
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; img-src 'self' data:; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/(commercial-cut.css|commercial-cut.js|premium-polish.css|premium-polish.js|direction-pass.css|direction-pass.js|motion-v4.css|motion-v5.css|motion-v5.js|plans-page.css|plans-page.js|founder-page.css|founder-page.js|terms-page.css|terms-page.js|scrollcraft.css|scrollcraft.js|brayro-v12.css|brayro-v12.js|brayro-v13.css|brayro-v14.css|brayro-v14-polish.css|brayro-v14.js|brayro-v15.css|brayro-v15.js|v15-accessibility.css|experience-motion-v16.css|experience-motion-v16.js|cinematic-v18.css|cinematic-v18.js|cinematic-v20.css|cinematic-v20.js|brayro-cursor-v22.css|brayro-cursor-v22.js|rae.css|rae.js|ai-service-pages.css|ai-service-pages.js|client-work.css|client-work-accessibility.css|client-work.js)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600"
+        }
+      ]
+    }
   ]
 }

@@ -76,7 +76,7 @@
       });
       const activeTab=this.tabs[index];
       this.stage.setAttribute('aria-labelledby',activeTab.id);
-      if(innerWidth<=900)activeTab.scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest',inline:'center'});
+      if(animate&&innerWidth<=900)activeTab.scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest',inline:'center'});
       const apply = () => {
         this.stage.dataset.stageNumber = String(index + 1).padStart(2,'0');
         this.label.textContent = item.label;

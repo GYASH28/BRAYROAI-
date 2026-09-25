@@ -160,3 +160,13 @@ test('blank full-screen navigation backdrop can dismiss the menu',async({page,br
   await menu.evaluate(node=>node.click());
   await expect(menu).toBeHidden();
 });
+
+
+for(const route of ['/ai-workflow-audit','/company-second-brain'])test(`AI detail pages stay at the hero on initial mobile load: ${route}`,async({page,browserName})=>{
+  test.skip(browserName!=='chromium','Initial mobile scroll position only needs one engine');
+  await page.setViewportSize({width:390,height:844});
+  await openPage(page,route);
+  await page.waitForTimeout(250);
+  expect(await page.evaluate(()=>Math.round(scrollY))).toBeLessThanOrEqual(2);
+  await expect(page.locator('.ai-hero h1')).toBeVisible();
+});

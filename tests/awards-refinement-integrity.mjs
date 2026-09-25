@@ -58,7 +58,7 @@ if(process.exitCode)process.exit(process.exitCode);
 expect(aiCss.includes('BRAYROAI V30')&&aiCss.includes('scroll-snap-type:x proximity'),'AI process tabs expose a tactile mobile rail');
 expect(aiCss.includes('BRAYROAI V31')&&aiCss.includes('.faq summary:focus-visible'),'custom AI controls restore visible focus');
 const aiJs=read('public/ai-service-pages.js');
-expect(aiJs.includes("this.stage.setAttribute('role','tabpanel')")&&aiJs.includes("tab.setAttribute('aria-controls',this.stage.id)")&&aiJs.includes('tab.tabIndex=active?0:-1')&&aiJs.includes("event.key==='Home'")&&aiJs.includes("event.key==='End'")&&aiJs.includes("aria-orientation")&&aiJs.includes('activeTab.scrollIntoView'),'AI process tabs use complete roving-focus keyboard semantics and bidirectional centering');
+expect(aiJs.includes("this.stage.setAttribute('role','tabpanel')")&&aiJs.includes("tab.setAttribute('aria-controls',this.stage.id)")&&aiJs.includes('tab.tabIndex=active?0:-1')&&aiJs.includes("event.key==='Home'")&&aiJs.includes("event.key==='End'")&&aiJs.includes("aria-orientation")&&aiJs.includes("if(animate&&innerWidth<=900)activeTab.scrollIntoView"),'AI process tabs use complete roving-focus keyboard semantics and only center after user interaction');
 expect(aiJs.includes("this.status?.setAttribute('aria-live','polite')")&&aiJs.includes("node.setAttribute('aria-pressed',String(active))"),'AI architecture controls expose selection and live status semantics');
 expect(home.includes('fakhrimart-case-desktop.webp" width="1440" height="900" loading="lazy" decoding="async"')&&home.includes('fakhrimart-case-mobile.webp" width="520" height="1040" loading="lazy" decoding="async"'),'homepage proof imagery uses the source aspect ratios and async decoding');
 

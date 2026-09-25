@@ -8,6 +8,14 @@ const clearOpening=async page=>{
 };
 
 const openHome=async page=>{
+  // Vite preview does not execute Vercel's /api directory. Keep browser runtime
+  // assertions focused on real client errors while the market journey suite
+  // separately verifies country auto-detection and manual overrides.
+  await page.route('**/api/market',route=>route.fulfill({
+    status:200,
+    contentType:'application/json',
+    body:JSON.stringify({country:'IN',market:'in',language:'en',source:'ci-preview'})
+  }));
   await page.goto('/',{waitUntil:'networkidle'});
   await clearOpening(page);
   await page.waitForFunction(()=>document.body.classList.contains('home-v20'));

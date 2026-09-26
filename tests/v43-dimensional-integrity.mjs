@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 
 const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 const three=read('src/vendor/three-r186.js');
+const core=read('src/vendor/three.core.js');
 const license=read('src/vendor/THREE-LICENSE.txt');
 const rae3d=read('src/rae-3d-island.js');
 const islands=read('src/react-islands.js');

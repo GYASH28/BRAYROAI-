@@ -70,6 +70,7 @@ export class RaeUI{
     this.feed.addEventListener('scroll',()=>{const gap=this.feed.scrollHeight-this.feed.scrollTop-this.feed.clientHeight;this.lastUserNearBottom=gap<90;this.jump.hidden=this.lastUserNearBottom},{passive:true});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&this.open){event.preventDefault();this.setOpen(false)}});
     this.panel.addEventListener('keydown',event=>this.trapFocus(event));
+    this.panel.addEventListener('focusin',event=>{if(this.open&&event.target!==this.input){clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer)}});
     this.resizeHandler=()=>{this.syncLauncherPosition(this.open);this.syncModality()};addEventListener('resize',this.resizeHandler,{passive:true});
     if(window.visualViewport){this.visualViewportHandler=()=>{this.root.style.setProperty('--rae-vv-height',`${visualViewport.height}px`);this.root.toggleAttribute('data-keyboard',visualViewport.height<innerHeight*.78);this.syncLauncherPosition(this.open)};visualViewport.addEventListener('resize',this.visualViewportHandler);this.visualViewportHandler()}
   }

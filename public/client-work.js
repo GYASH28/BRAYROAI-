@@ -111,38 +111,16 @@
     }
   }
 
-  class Progress {
-    constructor() {
-      this.bar = qs('[data-client-progress]');
-      if (!this.bar) return;
-      this.frame = 0;
-      addEventListener('scroll', () => this.schedule(), { passive: true });
-      addEventListener('resize', () => this.schedule(), { passive: true });
-      this.schedule();
-    }
-    schedule() {
-      if (this.frame) return;
-      this.frame = requestAnimationFrame(() => {
-        this.frame = 0;
-        const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-        this.bar.style.transform = `scaleX(${Math.min(1, Math.max(0, scrollY / max)).toFixed(4)})`;
-      });
+  class SurfaceSpotlight {
+    constructor(){
+      if(reduced||!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+      this.selector='[data-client-surface],.client-card__media,.case-decision';
+      document.addEventListener('pointermove',event=>{
+        const surface=event.target.closest?.(this.selector);if(!surface)return;
+        const rect=surface.getBoundingClientRect();surface.style.setProperty('--client-x',(event.clientX-rect.left)+'px');surface.style.setProperty('--client-y',(event.clientY-rect.top)+'px');
+      },{passive:true});
     }
   }
-
-  class CursorLight {
-    constructor() {
-      if (reduced || !matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-      qsa('[data-client-surface]').forEach(surface => {
-        surface.addEventListener('pointermove', event => {
-          const rect = surface.getBoundingClientRect();
-          surface.style.setProperty('--client-x', `${event.clientX - rect.left}px`);
-          surface.style.setProperty('--client-y', `${event.clientY - rect.top}px`);
-        }, { passive: true });
-      });
-    }
-  }
-
   class CaseStudyTimeline {
     constructor() {
       this.sections = qsa('[data-case-section]');
@@ -162,8 +140,7 @@
   ensureAccessibilityStyles();
   new ClientArchive();
   new Reveal();
-  new Progress();
-  new CursorLight();
+  new SurfaceSpotlight();
   new CaseStudyTimeline();
 
   window.BRAYRO_CLIENTS = Object.freeze(CLIENTS.map(client => Object.freeze({ ...client })));

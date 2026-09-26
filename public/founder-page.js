@@ -188,27 +188,42 @@ class FounderTimeline {
   }
 }
 
+class CachedFounderTimeline {
+  constructor(){
+    this.records=[...document.querySelectorAll('[data-founder-scene]')].map(scene=>({scene,top:0,height:1}));
+    this.frame=0;this.y=scrollY;this.update=this.update.bind(this);
+    this.measure();
+    if('ResizeObserver' in window){this.ro=new ResizeObserver(()=>{this.measure();this.schedule()});this.records.forEach(record=>this.ro.observe(record.scene))}
+    addEventListener('scroll',()=>this.schedule(),{passive:true});
+    addEventListener('resize',()=>{this.measure();this.schedule()},{passive:true});
+    document.fonts?.ready?.then(()=>{this.measure();this.schedule()});
+    this.schedule();
+  }
+  measure(){this.records.forEach(record=>{const rect=record.scene.getBoundingClientRect();record.top=rect.top+scrollY;record.height=Math.max(1,rect.height||record.scene.offsetHeight||1)})}
+  schedule(){if(!this.frame)this.frame=requestAnimationFrame(this.update)}
+  update(){
+    this.frame=0;this.y+=(scrollY-this.y)*(founderReducedMotion?1:.18);if(Math.abs(scrollY-this.y)<.2)this.y=scrollY;
+    const vh=Math.max(innerHeight,1);
+    this.records.forEach(record=>{
+      const top=record.top-this.y,bottom=top+record.height,live=bottom>-vh*.35&&top<vh*1.35;
+      record.scene.classList.toggle('is-founder-live',live);if(!live)return;
+      const local=founderClamp(0,(vh*.85-top)/(record.height+vh*.7),1);record.scene.style.setProperty('--founder-p',local.toFixed(4));
+    });
+    if(this.y!==scrollY)this.schedule();
+  }
+}
 new FounderOpening();
 new FounderReveal();
 new PortraitReveal();
 new PrincipleInstrument();
 new FounderSurfaceLight();
-new FounderTimeline();
+new CachedFounderTimeline();
 const founderProjectCta=document.querySelector('[data-founder-project-cta]');
 if(founderProjectCta){
   const market=window.BRAYRO_MARKET;
   const brief=(founderArabic?['مرحباً ياش،','','أود مناقشة مشروع مع BRAYROAI.','','الشركة أو العلامة:','ما الذي يحتاج إلى تحسين:','ما الذي ينبغي أن يساعد الموقع أو المنتج الناس على إنجازه:','الميزانية والموعد التقريبي:','','طريقة التواصل المناسبة:']:['Hi Yash,','','I would like to discuss a project with BRAYROAI.','','Business / brand:','What needs to improve:','What should the website or product help people do:','Approximate budget and target date:','','Best way to reach me:']).join('\n');
-  const emailHref=`mailto:yashganesh.work@gmail.com?subject=${encodeURIComponent(`BRAYROAI / ${market?.id||'India'} / founder project`)}&body=${encodeURIComponent(`Market: ${market?.id||'India'} / ${market?.currency||'INR'}.\n${brief}`)}`;
-  founderProjectCta.href=`https://wa.me/919175524637?text=${encodeURIComponent(`Market: ${market?.id||'India'} / ${market?.currency||'INR'}.\n${brief}`)}`;founderProjectCta.target='_blank';founderProjectCta.rel='noreferrer';founderProjectCta.innerHTML=founderArabic?'تواصل عبر واتساب <span>↗</span>':'Chat on WhatsApp <span>↗</span>';
+  const routedBrief='Market: '+(market?.id||'India')+' / '+(market?.currency||'INR')+'.\n'+brief+'\n\nSource: /founder';
+  const emailHref='mailto:yashganesh.work@gmail.com?subject='+encodeURIComponent('BRAYROAI / '+(market?.id||'India')+' / founder project')+'&body='+encodeURIComponent(routedBrief);
+  founderProjectCta.href='https://wa.me/919175524637?text='+encodeURIComponent(routedBrief);founderProjectCta.target='_blank';founderProjectCta.rel='noreferrer';founderProjectCta.innerHTML=founderArabic?'تواصل عبر واتساب <span>↗</span>':'Chat on WhatsApp <span>↗</span>';
   const email=document.createElement('a');email.className='founder-email-fallback';email.href=emailHref;email.textContent=founderArabic?'تفضل البريد؟ أرسل موجز المشروع ↗':'Prefer email? Send the project brief ↗';founderProjectCta.after(email);
 }
-let founderScrollCraftMounted = false;
-const founderMountTriggers = ['pointerdown', 'wheel', 'touchstart', 'keydown', 'scroll'];
-const mountFounderScrollCraft = () => {
-  if (founderScrollCraftMounted || !window.ScrollCraft) return;
-  founderScrollCraftMounted = true;
-  founderMountTriggers.forEach((eventName) => removeEventListener(eventName, mountFounderScrollCraft));
-  window.ScrollCraft.mount(document.body);
-};
-if (founderReducedMotion) mountFounderScrollCraft();
-else founderMountTriggers.forEach((eventName) => addEventListener(eventName, mountFounderScrollCraft, { once: true, passive: eventName !== 'keydown' }));

@@ -22,6 +22,7 @@ const buildHomeStyles=()=>readHomeStyles().replace(/\/\*[\s\S]*?\*\//g,'').repla
 const normalisePath=(url='/')=>{const parsed=new URL(url,'http://brayro.local');return{parsed,pathname:parsed.pathname.length>1?parsed.pathname.replace(/\/$/,''):parsed.pathname}};
 const mountCleanRoutes=server=>{server.middlewares.use((req,_res,next)=>{if(!req.url)return next();const{parsed,pathname}=normalisePath(req.url),target=cleanRouteMap[pathname];if(target)req.url=`${target}${parsed.search}`;next()})};
 const mountLocalePreviewRoutes=server=>{server.middlewares.use((req,_res,next)=>{if(!req.url)return next();const{parsed,pathname}=normalisePath(req.url);if(/^\/(?:ae(?:\/ar)?|au)(?:\/.*)?$/.test(pathname)&&!pathname.includes('.'))req.url=`${pathname.replace(/\/$/,'')}/index.html${parsed.search}`;next()})};
+const mountMarketPreviewApi=server=>{server.middlewares.use((req,res,next)=>{if(!req.url)return next();const{pathname}=normalisePath(req.url);if(pathname!=='/api/market')return next();res.statusCode=200;res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','private, no-store, max-age=0');res.end(JSON.stringify({country:null,market:'in',language:'en',source:'local-preview'}))})};
 const serveHomeStyleBundle=server=>{server.middlewares.use((req,res,next)=>{if(!req.url)return next();const{pathname}=normalisePath(req.url);if(pathname!=='/assets/brayro-home.css')return next();res.statusCode=200;res.setHeader('Content-Type','text/css; charset=utf-8');res.setHeader('Cache-Control','no-cache');res.end(readHomeStyles())})};
 const pagePathFor=(filename='')=>filename.endsWith('/plans.html')?'/plans':filename.endsWith('/founder.html')?'/founder':filename.endsWith('/terms.html')?'/terms':filename.endsWith('/ai-workflow-audit.html')?'/ai-workflow-audit':filename.endsWith('/company-second-brain.html')?'/company-second-brain':filename.endsWith('/clients.html')?'/clients':filename.endsWith('/fakhrimart-case-study.html')?'/clients/fakhrimart':'/';
 const globalLinks=Object.freeze([['Home','/'],['Capabilities','/#services'],['Clients','/clients'],['AI','/plans#ai-systems'],['Plans','/plans'],['Founder','/founder'],['Terms','/terms'],['Contact','/#contact']]);
@@ -53,8 +54,8 @@ const removeHomepageStyleLinks=html=>{let next=html;for(const file of homeStyleF
 
 const experienceTransform={
   name:'brayro-experience-transform',
-  configureServer(server){mountCleanRoutes(server);serveHomeStyleBundle(server)},
-  configurePreviewServer(server){mountLocalePreviewRoutes(server);mountCleanRoutes(server)},
+  configureServer(server){mountMarketPreviewApi(server);mountCleanRoutes(server);serveHomeStyleBundle(server)},
+  configurePreviewServer(server){mountMarketPreviewApi(server);mountLocalePreviewRoutes(server);mountCleanRoutes(server)},
   generateBundle(){this.emitFile({type:'asset',fileName:'assets/brayro-home.css',source:buildHomeStyles()})},
   transformIndexHtml:{order:'pre',handler(html,context){
     const filename=context?.filename||'',isHome=context?.path==='/'||context?.path==='/index.html'||filename.endsWith('/index.html'),isPlans=filename.endsWith('/plans.html'),isAiDetail=filename.endsWith('/ai-workflow-audit.html')||filename.endsWith('/company-second-brain.html'),isFakhriCase=filename.endsWith('/fakhrimart-case-study.html'),canonicalUrl=`${productionOrigin}${pagePathFor(filename)}`,shareImage=isFakhriCase?`${productionOrigin}/assets/fakhrimart-case-desktop.png`:`${productionOrigin}/assets/hero-background.webp`;
@@ -107,7 +108,7 @@ const experienceTransform={
     if(!isHome&&!html.includes('href="/experience-motion-v16.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/experience-motion-v16.css" data-v16-motion>');
     if(!isHome&&!html.includes('href="/brayro-cursor-v22.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/brayro-cursor-v22.css" data-v22-cursor>');
     if(!isHome&&!html.includes('href="/rae.css"'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/rae.css" data-rae-style>');
-    if(!html.includes('src="/experience-motion-v16.js"'))html=html.replace('</body>','  <script src="/experience-motion-v16.js" data-v16-motion></script>\n</body>');
+    if(!isHome&&!html.includes('src="/experience-motion-v16.js"'))html=html.replace('</body>','  <script src="/experience-motion-v16.js" data-v16-motion></script>\n</body>');
     if(isHome&&!html.includes('src="/cinematic-v18.js"'))html=html.replace('</body>','  <script src="/cinematic-v18.js" data-v18-cinematic></script>\n</body>');
     if(isHome&&!html.includes('src="/cinematic-v20.js"'))html=html.replace('</body>','  <script src="/cinematic-v20.js" data-v20-polish></script>\n</body>');
     if(!html.includes('src="/brayro-cursor-v22.js"'))html=html.replace('</body>','  <script src="/brayro-cursor-v22.js" data-v22-cursor></script>\n</body>');
@@ -121,6 +122,7 @@ const experienceTransform={
       if(!isHome)html=injectBefore(html,'</body>',innerFooter);
       html=injectBefore(html,'</body>','  <script src="/global-shell.js" defer></script>');
       html=injectBefore(html,'</body>','  <script type="module" src="/src/market-switcher.js"></script>');
+      html=injectBefore(html,'</body>','  <script type="module" src="/src/react-islands.js" data-react-islands></script>');
       html=injectBefore(html,'</body>','  <script src="/market-events.js" defer></script>');
     }
     if(!html.includes('data-market-context'))html=injectBefore(html,'</head>',`  <script data-market-context>${readFileSync(resolve(process.cwd(),'public/market-context.js'),'utf8')}</script>`);

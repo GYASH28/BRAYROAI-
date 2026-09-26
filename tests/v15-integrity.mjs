@@ -24,7 +24,7 @@ expect(!/shader|neural|robot imagery/i.test(v15css),'V15 visual layer must avoid
 
 for(const token of ['AI WORKFLOW AUDIT / ₹9,999','Five steps.','Workflow map','Opportunity shortlist','Priority matrix','30-minute review'])expect(audit.includes(token),`Audit page missing ${token}`);
 for(const token of ['COMPANY SECOND BRAIN / FROM ₹29,999','APPROVED SOURCES','KNOWLEDGE LAYER','BASE SCOPE VS EXPANDED SCOPE','14 days of launch support','Knowledge Care'])expect(brain.includes(token),`Second Brain page missing ${token}`);
-expect(audit.includes('/company-second-brain')&&brain.includes('/ai-workflow-audit'),'AI detail pages are not cross-linked');
+expect(vite.includes('const innerFooter=')&&vite.includes('href="/ai-workflow-audit"')&&vite.includes('href="/company-second-brain"')&&vite.includes("if(!isHome)html=injectBefore(html,'</body>',innerFooter)"),'global footer no longer cross-links the AI detail pages');
 expect(audit.includes('/ai-service-pages.css')&&brain.includes('/ai-service-pages.css'),'AI detail pages missing shared CSS');
 expect(audit.includes('/ai-service-pages.js')&&brain.includes('/ai-service-pages.js'),'AI detail pages missing shared runtime');
 for(const token of ['class ProcessLab','class ArchitectureLab','class FAQAccordion'])expect(serviceJs.includes(token),`AI service runtime missing ${token}`);

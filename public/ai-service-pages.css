@@ -43,3 +43,21 @@
   .arch-arrow{height:3rem}
   .arch-node:hover,.arch-node:focus-visible,.arch-node.is-active{transform:none}
 }
+
+
+/* V41 / lightweight AI signal orb: React-rendered, CSS-animated, offscreen-pausable. */
+.ai-signal-react-host:empty{display:none}
+.ai-signal-react-host{position:relative;z-index:3;width:min(760px,100%);margin-top:clamp(1.8rem,4vh,3.2rem)}
+.ai-signal-react{--signal-x:50%;--signal-y:50%;display:grid;grid-template-columns:minmax(120px,180px) minmax(0,1fr);gap:clamp(1.2rem,3vw,2.6rem);align-items:center;padding:clamp(1rem,2vw,1.5rem);border:1px solid rgba(241,238,231,.14);background:linear-gradient(145deg,rgba(241,238,231,.055),rgba(241,238,231,.018));box-shadow:0 22px 60px rgba(0,0,0,.16);overflow:hidden}
+.ai-signal-react::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(360px circle at var(--spotlight-x,50%) var(--spotlight-y,50%),var(--spotlight-color,rgba(255,90,31,.12)),transparent 64%);opacity:.85}
+.ai-signal-react__orb{position:relative;aspect-ratio:1;border-radius:50%;isolation:isolate;background:radial-gradient(circle at 34% 30%,rgba(255,255,255,.62),rgba(255,138,44,.34) 12%,rgba(255,90,31,.14) 38%,rgba(13,15,20,.1) 62%,transparent 68%);box-shadow:0 0 50px rgba(255,90,31,.12),inset 0 0 40px rgba(255,255,255,.06)}
+.ai-signal-react__orb::after{content:"";position:absolute;inset:22%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,rgba(255,155,67,.9) 12%,rgba(255,90,31,.52) 35%,rgba(255,90,31,.06) 68%,transparent 72%);filter:blur(.2px);box-shadow:0 0 34px rgba(255,109,43,.32)}
+.ai-signal-react__orb i{position:absolute;inset:8%;border:1px solid rgba(241,238,231,.2);border-radius:48% 52% 44% 56%;animation:aiSignalSpin 8s linear infinite}
+.ai-signal-react__orb i:nth-child(2){inset:16%;border-color:rgba(255,138,44,.34);animation-duration:6.5s;animation-direction:reverse}
+.ai-signal-react__orb i:nth-child(3){inset:3%;border-color:rgba(131,168,255,.18);border-radius:55% 45% 53% 47%;animation-duration:11s}
+.ai-signal-react__orb b{position:absolute;inset:31%;border-radius:50%;border:1px solid rgba(255,255,255,.18);animation:aiSignalPulse 2.8s ease-in-out infinite}
+.ai-signal-react__copy{position:relative;z-index:1;display:grid;gap:.8rem}.ai-signal-react__copy>span{color:#ff8a3d;font:600 .56rem/1 "DM Mono",monospace;letter-spacing:.14em}.ai-signal-react__copy>strong{max-width:24ch;font:600 clamp(1.35rem,2.4vw,2.25rem)/1.04 "Space Grotesk",sans-serif;letter-spacing:-.045em}
+.ai-signal-react__steps{display:flex;flex-wrap:wrap;gap:.45rem}.ai-signal-react__steps small{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem .62rem;border:1px solid rgba(241,238,231,.12);border-radius:999px;color:rgba(241,238,231,.68);font:500 .5rem/1 "DM Mono",monospace;letter-spacing:.055em}.ai-signal-react__steps small b{position:static;border:0;animation:none;color:#ff9b55;font:inherit}
+@keyframes aiSignalSpin{to{transform:rotate(360deg)}}@keyframes aiSignalPulse{0%,100%{transform:scale(.9);opacity:.45}50%{transform:scale(1.14);opacity:.9}}
+@media(max-width:620px){.ai-signal-react{grid-template-columns:92px minmax(0,1fr);gap:1rem}.ai-signal-react__steps small{font-size:.46rem;padding:.44rem .52rem}}
+@media(prefers-reduced-motion:reduce){.ai-signal-react__orb i,.ai-signal-react__orb b{animation:none!important}.ai-signal-react::before{display:none}}

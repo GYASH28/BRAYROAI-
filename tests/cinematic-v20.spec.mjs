@@ -8,6 +8,14 @@ const clearOpening=async page=>{
 };
 
 const openHome=async page=>{
+  // Vite preview does not execute Vercel's /api directory. Keep browser runtime
+  // assertions focused on real client errors while the market journey suite
+  // separately verifies country auto-detection and manual overrides.
+  await page.route('**/api/market',route=>route.fulfill({
+    status:200,
+    contentType:'application/json',
+    body:JSON.stringify({country:'IN',market:'in',language:'en',source:'ci-preview'})
+  }));
   await page.goto('/',{waitUntil:'networkidle'});
   await clearOpening(page);
   await page.waitForFunction(()=>document.body.classList.contains('home-v20'));
@@ -165,4 +173,47 @@ test('final polish keeps homepage lean and skip links keyboard-only',async({page
   await skip.focus();
   await expect.poll(()=>skip.evaluate(node=>getComputedStyle(node).opacity)).toBe('1');
   await expect.poll(()=>skip.evaluate(node=>getComputedStyle(node).pointerEvents)).toBe('auto');
+});
+
+
+test('scene visibility observer pauses offscreen decorative loops without a second scroll runtime',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await openHome(page);
+  await scrollTo(page,'#services');
+  await expect(page.locator('#services')).toHaveClass(/is-scene-live/);
+  await expect(page.locator('.v20-signal-field__orbit').first()).toHaveCSS('animation-play-state','running');
+  await scrollTo(page,'#contact');
+  await expect(page.locator('#services')).not.toHaveClass(/is-scene-live/);
+  await expect(page.locator('.v20-signal-field__orbit').first()).toHaveCSS('animation-play-state','paused');
+});
+
+
+test('lazy React plan finder enhances the published fallback without changing its routes',async({page})=>{
+  await page.route('**/api/market',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({country:'IN',market:'in',language:'en',source:'ci-preview'})}));
+  await page.goto('/plans',{waitUntil:'domcontentloaded'});
+  await scrollTo(page,'#choose');
+  const host=page.locator('[data-react-plan-island]');
+  await expect(host.locator('.plan-react')).toBeVisible({timeout:5000});
+  await expect(page.locator('#choose .plan-decision__grid')).toBeHidden();
+  const choices=host.locator('.plan-react__choice');
+  await expect(choices).toHaveCount(3);
+  await choices.nth(1).click();
+  await expect(choices.nth(1)).toHaveAttribute('aria-checked','true');
+  await expect(host.locator('.plan-react__preview a')).toHaveAttribute('href','#builds');
+});
+
+test('lazy React project brief creates a useful WhatsApp handoff near the final CTA',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await openHome(page);
+  await scrollTo(page,'#contact');
+  const host=page.locator('[data-react-brief-island]');
+  await expect(host.locator('.brief-react')).toBeVisible({timeout:5000});
+  await expect(page.locator('#contact .close__ways')).toBeHidden();
+  const typeButtons=host.locator('.brief-react__grid fieldset').first().locator('button');
+  const stageButtons=host.locator('.brief-react__grid fieldset').nth(1).locator('button');
+  await typeButtons.nth(1).click();
+  await stageButtons.nth(1).click();
+  const href=await host.locator('.brief-react__actions a').first().getAttribute('href');
+  expect(href).toContain('wa.me/919175524637');
+  expect(decodeURIComponent(href.replace(/\+/g,' '))).toContain('AI system');
 });

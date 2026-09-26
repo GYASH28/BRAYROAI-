@@ -36,7 +36,10 @@ test('FakhriMart case study exposes evidence, live project and technical story',
   await page.goto('/clients/fakhrimart',{waitUntil:'networkidle'});
   await expect(page.locator('h1')).toContainText('Fakhri');
   await expect(page.locator('.global-nav__links a[href="/clients"]')).toHaveAttribute('aria-current','page');
-  await expect(page.locator('a[href="https://fakhriyarns.vercel.app/"]')).toHaveCount(4);
+  const liveLinks=page.locator('a[href="https://fakhriyarns.vercel.app/"]');
+  await expect(liveLinks).toHaveCount(2);
+  for(let i=0;i<2;i++){await expect(liveLinks.nth(i)).toHaveAttribute('target','_blank');await expect(liveLinks.nth(i)).toHaveAttribute('rel',/noreferrer/)}
+  await expect(page.locator('.client-close__email')).toHaveAttribute('href',/^mailto:/);
   const body=await page.locator('body').textContent();
   for(const text of ['Not a fake ecommerce store.','CATALOGUE ARCHITECTURE','04 / CONVERSION','From browsing to a useful enquiry.','React 19','React Router 8','No fabricated conversion uplift'])expect(body).toContain(text);
   await expect(page.locator('img[src="/assets/fakhrimart-case-desktop.webp"]')).toHaveCount(2);

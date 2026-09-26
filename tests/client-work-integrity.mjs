@@ -1,8 +1,10 @@
 import { readFileSync } from 'node:fs';
+import { load } from 'cheerio';
 
 const read=path=>readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
 const clients=read('clients.html');
 const fakhri=read('fakhrimart-case-study.html');
+const fakhriVisible=load(fakhri)('body').text();
 const js=read('public/client-work.js');
 const css=read('public/client-work.css');
 const a11yCss=read('public/client-work-accessibility.css');
@@ -36,7 +38,7 @@ for(const asset of ['client-work.css','client-work-accessibility.css','client-wo
 expect(materializer.includes("['clients.html', 'clients/index.html'")&&materializer.includes("['fakhrimart-case-study.html', 'clients/fakhrimart/index.html'"),'Physical clean-route materialization is missing');
 expect(pkg.includes('scripts/materialize-clean-routes.mjs')&&pkg.includes('tests/dist-integrity.mjs'),'Build does not materialize and verify clean static routes');
 
-expect(!/\b\d+%\b/.test(fakhri),'FakhriMart case study contains an unverified percentage claim');
+expect(!/\b\d+(?:\.\d+)?\s*%/.test(fakhriVisible),'FakhriMart case study contains an unverified visible percentage claim');
 expect(!fakhri.includes('class="client-testimonial"'),'FakhriMart case study contains an unsupported testimonial component');
 expect(fakhri.includes('No fabricated conversion uplift, revenue percentage or customer testimonial.'),'No-fake-proof statement is missing');
 expect(js.includes("matchMedia('(prefers-reduced-motion: reduce)')"),'Client runtime missing reduced-motion handling');

@@ -70,6 +70,7 @@ export class RaeUI{
     this.feed.addEventListener('scroll',()=>{const gap=this.feed.scrollHeight-this.feed.scrollTop-this.feed.clientHeight;this.lastUserNearBottom=gap<90;this.jump.hidden=this.lastUserNearBottom},{passive:true});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&this.open){event.preventDefault();this.setOpen(false)}});
     this.panel.addEventListener('keydown',event=>this.trapFocus(event));
+    this.panel.addEventListener('focusin',event=>{if(this.open&&event.target!==this.input){clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer)}});
     this.resizeHandler=()=>{this.syncLauncherPosition(this.open);this.syncModality()};addEventListener('resize',this.resizeHandler,{passive:true});
     if(window.visualViewport){this.visualViewportHandler=()=>{this.root.style.setProperty('--rae-vv-height',`${visualViewport.height}px`);this.root.toggleAttribute('data-keyboard',visualViewport.height<innerHeight*.78);this.syncLauncherPosition(this.open)};visualViewport.addEventListener('resize',this.visualViewportHandler);this.visualViewportHandler()}
   }
@@ -86,7 +87,8 @@ export class RaeUI{
   settleFocus(target,expectOpen){
     clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer);const delays=[0,72,180,360,620];let index=0;
     const blockedByOverlay=()=>!expectOpen&&(document.documentElement.classList.contains('global-menu-open')||document.querySelector('#market-sheet[open]'));
-    const apply=()=>{if(this.open!==expectOpen||!target?.isConnected||blockedByOverlay())return;try{target.focus({preventScroll:true})}catch{}if(index<delays.length-1){index+=1;this.focusTimer=setTimeout(apply,delays[index])}};
+    const focusWasMoved=()=>expectOpen&&document.activeElement&&document.activeElement!==document.body&&document.activeElement!==target&&document.activeElement!==this.lastFocused;
+    const apply=()=>{if(this.open!==expectOpen||!target?.isConnected||blockedByOverlay()||focusWasMoved())return;try{target.focus({preventScroll:true})}catch{}if(index<delays.length-1){index+=1;this.focusTimer=setTimeout(apply,delays[index])}};
     queueMicrotask(apply);
     // Heavy page transitions can finish after the short focus retries. Recover only
     // when focus has fallen outside the open dialog or remained inside the closed one.

@@ -14,7 +14,10 @@
   else if(path==='/plans'||path.endsWith('/plans.html'))body.classList.add('plans-v16');
   else if(path==='/founder'||path.endsWith('/founder.html'))body.classList.add('founder-v16');
   else if(path==='/terms'||path.endsWith('/terms.html'))body.classList.add('terms-v16');
+  else if(path.startsWith('/clients')||path.endsWith('/clients.html')||path.endsWith('/fakhrimart-case-study.html'))body.classList.add('client-v16');
   else if(path==='/ai-workflow-audit'||path==='/company-second-brain'||path.endsWith('/ai-workflow-audit.html')||path.endsWith('/company-second-brain.html'))body.classList.add('ai-v16');
+  const hasDedicatedSceneRuntime=body.classList.contains('plans-v16')||body.classList.contains('founder-v16');
+
   // Native mobile scene motion and the homepage interaction scripts already
   // cover this route. Avoid decorating every section during its first paint.
   if(isHome&&matchMedia('(max-width:760px), (pointer:coarse)').matches)return;
@@ -22,15 +25,7 @@
   class PageCurtain{
     constructor(){
       this.node=document.createElement('div');this.node.className='v16-page-transition is-entering';this.node.setAttribute('aria-hidden','true');this.node.innerHTML='<i></i><i></i><i></i><i></i>';body.append(this.node);
-      if(!reduced)setTimeout(()=>this.node.classList.remove('is-entering'),820);else this.node.classList.remove('is-entering');
-      document.addEventListener('click',event=>this.onClick(event));
-    }
-    onClick(event){
-      if(reduced||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
-      const link=event.target.closest('a[href]');if(!link||link.target==='_blank'||link.hasAttribute('download'))return;
-      const href=link.getAttribute('href')||'';if(!href||href.startsWith('#')||href.startsWith('mailto:')||href.startsWith('tel:')||href.startsWith('javascript:'))return;
-      let url;try{url=new URL(link.href,location.href)}catch{return}if(url.origin!==location.origin)return;if(url.pathname===location.pathname&&url.hash)return;
-      event.preventDefault();this.node.classList.remove('is-entering');this.node.classList.add('is-leaving');setTimeout(()=>{location.href=url.href},270);
+      if(!reduced)setTimeout(()=>this.node.classList.remove('is-entering'),520);else this.node.classList.remove('is-entering');
     }
   }
 
@@ -50,8 +45,9 @@
   class SceneKinetics{
     constructor(){
       this.records=[...document.querySelectorAll('main > section,[data-scene],[data-plan-scene],[data-founder-scene]')].filter((scene,index,array)=>array.indexOf(scene)===index).map((scene,index)=>({scene,index,top:0,height:1}));
-      this.frame=0;this.lastY=scrollY;this.velocity=0;this.measure();
+      this.frame=0;this.lastY=scrollY;this.velocity=0;this.active=new Set(this.records);this.measure();
       this.records.forEach(({scene,index})=>{scene.dataset.v16Scene='';scene.dataset.v16Index=String(index);if(!scene.querySelector(':scope > .v16-section-line')){const line=document.createElement('i');line.className='v16-section-line';line.setAttribute('aria-hidden','true');scene.prepend(line)}});
+      if('IntersectionObserver'in window){this.active.clear();this.io=new IntersectionObserver(entries=>{entries.forEach(entry=>{const record=this.records.find(item=>item.scene===entry.target);if(!record)return;if(entry.isIntersecting)this.active.add(record);else this.active.delete(record)});this.schedule()},{rootMargin:'75% 0px'});this.records.forEach(record=>this.io.observe(record.scene))}
       if('ResizeObserver'in window){this.ro=new ResizeObserver(()=>{this.measure();this.schedule()});this.records.forEach(record=>this.ro.observe(record.scene))}
       addEventListener('scroll',()=>this.schedule(),{passive:true});addEventListener('resize',()=>{this.measure();this.schedule()},{passive:true});document.fonts?.ready?.then(()=>{this.measure();this.schedule()});this.schedule();
     }
@@ -75,6 +71,17 @@
     }
   }
 
+  class SceneLifecycle{
+    constructor(){
+      this.scenes=[...document.querySelectorAll('main > section')];
+      const syncVisibility=()=>document.documentElement.classList.toggle('v16-document-hidden',document.hidden);
+      document.addEventListener('visibilitychange',syncVisibility);syncVisibility();
+      if(!this.scenes.length)return;
+      if(!('IntersectionObserver'in window)){this.scenes.forEach(scene=>scene.classList.add('is-v16-live'));return}
+      this.io=new IntersectionObserver(entries=>entries.forEach(entry=>entry.target.classList.toggle('is-v16-live',entry.isIntersecting)),{rootMargin:'35% 0px',threshold:0});
+      this.scenes.forEach(scene=>this.io.observe(scene));
+    }
+  }
   class SurfaceDecorations{
     constructor(){
       const selector='.build-card,.ai-plan-card,.compare-table,.principle-instrument,.terms-quick a,.terms-card,.process-stage,.deliver,.matrix-row,.scope-row,.arch-node,.v12-product-card,[data-v14-rate]';
@@ -93,7 +100,8 @@
 
   new PageCurtain();
   new RevealDirector();
-  if(!isHome)new SceneKinetics();
+  new SceneLifecycle();
+  if(!isHome&&!hasDedicatedSceneRuntime)new SceneKinetics();
   new SurfaceDecorations();
   new InteractionChoreography();
 })();

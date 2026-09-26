@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 const read=file=>fs.readFileSync(file,'utf8'),errors=[],expect=(condition,message)=>{if(!condition)errors.push(message)};
 const css=read('public/cinematic-v20.css'),js=read('public/cinematic-v20.js'),v15css=read('public/brayro-v15.css'),v15js=read('public/brayro-v15.js'),cursorJs=read('public/brayro-cursor-v22.js'),cursorCss=read('public/brayro-cursor-v22.css'),vite=read('vite.config.mjs'),pkg=read('package.json'),pw=read('playwright.config.mjs');
-for(const token of ['class ComponentMounts','class HeroTextCycle','class SelectorDirector','class PolishDirector','mountHeroLens()','mountHeroTextCycle()','mountServicesSignal()','mountSelectorIndicator()','mountFilmGate()','mountWorkAperture()','mountAIPaths()','mountPricingLights()','mountFounderScan()','mountContactLines()','mountShineButtons()','mountSceneRail()'])expect(js.includes(token),`V20 runtime missing ${token}`);
+for(const token of ['class ComponentMounts','class HeroTextCycle','class SelectorDirector','class SceneVisibilityDirector','mountHeroLens()','mountHeroTextCycle()','mountServicesSignal()','mountSelectorIndicator()','mountFilmGate()','mountWorkAperture()','mountAIPaths()','mountPricingLights()','mountFounderScan()','mountContactLines()','mountShineButtons()','mountSceneRail()'])expect(js.includes(token),`V20 runtime missing ${token}`);
 for(const token of ['.v20-scene-rail','.v20-lens','.v20-text-cycle','.v20-signal-field','.v20-selector-indicator','.v20-film-gate','.v20-aperture','.v20-data-path','.v20-rate-light','.v20-portrait-scan','.v20-background-lines','.v20-shine-button'])expect(css.includes(token),`V20 CSS missing ${token}`);
 expect(!js.includes('class PointerPolish')&&!js.includes('new PointerPolish'),'V20 duplicate pointer runtime still ships');
 expect(!js.includes('getComputedStyle('),'V20 frame loop must not force style reads');
-expect(js.includes('this.records=')&&js.includes('record.top=rect.top+scrollY'),'V20 cached scene geometry missing');
+expect(js.includes("class SceneVisibilityDirector")&&js.includes("is-scene-live"),'V20 scene visibility observer missing');
+expect(!js.includes("addEventListener('scroll'"),'V20 must not ship a second homepage scroll director');
+expect(js.includes("IntersectionObserver")&&js.includes("this.pause()"),'V20 hero/offscreen work must be visibility gated');
 expect(cursorJs.includes("style.setProperty('--v20-local-x'")&&cursorJs.includes("style.setProperty('--v20-mag-x'"),'V22 must preserve V20 spotlight/magnet behavior through the unified pointer loop');
 expect(cursorCss.includes('.v20-aperture::before{filter:none!important}'),'Firefox aperture blur override missing');
 expect(cursorCss.includes('animation-play-state:paused'),'offscreen continuous-animation pause guard missing');
@@ -18,4 +20,4 @@ expect(vite.includes("'cinematic-v20.css'")&&vite.includes('/cinematic-v20.js'),
 expect(vite.includes('data-v20-text-cycle aria-hidden="true"'),'hero text cycle must be built into initial HTML to avoid CLS');expect(vite.includes('data-v21-critical'),'critical intro performance style missing');expect(vite.includes('motion-v5\\.js'),'homepage no-op V5 runtime removal missing');expect(vite.includes('loading="eager" fetchpriority="high"'),'hero priority hints missing');
 expect(pkg.includes('node --check public/cinematic-v20.js'),'Syntax suite does not check V20 runtime');expect(pkg.includes('node tests/v20-polish-integrity.mjs'),'Integrity suite does not guard V20');expect(!vite.includes('data-v18-reel')&&!vite.includes('cinematicReel'),'V20 must not restore removed cinematic reel');expect(!js.includes("document.createElement('section')"),'V20 must not generate a new homepage section');expect(Buffer.byteLength(js)<20000,'V20 JS exceeds 20KB guardrail');expect(pw.includes('cinematic-v20'),'Playwright config must include V20 coverage');
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('V20 polish integrity OK: cached scene geometry, unified V22 pointer work, paused offscreen effects and reduced-motion protections are intact.');
+console.log('V20 polish integrity OK: one scroll director, observer-gated scenes, unified V22 pointer work and reduced-motion protections are intact.');

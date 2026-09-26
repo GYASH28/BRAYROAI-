@@ -13,6 +13,10 @@ const termsCss=read('public/terms-page.css');
 const contactJs=read('public/contact-priority.js');
 const contactCss=read('public/contact-priority.css');
 const home=read('index.html');
+const clients=read('clients.html');
+const fakhri=read('fakhrimart-case-study.html');
+const audit=read('ai-workflow-audit.html');
+const brain=read('company-second-brain.html');
 const errors=[];
 const expect=(condition,message)=>{if(!condition)errors.push(message)};
 
@@ -32,9 +36,12 @@ expect(termsCss.includes('.terms-quick__grid')&&termsCss.includes('grid-template
 for(const [name,page] of [['home',home],['plans',plans],['founder',founder],['terms',terms]])expect(page.includes('/contact-priority.css')&&page.includes('/contact-priority.js')&&page.includes('/visual-finish.css'),`${name} is missing shared contact or visual finish assets`);
 expect(home.includes('data-project-whatsapp')&&home.includes('Start a project'),'Homepage does not prioritize a direct project start path');
 expect(home.includes('href="#ai-systems"')&&home.includes('Plan the system'),'Homepage AI products do not expose a clear decision/action path');
-expect(plansJs.includes('https://wa.me/919175524637')&&plansJs.includes('plan-email-fallback'),'Plans do not offer WhatsApp first with an email fallback');
-expect(founderJs.includes('https://wa.me/919175524637')&&founderJs.includes('founder-email-fallback'),'Founder page does not offer WhatsApp first with an email fallback');
+expect(plansJs.includes('https://wa.me/919175524637')&&plansJs.includes('plan-email-fallback')&&plansJs.includes('Source: /plans'),'Plans do not offer source-aware WhatsApp first with an email fallback');
+expect(founderJs.includes('https://wa.me/919175524637')&&founderJs.includes('founder-email-fallback')&&founderJs.includes('Source: /founder'),'Founder page does not offer source-aware WhatsApp first with an email fallback');
 expect(terms.includes('Ask on WhatsApp')&&terms.includes('terms-close__email'),'Terms page does not provide both contact paths');
+expect(founder.includes('/clients/fakhrimart'),'Founder page does not route prospects to verified work');
+expect(clients.includes('client-close__email')&&fakhri.includes('client-close__email'),'Client journeys do not preserve email as an alternative to WhatsApp');
+expect(audit.includes('data-react-ai-signal-island')&&brain.includes('data-react-ai-signal-island'),'AI pages are missing their lightweight explanatory signal island');
 expect(contactJs.includes('brayro-contact-dock')&&contactCss.includes('.brayro-contact-dock'),'Shared WhatsApp/email contact dock is missing');
 expect(fs.existsSync('public/visual-finish.css')&&read('public/visual-finish.css').includes('visual finishing pass'),'Shared visual finishing pass is missing');
 

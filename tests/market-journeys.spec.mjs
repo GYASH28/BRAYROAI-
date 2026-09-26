@@ -136,3 +136,47 @@ test('market dialog closes Rae before becoming the active modal',async({page,bro
   await expect(page.locator('#market-sheet')).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded','true');
 });
+
+
+test('India is a first-class market and preserves the current route and anchor',async({page})=>{
+  await page.goto('/ae/plans#business',{waitUntil:'domcontentloaded'});
+  const trigger=page.locator('[data-market-trigger]:visible').first();
+  await trigger.click();
+  await expect(page.locator('#market-sheet [data-market-choice="in"]').first()).toBeVisible();
+  await expect(page.locator('#market-sheet [data-market-choice="in"]').first()).toContainText('India');
+  await page.locator('#market-sheet [data-market-choice="in"]').first().click();
+  await expect(page).toHaveURL(/\/plans#business$/);
+  await expect(page.locator('[data-offer-id="business-experience"] div > strong')).toContainText('₹17,999');
+  await expect(page.locator('.global-nav [data-market-trigger]')).toContainText('India · INR');
+});
+
+test('first visit auto-selects Australia from the country endpoint',async({page})=>{
+  await page.addInitScript(()=>{localStorage.clear();sessionStorage.clear()});
+  await page.route('**/api/market',route=>route.fulfill({
+    status:200,
+    contentType:'application/json',
+    body:JSON.stringify({country:'AU',market:'au',language:'en',source:'edge-country'})
+  }));
+  await page.goto('/plans',{waitUntil:'domcontentloaded'});
+  await expect(page).toHaveURL(/\/au\/plans$/,{timeout:5000});
+  await expect(page.locator('[data-offer-id="business-experience"] div > strong')).toContainText('A$2,990');
+});
+
+test('manual India choice overrides later country detection',async({page})=>{
+  await page.addInitScript(()=>{
+    localStorage.clear();sessionStorage.clear();
+    localStorage.setItem('brayro_market','in');
+    localStorage.setItem('brayro_market_source','manual');
+  });
+  let detectionCalls=0;
+  await page.route('**/api/market',route=>{detectionCalls+=1;return route.fulfill({
+    status:200,
+    contentType:'application/json',
+    body:JSON.stringify({country:'AE',market:'ae',language:'en',source:'edge-country'})
+  })});
+  await page.goto('/plans',{waitUntil:'domcontentloaded'});
+  await page.waitForTimeout(1100);
+  await expect(page).toHaveURL(/\/plans$/);
+  await expect(page.locator('.global-nav [data-market-trigger]')).toContainText('India · INR');
+  expect(detectionCalls).toBe(0);
+});

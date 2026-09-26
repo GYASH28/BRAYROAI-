@@ -43,4 +43,4 @@ observe('[data-react-plan-island]',loadPlanFinder);
 observe('[data-react-brief-island]',loadProjectBrief);
 observe('[data-react-ai-signal-island]',loadAiSignal);
 
-observe('[data-v12-story-visual],[data-editorial-sequence]',loadSignatureScenes,'96px 0px');
+observe('[data-v12-story-visual],[data-editorial-sequence]',loadSignatureScenes,'0px 0px -12% 0px');

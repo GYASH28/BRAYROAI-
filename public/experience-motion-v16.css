@@ -50,3 +50,7 @@ body.founder-v16 .conviction__line{transform:scaleX(var(--founder-p,1));transfor
 body.founder-v16 .founder-close h2{translate:0 calc((1 - var(--founder-p,1))*1rem)}
 body.ai-v16 main>section:not(.is-v16-live) :is(.arch-arrow,.arch-engine,.ai-signal-react__orb i,.ai-signal-react__orb b),
 html.v16-document-hidden body.ai-v16 :is(.arch-arrow,.arch-engine,.ai-signal-react__orb i,.ai-signal-react__orb b){animation-play-state:paused!important}
+
+
+/* V42 / keep the founder identity decisively inside the first mobile fold. */
+@media(max-width:700px){body .founder-hero__copy{translate:0 -4px!important}}

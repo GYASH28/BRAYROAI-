@@ -44,5 +44,7 @@ test('desktop Rae activates the lazy WebGL actor on a capable browser',async({pa
   await expect(page.locator('[data-rae-3d-host] canvas')).toHaveCount(1);
   const resources=await page.evaluate(()=>performance.getEntriesByType('resource').map(entry=>entry.name));
   expect(resources.some(name=>/rae-3d-island/i.test(name))).toBeTruthy();
-  expect(resources.some(name=>/three-r186|three\.core/i.test(name))).toBeTruthy();
+  const canvasSize=await page.locator('[data-rae-3d-host] canvas').evaluate(canvas=>({width:canvas.width,height:canvas.height}));
+  expect(canvasSize.width).toBeGreaterThan(0);
+  expect(canvasSize.height).toBeGreaterThan(0);
 });

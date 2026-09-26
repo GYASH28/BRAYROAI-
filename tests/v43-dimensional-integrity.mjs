@@ -13,8 +13,10 @@ const signature=read('src/signature-scenes.js');
 const signatureCss=read('public/v43-signature-scenes.css');
 const vite=read('vite.config.mjs');
 
-assert.ok(three.length>600000,'vendored Three.js r186 source should remain the official full ESM build');
-assert.match(three,/REVISION\s*=\s*'186'/);
+assert.ok(three.length>600000,'vendored Three.js r186 wrapper should remain the official ESM build');
+assert.ok(core.length>1400000,'vendored Three.js r186 core should remain the official full core build');
+assert.match(core,/REVISION\s*=\s*'186'/);
+assert.match(three,/from '.\/three\.core\.js'/);
 assert.match(license,/MIT License/);
 
 assert.match(rae3d,/import \* as THREE from '.\/vendor\/three-r186\.js'/);

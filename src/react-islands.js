@@ -39,8 +39,30 @@ const observe=(selector,load,rootMargin=(saveData?'80px 0px':'280px 0px'))=>{
   });
 };
 
-observe('[data-react-plan-island]',loadPlanFinder);
-observe('[data-react-brief-island]',loadProjectBrief);
-observe('[data-react-ai-signal-island]',loadAiSignal);
+const mountViewportEnhancements=()=>{
+  observe('[data-react-plan-island]',loadPlanFinder);
+  observe('[data-react-brief-island]',loadProjectBrief);
+  observe('[data-react-ai-signal-island]',loadAiSignal);
+  observe('[data-v12-story-visual],[data-editorial-sequence]',loadSignatureScenes,'0px 0px -12% 0px');
+};
 
-observe('[data-v12-story-visual],[data-editorial-sequence]',loadSignatureScenes,'0px 0px -12% 0px');
+const mobileStartup=matchMedia('(max-width:760px)').matches;
+if(!mobileStartup){
+  mountViewportEnhancements();
+}else{
+  let viewportMounted=false;
+  const events=['scroll','wheel','touchstart','pointerdown'];
+  const cleanup=()=>{
+    events.forEach(type=>removeEventListener(type,startViewportEnhancements));
+    removeEventListener('keydown',startViewportEnhancements);
+    removeEventListener('hashchange',startViewportEnhancements);
+  };
+  const startViewportEnhancements=()=>{
+    if(viewportMounted)return;
+    viewportMounted=true;cleanup();mountViewportEnhancements();
+  };
+  events.forEach(type=>addEventListener(type,startViewportEnhancements,{once:true,passive:true}));
+  addEventListener('keydown',startViewportEnhancements,{once:true});
+  addEventListener('hashchange',startViewportEnhancements,{once:true});
+  if(scrollY>0||location.hash)queueMicrotask(startViewportEnhancements);
+}

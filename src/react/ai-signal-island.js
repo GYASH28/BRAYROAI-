@@ -9,6 +9,8 @@ const COPY={
 };
 
 function SignalOrb({kind,language}){
+  const arabic=String(language||'').toLowerCase().startsWith('ar');
+  const copy=(COPY[kind]||COPY.audit)[arabic?'ar':'en'];
   return h(SpotlightCard,{className:'ai-signal-react',spotlightColor:'rgba(255,90,31,.14)','data-signal-kind':kind},
     h('div',{className:'ai-signal-react__orb','aria-hidden':'true'},h('i',null),h('i',null),h('i',null),h('b',null)),
     h('div',{className:'ai-signal-react__copy'},h('span',null,copy.eyebrow),h('strong',null,copy.title),h('div',{className:'ai-signal-react__steps'},copy.steps.map((step,index)=>h('small',{key:step},h('b',null,String(index+1).padStart(2,'0')),step))))

@@ -24,7 +24,7 @@ export class RaeUI{
           <button class="rae-icon-button" type="button" data-rae-close aria-label="Close Rae">×</button>
         </header>
         <div class="rae-stage" data-rae-stage>
-          <div class="rae-stage__actor">${characterMarkup('stage')}</div>
+          <div class="rae-stage__actor">${characterMarkup('stage')}<div class="rae-dimensional-host" data-rae-3d-host aria-hidden="true"></div></div>
           <div class="rae-stage__copy"><strong data-rae-stage-title>I’m Rae.</strong><span data-rae-stage-copy>I can explain the site, compare options and think through your project with you.</span></div>
         </div>
         <div class="rae-feed" data-rae-feed tabindex="0" aria-label="Conversation with Rae"></div>

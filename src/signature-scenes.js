@@ -9,7 +9,9 @@ const mountCapabilitySignal=()=>{
   for(let i=0;i<9;i++){
     const particle=document.createElement('i');
     particle.style.setProperty('--v43-i',String(i));
-    particle.style.setProperty('--v43-lane',String((i%3-1)*9)+'px');
+    const lane=(i%3-1)*9;
+    particle.style.setProperty('--v43-lane',String(lane)+'px');
+    particle.style.setProperty('--v43-end-lane',String(Math.round(lane*-.35))+'px');
     particle.style.setProperty('--v43-delay',String((-i*.31).toFixed(2))+'s');
     field.append(particle);
   }

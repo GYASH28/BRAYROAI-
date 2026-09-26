@@ -5,7 +5,7 @@ const plans=read('plans.html'),founder=read('founder.html'),terms=read('terms.ht
 const audit=read('ai-workflow-audit.html'),brain=read('company-second-brain.html');
 const plansJs=read('public/plans-page.js'),founderJs=read('public/founder-page.js');
 const aiJs=read('public/ai-service-pages.js'),clientJs=read('public/client-work.js');
-const v16=read('public/experience-motion-v16.js'),vite=read('vite.config.mjs'),loader=read('src/react-islands.js');
+const v16=read('public/experience-motion-v16.js'),vite=read('vite.config.mjs'),loader=read('src/react-islands.js'),reactRuntime=read('src/react-islands-runtime.js');
 
 for(const [name,page] of [['Plans',plans],['Founder',founder]]){
   expect(!page.includes('/scrollcraft.js'),`${name} still loads ScrollCraft runtime`);
@@ -19,7 +19,8 @@ expect(founderJs.includes('class CachedFounderTimeline')&&founderJs.includes('ne
 expect(v16.includes('hasDedicatedSceneRuntime')&&v16.includes('if(!isHome&&!hasDedicatedSceneRuntime)new SceneKinetics()'),'V16 dedicated-route ownership guard is missing');
 expect(v16.includes('class SceneLifecycle')&&v16.includes('v16-document-hidden'),'V16 offscreen/document lifecycle guard is missing');
 expect(vite.includes("if(!isHome&&!html.includes('src=\"/experience-motion-v16.js\"'))"),'Homepage still receives the V16 secondary runtime');
-expect(loader.includes("host.closest('section')")&&loader.includes("observe('[data-react-ai-signal-island]'"),'Lazy React islands do not activate from visible section geometry');
+expect(loader.includes("import('./react-islands-runtime.js')"),'React islands entry is no longer the deferred loader');
+expect(reactRuntime.includes("host.closest('section')")&&reactRuntime.includes("observe('[data-react-ai-signal-island]'"),'Lazy React islands runtime does not activate from visible section geometry');
 expect(!aiJs.includes('progress.style.transform'),'AI detail runtime still paints its own progress bar');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}

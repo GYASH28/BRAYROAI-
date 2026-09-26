@@ -1,68 +1,14 @@
-const loads=new Map();
-
-const loadOnce=(key,importer)=>{
-  if(!loads.has(key))loads.set(key,importer().catch(error=>{console.warn(`${key} React island skipped`,error);loads.delete(key)}));
-  return loads.get(key);
-};
-
-const loadMarket=()=>loadOnce('Market',()=>import('./react/market-switcher-island.js').then(module=>module.mountMarketSwitcherIsland()));
-const loadPlanFinder=()=>loadOnce('Plan finder',()=>import('./react/plan-finder-island.js').then(module=>module.mountPlanFinderIsland()));
-const loadProjectBrief=()=>loadOnce('Project brief',()=>import('./react/project-brief-island.js').then(module=>module.mountProjectBriefIsland()));
-const loadAiSignal=()=>loadOnce('AI signal',()=>import('./react/ai-signal-island.js').then(module=>module.mountAiSignalIslands()));
-const loadRaeDimensional=()=>loadOnce('Rae dimensional',()=>import('./rae-3d-island.js').then(module=>module.mountRaeDimensional()));
-const loadSignatureScenes=()=>loadOnce('Signature scenes',()=>import('./signature-scenes.js').then(module=>module.mountSignatureScenes()));
-
-document.addEventListener('brayro:market-opened',loadMarket);
-document.addEventListener('rae:opened',()=>{
-  const memory=Number(navigator.deviceMemory||8),cores=Number(navigator.hardwareConcurrency||8);
-  if(!saveData&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&matchMedia('(min-width:701px)').matches&&memory>=4&&cores>=4)loadRaeDimensional();
-});
-
-const saveData=Boolean(navigator.connection?.saveData);
-if(!saveData){
-  document.querySelectorAll('[data-market-trigger]').forEach(trigger=>{
-    trigger.addEventListener('pointerenter',loadMarket,{once:true,passive:true});
-    trigger.addEventListener('focus',loadMarket,{once:true});
-  });
-}
-
-const observe=(selector,load,rootMargin=(saveData?'80px 0px':'280px 0px'))=>{
-  const hosts=[...document.querySelectorAll(selector)];
-  hosts.forEach(host=>{
-    const target=host.closest('section')||host.parentElement||host;
-    if(!('IntersectionObserver'in window)){load();return}
-    const observer=new IntersectionObserver(entries=>{
-      if(!entries.some(entry=>entry.isIntersecting))return;
-      observer.disconnect();load();
-    },{rootMargin,threshold:0});
-    observer.observe(target);
-  });
-};
-
-const mountViewportEnhancements=()=>{
-  observe('[data-react-plan-island]',loadPlanFinder);
-  observe('[data-react-brief-island]',loadProjectBrief);
-  observe('[data-react-ai-signal-island]',loadAiSignal);
-  observe('[data-v12-story-visual],[data-editorial-sequence]',loadSignatureScenes,'0px 0px -12% 0px');
-};
-
-const mobileStartup=matchMedia('(max-width:760px)').matches;
-if(!mobileStartup){
-  mountViewportEnhancements();
-}else{
-  let viewportMounted=false;
+const mobile=matchMedia('(max-width:760px)').matches;
+let runtimePromise=null;
+const load=(reason='interaction')=>{if(!runtimePromise)runtimePromise=import('./react-islands-runtime.js');return runtimePromise.then(module=>module.startReactIslands(reason)).catch(error=>{console.warn('React enhancements skipped',error);runtimePromise=null})};
+if(!mobile){load('startup')}else{
   const events=['scroll','wheel','touchstart','pointerdown'];
-  const cleanup=()=>{
-    events.forEach(type=>removeEventListener(type,startViewportEnhancements));
-    removeEventListener('keydown',startViewportEnhancements);
-    removeEventListener('hashchange',startViewportEnhancements);
-  };
-  const startViewportEnhancements=()=>{
-    if(viewportMounted)return;
-    viewportMounted=true;cleanup();mountViewportEnhancements();
-  };
-  events.forEach(type=>addEventListener(type,startViewportEnhancements,{once:true,passive:true}));
-  addEventListener('keydown',startViewportEnhancements,{once:true});
-  addEventListener('hashchange',startViewportEnhancements,{once:true});
-  if(scrollY>0||location.hash)queueMicrotask(startViewportEnhancements);
+  const cleanup=()=>{events.forEach(type=>removeEventListener(type,onInteraction));removeEventListener('keydown',onInteraction);removeEventListener('hashchange',onInteraction)};
+  const onInteraction=()=>{cleanup();load('interaction')};
+  events.forEach(type=>addEventListener(type,onInteraction,{once:true,passive:true}));
+  addEventListener('keydown',onInteraction,{once:true});
+  addEventListener('hashchange',onInteraction,{once:true});
+  document.addEventListener('brayro:market-opened',()=>load('market'),{once:true});
+  document.addEventListener('rae:opened',()=>load('rae'),{once:true});
+  if(scrollY>0||location.hash)queueMicrotask(onInteraction);
 }

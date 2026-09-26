@@ -6,7 +6,8 @@ const three=read('src/vendor/three-r186.js');
 const core=read('src/vendor/three.core.js');
 const license=read('src/vendor/THREE-LICENSE.txt');
 const rae3d=read('src/rae-3d-island.js');
-const islands=read('src/react-islands.js');
+const islandsLoader=read('src/react-islands.js');
+const islands=read('src/react-islands-runtime.js');
 const ui=read('public/rae/rae-ui.js');
 const raeCss=read('public/rae/rae-3d.css');
 const signature=read('src/signature-scenes.js');
@@ -32,6 +33,7 @@ assert.match(rae3d,/renderer\.dispose\(\)/);
 
 assert.match(islands,/document\.addEventListener\('rae:opened'/);
 assert.match(islands,/import\('\.\/rae-3d-island\.js'\)/);
+assert.match(islandsLoader,/import\('\.\/react-islands-runtime\.js'\)/);
 assert.match(ui,/data-rae-3d-host/);
 assert.match(raeCss,/data-rae-dimensional="active"/);
 assert.match(raeCss,/@media\(max-width:700px\),\(prefers-reduced-motion:reduce\)/);

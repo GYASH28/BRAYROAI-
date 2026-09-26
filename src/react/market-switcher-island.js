@@ -35,7 +35,7 @@ function MarketSwitcherIsland({state}){
   const current=state.currentMarket.startsWith('ae')?'ae':state.currentMarket;
   const detected=state.detectedMarket?.startsWith('ae')?'ae':state.detectedMarket;
 
-  return h('div',{className:'market-react',role:'radiogroup','aria-label':copy.label},
+  return h('div',{className:'market-react'},
     h('div',{className:'market-react__intro'},
       h('strong',null,copy.label),
       h('span',null,copy.hint)

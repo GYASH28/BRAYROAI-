@@ -36,7 +36,7 @@ assert.match(ui,/data-rae-3d-host/);
 assert.match(raeCss,/data-rae-dimensional="active"/);
 assert.match(raeCss,/@media\(max-width:700px\),\(prefers-reduced-motion:reduce\)/);
 
-assert.match(signature,/data\.v43Inview/);
+assert.match(signature,/dataset\.v43Inview/);
 assert.match(signature,/ResizeObserver/);
 assert.match(signature,/IntersectionObserver/);
 assert.doesNotMatch(signature,/requestAnimationFrame/);

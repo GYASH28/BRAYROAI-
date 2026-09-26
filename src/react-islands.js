@@ -26,7 +26,7 @@ if(!saveData){
   });
 }
 
-const observe=(selector,load)=>{
+const observe=(selector,load,rootMargin=(saveData?'80px 0px':'280px 0px'))=>{
   const hosts=[...document.querySelectorAll(selector)];
   hosts.forEach(host=>{
     const target=host.closest('section')||host.parentElement||host;
@@ -34,7 +34,7 @@ const observe=(selector,load)=>{
     const observer=new IntersectionObserver(entries=>{
       if(!entries.some(entry=>entry.isIntersecting))return;
       observer.disconnect();load();
-    },{rootMargin:(saveData?'120px 0px':'650px 0px'),threshold:0});
+    },{rootMargin,threshold:0});
     observer.observe(target);
   });
 };
@@ -43,4 +43,4 @@ observe('[data-react-plan-island]',loadPlanFinder);
 observe('[data-react-brief-island]',loadProjectBrief);
 observe('[data-react-ai-signal-island]',loadAiSignal);
 
-observe('[data-v12-story-visual],[data-editorial-sequence]',loadSignatureScenes);
+observe('[data-v12-story-visual],[data-editorial-sequence]',loadSignatureScenes,'96px 0px');

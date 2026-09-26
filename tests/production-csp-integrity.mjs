@@ -9,6 +9,7 @@ const walk=dir=>readdirSync(dir).flatMap(name=>{
 });
 const htmlFiles=walk(root).filter(file=>file.endsWith('.html'));
 assert.ok(htmlFiles.length>=8,'expected built HTML routes');
+assert.ok(!existsSync(resolve(root,'outbound-fresh')),'legacy outbound export must not ship in production dist');
 
 const inlineScript=/<script\b(?![^>]*\bsrc=)([^>]*)>([\s\S]*?)<\/script>/gi;
 const inlineHandler=/\son[a-z]+\s*=/i;

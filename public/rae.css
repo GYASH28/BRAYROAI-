@@ -99,7 +99,7 @@
    This removes sub-pixel Firefox drift caused by fixed descendants inside the
    launcher's contained, bottom-right root. */
 @media(max-width:700px){
-  .rae-root[data-rae-polish="v5"].is-open{
+  .rae-root.is-open{
     position:fixed!important;
     inset:0!important;
     width:auto!important;
@@ -108,7 +108,7 @@
     contain:none!important;
     overflow:clip;
   }
-  .rae-root[data-rae-polish="v5"].is-open .rae-panel{
+  .rae-root.is-open .rae-panel{
     position:absolute!important;
     inset:0!important;
     width:100%!important;

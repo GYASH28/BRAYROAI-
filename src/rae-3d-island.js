@@ -182,7 +182,7 @@ export function mountRaeDimensional(){
     refs.leftArm.rotation.z=lerp(refs.leftArm.rotation.z,pose.armL+(state==='celebrate'?Math.sin(slow*7)*.06:0),ease);
     refs.rightArm.rotation.z=lerp(refs.rightArm.rotation.z,pose.armR+speaking,ease);
     const blink=root.classList.contains('rae-is-blinking')||root.classList.contains('rae-is-double-blinking');
-    const eyeY=blink?.08:pose.eyeY;
+    const eyeY=blink ? .08 : pose.eyeY;
     refs.eyeL.scale.y=lerp(refs.eyeL.scale.y,.16*eyeY,ease*1.7);
     refs.eyeR.scale.y=lerp(refs.eyeR.scale.y,.16*eyeY,ease*1.7);
     refs.mouth.scale.x=lerp(refs.mouth.scale.x,.78*pose.mouth,ease);

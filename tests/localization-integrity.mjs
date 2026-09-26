@@ -17,8 +17,8 @@ for(const market of ['ae','ae-ar','au'])for(const route of MARKET_ROUTES){
   assert.equal($('meta[property="og:url"]').attr('content'),canonical,`${market}${route} OG URL`);
   const marketScript=$('script[data-market-context]');
   assert.equal(marketScript.length,1,`${market}${route} market runtime`);
-  assert.ok(!marketScript.attr('src')&&marketScript.html()?.includes('BRAYRO_MARKET'),`${market}${route} market runtime must be inline`);
-  assert.ok(!marketScript.html()?.includes('₹'),`${market}${route} runtime leaks INR`);
+  assert.equal(marketScript.attr('src'),'/market-context.js',`${market}${route} market runtime must be same-origin external`);
+  assert.equal((marketScript.html()||'').trim(),'',`${market}${route} market runtime must not contain inline executable JS`);
   assert.ok(!$('body').text().includes('₹'),`${market}${route} leaks INR into visible text`);
   assert.ok(!/(?:AED|A\$)[\d,\s]+\+\+/.test($('body').text()),`${market}${route} duplicates a starting-price plus sign`);
   assert.ok(!$('meta[name="description"]').attr('content')?.includes('India-first'),`${market}${route} stale description`);

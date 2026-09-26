@@ -1,0 +1,72 @@
+name: BRAYROAI V42 Branch QA
+
+on:
+  push:
+    branches:
+      - codex/award-transformation-v42-phases-7-9
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brayroai-v42-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    name: Static + browser + performance evidence
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Static, build and localization gates
+        run: npm run qa:static
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium firefox
+      - name: Start production preview
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-v42-preview.log 2>&1 &
+          for i in {1..45}; do
+            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Company Second Brain'; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/brayroai-v42-preview.log
+          exit 1
+      - name: Stress test
+        env:
+          BASE_URL: http://127.0.0.1:4173
+          STRESS_REQUESTS: 500
+          STRESS_CONCURRENCY: 30
+        run: npm run test:stress
+      - name: Browser and accessibility journeys
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: npm run test:browser
+      - name: Fresh eight-route capture audit
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: node scripts/experience-audit.mjs v42
+      - name: Lighthouse budget
+        run: npm run test:lighthouse
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brayroai-v42-evidence-${{ github.run_number }}
+          path: |
+            artifacts/experience/v42/
+            artifacts/lighthouse-local.json
+            artifacts/playwright-report/
+            playwright-report/
+            test-results/
+            /tmp/brayroai-v42-preview.log
+          if-no-files-found: ignore
+          retention-days: 14

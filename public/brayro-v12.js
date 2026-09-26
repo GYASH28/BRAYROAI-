@@ -34,16 +34,41 @@
         nodes.forEach(node=>node.classList.add('is-visible'));
         return;
       }
-      const observer=new IntersectionObserver(entries=>{
+      this.groups=new Map();
+      nodes.forEach(node=>{
+        const target=node.closest('section')||node;
+        if(!this.groups.has(target))this.groups.set(target,[]);
+        this.groups.get(target).push(node);
+      });
+      this.observer=new IntersectionObserver(entries=>{
         entries.forEach(entry=>{
           if(!entry.isIntersecting)return;
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
+          const items=this.groups.get(entry.target)||[entry.target];
+          requestAnimationFrame(()=>items.forEach(node=>node.classList.add('is-visible')));
+          this.observer.unobserve(entry.target);
         });
-      },{threshold:.13,rootMargin:'-2% 0px -9% 0px'});
-      nodes.forEach(node=>observer.observe(node));
+      },{threshold:.04,rootMargin:'5% 0px 12% 0px'});
+      this.groups.forEach((_items,target)=>this.observer.observe(target));
     }
   }
+
+  const startV12Reveal=()=>{
+    let mounted=false;
+    const passiveEvents=['scroll','wheel','touchstart','pointerdown'];
+    const cleanup=()=>{
+      passiveEvents.forEach(type=>removeEventListener(type,mount));
+      removeEventListener('keydown',mount);
+      removeEventListener('hashchange',mount);
+    };
+    const mount=()=>{
+      if(mounted)return;
+      mounted=true;cleanup();new V12Reveal();
+    };
+    passiveEvents.forEach(type=>addEventListener(type,mount,{once:true,passive:true}));
+    addEventListener('keydown',mount,{once:true});
+    addEventListener('hashchange',mount,{once:true});
+    if(scrollY>0||location.hash)queueMicrotask(mount);
+  };
 
   class FloatingHeader {
     constructor(){
@@ -148,7 +173,7 @@
   }
 
   new IntroPerformanceGuard();
-  new V12Reveal();
+  startV12Reveal();
   new FloatingHeader();
   new FlipLinks();
   new CurtainReveal();

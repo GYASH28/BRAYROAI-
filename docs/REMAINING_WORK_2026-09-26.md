@@ -1,45 +1,69 @@
 # BRAYROAI master-prompt status — 26 September 2026
 
-This is a working acceptance-criteria estimate, not a marketing completion claim. It compares the current V41 branch against the 25 September master prompt and records what this V42 continuation addresses.
+This is a working acceptance-criteria estimate, not a marketing completion claim. It compares the implementation against the 25 September award-level transformation prompt.
 
-## Before V42
+## Status after V42 phases 7–9
 
-| Area | Weight | Status entering V42 | Evidence / gap |
+| Area | Weight | Current estimate | Evidence / remaining gap |
 | --- | ---: | ---: | --- |
-| Approved audit and baseline | 10% | 10/10 | Route audit, art direction, before/after captures and QA docs exist. |
-| Shared shell, markets, CTA routing | 15% | 14/15 | India/UAE/Australia, first-visit country hint, persistence, RTL and shared shell are implemented. Production edge behavior still needs final deployed verification. |
-| Design system + requested component ecosystems | 12% | 6/12 | React islands existed, but shadcn/21st/React Bits were mostly re-authored references rather than clearly source-adapted reusable components. |
-| Page storyboards + signature interactions | 25% | 18/25 | All eight routes have major refinement and route-specific interaction work; several scenes still need final art-direction polish and fresh full-page proof. |
-| Rae companion | 20% | 7/20 | Streaming assistant, guided briefs, fallback, expressions and SVG rig are substantial. The prompt's editable rigged 3D source + optimized GLB and true 3D runtime are not done. |
-| Performance, accessibility, resilience | 10% | 8/10 | Strong local Playwright/Lighthouse/stress evidence exists; final production/device verification remains. |
-| Completion evidence + release report | 8% | 5/8 | Existing captures and reports are useful but do not yet form the exact final master-prompt completion package. |
+| Approved audit and baseline | 10% | 10/10 | Route audit, art direction, before/after evidence and QA documentation exist. |
+| Shared shell, markets, CTA routing | 15% | 14/15 | India/UAE/Australia, manual selection, country hint, persistence, RTL, localized routes and shared shell are implemented. Final deployed edge/device verification remains. |
+| Design system + requested component ecosystems | 12% | 12/12 | V42 ships reusable source-adapted shadcn-style Toggle Group, React Bits Spotlight Card and 21st.dev magnetic action patterns with provenance and integrity guards. |
+| Page storyboards + signature interactions | 25% | 21/25 | All eight routes have route-specific choreography and responsive treatment. Fresh captures are clean; further art-direction refinement can still raise the ceiling without adding another global motion layer. |
+| Rae companion | 20% | 8/20 | Streaming assistant, guided brief, comparisons, safe actions, fallback, expression rig, responsive modal/sidecar behavior and collision handling are substantial. The current master prompt's original rigged 3D deliverable is not implemented. |
+| Performance, accessibility, resilience | 10% | 9.5/10 | Final V42 CI passed static/build/localization, stress, Chromium + Firefox journeys, accessibility, responsive audit and Lighthouse. Production field/device verification remains. |
+| Completion evidence + release report | 8% | 6.5/8 | Fresh V42 route captures, Lighthouse, Playwright and stress evidence exist. Production verification and final release report remain. |
 
-**Estimated complete entering V42: 68%. Estimated remaining: 32%.**
+**Estimated complete after V42: 81%. Estimated remaining: 19%.**
 
-The estimate intentionally gives the missing 3D Rae a large share; it is not a small cosmetic task.
+This estimate deliberately keeps the unresolved Rae 3D requirement large; under the current master prompt it is a real production deliverable, not a cosmetic checkbox.
 
-## V42 phases 7–9
+## Phase 7 — component-source compliance — COMPLETE
 
-### Phase 7 — component-source compliance
-- Convert the market selector, Plans route finder and project brief to a shared shadcn-style Toggle Group primitive.
-- Use a real source-adapted React Bits Spotlight Card in the AI signal island.
-- Use the 21st.dev magnetic interaction pattern on only the highest-value enquiry actions, with a stationary hitbox and an 8px cap.
-- Record exact source, adaptation, behavior and licensing in `docs/component-manifest-v42.md`.
+- Added a shared shadcn/ui-inspired single-select Toggle Group primitive with roving keyboard focus, Home/End navigation and RTL-aware arrow behavior.
+- Reused it in the market selector, Plans route finder and 30-second project brief.
+- Added a source-adapted React Bits Spotlight Card to the AI signal island.
+- Added the 21st.dev magnetic interaction pattern to high-value enquiry actions only. The clickable hitbox stays fixed; only the inner visual surface moves, capped at 8 px.
+- Kept all three integrations local and lightweight rather than adding a framework-wide component/runtime dependency.
+- Recorded source, adaptation, runtime and licensing notes in `docs/component-manifest-v42.md`.
+- Added `tests/v42-component-sources-integrity.mjs` so these integrations cannot silently regress to reference-only claims.
 
-### Phase 8 — interaction restraint and signature polish
-- Keep all new interaction work lazy and local; no new global loop.
-- Preserve touch, keyboard, RTL and reduced-motion paths.
-- Reuse the existing route-specific scenes instead of adding more generic reveal layers.
-- Treat a missing 3D character source as a separate Rae phase rather than faking 3D with a raster or SVG.
+## Phase 8 — interaction restraint + responsive hardening — COMPLETE
 
-### Phase 9 — QA and evidence
-- Add source-provenance/integration guards so later refactors cannot silently fall back to reference-only usage.
-- Run static, build, localization, browser, accessibility, stress and Lighthouse gates on the continuation branch.
-- Refresh route screenshots and the completion report only after those gates pass.
-- Do not deploy or create a Vercel preview as part of this pass.
+- Kept V42 interaction work lazy and local; no new global scroll loop or permanent WebGL/canvas runtime was added.
+- Preserved keyboard, touch, RTL, reduced-motion and no-hydration fallback behavior.
+- Fixed radio semantics after integration: `role="radio"` uses `aria-checked` without the invalid `aria-pressed` combination.
+- Fixed the founder 390 px first-fold composition with a deterministic final-layer mobile offset rather than relying on competing historical CSS rules.
+- Removed Rae's mobile containment hydration race so Firefox gets viewport containment as soon as Rae opens, not only after the V5 polish attribute arrives.
+- Cancelled Rae startup autofocus retries once a user manually focuses another control, preventing the desktop sidecar from occasionally stealing focus back.
 
-## Remaining after V42 code work
+## Phase 9 — final branch QA + evidence — COMPLETE
 
-The largest unresolved requirement is **true 3D Rae**: editable source model, optimized GLB/glTF, rig/animations, device-aware R3F/Three integration and visual matching against the original character sheet. The original sheet is not attached in the current ChatGPT conversation, so no replacement character identity should be invented.
+Authoritative tested code head: `82b69174d5daf2cfbd762aab563bcb503c65d316`.
 
-Other remaining work is the final route-by-route visual proof/performance package and any fixes discovered by the fresh QA run. Production deployment remains a separate explicit authorization step.
+GitHub Actions run: `36240415147` — **success**.
+
+### Quality gates
+
+- Static syntax, integrity, production build, distribution and localization: **passed**.
+- Localization integrity: **24 pages, 24 offer placements, 24 price-aware leads**, canonical + hreflang checks passed.
+- Concurrent stress: **500 requests / concurrency 30, 0 failures, p95 91 ms** on the CI preview.
+- Playwright: **146 passed, 4 intentionally skipped, 0 flaky, 0 failed** across Chromium plus targeted Firefox smoke coverage.
+- Accessibility: serious/critical Axe checks passed on public routes and Rae's open state.
+- Eight-route responsive audit: every route returned **200**, with **0 horizontal overflow at all seven tested viewports** and **0 uncaught page errors**.
+- Lighthouse mobile: **Performance 97, Accessibility 100, Best Practices 100, SEO 100**.
+- Lighthouse metrics: **LCP 2255 ms, CLS 0.000, TBT 67 ms**.
+- Evidence artifact: `brayroai-v42-evidence-7` (artifact id `10905299582`).
+
+Fresh captures were visually reviewed for the homepage, Plans, Founder and AI Workflow Audit at representative desktop/mobile sizes. The founder first fold is now comfortably legible, the mobile Plans decision hierarchy stays inside the viewport, and the AI page keeps pricing/Rae/contact controls separated.
+
+## Remaining after V42
+
+1. **Rae direction / 3D deliverable.** The current master prompt asks for an original editable rigged 3D Rae, optimized GLB/glTF, animation set and device-aware web integration. Project history also contains an earlier instruction that intentionally preferred the detailed 2.5D SVG rig over 3D. Before a large Rae-modeling phase, the active direction should be treated explicitly so the project does not undo a later approved decision.
+2. **Final art-direction ceiling.** The current routes are stable and visually coherent, but the remaining award-level work should focus on a few genuinely signature scenes/visual assets rather than another blanket animation pass.
+3. **Production verification.** Country/edge behavior, real provider credentials, real-device checks and production Lighthouse/field behavior still need verification on the approved deployment.
+4. **Release/merge.** V42 remains isolated from `main`; no production deployment or Vercel preview was created in this phase.
+
+## Release constraint
+
+Do not merge or deploy this branch solely because the CI is green. Production remains an explicit approval step.

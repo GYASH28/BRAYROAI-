@@ -198,7 +198,7 @@ test('lazy React plan finder enhances the published fallback without changing it
   const choices=host.locator('.plan-react__choice');
   await expect(choices).toHaveCount(3);
   await choices.nth(1).click();
-  await expect(choices.nth(1)).toHaveAttribute('aria-pressed','true');
+  await expect(choices.nth(1)).toHaveAttribute('aria-checked','true');
   await expect(host.locator('.plan-react__preview a')).toHaveAttribute('href','#builds');
 });
 

@@ -138,7 +138,7 @@ em { color:var(--orange); font:inherit; }
   .founder-hero__image { object-position:58% center; }
   .founder-hero__shade { background:linear-gradient(180deg,rgba(5,6,8,.25),transparent 30%,rgba(5,6,8,.96) 68%); }
   .founder-hero__word { top:20%; right:-8vw; font-size:38vw; }
-  .founder-hero__copy { top:auto; right:1rem; bottom:2.2rem; left:1rem; width:auto; transform:none; }
+  .founder-hero__copy { top:auto; right:1rem; bottom:2.4rem; left:1rem; width:auto; transform:none; }
   .founder-hero__copy h1 { font-size:clamp(3.5rem,15.5vw,5.4rem); }
   .founder-hero__copy > p:last-of-type { font-size:.82rem; }
   .founder-hero__note { display:none; }

@@ -86,7 +86,8 @@ export class RaeUI{
   settleFocus(target,expectOpen){
     clearTimeout(this.focusTimer);clearTimeout(this.focusRecoveryTimer);const delays=[0,72,180,360,620];let index=0;
     const blockedByOverlay=()=>!expectOpen&&(document.documentElement.classList.contains('global-menu-open')||document.querySelector('#market-sheet[open]'));
-    const apply=()=>{if(this.open!==expectOpen||!target?.isConnected||blockedByOverlay())return;try{target.focus({preventScroll:true})}catch{}if(index<delays.length-1){index+=1;this.focusTimer=setTimeout(apply,delays[index])}};
+    const focusWasMoved=()=>expectOpen&&document.activeElement&&document.activeElement!==document.body&&document.activeElement!==target&&document.activeElement!==this.lastFocused;
+    const apply=()=>{if(this.open!==expectOpen||!target?.isConnected||blockedByOverlay()||focusWasMoved())return;try{target.focus({preventScroll:true})}catch{}if(index<delays.length-1){index+=1;this.focusTimer=setTimeout(apply,delays[index])}};
     queueMicrotask(apply);
     // Heavy page transitions can finish after the short focus retries. Recover only
     // when focus has fallen outside the open dialog or remained inside the closed one.

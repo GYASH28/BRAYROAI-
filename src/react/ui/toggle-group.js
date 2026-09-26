@@ -52,7 +52,6 @@ export function ToggleGroupItem({value,index,className='',children,onKeyDown,onC
     type:'button',
     role:'radio',
     'aria-checked':String(selected),
-    'aria-pressed':String(selected),
     tabIndex:selected?0:-1,
     'data-state':selected?'on':'off',
     'data-slot':'toggle-group-item',

@@ -17,6 +17,7 @@ const manifest=read('docs/component-manifest-v42.md');
 assert.match(toggle,/shadcn\/ui single-select Toggle Group/);
 assert.match(toggle,/role:'radiogroup'/);
 assert.match(toggle,/'aria-checked'/);
+assert.doesNotMatch(toggle,/'aria-pressed'/);
 assert.match(toggle,/data-ui-source':'shadcn-toggle-group'/);
 assert.match(market,/ToggleGroupItem/);
 assert.match(plan,/ToggleGroupItem/);

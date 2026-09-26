@@ -4,7 +4,7 @@
 .v43-source-particles i{position:absolute;left:.25rem;top:50%;width:4px;height:4px;border-radius:50%;background:#ff7a18;box-shadow:0 0 .8rem rgba(255,90,31,.72);opacity:0;transform:translate3d(0,var(--v43-lane),0);animation:v43SourceParticle 2.8s linear infinite;animation-delay:var(--v43-delay);animation-play-state:paused;will-change:transform,opacity}
 .v12-story__visual[data-state="ai"][data-v43-inview="true"] .v43-source-particles{opacity:1}
 .v12-story__visual[data-state="ai"][data-v43-inview="true"] .v43-source-particles i{animation-play-state:running}
-@keyframes v43SourceParticle{0%{opacity:0;transform:translate3d(0,var(--v43-lane),0) scale(.55)}12%{opacity:.95}72%{opacity:.72}100%{opacity:0;transform:translate3d(var(--v43-travel),calc(var(--v43-lane) * -.35),0) scale(1.18)}}
+@keyframes v43SourceParticle{0%{opacity:0;transform:translate3d(0,var(--v43-lane),0) scale(.55)}12%{opacity:.95}72%{opacity:.72}100%{opacity:0;transform:translate3d(var(--v43-travel),var(--v43-end-lane),0) scale(1.18)}}
 
 .v43-handoff-relay{position:absolute;z-index:3;left:50%;top:10%;width:7px;height:3.8rem;translate:-50% 0;pointer-events:none;opacity:0;transition:top .82s cubic-bezier(.16,1,.3,1),height .62s cubic-bezier(.16,1,.3,1),opacity .28s ease;will-change:top,height}
 .v43-handoff-relay::before{content:"";position:absolute;left:50%;top:-1.6rem;width:1px;height:7rem;translate:-50% 0;background:linear-gradient(180deg,transparent,rgba(255,90,31,.18),transparent)}

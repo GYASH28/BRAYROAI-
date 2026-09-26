@@ -1,4 +1,6 @@
 import React,{useMemo,useState} from 'react';
+import {ToggleGroup,ToggleGroupItem} from './ui/toggle-group.js';
+import {MagneticAction} from './ui/magnetic-action.js';
 import {createRoot} from 'react-dom/client';
 
 const h=React.createElement;
@@ -33,13 +35,15 @@ function ProjectBrief({whatsapp,email,language,marketLabel,source}){
       url.searchParams.set('text',message);return url.href;
     }catch{return whatsapp}
   },[whatsapp,arabic,typeLabel,stageLabel,marketLabel,source]);
-  const group=(label,items,value,setter)=>h('fieldset',null,h('legend',null,label),h('div',{className:'brief-react__chips'},items.map(item=>h('button',{
-    key:item[0],type:'button','aria-pressed':String(value===item[0]),className:value===item[0]?'is-active':'',onClick:()=>setter(item[0])
+  const group=(label,items,value,setter)=>h('fieldset',null,h('legend',null,label),h(ToggleGroup,{
+    className:'brief-react__chips',value,onValueChange:setter,ariaLabel:label,dir:arabic?'rtl':'ltr'
+  },items.map((item,index)=>h(ToggleGroupItem,{
+    key:item[0],index,value:item[0],className:value===item[0]?'is-active':''
   },item[1]))));
   return h('div',{className:'brief-react'},
     h('div',{className:'brief-react__head'},h('span',null,copy.eyebrow),h('strong',null,copy.title)),
     h('div',{className:'brief-react__grid'},group(copy.type,copy.types,type,setType),group(copy.stage,copy.stages,stage,setStage)),
-    h('div',{className:'brief-react__actions'},h('a',{href,target:'_blank',rel:'noreferrer'},copy.send,h('span',{'aria-hidden':'true'},'→')),h('a',{href:email},copy.email))
+    h('div',{className:'brief-react__actions'},h(MagneticAction,{href,target:'_blank',rel:'noreferrer',className:'brief-react__primary'},copy.send,h('span',{className:'brief-react__arrow','aria-hidden':'true'},'→')),h('a',{href:email},copy.email))
   );
 }
 

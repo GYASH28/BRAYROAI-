@@ -1,4 +1,5 @@
-import React,{useEffect,useRef} from 'react';
+import React from 'react';
+import {SpotlightCard} from './ui/spotlight-card.js';
 import {createRoot} from 'react-dom/client';
 
 const h=React.createElement;
@@ -8,15 +9,7 @@ const COPY={
 };
 
 function SignalOrb({kind,language}){
-  const root=useRef(null);
-  const arabic=String(language||'').toLowerCase().startsWith('ar');
-  const copy=(COPY[kind]||COPY.audit)[arabic?'ar':'en'];
-  useEffect(()=>{
-    const node=root.current;if(!node||matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
-    const move=event=>{const rect=node.getBoundingClientRect();node.style.setProperty('--signal-x',((event.clientX-rect.left)/Math.max(rect.width,1)*100).toFixed(2)+'%');node.style.setProperty('--signal-y',((event.clientY-rect.top)/Math.max(rect.height,1)*100).toFixed(2)+'%')};
-    node.addEventListener('pointermove',move,{passive:true});return()=>node.removeEventListener('pointermove',move);
-  },[]);
-  return h('div',{className:'ai-signal-react',ref:root,'data-signal-kind':kind},
+  return h(SpotlightCard,{className:'ai-signal-react',spotlightColor:'rgba(255,90,31,.14)','data-signal-kind':kind},
     h('div',{className:'ai-signal-react__orb','aria-hidden':'true'},h('i',null),h('i',null),h('i',null),h('b',null)),
     h('div',{className:'ai-signal-react__copy'},h('span',null,copy.eyebrow),h('strong',null,copy.title),h('div',{className:'ai-signal-react__steps'},copy.steps.map((step,index)=>h('small',{key:step},h('b',null,String(index+1).padStart(2,'0')),step))))
   );

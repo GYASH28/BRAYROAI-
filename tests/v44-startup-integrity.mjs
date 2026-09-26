@@ -5,6 +5,7 @@ const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 const cut=read('public/commercial-cut.js');
 const islands=read('src/react-islands.js');
 const v12=read('public/brayro-v12.js');
+const direction=read('public/direction-pass.js');
 
 assert.doesNotMatch(cut,/requestIdleCallback\(mount,\{timeout:1500\}\)/,'reveal setup must not re-enter the Lighthouse blocking window via the old idle timeout');
 assert.match(cut,/passiveEvents=\['scroll','wheel','touchstart','pointerdown'\]/);
@@ -23,5 +24,13 @@ assert.doesNotMatch(v12,/new V12Reveal\(\);\s*new FloatingHeader/,'V12 reveal mu
 assert.doesNotMatch(islands,/650px 0px/,'React islands should not prefetch hundreds of pixels below the first fold');
 assert.match(islands,/rootMargin=\(saveData\?'80px 0px':'280px 0px'\)/);
 assert.match(islands,/loadSignatureScenes,'0px 0px -12% 0px'/);
+assert.match(islands,/mobileStartup=matchMedia\('\(max-width:760px\)'\)\.matches/);
+assert.match(islands,/mountViewportEnhancements\(\)/);
+assert.match(islands,/events=\['scroll','wheel','touchstart','pointerdown'\]/);
+
+assert.match(direction,/introMobile&&!window\.__BRAYRO_DIRECTION_MOBILE_ACTIVE__/);
+assert.match(direction,/direction-pass\.js\?mobile=1/);
+assert.match(direction,/script\.dataset\.directionPassDeferred='true'/);
+assert.match(direction,/if\(scrollY>0\|\|location\.hash\)queueMicrotask\(start\)/);
 
 console.log('V44 startup budget integrity passed');

@@ -10,6 +10,7 @@ const loadPlanFinder=()=>loadOnce('Plan finder',()=>import('./react/plan-finder-
 const loadProjectBrief=()=>loadOnce('Project brief',()=>import('./react/project-brief-island.js').then(module=>module.mountProjectBriefIsland()));
 const loadAiSignal=()=>loadOnce('AI signal',()=>import('./react/ai-signal-island.js').then(module=>module.mountAiSignalIslands()));
 const loadRaeDimensional=()=>loadOnce('Rae dimensional',()=>import('./rae-3d-island.js').then(module=>module.mountRaeDimensional()));
+const loadSignatureScenes=()=>loadOnce('Signature scenes',()=>import('./signature-scenes.js').then(module=>module.mountSignatureScenes()));
 
 document.addEventListener('brayro:market-opened',loadMarket);
 document.addEventListener('rae:opened',()=>{
@@ -41,3 +42,5 @@ const observe=(selector,load)=>{
 observe('[data-react-plan-island]',loadPlanFinder);
 observe('[data-react-brief-island]',loadProjectBrief);
 observe('[data-react-ai-signal-island]',loadAiSignal);
+
+observe('[data-v12-story-visual],[data-editorial-sequence]',loadSignatureScenes);

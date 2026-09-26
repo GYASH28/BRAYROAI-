@@ -12,7 +12,7 @@ const cleanRouteMap=Object.freeze({'/plans':'/plans.html','/founder':'/founder.h
 // V5 is intentionally absent: its homepage runtime exits immediately beneath V15,
 // so its home-only CSS/JS is stripped instead of downloaded and parsed.
 const homeStyleFiles=Object.freeze([
-  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css','rae.css','home-performance.css','experience-upgrade.css'
+  'commercial-cut.css','latest-refinements.css','premium-polish.css','direction-pass.css','motion-v4.css','contact-priority.css','visual-finish.css','brayro-v12.css','brayro-v13.css','brayro-v14.css','brayro-v14-polish.css','brayro-v15.css','v15-accessibility.css','experience-motion-v16.css','cinematic-v18.css','cinematic-v20.css','brayro-cursor-v22.css','rae.css','home-performance.css','experience-upgrade.css','v43-signature-scenes.css'
 ]);
 const readHomeStyles=()=>homeStyleFiles.map(file=>`/* ${file} */\n${readFileSync(resolve(process.cwd(),'public',file),'utf8')}`).join('\n\n');
 // The homepage sheet is emitted manually, so it bypasses Vite's normal CSS optimizer.

@@ -41,7 +41,7 @@ jobs:
             brayro-cursor-v22.css brayro-cursor-v22.js rae.css rae.js \
             rae/rae-app.js rae/rae-director.js rae/rae-chat-client.js \
             rae/rae-ui.js rae/rae-actions.js rae/rae-context.js rae/rae-character.js \
-            rae/rae-character-v2.css rae/rae-character-emotions.css \
+            rae/rae-character-v2.css rae/rae-character-emotions.css rae/rae-3d.css \
             ai-service-pages.css ai-service-pages.js client-work.css client-work.js \
             plans-page.css plans-page.js founder-page.css founder-page.js \
             terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do
@@ -70,6 +70,8 @@ jobs:
           grep -q 'name="x-brayro-commit"' dist/index.html
           test -n "$(find dist/assets -maxdepth 1 -name 'react-islands-*.js' -print -quit)"
           test -n "$(find dist/assets -maxdepth 1 -name 'market-switcher-island-*.js' -print -quit)"
+          test -n "$(find dist/assets -maxdepth 1 -name 'rae-3d-island-*.js' -print -quit)"
+          test -n "$(find dist/assets -maxdepth 1 -name 'signature-scenes-*.js' -print -quit)"
 
           grep -q '.v12-project-index' dist/assets/brayro-home.css
           ! grep -q '.brayro-ledger' dist/assets/brayro-home.css
@@ -81,6 +83,8 @@ jobs:
           grep -q '.rae-root' dist/assets/brayro-home.css
           grep -q '.rae-character__head' dist/assets/brayro-home.css
           grep -q '.rae-stage' dist/assets/brayro-home.css
+          grep -q '.v43-handoff-relay' dist/assets/brayro-home.css
+          grep -q 'data-rae-3d-host' dist/rae/rae-ui.js
           grep -q 'data-rae-rig="v3"' dist/rae/rae-character-v2.css
           grep -q 'data-state="playful"' dist/rae/rae-character-emotions.css
 

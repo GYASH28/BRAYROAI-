@@ -12,7 +12,7 @@ test('startup keeps reveal and signature enhancement off the critical landing pa
   await page.locator('#services').scrollIntoViewIfNeeded();
   await expect.poll(async()=>page.evaluate(()=>performance.getEntriesByType('resource').map(entry=>entry.name).some(name=>/signature-scenes/i.test(name))),{timeout:8000}).toBeTruthy();
 
-  await page.locator('#plans').scrollIntoViewIfNeeded();
+  await page.locator('#work').scrollIntoViewIfNeeded();
   await expect(page.locator('#work [data-v12-reveal]').first()).toHaveClass(/is-visible/);
 });
 

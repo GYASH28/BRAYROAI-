@@ -35,7 +35,7 @@ jobs:
             index.html plans.html founder.html terms.html \
             ai-workflow-audit.html company-second-brain.html \
             clients.html fakhrimart-case-study.html \
-            commercial-cut.js direction-pass.js contact-priority.js \
+            commercial-cut.js commercial-cut-runtime.js direction-pass.js contact-priority.js \
             brayro-v12.js brayro-v14.js brayro-v15.js \
             experience-motion-v16.js cinematic-v18.js cinematic-v20.js \
             brayro-cursor-v22.css brayro-cursor-v22.js rae.css rae.js \
@@ -69,6 +69,7 @@ jobs:
           grep -q 'data-layout-stable-fonts' dist/index.html
           grep -q 'name="x-brayro-commit"' dist/index.html
           test -n "$(find dist/assets -maxdepth 1 -name 'react-islands-*.js' -print -quit)"
+          test -n "$(find dist/assets -maxdepth 1 -name 'react-islands-runtime-*.js' -print -quit)"
           test -n "$(find dist/assets -maxdepth 1 -name 'market-switcher-island-*.js' -print -quit)"
           test -n "$(find dist/assets -maxdepth 1 -name 'rae-3d-island-*.js' -print -quit)"
           test -n "$(find dist/assets -maxdepth 1 -name 'signature-scenes-*.js' -print -quit)"

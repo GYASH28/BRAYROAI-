@@ -1,0 +1,1 @@
+(()=>{const link=document.querySelector('link[data-layout-stable-fonts]');if(!link)return;const activate=()=>{link.rel='stylesheet';link.removeAttribute('as')};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',activate,{once:true});else activate()})();

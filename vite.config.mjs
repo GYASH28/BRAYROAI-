@@ -49,7 +49,7 @@ const globalShell=path=>{
 };
 const innerFooter=`<footer class="global-footer" aria-label="BRAYROAI site footer"><div class="global-footer__top"><div><small>BRAYROAI / PUNE · INDIA</small><h2>Make something<br><em>worth returning to.</em></h2><p>Strategy, interface, engineering and practical AI with the person making the work.</p><a class="global-footer__cta" href="https://wa.me/919175524637?text=Hi%20Yash%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20BRAYROAI." target="_blank" rel="noreferrer">Tell us what you are building <span>↗</span></a></div><nav aria-label="Footer navigation"><div><small>EXPLORE</small><a href="/">Home</a><a href="/#services">Capabilities</a><a href="/clients">Client work</a><a href="/plans">Plans</a></div><div><small>GO DEEPER</small><a href="/ai-workflow-audit">AI Workflow Audit</a><a href="/company-second-brain">Company Second Brain</a><a href="/founder">Founder</a><a href="/terms">Terms</a></div><div><small>REACH US</small><a href="mailto:yashganesh.work@gmail.com">Email Yash ↗</a><a href="https://wa.me/919175524637" target="_blank" rel="noreferrer">WhatsApp ↗</a><button type="button" data-footer-rae>Ask Rae ↗</button><span>Pune, India · Working worldwide</span></div></nav></div><div class="global-footer__word" aria-hidden="true">BRAYRO<span>AI</span></div><div class="global-footer__base"><span>© 2026 BRAYROAI · DESIGN · ENGINEERING · USEFUL AI</span><a href="#top" data-back-to-top>BACK TO TOP ↑</a></div></footer>`;
 const injectBefore=(html,marker,value)=>html.replace(marker,`${value}\n${marker}`);
-const optimiseFonts=html=>{const blocking=`<link href="${googleFontsHref}" rel="stylesheet">`;if(!html.includes(blocking))return html;const nonBlocking=`<link rel="preload" as="style" media="(min-width: 761px)" href="${googleFontsHref}" onload="this.onload=null;this.rel='stylesheet'" data-layout-stable-fonts>\n  <noscript><link href="${googleFontsHref}" rel="stylesheet" media="(min-width: 761px)"></noscript>`;return html.replace(blocking,nonBlocking)};
+const optimiseFonts=html=>{const blocking=`<link href="${googleFontsHref}" rel="stylesheet">`;if(!html.includes(blocking))return html;const nonBlocking=`<link rel="preload" as="style" media="(min-width: 761px)" href="${googleFontsHref}" data-layout-stable-fonts>\n  <script src="/layout-fonts.js" defer data-layout-fonts-script></script>\n  <noscript><link href="${googleFontsHref}" rel="stylesheet" media="(min-width: 761px)"></noscript>`;return html.replace(blocking,nonBlocking)};
 const removeHomepageStyleLinks=html=>{let next=html;for(const file of homeStyleFiles){const escaped=file.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');next=next.replace(new RegExp(`\\s*<link rel="stylesheet" href="/${escaped}"(?: [^>]*)?>\\s*`,'g'),'\n  ')}return next};
 
 const experienceTransform={
@@ -74,7 +74,7 @@ const experienceTransform={
       html=html.replace(/\s*<link rel="stylesheet" href="\/scrollcraft\.css">\s*/g,'\n  ').replace(/\s*<script src="\/scrollcraft\.js"><\/script>\s*/g,'\n  ').replace(/\s*<link rel="stylesheet" href="\/motion-v5\.css">\s*/g,'\n  ').replace(/\s*<script src="\/motion-v5\.js"><\/script>\s*/g,'\n  ');
       html=html.replace(/\s*<div class="v12-cursor"[^>]*>[^<]*<\/div>\s*/g,'\n  ');
       html=removeHomepageStyleLinks(html);
-      if(!html.includes('data-js-bootstrap'))html=injectBefore(html,'</head>',`  <script data-js-bootstrap>document.documentElement.classList.add('js')</script>`);
+      if(!html.includes('data-js-bootstrap'))html=injectBefore(html,'</head>','  <script src="/js-bootstrap.js" data-js-bootstrap></script>');
       if(!html.includes('data-brayro-home-styles'))html=injectBefore(html,'</head>','  <link rel="stylesheet" href="/assets/brayro-home.css" data-brayro-home-styles data-brayro-v13>');
 
       html=html.replace('Distinctive websites, digital products and practical AI systems. Strategy through launch, directed as one complete production.','Distinctive websites, digital products and practical AI systems—built to make businesses easier to understand and trust. Strategy through launch, one connected production.');
@@ -125,7 +125,7 @@ const experienceTransform={
       html=injectBefore(html,'</body>','  <script type="module" src="/src/react-islands.js" data-react-islands></script>');
       html=injectBefore(html,'</body>','  <script src="/market-events.js" defer></script>');
     }
-    if(!html.includes('data-market-context'))html=injectBefore(html,'</head>',`  <script data-market-context>${readFileSync(resolve(process.cwd(),'public/market-context.js'),'utf8')}</script>`);
+    if(!html.includes('data-market-context'))html=injectBefore(html,'</head>','  <script src="/market-context.js" data-market-context></script>');
     return html;
   }}
 };

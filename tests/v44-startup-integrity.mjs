@@ -2,8 +2,10 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
-const cut=read('public/commercial-cut.js');
-const islands=read('src/react-islands.js');
+const cutLoader=read('public/commercial-cut.js');
+const cut=read('public/commercial-cut-runtime.js');
+const islandsLoader=read('src/react-islands.js');
+const islands=read('src/react-islands-runtime.js');
 const v12=read('public/brayro-v12.js');
 const direction=read('public/direction-pass.js');
 
@@ -24,9 +26,12 @@ assert.doesNotMatch(v12,/new V12Reveal\(\);\s*new FloatingHeader/,'V12 reveal mu
 assert.doesNotMatch(islands,/650px 0px/,'React islands should not prefetch hundreds of pixels below the first fold');
 assert.match(islands,/rootMargin=\(saveData\?'80px 0px':'280px 0px'\)/);
 assert.match(islands,/loadSignatureScenes,'0px 0px -12% 0px'/);
-assert.match(islands,/mobileStartup=matchMedia\('\(max-width:760px\)'\)\.matches/);
 assert.match(islands,/mountViewportEnhancements\(\)/);
-assert.match(islands,/events=\['scroll','wheel','touchstart','pointerdown'\]/);
+assert.match(islandsLoader,/mobile=matchMedia\('\(max-width:760px\)'\)\.matches/);
+assert.match(islandsLoader,/events=\['scroll','wheel','touchstart','pointerdown'\]/);
+assert.match(islandsLoader,/import\('\.\/react-islands-runtime\.js'\)/);
+assert.match(cutLoader,/commercial-cut-runtime\.js/);
+assert.match(cutLoader,/events=\['scroll','wheel','touchstart','pointerdown'\]/);
 
 assert.match(direction,/introMobile&&!window\.__BRAYRO_DIRECTION_MOBILE_ACTIVE__/);
 assert.match(direction,/direction-pass\.js\?mobile=1/);

@@ -8,14 +8,21 @@ class RevealDirector{
     if(reducedMotion||!('IntersectionObserver'in window)){
       this.items.forEach(item=>item.classList.add('is-visible'));return;
     }
+    this.groups=new Map();
+    this.items.forEach(item=>{
+      const target=item.closest('section,[data-scene],[data-plan-scene],[data-founder-scene]')||item;
+      if(!this.groups.has(target))this.groups.set(target,[]);
+      this.groups.get(target).push(item);
+    });
     this.observer=new IntersectionObserver(entries=>{
       entries.forEach(entry=>{
         if(!entry.isIntersecting)return;
-        entry.target.classList.add('is-visible');
+        const items=this.groups.get(entry.target)||[entry.target];
+        requestAnimationFrame(()=>items.forEach(item=>item.classList.add('is-visible')));
         this.observer.unobserve(entry.target);
       });
-    },{threshold:.14,rootMargin:'-3% 0px -11% 0px'});
-    this.items.forEach(item=>this.observer.observe(item));
+    },{threshold:.02,rootMargin:'12% 0px 18% 0px'});
+    this.groups.forEach((_items,target)=>this.observer.observe(target));
   }
 }
 
@@ -114,9 +121,21 @@ class PageProgress{
 }
 
 const startReveals=()=>{
-  const mount=()=>new RevealDirector();
-  if('requestIdleCallback'in window)requestIdleCallback(mount,{timeout:1500});
-  else setTimeout(mount,0);
+  let mounted=false;
+  const passiveEvents=['scroll','wheel','touchstart','pointerdown'];
+  const cleanup=()=>{
+    passiveEvents.forEach(type=>removeEventListener(type,mount));
+    removeEventListener('keydown',mount);
+    removeEventListener('hashchange',mount);
+  };
+  const mount=()=>{
+    if(mounted)return;
+    mounted=true;cleanup();new RevealDirector();
+  };
+  passiveEvents.forEach(type=>addEventListener(type,mount,{once:true,passive:true}));
+  addEventListener('keydown',mount,{once:true});
+  addEventListener('hashchange',mount,{once:true});
+  if(scrollY>0||location.hash)queueMicrotask(mount);
 };
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startReveals,{once:true});
 else startReveals();

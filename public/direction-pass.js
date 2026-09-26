@@ -5,6 +5,30 @@
   const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));
   const body=document.body;
 
+  if(introMobile&&!window.__BRAYRO_DIRECTION_MOBILE_ACTIVE__){
+    let started=false;
+    const events=['scroll','wheel','touchstart','pointerdown'];
+    const cleanup=()=>{
+      events.forEach(type=>removeEventListener(type,start));
+      removeEventListener('keydown',start);
+      removeEventListener('hashchange',start);
+    };
+    const start=()=>{
+      if(started)return;
+      started=true;cleanup();window.__BRAYRO_DIRECTION_MOBILE_ACTIVE__=true;
+      const script=document.createElement('script');
+      script.src='/direction-pass.js?mobile=1';
+      script.async=true;
+      script.dataset.directionPassDeferred='true';
+      document.body.append(script);
+    };
+    events.forEach(type=>addEventListener(type,start,{once:true,passive:true}));
+    addEventListener('keydown',start,{once:true});
+    addEventListener('hashchange',start,{once:true});
+    if(scrollY>0||location.hash)queueMicrotask(start);
+    return;
+  }
+
   const installIntroStyles=()=>{
     if(document.querySelector('style[data-hf-intro-critical]'))return;
     const style=document.createElement('style');

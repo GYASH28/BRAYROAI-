@@ -108,6 +108,11 @@
     contain:none!important;
     overflow:clip;
   }
+  .rae-root .rae-panel{
+    scale:1!important;
+    translate:0 0!important;
+    transition:opacity .2s ease,visibility .2s!important;
+  }
   .rae-root.is-open .rae-panel{
     position:absolute!important;
     inset:0!important;

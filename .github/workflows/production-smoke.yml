@@ -26,8 +26,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Chromium + Firefox
+        # playwright.config.mjs includes the targeted firefox-smoke project.
+        run: npx playwright install --with-deps chromium firefox
       - name: Build exact merged source
         run: npm run build
 

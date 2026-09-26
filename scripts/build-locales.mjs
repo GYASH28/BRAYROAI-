@@ -240,7 +240,7 @@ function localizeArabic($,route){
     $('.terms-section h2').each((i,el)=>{if(headings[i])$(el).text(headings[i])});
   }
   $('body').addClass('market-arabic');
-  $('head').append('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preload" as="style" media="(min-width: 761px)" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=optional" onload="this.onload=null;this.rel=\'stylesheet\'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=optional" media="(min-width: 761px)"></noscript>');
+  $('head').append('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preload" as="style" media="(min-width: 761px)" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=optional" data-layout-stable-fonts><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=optional" media="(min-width: 761px)"></noscript>');
   $('head').append('<link rel="stylesheet" href="/market-rtl.css">');
 }
 function contactOffer($,element,route){
@@ -291,9 +291,9 @@ for(const market of markets){
     $('html').attr('lang',MARKETS[market].locale);if(market==='ae-ar')$('html').attr('dir','rtl');else $('html').removeAttr('dir');
     $('body').attr('data-market',market).attr('data-locale',MARKETS[market].locale);
     $('head').append(`<meta name="brayro-market" content="${market}">`);
-    // Keep only this market's prices in the page and avoid an extra blocking
-    // request before its first paint.
-    $('script[data-market-context]').replaceWith(`<script data-market-context>${marketRuntime(market)}</script>`);
+    // Keep the shared same-origin market runtime. It derives the active market
+    // from the localized URL and remains compatible with production script CSP.
+    $('script[data-market-context]').attr('src','/market-context.js').empty();
     replacePrices($,market,route);
     if(market==='ae-ar')localizeArabic($,route);else localizeEnglish($,market,route);
     localizeLinks($,market,route);addSEO($,market,route);

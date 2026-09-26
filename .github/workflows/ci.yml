@@ -42,7 +42,7 @@ jobs:
             rae/rae-app.js rae/rae-director.js rae/rae-chat-client.js \
             rae/rae-ui.js rae/rae-actions.js rae/rae-context.js rae/rae-character.js \
             rae/rae-character-v2.css rae/rae-character-emotions.css rae/rae-3d.css \
-            ai-service-pages.css ai-service-pages.js client-work.css client-work.js \
+            ai-service-pages.css ai-service-pages.js client-work.css client-work.js js-bootstrap.js layout-fonts.js market-context.js \
             plans-page.css plans-page.js founder-page.css founder-page.js \
             terms-page.css terms-page.js scrollcraft.css scrollcraft.js; do
             test -f "dist/$f"

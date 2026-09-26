@@ -22,3 +22,27 @@ test('reduced motion keeps Rae on SVG and never downloads the WebGL chunk',async
   const resources=await page.evaluate(()=>performance.getEntriesByType('resource').map(entry=>entry.name));
   expect(resources.some(name=>/rae-3d-island|three-r186/i.test(name))).toBeFalsy();
 });
+
+
+test('desktop Rae activates the lazy WebGL actor on a capable browser',async({page})=>{
+  await page.addInitScript(()=>{
+    try{Object.defineProperty(navigator,'deviceMemory',{configurable:true,get:()=>8})}catch{}
+    try{Object.defineProperty(navigator,'hardwareConcurrency',{configurable:true,get:()=>8})}catch{}
+  });
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  const hasWebGL=await page.evaluate(()=>{
+    const canvas=document.createElement('canvas');
+    return Boolean(canvas.getContext('webgl2')||canvas.getContext('webgl'));
+  });
+  test.skip(!hasWebGL,'Headless browser has no WebGL context');
+  const launcher=page.locator('[data-rae-shell],[data-rae-toggle]').first();
+  await expect(launcher).toBeVisible();
+  await launcher.click();
+  await expect(page.locator('[data-rae-panel]')).toBeVisible();
+  await expect(page.locator('[data-rae-root]')).toHaveAttribute('data-rae-dimensional','active',{timeout:12000});
+  await expect(page.locator('[data-rae-3d-host] canvas')).toHaveCount(1);
+  const resources=await page.evaluate(()=>performance.getEntriesByType('resource').map(entry=>entry.name));
+  expect(resources.some(name=>/rae-3d-island/i.test(name))).toBeTruthy();
+  expect(resources.some(name=>/three-r186|three\.core/i.test(name))).toBeTruthy();
+});

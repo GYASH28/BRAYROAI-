@@ -38,7 +38,7 @@ async function browserLoad(){
   await context.route('**/api/market',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({country:'IN',market:'in',language:'en',source:'ci-preview'})}));
   const page=await context.newPage(),runtime=[];
   page.on('pageerror',error=>runtime.push(error.message));page.on('console',message=>{if(message.type()==='error'&&!message.text().includes('Rae failed to load'))runtime.push(message.text())});
-  await page.goto(`${base}/`,{waitUntil:'networkidle'});await page.waitForSelector('[data-hf-intro-video]');assert(await page.locator('[data-hf-intro-video]').count()===1,'opening film missing');await page.locator('[data-hf-skip]').click();await page.waitForTimeout(450);
+  await page.goto(`${base}/`,{waitUntil:'networkidle'});assert(await page.locator('[data-hf-intro-video]').count()===0,'optional film should not block first paint');await page.locator('[data-hf-replay]').click();await page.waitForSelector('[data-hf-intro-video]');await page.locator('[data-hf-skip]').click();await page.waitForTimeout(450);
 
   for(const viewport of [{width:390,height:844},{width:1440,height:900},{width:1920,height:1080}]){
     await page.setViewportSize(viewport);await page.goto(`${base}/`,{waitUntil:'networkidle'});await clearOpening(page);await waitHome(page);

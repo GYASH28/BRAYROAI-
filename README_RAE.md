@@ -4,7 +4,7 @@ Rae is a lightweight layered character and streaming AI guide mounted across eve
 
 ## Character technology decision
 
-There is no editable, production-ready `.riv` Rae source in this repository. Rather than substitute a generic marketplace mascot, Rae keeps the existing Bone/Ink/Orange identity as a small layered SVG rig in `public/rae/rae-character.js`.
+Rae's live character is one complete, authored, full-body SVG rig in `public/rae/rae-character.js`. It uses the supplied character sheet's bone, ink and orange identity. The previous desktop WebGL actor was removed at the user's request; the same vector character now appears on desktop and mobile, with no raster body or 3D download.
 
 `public/rae/rae-director.js` owns the actor state machine. Chat/network code never toggles raw face parts directly.
 

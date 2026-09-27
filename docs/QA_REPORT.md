@@ -1,5 +1,7 @@
 # Experience and localization QA — 24 September 2026
 
+> Historical QA record. For the current SVG-only Rae, optional opening film, and 27 September route evidence, see `AWARD_TRANSFORMATION_AUDIT_2026-09-27.md`. Results below describe an earlier implementation and are not current release certification.
+
 This report covers the isolated `codex/brayroai-site-rae-redesign` worktree. It is a local production preview review, not a deployment approval.
 
 ## What changed

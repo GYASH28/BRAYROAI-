@@ -2,6 +2,7 @@
   'use strict';
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const introMobile=matchMedia('(max-width:760px)').matches;
+  const arabic=document.documentElement.lang.toLowerCase().startsWith('ar');
   const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));
   const body=document.body;
 
@@ -40,7 +41,7 @@
       .opening-sequence.hf-intro.is-exiting{opacity:0!important;pointer-events:none!important}.opening-sequence.hf-intro.is-complete{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
       .hf-intro__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#070809;opacity:0;transform:scale(1.006);transition:opacity .3s ease,transform 5s cubic-bezier(.22,.72,.22,1)}.hf-intro.is-playing .hf-intro__video{opacity:1;transform:scale(1)}
       .hf-intro__loading{position:absolute;inset:0;display:grid;place-items:center;color:rgba(242,239,232,.72);font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;text-transform:uppercase;transition:opacity .25s ease}.hf-intro.is-playing .hf-intro__loading{opacity:0;pointer-events:none}.hf-intro__loading span{display:flex;align-items:center;gap:12px}.hf-intro__loading i{display:block;width:38px;height:1px;background:#ff5a1f;transform-origin:left;animation:hfLoad .9s cubic-bezier(.16,1,.3,1) infinite alternate}
-      .hf-intro__controls{position:absolute;z-index:5;top:max(20px,env(safe-area-inset-top));right:max(22px,env(safe-area-inset-right));display:flex;align-items:center;gap:7px;opacity:0;transform:translate3d(0,-6px,0);transition:opacity .34s .2s ease,transform .42s .2s cubic-bezier(.16,1,.3,1)}.hf-intro.is-playing .hf-intro__controls,.hf-intro--lite .hf-intro__controls{opacity:1;transform:none}
+      .hf-intro__controls{position:absolute;z-index:5;top:max(20px,env(safe-area-inset-top));right:max(22px,env(safe-area-inset-right));display:flex;align-items:center;gap:7px;opacity:1;transform:none}.hf-intro.is-playing .hf-intro__controls,.hf-intro--lite .hf-intro__controls{opacity:1;transform:none}
       .hf-intro__button{appearance:none;border:1px solid rgba(242,239,232,.18);background:rgba(7,8,9,.72);color:rgba(242,239,232,.72);padding:9px 11px;border-radius:999px;font:500 9px/1 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:color .18s ease,border-color .18s ease,background .18s ease,transform .2s cubic-bezier(.16,1,.3,1)}.hf-intro__button:hover,.hf-intro__button:focus-visible{color:#f2efe8;border-color:rgba(242,239,232,.42);background:rgba(7,8,9,.88);outline:none}.hf-intro__button:active{transform:scale(.96)}
       .hf-intro__progress{position:absolute;z-index:5;left:0;right:0;bottom:0;height:2px;background:rgba(242,239,232,.08);overflow:hidden}.hf-intro__progress i{display:block;width:100%;height:100%;background:#ff5a1f;transform:scaleX(var(--hf-progress,0));transform-origin:left}
       .hf-intro__lite{position:absolute;inset:0;display:grid;align-content:end;padding:1.25rem 1.2rem max(2rem,env(safe-area-inset-bottom));overflow:hidden;background:#070809;color:#f3f0ea}.hf-intro__lite::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 8%,rgba(255,255,255,.05) 8% calc(8% + 1px),transparent calc(8% + 1px) 92%,rgba(255,255,255,.05) 92% calc(92% + 1px),transparent calc(92% + 1px)),linear-gradient(180deg,transparent 0 14%,rgba(255,255,255,.04) 14% calc(14% + 1px),transparent calc(14% + 1px));pointer-events:none}
@@ -67,14 +68,13 @@
         document.querySelectorAll('footer a[href="#top"]').forEach(link=>{if(link.textContent.trim().toLowerCase()==='replay')link.textContent='Back to top'});
         return;
       }
-      body.classList.add('hf-intro-mode');
-      if(reduced||navigator.connection?.saveData){this.opening.remove();return}
-      this.opening.className='opening-sequence hf-intro';
-      this.opening.removeAttribute('aria-hidden');this.opening.setAttribute('role','presentation');
-      this.mountFilm();
+      if(reduced||navigator.connection?.saveData){this.opening.remove();document.querySelector('[data-hf-replay]')?.remove();return}
+      // The page and its real actions are available at first paint. The film is
+      // an opt-in piece of the identity rather than a blocking loading screen.
+      this.bindReplay();
     }
     mountFilm(){
-      this.opening.innerHTML=`<video class="hf-intro__video" data-hf-intro-video preload="metadata" muted playsinline src="/assets/brayroai-cinematic-opening-silent.mp4" data-full-src="/assets/brayroai-cinematic-opening.mp4"></video><div class="hf-intro__loading" aria-hidden="true"><span><i></i>BRAYROAI / OPENING FILM</span></div><div class="hf-intro__controls" aria-label="Opening film controls"><button class="hf-intro__button" type="button" data-hf-sound aria-pressed="false">Sound off</button><button class="hf-intro__button" type="button" data-hf-skip>Skip</button></div><div class="hf-intro__progress" aria-hidden="true"><i></i></div>`;
+      this.opening.innerHTML=`<video class="hf-intro__video" data-hf-intro-video preload="metadata" muted playsinline src="/assets/brayroai-cinematic-opening-silent.mp4" data-full-src="/assets/brayroai-cinematic-opening.mp4"></video><div class="hf-intro__loading" aria-hidden="true"><span><i></i>BRAYROAI / ${arabic?'الفيلم الافتتاحي':'OPENING FILM'}</span></div><div class="hf-intro__controls" aria-label="${arabic?'التحكم في الفيلم الافتتاحي':'Opening film controls'}"><button class="hf-intro__button" type="button" data-hf-sound aria-pressed="false">${arabic?'الصوت مغلق':'Sound off'}</button><button class="hf-intro__button" type="button" data-hf-skip>${arabic?'تخطَّ':'Skip'}</button></div><div class="hf-intro__progress" aria-hidden="true"><i></i></div>`;
       this.video=this.opening.querySelector('[data-hf-intro-video]');this.sound=this.opening.querySelector('[data-hf-sound]');this.skip=this.opening.querySelector('[data-hf-skip]');
       if(!this.video)return this.finish(true);
       this.video.volume=.9;this.video.muted=true;
@@ -84,7 +84,7 @@
       this.sound?.addEventListener('click',()=>this.toggleSound());this.skip?.addEventListener('click',()=>this.finish(false,true));
       this.bindEscape();body.classList.add('hf-intro-active');
       this.video.play().then(()=>this.start()).catch(()=>{this.video.muted=true;this.video.play().then(()=>this.start()).catch(()=>this.finish(true))});
-      this.timer=setTimeout(()=>this.finish(true),8500);this.bindReplay();
+      this.timer=setTimeout(()=>this.finish(true),8500);
     }
     bindEscape(){addEventListener('keydown',event=>{if(event.key==='Escape'&&body.classList.contains('hf-intro-active'))this.finish(false,true)})}
     start(){if(!this.video||this.finishing)return;this.opening.classList.add('is-playing');if(!this.startedAt)this.startedAt=performance.now();if(this.video.paused)this.video.play().catch(()=>{});this.paintProgress()}
@@ -94,7 +94,7 @@
       const hasFull=this.video.currentSrc.includes('brayroai-cinematic-opening.mp4')&&!this.video.currentSrc.includes('-silent');
       if(hasFull){this.video.muted=!this.video.muted;this.syncSoundLabel();return}
       if(!full)return;
-      this.audioLoading=true;if(this.sound)this.sound.textContent='Loading sound…';
+      this.audioLoading=true;if(this.sound)this.sound.textContent=arabic?'جارٍ تحميل الصوت…':'Loading sound…';
       const at=this.video.currentTime,wasPaused=this.video.paused;
       try{
         await new Promise((resolve,reject)=>{
@@ -105,7 +105,7 @@
         this.video.muted=false;if(!wasPaused)await this.video.play().catch(()=>{});
       }catch{this.video.muted=true}finally{this.audioLoading=false;this.syncSoundLabel()}
     }
-    syncSoundLabel(){const on=!this.video?.muted;if(this.sound){this.sound.textContent=on?'Sound on':'Sound off';this.sound.setAttribute('aria-pressed',String(on))}}
+    syncSoundLabel(){const on=!this.video?.muted;if(this.sound){this.sound.textContent=arabic?(on?'الصوت يعمل':'الصوت مغلق'):(on?'Sound on':'Sound off');this.sound.setAttribute('aria-pressed',String(on))}}
     paintProgress(){
       this.cancelProgress();
       const tick=()=>{
@@ -128,10 +128,16 @@
     }
     replay(){
       if(!this.opening||reduced)return;
+      if(!this.video){
+        this.opening.className='opening-sequence hf-intro';
+        this.opening.removeAttribute('aria-hidden');this.opening.setAttribute('role','presentation');
+        this.mountFilm();
+        return;
+      }
       this.finishing=false;clearTimeout(this.timer);clearTimeout(this.finishTimer);this.cancelProgress();window.scrollTo({top:0,behavior:'auto'});this.opening.classList.remove('is-complete','is-exiting');this.opening.setAttribute('aria-hidden','false');this.opening.style.setProperty('--hf-progress','0');this.startedAt=performance.now();body.classList.add('hf-intro-active');
       if(!this.video)return;this.video.currentTime=0;this.video.muted=true;this.syncSoundLabel();this.video.play().then(()=>this.start()).catch(()=>this.finish(true));this.timer=setTimeout(()=>this.finish(true),8500);
     }
-    bindReplay(){document.querySelectorAll('footer a[href="#top"]').forEach(link=>{if(link.textContent.trim().toLowerCase()!=='replay')return;link.addEventListener('click',event=>{event.preventDefault();this.replay()})})}
+    bindReplay(){document.querySelectorAll('[data-hf-replay]').forEach(button=>button.addEventListener('click',()=>this.replay()))}
   }
 
   class EditorialSequence{

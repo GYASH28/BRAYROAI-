@@ -11,6 +11,8 @@ export function translateArabicHome($){
   list($,'.v12-hero-meta span',['تجارب الويب','تصميم المنتجات','هندسة الواجهات','أنظمة الذكاء']);
   firstText($,'.primary-action','ابدأ مشروعاً ');
   text($,'.colour-director span','أظهر الألوان');
+  firstText($,'.hero__film-link','شاهد الفيلم ');
+  $('.hero__film-link').attr('aria-label','شاهد فيلم BRAYROAI الافتتاحي');
   text($,'.hero__credit','صورة بالأبيض والأسود حتى تصبح جزءاً منها');
   list($,'.v12-signal-strip:first-of-type .v12-signal-track span',Array(2).fill(['استراتيجية','تجارب الويب','تصميم المنتجات','هندسة الواجهات','أنظمة الذكاء','حركة هادفة','واجهات حقيقية','بونه · الهند']).flat());
 

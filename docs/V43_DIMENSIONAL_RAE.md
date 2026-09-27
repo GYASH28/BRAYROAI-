@@ -1,5 +1,7 @@
 # BRAYROAI V43 — Dimensional Rae and signature scenes
 
+> Historical record. Superseded on 27 September 2026 by the user's explicit SVG-only Rae direction. The WebGL actor and Three.js sources were removed; the V43 signature scenes remain. See `AWARD_TRANSFORMATION_AUDIT_2026-09-27.md`.
+
 ## Purpose
 
 V43 raises the visual ceiling without undoing V42's performance architecture. It adds one real WebGL character scene and two tightly scoped signal interactions. It does **not** add a site-wide WebGL canvas, a new homepage section, or another global scroll engine.

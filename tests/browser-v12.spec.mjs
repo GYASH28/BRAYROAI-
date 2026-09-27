@@ -55,8 +55,15 @@ test('Plans preserves all public web and AI offers',async({page})=>{
   await openPage(page,'/plans');await expect(page.locator('[data-plan-scene]')).toHaveCount(7);await expect(page.locator('.build-card')).toHaveCount(6);await expect(page.locator('.ai-plan-card')).toHaveCount(2);for(const text of ['₹2,599','₹3,999','₹5,999+','₹17,999','₹25K–₹35K+','AI Workflow Audit','₹9,999','Company Second Brain','From ₹29,999','Knowledge Care','From ₹2,999/mo'])await expect(page.locator('main')).toContainText(text);
 });
 
-test('opening film remains intact and skippable',async({page})=>{
-  await page.goto('/',{waitUntil:'domcontentloaded'});await expect(page.locator('[data-hf-intro-video]')).toHaveCount(1);const skip=page.locator('[data-hf-skip]');await skip.click({timeout:1200}).catch(()=>{});await expect(page.locator('body')).not.toHaveClass(/hf-intro-active/,{timeout:9000});
+test('homepage is usable immediately and the optional film remains skippable',async({page})=>{
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('[data-hf-intro-video]')).toHaveCount(0);
+  await expect(page.locator('body')).not.toHaveClass(/hf-intro-active/);
+  await expect(page.locator('.v12-hero-title')).toBeVisible();
+  await page.locator('[data-hf-replay]').click();
+  await expect(page.locator('[data-hf-intro-video]')).toHaveCount(1);
+  await page.locator('[data-hf-skip]').click({timeout:2000});
+  await expect(page.locator('body')).not.toHaveClass(/hf-intro-active/,{timeout:9000});
 });
 
 for(const route of ['/','/plans','/founder','/terms','/ai-workflow-audit','/company-second-brain'])test(`${route} has no serious accessibility violations`,async({page})=>{await openPage(page,route);const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(serious(results)).toEqual([])});

@@ -10,7 +10,7 @@ const reactRuntime=read('src/react-islands-runtime.js');
 assert.ok(commercialLoader.length<2200,'commercial mobile loader should stay tiny');
 assert.ok(reactLoader.length<2600,'React islands mobile loader should stay tiny');
 assert.ok(commercialRuntime.length>5000,'commercial runtime should remain outside the tiny loader');
-assert.ok(reactRuntime.length>2500,'React orchestration should remain outside the tiny loader');
+assert.ok(reactRuntime.length>1800,'React orchestration should remain outside the tiny loader after removing Rae WebGL');
 
 assert.match(commercialLoader,/matchMedia\('\(max-width:760px\)'\)\.matches/);
 assert.match(commercialLoader,/commercial-cut-runtime\.js/);
@@ -26,7 +26,7 @@ assert.match(reactLoader,/import\('\.\/react-islands-runtime\.js'\)/);
 assert.match(reactLoader,/brayro:market-opened/);
 assert.match(reactLoader,/rae:opened/);
 assert.match(reactRuntime,/export function startReactIslands/);
-assert.match(reactRuntime,/loadRaeDimensional/);
+assert.doesNotMatch(reactRuntime,/loadRaeDimensional|rae-3d-island/);
 assert.match(reactRuntime,/loadSignatureScenes/);
 assert.match(reactRuntime,/mountViewportEnhancements/);
 

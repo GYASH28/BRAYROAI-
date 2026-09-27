@@ -4,7 +4,15 @@
 
 .hero__subject{height:auto}
 
+/* An optional film should never replace the usable first screen. */
+.opening-sequence:not(.hf-intro){display:none!important}
+.hero__film-link{appearance:none;border:0;border-bottom:1px solid rgba(243,240,234,.42);padding:.52rem .12rem;background:transparent;color:#f3f0ea;font:600 .6rem/1 "DM Mono",monospace;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;transition:color .2s ease,border-color .2s ease}
+.hero__film-link span{color:#ff7131;margin-left:.45rem}
+.hero__film-link:hover,.hero__film-link:focus-visible{color:#ffad7e;border-color:#ff7131;outline-offset:5px}
+@media(prefers-reduced-motion:reduce){.hero__film-link{display:none}}
+
 @media(max-width:760px){
+  .hero__film-link{display:none}
   /* Enter directly into the authored hero on phones. The opening ident is
      already represented by the headline and costs an extra fullscreen paint. */
   .opening-sequence{display:none!important}

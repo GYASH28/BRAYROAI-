@@ -29,19 +29,18 @@ Any raster generation must use this art direction, be inspected, be exported as 
 | Client case | Verified desktop and mobile site captures | Source aspect ratios retained; product UI is the subject | Captions live in the document, never baked into the capture | WebP mobile derivative shows the actual narrow interface |
 | Rae | Compact ivory robot with a larger black visor and orange lights | Portrait 2.5D cutout with a transparent background and a subtle three-quarter stance | Rae's chat text remains real HTML outside the canvas | The same illustration scales down; expression and text remain legible |
 
-All original visual work in this pass is authored in this repository. The capability plates use HTML/CSS; Rae uses a transparent illustrated WebP with SVG facial layers and CSS transforms. The client captures and founder portrait are existing project assets. No external stock art or generated claim image was added, so there is no external asset licence to carry into deployment.
+All current live visual work is authored in this repository. The capability plates use HTML/CSS; Rae uses one complete SVG body and face with CSS expression states. The client captures and founder portrait are existing project assets. No external stock art or generated claim image is part of this direction.
 
 ## Produced assets
 
 | Asset | Source | Use and performance |
 | --- | --- | --- |
-| `public/rae/rae-illustration.webp` | Generated with the supplied character sheet as identity reference | 66 KiB transparent 2.5D body with ivory shell, dark visor, amber ear and boot lights, articulated joints and a greeting pose. Loaded when Rae wakes. |
-| `public/rae/rae-illustration-thumb.webp` | Small derivative of the same source | 12 KiB launcher preview, loaded with the site shell. |
-| `public/rae/rae-character.js` | Authored SVG visor layer and layout | Live eyes, mouth, thought and listening graphics over the artwork; one expression system serves the launcher, header and stage. |
+| `public/rae/rae-character.js` | Authored full-body SVG geometry based on the supplied sheet | Ivory shell, dark visor, animated eyes and mouth, articulated arms and legs, orange lights, and detailed panels across launcher, header and stage. No raster character body is served. |
+| `public/rae/rae-character-v2.css` and `public/rae/rae-character-emotions.css` | Authored state and pose styling | The same vector actor has distinct facial and body states, visor clipping, reduced-motion behavior and a cheaper mobile lighting path. |
 | Four capability plates | `index.html` + `public/experience-upgrade.css` | Original browser, product-flow, frontend and grounded-AI compositions made from HTML and CSS. No image request, no animation loop, and no fabricated client output. |
 | FakhriMart WebP derivatives | Existing verified client captures | Source captures remain in PNG; WebP is served in archive and case study to reduce transfer. |
 
-The original generated PNG source is kept at `artifacts/experience/rae-illustration-source.png`; the served WebP derivatives live in `public/rae/`. `public/rae/rae-character.js` defines the SVG facial overlay and crops. `public/rae/rae-character-v2.css` and `public/rae/rae-character-emotions.css` define motion and expressions. The initial launcher uses the small derivative, then upgrades to the full illustration when Rae loads.
+Older passes used a generated PNG/WebP body with facial overlays; those assets are no longer served. `public/rae/rae-character.js` now defines the entire robot and all facial geometry. `public/rae/rae-character-v2.css` and `public/rae/rae-character-emotions.css` define motion and expressions. The launcher uses a compact view of the same SVG, while the chat stage displays the full body.
 
 ## Rae animation manifest
 
@@ -55,4 +54,4 @@ The original generated PNG source is kept at `artifacts/experience/rae-illustrat
 | `happy` | Measured positive reaction | Successful action or project guidance |
 | `sleep` | Settled quiet posture | Offline or inactive state |
 
-Animations are limited to SVG and image transforms and opacity; there is no frame loop or canvas. Reduced motion disables character animation while preserving the artwork and every chat control.
+Character animation uses SVG/CSS transforms and opacity; there is no character canvas or WebGL loop. Reduced motion disables character animation while preserving the artwork and every chat control.

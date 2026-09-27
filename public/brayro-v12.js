@@ -72,6 +72,9 @@
 
   class FloatingHeader {
     constructor(){
+      // The shared shell owns the visible header and chapter navigation.
+      // Do not keep a second scroll listener for the hidden legacy header.
+      if(document.querySelector('[data-global-nav]'))return;
       this.nav=document.querySelector('[data-site-nav]');
       if(!this.nav)return;
       this.links=[...this.nav.querySelectorAll('nav a[href^="#"]')];

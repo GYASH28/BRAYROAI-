@@ -20,3 +20,18 @@ test('desktop loads both enhancement runtimes without waiting for interaction',a
   expect(resources.some(name=>/commercial-cut-runtime/i.test(name))).toBeTruthy();
   expect(resources.some(name=>/react-islands-runtime/i.test(name))).toBeTruthy();
 });
+
+for(const activation of ['pointer','keyboard'])test(`first mobile colour action survives delayed runtime via ${activation}`,async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.route('**/commercial-cut-runtime.js',async route=>{
+    await new Promise(resolve=>setTimeout(resolve,400));
+    await route.continue();
+  });
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  const button=page.locator('[data-colour-toggle]');
+  if(activation==='pointer')await button.click();
+  else{await button.focus();await button.press('Enter')}
+  await expect(button).toHaveAttribute('aria-pressed','true',{timeout:8000});
+  await page.waitForTimeout(450);
+  await expect(button).toHaveAttribute('aria-pressed','true');
+});

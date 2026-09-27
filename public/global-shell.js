@@ -4,7 +4,7 @@
   const nav=document.querySelector('[data-global-nav]');
   const progress=document.querySelector('[data-global-progress]');
   if(!toggle||!menu||!nav)return;
-  let priorFocus=null,frame=0;
+  let priorFocus=null,frame=0,lastProgressPaint=0,trailingProgress=0;
   const setOpen=(open)=>{
     if(open===!menu.hidden)return;
     if(open){
@@ -30,9 +30,17 @@
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
   });
-  const update=()=>{
+  const update=now=>{
     frame=0;
     if(!progress)return;
+    // On narrow devices the visual progress line does not need a layout read
+    // on every scroll frame. Keep the final value after scrolling stops.
+    if(innerWidth<=760&&now-lastProgressPaint<48){
+      if(!trailingProgress)trailingProgress=setTimeout(()=>{trailingProgress=0;if(!frame)frame=requestAnimationFrame(update)},48-(now-lastProgressPaint));
+      return;
+    }
+    lastProgressPaint=now;
+    if(trailingProgress){clearTimeout(trailingProgress);trailingProgress=0}
     const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
     progress.style.transform=`scaleX(${Math.min(1,Math.max(0,scrollY/max)).toFixed(4)})`;
   };

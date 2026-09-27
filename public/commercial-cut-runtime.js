@@ -97,10 +97,13 @@ class PageProgress{
     this.nav=document.querySelector('[data-site-nav]');
     this.frame=0;
     this.schedule=this.schedule.bind(this);
+    this.bindAnchors();
+    // The shared shell renders the only visible progress bar. Its own scroll
+    // listener updates that bar, so the hidden legacy bar needs no frame work.
+    if(document.querySelector('[data-global-nav]'))return;
     addEventListener('scroll',this.schedule,{passive:true});
     addEventListener('resize',this.schedule,{passive:true});
     addEventListener('pageshow',event=>{if(event.persisted)this.schedule()},{passive:true});
-    this.bindAnchors();
   }
   bindAnchors(){
     document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{

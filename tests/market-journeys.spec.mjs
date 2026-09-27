@@ -191,6 +191,7 @@ test('phone header contracts on scroll without crowding the chapter rail or menu
     const initial=await nav.boundingBox();
     await page.evaluate(()=>scrollTo(0,800));
     await expect(nav).toHaveClass(/is-compact/);
+    await expect.poll(()=>page.locator('[data-global-progress]').evaluate(node=>new DOMMatrix(getComputedStyle(node).transform).a)).toBeGreaterThan(.04);
     const compact=await nav.boundingBox();
     const chapter=await page.locator('.chapter-nav').boundingBox();
     expect(compact.width).toBeLessThan(initial.width-8);

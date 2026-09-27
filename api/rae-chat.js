@@ -31,7 +31,7 @@ function parseBody(req){
 }
 function safeContext(input={}){
   const pathname=clean(input.pathname).slice(0,120),market=splitMarketPath(pathname).market;
-  return{pageKey:clean(input.pageKey).slice(0,30),pathname,market,language:market==='ae-ar'?'ar-AE':market==='au'?'en-AU':market==='ae'?'en-AE':'en-IN',section:clean(input.section).slice(0,100),pageTitle:clean(input.pageTitle).slice(0,140),recentRaeAction:clean(input.recentRaeAction).slice(0,120)};
+  return{pageKey:clean(input.pageKey).slice(0,30),pathname,market,language:market==='au'?'en-AU':market==='ae'?'en-AE':'en-IN',section:clean(input.section).slice(0,100),pageTitle:clean(input.pageTitle).slice(0,140),recentRaeAction:clean(input.recentRaeAction).slice(0,120)};
 }
 function safeSession(input={}){
   const profile=input?.profile&&typeof input.profile==='object'?input.profile:{};
@@ -59,7 +59,7 @@ PURPOSE
 
 STYLE
 - Default to 2–5 concise sentences for simple questions; use short bullets for comparisons.
-- Match the visitor's language naturally.
+- Always reply in English. The entire BRAYROAI website uses English in every market.
 - Avoid corporate support filler, overlong intros and emoji spam.
 - Never say “As an AI language model”, “How may I assist you today?”, or pretend to be human.
 - A tiny dry joke is welcome when it helps the character feel alive, but usefulness wins.
@@ -88,7 +88,7 @@ function localizedKnowledge(market){
   return{...RAE_KNOWLEDGE,websitePlans:RAE_KNOWLEDGE.websitePlans.map(price),aiOffers:RAE_KNOWLEDGE.aiOffers.map(price),market:{id:market,currency:market==='au'?'AUD':market.startsWith('ae')?'AED':'INR',scope:'BRAYROAI is based in Pune, India and serves the selected market remotely. Applicable taxes and third-party costs are separate unless written into the proposal.'}};
 }
 function systemPrompt(context,session){
-  const languageRule=context.market==='ae-ar'?'The visitor is on the UAE Arabic experience. Reply in natural Arabic by default. Keep BRAYROAI, Rae and product names consistent. Use only the AED prices in this market catalog.':'Use only the prices for the explicit URL market in this catalog; do not convert currencies or quote another market unless asked.';
+  const languageRule='Reply in English. Use only the prices for the explicit URL market in this catalog; do not convert currencies or quote another market unless asked.';
   return `${BEHAVIOR}\n\nMARKET AND LANGUAGE RULE: ${languageRule}\n\nPROMPT VERSION: ${PROMPT_VERSION}\n\nVERIFIED BRAYROAI KNOWLEDGE (source of truth):\n${JSON.stringify(localizedKnowledge(context.market))}\n\nALLOWLISTED SITE ACTION CAPABILITIES (application-owned; do not claim execution):\n${JSON.stringify(RAE_ALLOWED_ACTIONS)}\n\nCURRENT SAFE PAGE CONTEXT:\n${JSON.stringify(context)}\n\nKNOWN SESSION CONTEXT (visitor-provided, may be incomplete):\n${JSON.stringify(session)}`;
 }
 
@@ -152,7 +152,6 @@ function buildMeta(message,context,session){
   }
   if(!quick.length)quick.push('Show relevant work','Compare plans','What should I do next?');
   if(context.pageKey==='case'&&!quick.includes('Can you build something similar?'))quick.unshift('Can you build something similar?');
-  if(context.market==='ae-ar')quick.splice(0,quick.length,...['ما الخطة المناسبة لي؟','اعرض أعمال العملاء','كيف أبدأ مشروعاً؟']);
   emotion=socialEmotion(lower,emotion);
   return{quickReplies:[...new Set(quick)].slice(0,4),actions:actions.slice(0,3),card,emotion};
 }

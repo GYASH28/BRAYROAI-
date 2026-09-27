@@ -50,6 +50,8 @@ export function translateArabicFounder($){
 
 export function translateArabicClientArchive($){
   $('.client-nav nav a').each((i,element)=>{const label=['العملاء','FakhriMart','الخدمات','الخطط'][i];if(label)$(element).text(label)});
+  $('.client-hero__feature').attr('aria-label','استكشف دراسة حالة FakhriMart الموثقة');
+  text($,'.client-hero__feature-index','٠١ / عمل عميل موثق ومنشور');
   text($,'.client-hero .client-kicker','BRAYROAI / أعمال العملاء');
   text($,'.client-hero__aside>p','مساحة دائمة لأعمال العملاء مع BRAYROAI. تبقى المشاريع المنشورة منفصلة عن تجارب الاستوديو، ولا تذكر دراسات الحالة إلا ما يمكن التحقق منه.');
   $('.client-hero__stats').attr('aria-label','حالة أعمال العملاء');
@@ -61,6 +63,15 @@ export function translateArabicClientArchive($){
   text($,'.client-search .sr-only','ابحث في مشاريع العملاء');
   $('[data-client-search]').attr('placeholder','ابحث في أعمال العملاء').attr('aria-label','ابحث في أعمال العملاء');
   text($,'[data-client-count]','مشروع واحد');
+  $('.client-card__media').attr('aria-label','اقرأ دراسة حالة FakhriMart');
+  $('.client-card__media img').attr('alt','واجهة FakhriMart على الحاسوب');
+  text($,'.client-card__badge','عمل عميل موثق');
+  text($,'.client-card__visit','افتح دراسة الحالة ↗');
+  text($,'.client-card__status','منشور');
+  text($,'.client-card__body>p','كتالوج موثق ومسارات اكتشاف واستفسار عبر واتساب لمورّد خيوط ومواد حرفية يخدم المشترين الأفراد والتجار وطلبات الجملة.');
+  $('.client-card__details span').each((i,element)=>$(element).text(['توريد الخيوط والحرف','بونه · الهند'][i]));
+  $('.client-card__services span').each((i,element)=>$(element).text(['الاستراتيجية','تجربة المستخدم','React','الواجهة','هيكلة الكتالوج','تحسين البحث','اختبار الجودة'][i]));
+  $('.client-card__actions a').each((i,element)=>$(element).html(["اقرأ دراسة الحالة <span>↗</span>","شاهد الموقع المباشر <span>↗</span>"][i]));
   text($,'.client-empty strong','لا توجد مشاريع تطابق البحث حالياً.');
   text($,'.client-empty p','جرّب بحثاً آخر. سيكبر هذا الأرشيف مع نشر أعمال موثقة جديدة.');
   text($,'[data-client-reset]','امسح البحث');

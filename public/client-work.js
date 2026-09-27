@@ -50,8 +50,10 @@
     }
 
     render() {
+      const authored=qsa('[data-client-card]',this.grid);
+      if(authored.length===CLIENTS.length&&authored.every((card,index)=>card.dataset.clientSlug===CLIENTS[index].slug))return;
       this.grid.innerHTML = CLIENTS.map((client, index) => `
-        <article class="client-card" data-client-card data-status="${client.status}" data-sector="${client.sector.toLowerCase()}" style="--client-index:${index}">
+        <article class="client-card" data-client-card data-client-slug="${client.slug}" data-status="${client.status}" data-sector="${client.sector.toLowerCase()}" style="--client-index:${index}">
           <a class="client-card__media" href="${window.BRAYRO_MARKET?.link(client.caseStudy)||client.caseStudy}" aria-label="${clientArabic?'اقرأ دراسة حالة':'Read the'} ${client.name}">
             <img src="${client.previewDesktop}" width="1440" height="900" loading="${index ? 'lazy' : 'eager'}" alt="${clientArabic?`واجهة ${client.name} على الحاسوب`:`${client.name} website shown on desktop.`}">
             <span class="client-card__badge">${client.proof}</span>
@@ -137,6 +139,7 @@
     }
   }
 
+  document.documentElement.dataset.clientMotion='ready';
   ensureAccessibilityStyles();
   new ClientArchive();
   new Reveal();

@@ -32,6 +32,33 @@ test('client archive filters verified work and handles an empty search',async({p
   await expect(page.locator('[data-client-card]:visible')).toHaveCount(1);
 });
 
+test('verified work remains visible and linked without JavaScript',async({browser})=>{
+  const context=await browser.newContext({baseURL:process.env.BASE_URL||'http://127.0.0.1:4173',javaScriptEnabled:false});
+  const page=await context.newPage();
+  await page.goto('/clients');
+  await expect(page.locator('.client-hero h1')).toBeVisible();
+  await expect(page.locator('[data-client-card]')).toBeVisible();
+  await expect(page.locator('[data-client-card] h2')).toHaveText('FakhriMart');
+  await expect(page.locator('[data-client-card] .client-card__actions a').first()).toHaveAttribute('href','/clients/fakhrimart');
+  await expect(page.locator('.client-filters')).toBeHidden();
+  await context.close();
+});
+
+test('Arabic archive keeps verified work visible and the hero image clear of the title',async({browser})=>{
+  const context=await browser.newContext({baseURL:process.env.BASE_URL||'http://127.0.0.1:4173',javaScriptEnabled:false,viewport:{width:1440,height:900}});
+  const page=await context.newPage();
+  await page.goto('/ae/ar/clients');
+  await expect(page.locator('.client-card__badge')).toHaveText('عمل عميل موثق');
+  await expect(page.locator('[data-client-card] .client-card__media')).toHaveAttribute('href','/ae/ar/clients/fakhrimart');
+  const separated=await page.evaluate(()=>{
+    const image=document.querySelector('.client-hero__feature').getBoundingClientRect();
+    const title=document.querySelector('.client-hero h1').getBoundingClientRect();
+    return image.right<=title.left||title.right<=image.left||image.bottom<=title.top||title.bottom<=image.top;
+  });
+  expect(separated).toBeTruthy();
+  await context.close();
+});
+
 test('FakhriMart case study exposes evidence, live project and technical story',async({page})=>{
   await page.goto('/clients/fakhrimart',{waitUntil:'networkidle'});
   await expect(page.locator('h1')).toContainText('Fakhri');

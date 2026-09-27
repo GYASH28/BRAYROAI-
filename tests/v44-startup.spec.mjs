@@ -21,3 +21,14 @@ test('hash navigation arms reveal choreography without a timeout bootstrap',asyn
   await page.goto('/#work',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#work [data-v12-reveal]').first()).toHaveClass(/is-visible/);
 });
+
+test('phone startup avoids the desktop font request and desktop resize restores it',async({page})=>{
+  const fontRequests=[];
+  page.on('request',request=>{if(request.url().includes('fonts.googleapis.com/css2'))fontRequests.push(request.url())});
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/',{waitUntil:'networkidle'});
+  expect(fontRequests).toHaveLength(0);
+  await page.setViewportSize({width:1440,height:900});
+  await expect(page.locator('link[data-layout-stable-fonts]')).toHaveAttribute('rel','stylesheet');
+  await expect.poll(()=>fontRequests.length).toBeGreaterThan(0);
+});

@@ -29,6 +29,13 @@
 .rae-character[data-rae-rig="v3"] .rae-character__spark path{fill:none;stroke:#ff6a20;stroke-width:4;stroke-linecap:round}
 .rae-character[data-rae-rig="v3"] .rae-character__brand-mark{paint-order:stroke;stroke:#fff7ed;stroke-width:.45}.rae-character[data-rae-rig="v3"] .rae-character__brow,.rae-character[data-rae-rig="v3"] .rae-character__lid{stroke:#ff9a26}.rae-character[data-rae-rig="v3"] .rae-character__art{pointer-events:none}
 .rae-character[data-rae-rig="v3"] .rae-character__visor-rim{opacity:.46}
+.rae-character[data-rae-rig="v3"] :is(.rae-character__glove--open,.rae-character__glove--peace){opacity:0;visibility:hidden}
+.rae-character[data-rae-rig="v3"]:is([data-state="opening"],[data-state="celebrate"],[data-state="positive"],[data-state="playful"]) .rae-character__glove--rest{opacity:0;visibility:hidden}
+.rae-character[data-rae-rig="v3"]:is([data-state="opening"],[data-state="celebrate"],[data-state="positive"],[data-state="playful"]) .rae-character__glove--open{opacity:1;visibility:visible}
+.rae-character[data-rae-rig="v3"]:is([data-state="opening"],[data-state="playful"]) .rae-character__hand--r .rae-character__glove--open{opacity:0;visibility:hidden}
+.rae-character[data-rae-rig="v3"]:is([data-state="opening"],[data-state="playful"]) .rae-character__glove--peace{opacity:1;visibility:visible}
+.rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__hand--l .rae-character__glove--rest,.rae-character[data-rae-rig="v3"][data-state="speaking"] .rae-character__hand--r .rae-character__glove--rest{opacity:0;visibility:hidden}
+.rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__hand--l .rae-character__glove--open,.rae-character[data-rae-rig="v3"][data-state="speaking"] .rae-character__hand--r .rae-character__glove--open{opacity:1;visibility:visible}
 
 /* Variant framing: launcher/header show the expressive head + upper torso; stage shows the full robot. */
 .rae-character--launcher[data-rae-rig="v3"]{width:3.15rem;height:3.15rem}.rae-character--header[data-rae-rig="v3"]{width:3.5rem;height:3.5rem}.rae-character--stage[data-rae-rig="v3"]{width:10.5rem;height:10.5rem}
@@ -42,13 +49,14 @@
 .rae-character[data-rae-rig="v3"][data-state="attention"] .rae-character__spark,.rae-character[data-rae-rig="v3"][data-state="curious"] .rae-character__spark{animation:raeV3SparkNotice .75s var(--rae-ease)}
 
 /* Opening = proper friendly wave, not a generic scale animation. */
-.rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__arm--r{transform:translate(-10px,-20px) rotate(-34deg)}
+.rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__arm--r{transform:translate(-8px,-15px) rotate(-88deg)}
 .rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__hand--r{animation:raeV3Wave .58s var(--rae-ease) 2}
 .rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__mouth{transform:translateY(1px) scaleX(1.15)}
 .rae-character[data-rae-rig="v3"][data-state="opening"] .rae-character__cheek{opacity:.48}
 
 /* Listening leans toward the visitor. */
 .rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__body{transform:translateY(-2px) scale(1.012)}
+.rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__arm--l{transform:translate(10px,-15px) rotate(23deg)}
 .rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__head-wrap{transform:translateX(var(--rae-head-x)) translateY(3px) rotate(var(--rae-head-r)) scale(1.015)}
 .rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__ear-ring-light{animation:raeV3ListenPulse 1.15s ease-in-out infinite}
 .rae-character[data-rae-rig="v3"][data-state="listening"] .rae-character__eye-white{transform:scale(1.06)}
@@ -89,8 +97,8 @@
 
 /* Celebrate = full-body bounce and both arms up. */
 .rae-character[data-rae-rig="v3"][data-state="celebrate"]{animation:raeV3Celebrate .82s var(--rae-ease)}
-.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__arm--l{transform:translate(12px,-28px) rotate(35deg)}
-.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__arm--r{transform:translate(-12px,-28px) rotate(-35deg)}
+.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__arm--l{transform:translate(7px,-18px) rotate(88deg)}
+.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__arm--r{transform:translate(-7px,-18px) rotate(-88deg)}
 .rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__eye-white{transform:scaleY(.58) scaleX(1.12)}
 .rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__mouth{transform:translateY(3px) scale(1.35)}
 .rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__ear-ring-light,.rae-character[data-rae-rig="v3"][data-state="celebrate"] .rae-character__chest-light{animation:raeV3CelebrateLight .4s ease-in-out 2}

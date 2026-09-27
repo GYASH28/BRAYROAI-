@@ -95,8 +95,18 @@ export const characterMarkup = (variant = 'stage') => {
         <path d="M87 390q21 14 43 2M94 353q19-9 35-2" fill="none" stroke="#8d8073" stroke-width="1.7" opacity=".62"/>
         <rect class="rae-character__arm-light" x="90" y="365" width="7" height="23" rx="3.5" fill="url(#${id}Orange)"/>
         <g class="rae-character__hand rae-character__hand--l">
-          <ellipse cx="100" cy="410" rx="20" ry="17" fill="url(#${id}Ink)"/>
-          <path class="rae-character__finger" d="M89 407Q79 401 80 391Q81 384 87 387L96 398M99 398L100 382Q101 374 107 378L109 399M111 401L120 390Q125 384 129 390L121 408" fill="none" stroke="#24262a" stroke-width="9" stroke-linecap="round"/>
+          <ellipse cx="105" cy="397" rx="18" ry="8" fill="url(#${id}Joint)"/>
+          <g class="rae-character__glove rae-character__glove--rest">
+            <path d="M84 400Q100 391 117 400L122 416Q119 429 105 433Q88 434 80 421Z" fill="url(#${id}Ink)" stroke="#55545a" stroke-width="1.3"/>
+            <path class="rae-character__finger" d="M83 416Q77 412 75 415Q71 420 78 425L87 430M91 425Q90 438 96 441Q102 442 103 434M104 426Q104 442 111 442Q117 439 115 428M116 420Q123 433 128 428Q132 424 124 416" fill="none" stroke="url(#${id}Joint)" stroke-width="8" stroke-linecap="round"/>
+            <path d="M88 405q15-8 27 1M91 417q14 4 25-2" fill="none" stroke="#8d8b90" stroke-width="1.5" opacity=".55"/>
+            <path d="M91 430l4 3m13 1 4-2" fill="none" stroke="#b6b2af" stroke-width="1" opacity=".65"/>
+          </g>
+          <g class="rae-character__glove rae-character__glove--open">
+            <path class="rae-character__finger" d="M84 424L66 434Q59 438 63 443Q68 447 74 442L86 436M90 434L78 454Q74 461 80 464Q86 467 90 460L99 441M101 438L95 463Q93 471 100 472Q106 472 108 463L109 442M111 437L116 461Q118 469 125 467Q131 465 127 457L119 433M118 424L136 441Q142 447 148 442Q153 437 146 431L124 415" fill="none" stroke="url(#${id}Joint)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M82 412Q99 402 116 412L123 433Q115 447 101 448Q86 446 77 432Z" fill="url(#${id}Ink)" stroke="#66646a" stroke-width="1.5"/>
+            <path d="M84 417q13-8 29-2M88 438q13 8 25 0M93 420v7m9-8v8m9-10v8" fill="none" stroke="#a7a2a0" stroke-width="1.4" opacity=".58"/>
+          </g>
         </g>
       </g>
       <g class="rae-character__arm rae-character__arm--r">
@@ -109,8 +119,25 @@ export const characterMarkup = (variant = 'stage') => {
         <path d="M352 393q20 12 42-1M351 353q18-9 35-2" fill="none" stroke="#8d8073" stroke-width="1.7" opacity=".62"/>
         <rect class="rae-character__arm-light" x="383" y="365" width="7" height="23" rx="3.5" fill="url(#${id}Orange)"/>
         <g class="rae-character__hand rae-character__hand--r">
-          <ellipse cx="381" cy="410" rx="20" ry="17" fill="url(#${id}Ink)"/>
-          <path class="rae-character__finger" d="M369 408Q360 402 361 393Q362 386 368 389L377 400M381 399L382 383Q383 375 389 379L391 400M392 402L401 392Q406 386 410 392L402 410" fill="none" stroke="#24262a" stroke-width="9" stroke-linecap="round"/>
+          <ellipse cx="375" cy="397" rx="18" ry="8" fill="url(#${id}Joint)"/>
+          <g transform="translate(480 0) scale(-1 1)">
+            <g class="rae-character__glove rae-character__glove--rest">
+              <path d="M84 400Q100 391 117 400L122 416Q119 429 105 433Q88 434 80 421Z" fill="url(#${id}Ink)" stroke="#55545a" stroke-width="1.3"/>
+              <path class="rae-character__finger" d="M83 416Q77 412 75 415Q71 420 78 425L87 430M91 425Q90 438 96 441Q102 442 103 434M104 426Q104 442 111 442Q117 439 115 428M116 420Q123 433 128 428Q132 424 124 416" fill="none" stroke="url(#${id}Joint)" stroke-width="8" stroke-linecap="round"/>
+              <path d="M88 405q15-8 27 1M91 417q14 4 25-2" fill="none" stroke="#8d8b90" stroke-width="1.5" opacity=".55"/>
+              <path d="M91 430l4 3m13 1 4-2" fill="none" stroke="#b6b2af" stroke-width="1" opacity=".65"/>
+            </g>
+            <g class="rae-character__glove rae-character__glove--open">
+              <path class="rae-character__finger" d="M84 424L66 434Q59 438 63 443Q68 447 74 442L86 436M90 434L78 454Q74 461 80 464Q86 467 90 460L99 441M101 438L95 463Q93 471 100 472Q106 472 108 463L109 442M111 437L116 461Q118 469 125 467Q131 465 127 457L119 433M118 424L136 441Q142 447 148 442Q153 437 146 431L124 415" fill="none" stroke="url(#${id}Joint)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M82 412Q99 402 116 412L123 433Q115 447 101 448Q86 446 77 432Z" fill="url(#${id}Ink)" stroke="#66646a" stroke-width="1.5"/>
+              <path d="M84 417q13-8 29-2M88 438q13 8 25 0M93 420v7m9-8v8m9-10v8" fill="none" stroke="#a7a2a0" stroke-width="1.4" opacity=".58"/>
+            </g>
+            <g class="rae-character__glove rae-character__glove--peace">
+              <path d="M86 424L67 436Q61 440 65 445Q70 449 77 443L88 436M91 416L79 460Q77 468 84 470Q91 470 93 463L103 430M103 418L107 465Q108 472 115 471Q122 469 120 462L116 428" fill="none" stroke="url(#${id}Joint)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M82 407Q99 397 117 407L124 425Q126 439 113 445Q95 449 80 435Z" fill="url(#${id}Ink)" stroke="#66646a" stroke-width="1.4"/>
+              <path d="M86 413q15-7 29-1M88 432q12 7 24 2M81 460l5 1m23 5 6-1" fill="none" stroke="#a9a5a2" stroke-width="1.4" opacity=".68"/>
+            </g>
+          </g>
         </g>
       </g>
     </g>

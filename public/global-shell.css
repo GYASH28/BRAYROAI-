@@ -110,8 +110,10 @@ html.global-nav-compact .chapter-nav{top:68px;background:rgba(11,12,15,.9);box-s
 .global-footer::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 72% 18%,rgba(255,138,0,.07),transparent 34%);opacity:.85}
 @media(max-width:1050px){.global-nav.is-compact{width:calc(100% - 18px)}.global-nav.is-compact .global-nav__links a:nth-last-child(-n+2){display:none}}
 @media(max-width:760px){
-  .global-nav,.global-nav.is-compact{top:max(8px,env(safe-area-inset-top));width:calc(100% - 18px);min-height:56px;padding-block:0;padding-inline:14px 7px;border-radius:16px}
-  .global-nav.is-compact{border-radius:999px}
+  .global-nav,.global-nav.is-compact{top:max(8px,env(safe-area-inset-top));padding-block:0}
+  .global-nav{width:calc(100% - 18px);min-height:56px;padding-inline:14px 7px;border-radius:16px}
+  .global-nav.is-compact{width:calc(100% - 32px);min-height:50px;padding-inline:12px 6px;border-radius:999px}
+  .global-nav.is-compact .global-nav__brand{font-size:15px}
   .global-nav__brand small{display:none}
   .chapter-nav{top:76px;max-width:calc(100% - 18px);gap:10px;padding:8px 11px}
   html.global-nav-compact .chapter-nav{top:72px}
@@ -217,7 +219,7 @@ html.global-nav-compact .chapter-nav{top:68px;background:rgba(11,12,15,.9);box-s
 }
 @media(max-width:760px){
   .chapter-nav{top:calc(max(8px,env(safe-area-inset-top)) + 68px)}
-  html.global-nav-compact .chapter-nav{top:calc(max(8px,env(safe-area-inset-top)) + 64px)}
+  html.global-nav-compact .chapter-nav{top:calc(max(8px,env(safe-area-inset-top)) + 58px)}
 }
 @media(max-width:700px){
   .chapter-nav a{min-height:28px;display:inline-flex;align-items:center}

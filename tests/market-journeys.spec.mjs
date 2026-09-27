@@ -180,3 +180,34 @@ test('manual India choice overrides later country detection',async({page})=>{
   await expect(page.locator('.global-nav [data-market-trigger]')).toContainText('India · INR');
   expect(detectionCalls).toBe(0);
 });
+
+test('phone header contracts on scroll without crowding the chapter rail or menu',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  for(const route of ['/','/ae/ar/']){
+    await page.goto(route,{waitUntil:'domcontentloaded'});
+    const nav=page.locator('[data-global-nav]');
+    await expect(nav).toBeVisible();
+    const initial=await nav.boundingBox();
+    await page.evaluate(()=>scrollTo(0,800));
+    await expect(nav).toHaveClass(/is-compact/);
+    const compact=await nav.boundingBox();
+    const chapter=await page.locator('.chapter-nav').boundingBox();
+    expect(compact.width).toBeLessThan(initial.width-8);
+    expect(compact.height).toBeLessThan(initial.height-4);
+    expect(chapter.y).toBeGreaterThanOrEqual(compact.y+compact.height+6);
+    const toggle=page.locator('[data-global-toggle]');
+    expect((await toggle.boundingBox()).width).toBeGreaterThanOrEqual(42);
+    await toggle.click();
+    await expect(page.locator('[data-global-menu]')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('[data-global-menu]')).toBeHidden();
+    await expect(toggle).toBeFocused();
+    const chapterLink=page.locator('.chapter-nav a[href^="#"]').nth(1);
+    const targetId=await chapterLink.getAttribute('href');
+    await chapterLink.click();
+    const targetTop=await page.locator(targetId).evaluate(node=>node.getBoundingClientRect().top);
+    const railBottom=(await page.locator('.chapter-nav').boundingBox()).y+(await page.locator('.chapter-nav').boundingBox()).height;
+    expect(targetTop).toBeGreaterThanOrEqual(railBottom-1);
+  }
+});

@@ -135,6 +135,22 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('#ai-systems')).toBeVisible();
 });
 
+test('artboard recovers after fast reverse scroll, tab return and resize',async({page,context})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/#approach');
+ await page.locator('[data-story-step="2"]').scrollIntoViewIfNeeded();
+ await expect.poll(()=>page.locator('[data-story]').getAttribute('data-active')).toMatch(/^[012]$/);
+ await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
+ await page.evaluate(()=>window.scrollTo(0,0));
+ await page.locator('[data-story-step="0"]').scrollIntoViewIfNeeded();
+ const other=await context.newPage();await other.bringToFront();await page.bringToFront();await other.close();
+ await expect(page.locator('[data-story-number]')).toHaveText(/^0[1-3] \/ 03$/);
+ await page.setViewportSize({width:390,height:844});
+ await expect(page.locator('[data-story-number]')).toHaveText('03 / 03');
+ await expect(page.locator('[data-story-step="0"] h3')).toBeVisible();
+ await expect(page.locator('[data-story-step="2"] h3')).toBeVisible();
+});
+
 test('keyboard menu, market dialog, and accessibility',async({page})=>{
  test.setTimeout(90_000);
  await page.setViewportSize({width:390,height:844});

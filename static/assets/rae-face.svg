@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="48 16 384 260" role="img" aria-labelledby="title">
+  <title id="title">Rae</title>
+  <defs>
+    <linearGradient id="shell" x2="1" y2="1"><stop stop-color="#fffdf7"/><stop offset=".55" stop-color="#f1e9dc"/><stop offset="1" stop-color="#cfc3b2"/></linearGradient>
+    <linearGradient id="dark" x2="0" y2="1"><stop stop-color="#292b31"/><stop offset="1" stop-color="#030407"/></linearGradient>
+    <radialGradient id="eye"><stop stop-color="#fffbe7"/><stop offset=".32" stop-color="#ffd97d"/><stop offset=".72" stop-color="#ff9626"/><stop offset="1" stop-color="#ff5a12"/></radialGradient>
+    <linearGradient id="orange" x2="1" y2="1"><stop stop-color="#ffd073"/><stop offset=".4" stop-color="#ff9b2f"/><stop offset="1" stop-color="#ff5a12"/></linearGradient>
+  </defs>
+  <path d="M94 87 63 50Q58 44 62 86L73 127Zm292 0 31-37q5-6 1 36l-11 41Z" fill="url(#shell)" stroke="#ada091" stroke-width="2"/>
+  <path d="m77 85-11-20 3 34Zm326 0 11-20-3 34Z" fill="url(#orange)"/>
+  <ellipse cx="78" cy="139" rx="27" ry="40" fill="url(#dark)"/><ellipse cx="402" cy="139" rx="27" ry="40" fill="url(#dark)"/>
+  <ellipse cx="78" cy="139" rx="18" ry="28" fill="none" stroke="url(#orange)" stroke-width="7"/><ellipse cx="402" cy="139" rx="18" ry="28" fill="none" stroke="url(#orange)" stroke-width="7"/>
+  <path d="M91 78Q118 35 183 27H297Q362 35 389 78Q408 111 403 160Q398 209 366 235Q332 260 240 262Q148 260 114 235Q82 209 77 160Q72 111 91 78Z" fill="url(#shell)"/>
+  <path d="M119 87Q144 60 188 58H292Q338 61 363 88Q380 110 376 156Q372 195 346 216Q317 238 240 239Q163 238 134 216Q108 195 104 156Q100 111 119 87Z" fill="url(#dark)" stroke="#fff" stroke-width="3"/>
+  <ellipse cx="190" cy="151" rx="20" ry="28" fill="url(#eye)"/><ellipse cx="290" cy="151" rx="20" ry="28" fill="url(#eye)"/>
+  <ellipse cx="185" cy="144" rx="4.5" ry="6.5" fill="#191b20"/><ellipse cx="285" cy="144" rx="4.5" ry="6.5" fill="#191b20"/>
+  <path d="M213 190c17 18 37 18 55-2" fill="none" stroke="url(#orange)" stroke-width="6" stroke-linecap="round"/>
+</svg>

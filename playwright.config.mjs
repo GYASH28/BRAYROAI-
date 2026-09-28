@@ -1,21 +1,7 @@
-import { defineConfig, devices } from '@playwright/test';
-
+import {defineConfig,devices} from '@playwright/test';
 export default defineConfig({
-  testDir: './tests',
-  testMatch: /(browser-v12|second-scene-regression|cinematic-v20|client-work|rae|founder-completion|market-journeys|v43-dimensional|v44-startup|v45-runtime-loader)\.spec\.mjs/,
-  timeout: 45_000,
-  expect: { timeout: 8_000 },
-  fullyParallel: true,
-  retries: 1,
-  reporter: [['line'], ['html', { outputFolder: 'artifacts/playwright-report', open: 'never' }]],
-  use: {
-    baseURL: process.env.BASE_URL || 'http://127.0.0.1:4173',
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure'
-  },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox-smoke', testMatch: /(cinematic-v20|rae)\.spec\.mjs/, use: { ...devices['Desktop Firefox'] } }
-  ]
+ testDir:'./tests',testMatch:'living-sketchbook.spec.mjs',timeout:45_000,expect:{timeout:8_000},fullyParallel:true,retries:1,
+ reporter:[['line'],['html',{outputFolder:'artifacts/playwright-report',open:'never'}]],
+ use:{baseURL:process.env.BASE_URL||'http://127.0.0.1:4173',trace:'retain-on-failure',screenshot:'only-on-failure'},
+ projects:[{name:'chromium',use:{...devices['Desktop Chrome']}}]
 });

@@ -1,0 +1,15 @@
+import {readFileSync,existsSync,readdirSync,statSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {gzipSync} from 'node:zlib';
+const assert=(ok,message)=>{if(!ok)throw new Error(message)};
+for(const path of ['index.html','plans.html','clients/fakhrimart/index.html','terms/index.html','ae/index.html','ae/plans/index.html','au/index.html','au/plans/index.html','assets/yash-cutout-mono.webp','assets/yash-cutout.webp','assets/hero-background.webp','assets/studio-desk.svg','assets/fakhrimart-case-desktop.webp','assets/fakhrimart-case-mobile.webp','sitemap.xml'])assert(existsSync(resolve('dist',path)),'Missing distribution file '+path);
+const home=readFileSync('dist/index.html','utf8');
+assert(home.includes('Digital, designed')&&home.includes('class="site-header"')&&home.includes('class="footer"'),'Static content or shell missing');
+assert(!home.includes('cinematic-v')&&!home.includes('brayro-v'),'Historical runtime still referenced');
+assert(!readdirSync('dist').some(name=>name==='rae.js'||name==='brayro-v15.js'),'Unused legacy runtime shipped');
+const js=readdirSync('dist/assets').filter(name=>name.endsWith('.js'));
+const total=js.reduce((n,name)=>n+gzipSync(readFileSync(resolve('dist/assets',name))).length,0);
+assert(total<250_000,`Initial JS budget exceeded: ${total} compressed bytes`);
+const media=['yash-cutout-mono.webp','hero-background.webp','fakhrimart-case-desktop.webp','fakhrimart-case-mobile.webp'].reduce((n,name)=>n+statSync(resolve('dist/assets',name)).size,0);
+assert(media<1_500_000,'Initial/deferred asset group too large');
+console.log('Living Sketchbook dist integrity OK: '+total+' compressed JS bytes');

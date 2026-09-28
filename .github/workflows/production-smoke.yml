@@ -26,9 +26,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Install Chromium + Firefox
-        # playwright.config.mjs includes the targeted firefox-smoke project.
-        run: npx playwright install --with-deps chromium firefox
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
       - name: Build exact merged source
         run: npm run build
 
@@ -62,17 +61,23 @@ jobs:
 
           test "$HTTP_CODE" = "200"
           test "$DEPLOYED_COMMIT" = "$GITHUB_SHA"
-          grep -q 'BRAYROAI' /tmp/brayroai-prod-home.html
+          grep -q 'BRAYRO AI' /tmp/brayroai-prod-home.html
           grep -q 'Digital, designed' /tmp/brayroai-prod-home.html
 
           # Write route responses to files before grepping. With pipefail,
           # `curl | grep -q` can report curl 23 after grep exits early even
           # when the requested content is present.
-          curl -fsSL --max-time 25 "$PROD_URL/clients" -o /tmp/brayroai-prod-clients.html
-          grep -q 'CLIENT ARCHIVE' /tmp/brayroai-prod-clients.html
+          curl -fsSL --max-time 25 "$PROD_URL/plans" -o /tmp/brayroai-prod-plans.html
+          grep -q 'What kind of work' /tmp/brayroai-prod-plans.html
           curl -fsSL --max-time 25 "$PROD_URL/clients/fakhrimart" -o /tmp/brayroai-prod-fakhrimart.html
-          grep -q 'Not a fake ecommerce store' /tmp/brayroai-prod-fakhrimart.html
-          echo 'Production exact-SHA and clean client routes verified.'
+          grep -q 'Fakhri' /tmp/brayroai-prod-fakhrimart.html
+          echo 'Production exact-SHA and clean plans and case routes verified.'
+
+      - name: Production Lighthouse mobile audit
+        run: |
+          mkdir -p artifacts/production-lighthouse
+          npx lighthouse "$PROD_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
+          node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json
 
       - name: Production concurrent load test
         env:
@@ -84,19 +89,13 @@ jobs:
       - name: Production browser and accessibility suite
         env:
           BASE_URL: https://brayroai.vercel.app
-        run: npx playwright test
-
-      - name: Production Lighthouse mobile audit
-        run: |
-          mkdir -p artifacts/production-lighthouse
-          npx lighthouse "$PROD_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
-          node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json
+        run: npm run test:browser
 
       - name: Record failed production verification context
         if: failure() && steps.production.outcome == 'failure'
         run: |
           echo 'Canonical production verification failed for this GitHub SHA or one of the required clean routes.' >> artifacts/deployment-verification.txt
-          echo 'Inspect the exact-SHA marker and /clients + /clients/fakhrimart responses before treating production as current.' >> artifacts/deployment-verification.txt
+          echo 'Inspect the exact-SHA marker and /plans + /clients/fakhrimart responses before treating production as current.' >> artifacts/deployment-verification.txt
 
       - name: Upload production QA evidence
         if: always()

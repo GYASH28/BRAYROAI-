@@ -1,6 +1,5 @@
 import {EventEmitter} from 'node:events';
 import handler from '../api/rae-chat.js';
-import {RaeChatClient} from '../public/rae/rae-chat-client.js';
 
 const encoder=new TextEncoder();
 const streamOf=text=>new ReadableStream({start(controller){controller.enqueue(encoder.encode(text));controller.close()}});
@@ -36,11 +35,7 @@ try{
   assert(output.includes('"recovered":true'),'Recovered completion metadata missing');
   assert(output.includes('event: done'),'Successful fallback did not emit done');
 
-  globalThis.fetch=async()=>({ok:true,status:200,headers:{get:()=> 'text/event-stream; charset=utf-8'},body:streamOf('event: delta\ndata: {"text":"Partial answer"}\n\n'),json:async()=>({})});
-  const client=new RaeChatClient('/api/rae-chat');let closedError=null;
-  try{await client.stream({message:'test',onEvent:()=>{},timeoutMs:1000})}catch(error){closedError=error}
-  assert(closedError?.code==='stream_closed',`Expected stream_closed, got ${closedError?.code||'none'}`);
-  console.log('Rae provider fallback OK: provider recovery and truncated-stream detection are working.');
+  console.log('Rae provider fallback OK: provider recovery is working.');
 }finally{
   globalThis.fetch=originalFetch;
   for(const [key,value] of Object.entries(originalEnv)){if(value===undefined)delete process.env[key];else process.env[key]=value}

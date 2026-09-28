@@ -1,1 +1,0 @@
-(()=>{const links=[...document.querySelectorAll('link[data-layout-stable-fonts]')];if(!links.length)return;const activate=()=>{for(const link of links){link.rel='stylesheet';link.removeAttribute('as')}};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',activate,{once:true});else activate()})();

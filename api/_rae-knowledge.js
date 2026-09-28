@@ -21,14 +21,14 @@ export const RAE_KNOWLEDGE=Object.freeze({
   verifiedWork:[
     {id:'fakhrimart',name:'FakhriMart',route:'/clients/fakhrimart',live:'https://fakhriyarns.vercel.app/',summary:'Verified client work for a Pune yarn and craft supplier: a catalogue-led experience focused on clearer product discovery, project/material decisions and useful enquiry flows. BRAYROAI does not claim fabricated conversion uplift, live stock or fake prices.'}
   ],
-  routes:{home:'/',plans:'/plans',clients:'/clients',fakhrimart:'/clients/fakhrimart',founder:'/founder',terms:'/terms',audit:'/ai-workflow-audit',secondBrain:'/company-second-brain'},
+  routes:{home:'/',plans:'/plans',work:'/#work',fakhrimart:'/clients/fakhrimart',studio:'/#studio',terms:'/terms',audit:'/plans#ai-audit',secondBrain:'/plans#second-brain'},
   contact:{whatsapp:'Preferred fastest contact route on the site.',email:'Available for longer briefs.'},
   truthRules:['Never invent clients, testimonials, ROI, conversion metrics, discounts, live availability, delivery dates or guarantees.','Project-specific scope and contractual details must be confirmed in writing.','Do not claim a human is online unless explicitly known.']
 });
 
 export const RAE_ALLOWED_ACTIONS=Object.freeze({
-  navigateToRoute:['/','/plans','/clients','/clients/fakhrimart','/founder','/terms','/ai-workflow-audit','/company-second-brain'],
-  scrollToSection:['services','work','plans','ai-systems','founder','contact','process'],
+  navigateToRoute:['/','/#work','/#studio','/#contact','/plans','/plans#ai-audit','/plans#second-brain','/clients/fakhrimart','/terms'],
+  scrollToSection:['work','approach','studio','starting-points','contact'],
   openProject:['fakhrimart'],
   showPlan:['monthly-starter','monthly-growth','monthly-studio','launch-website','business-experience','premium-experience','ai-workflow-audit','company-second-brain']
 });

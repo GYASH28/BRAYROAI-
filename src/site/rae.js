@@ -66,6 +66,7 @@ export function initRae(){
    };
    while(true){const chunk=await reader.read();if(chunk.done)break;buffer+=decoder.decode(chunk.value,{stream:true});let cut;while((cut=buffer.indexOf('\n'))>=0){const line=buffer.slice(0,cut).replace(/\r$/,'');buffer=buffer.slice(cut+1);if(!line){flush();continue}if(line.startsWith('event:'))eventName=line.slice(6).trim();if(line.startsWith('data:'))data+=line.slice(5).trim()}}
    flush();if(error||!completed)throw new Error(error||'Rae’s response stopped early. Please retry.');
+   answer.textContent=answer.textContent.replace(/\*\*/g,'').replace(/^\s*[-*]\s+/gm,'• ');
    history.push({role:'user',text:question},{role:'assistant',text:answer.textContent});state('');setCharacter('positive');
   }catch(caught){if(caught.name==='AbortError')return;answer.textContent=answer.textContent||'Rae could not answer right now.';state(caught.message||'Please retry or contact Yash directly.');setCharacter('error')}finally{busy=false;controller=null;form.querySelector('button').disabled=false}
  });

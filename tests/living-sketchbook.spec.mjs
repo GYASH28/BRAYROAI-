@@ -165,8 +165,12 @@ test('Scrollcraft scenes recover after reverse scroll, tab return and resize',as
  const other=await context.newPage();await other.bringToFront();await page.bringToFront();await other.close();
  await page.setViewportSize({width:390,height:844});
  await expect(page.locator('.hero-copy h1')).toBeVisible();
+ await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.07,behavior:'instant'})});
+ await expect(page.locator('.work-panel--intro h2')).toBeInViewport({ratio:.9});
  await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+section.offsetHeight*.48,behavior:'instant'})});
  await expect.poll(()=>page.locator('.work-section').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.25);
+ await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.94,behavior:'instant'})});
+ await expect(page.locator('.work-panel--outro .work-bottom p')).toBeInViewport({ratio:.9});
 });
 
 test('keyboard menu, market dialog, and accessibility',async({page})=>{

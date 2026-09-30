@@ -179,7 +179,7 @@
  .page-proof .work-media{width:110vw;transform:rotate(-2deg)}
  .page-proof .work-desktop{height:57vh;width:110vw;object-fit:cover;object-position:left top}
  .page-proof .work-media-label{bottom:-22px;right:7vw;font-size:9px}
- .page-proof .work-panel--outro{width:112vw;padding:55vh 30px 8vh 30px;justify-content:end}
+ .page-proof .work-panel--outro{width:100vw;padding:55vh 30px 8vh 30px;justify-content:end}
  .page-proof .work-panel--outro .work-mobile{width:42vw;max-height:50vh;left:28vw;top:8vh}
  .page-proof .work-bottom p{font-size:clamp(45px,10vw,74px);margin-bottom:28px}
  .page-proof .approach-section{padding:105px 0 125px}

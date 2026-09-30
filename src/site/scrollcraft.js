@@ -47,6 +47,8 @@
                               (path template : frameCount : startIndex).
      data-sc-pan="0.6"        on a wide rail inside data-sc-act="pan". p drives
                               horizontal travel. Value = extra travel multiplier.
+    data-sc-pan-window="0.14 0.9" holds the first and last frames of a rail
+                              until the given act progress values.
      data-sc-parallax="-0.2"  translateY by rate * act-progress * viewport.
                               Negative = moves up faster than scroll (recedes).
      data-sc-cue="0.1 0.5"    opacity/rise keyed to p. One value = enter+hold.
@@ -352,7 +354,12 @@
 
       // horizontal rail
       act.rail = el.querySelector('[data-sc-pan]');
-      if (act.rail) act.railExtra = parseFloat(act.rail.getAttribute('data-sc-pan')) || 0;
+      if (act.rail) {
+        act.railExtra = parseFloat(act.rail.getAttribute('data-sc-pan')) || 0;
+        var panWindow = (act.rail.getAttribute('data-sc-pan-window') || '0 1').trim().split(/\s+/).map(parseFloat);
+        act.panFrom = clamp(isNaN(panWindow[0]) ? 0 : panWindow[0], 0, 0.95);
+        act.panTo = clamp(isNaN(panWindow[1]) ? 1 : panWindow[1], act.panFrom + 0.05, 1);
+      }
 
       // cues
       Array.prototype.forEach.call(el.querySelectorAll('[data-sc-cue]'), function (c) {
@@ -807,7 +814,8 @@
           var over = a.rail.scrollWidth - vw;
           if (over > 0) {
             var extra = over * (a.railExtra || 0);
-            a.rail.style.transform = 'translate3d(' + (-(over + extra) * a.p).toFixed(2) + 'px,0,0)';
+            var panProgress = clamp01((a.p - a.panFrom) / (a.panTo - a.panFrom));
+            a.rail.style.transform = 'translate3d(' + (-(over + extra) * panProgress).toFixed(2) + 'px,0,0)';
           }
         }
 

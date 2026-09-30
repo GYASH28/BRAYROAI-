@@ -35,6 +35,21 @@ try{
   assert(output.includes('"recovered":true'),'Recovered completion metadata missing');
   assert(output.includes('event: done'),'Successful fallback did not emit done');
 
+  process.env.GEMINI_MODEL='gemini-3.8-flash';delete process.env.GROQ_API_KEY;
+  let generationConfig;
+  globalThis.fetch=async(_url,options)=>{
+    generationConfig=JSON.parse(options.body).generationConfig;
+    const event={candidates:[{content:{parts:[{text:'private reasoning',thought:true},{text:'Gemini answer.'}]},finishReason:'STOP'}]};
+    return{ok:true,status:200,body:streamOf(`data: ${JSON.stringify(event)}\n\n`),text:async()=>''};
+  };
+  const geminiReq={...req,headers:{'x-forwarded-for':'203.0.113.10'}};
+  const geminiRes=new MockResponse();await handler(geminiReq,geminiRes);
+  assert(generationConfig?.thinkingConfig?.thinkingLevel==='low','Gemini 3 chat should use low thinking effort');
+  assert(generationConfig.maxOutputTokens>=1000,'Gemini 3 needs enough output space after thinking');
+  assert(!('temperature' in generationConfig)&&!('topP' in generationConfig),'Gemini 3 must use its supported generation defaults');
+  assert(geminiRes.text().includes('Gemini answer.')&&geminiRes.text().includes('event: done'),'Gemini response was not streamed');
+  assert(!geminiRes.text().includes('private reasoning'),'Thought parts must not be sent to visitors');
+
   console.log('Rae provider fallback OK: provider recovery is working.');
 }finally{
   globalThis.fetch=originalFetch;

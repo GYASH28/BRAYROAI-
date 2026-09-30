@@ -163,7 +163,7 @@ function parseOpenAILine(line,res,tracker){
 }
 function parseGeminiLine(line,res,tracker){
   const trimmed=line.trim();if(!trimmed.startsWith('data:'))return;const raw=trimmed.slice(5).trim();if(!raw)return;
-  let data;try{data=JSON.parse(raw)}catch{return}const text=(data?.candidates?.[0]?.content?.parts||[]).map(part=>part?.text||'').join('');if(!text)return;emitFirstToken(res,tracker);tracker.count+=1;sse(res,'delta',{text});
+  let data;try{data=JSON.parse(raw)}catch{return}tracker.finishReason=data?.candidates?.[0]?.finishReason||tracker.finishReason;tracker.thoughtTokens=data?.usageMetadata?.thoughtsTokenCount??tracker.thoughtTokens;const text=(data?.candidates?.[0]?.content?.parts||[]).filter(part=>!part?.thought).map(part=>part?.text||'').join('');if(!text)return;emitFirstToken(res,tracker);tracker.count+=1;sse(res,'delta',{text});
 }
 async function pumpOpenAI(upstream,res,tracker){
   const reader=upstream.body.getReader(),decoder=new TextDecoder();let buffer='';
@@ -180,7 +180,8 @@ async function openProviderStream(config,{message,history,context,session,signal
   const system=systemPrompt(context,session);
   if(config.provider==='gemini'){
     const contents=[];for(const item of history)contents.push({role:item.role==='assistant'?'model':'user',parts:[{text:item.text}]});contents.push({role:'user',parts:[{text:message}]});
-    return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(config.model)}:streamGenerateContent?alt=sse`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':config.key},body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents,generationConfig:{temperature:.72,topP:.9,maxOutputTokens:420}}),signal});
+    const generationConfig=/^gemini-3[.-]/.test(config.model)?{maxOutputTokens:1536,thinkingConfig:{thinkingLevel:'low'}}:{temperature:.72,topP:.9,maxOutputTokens:420};
+    return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(config.model)}:streamGenerateContent?alt=sse`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':config.key},body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents,generationConfig}),signal});
   }
   const messages=[{role:'system',content:system},...history.map(item=>({role:item.role==='assistant'?'assistant':'user',content:item.text})),{role:'user',content:message}];
   return fetch(`${config.base}/chat/completions`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${config.key}`},body:JSON.stringify({model:config.model,messages,stream:true,temperature:.72,max_tokens:420}),signal});
@@ -211,7 +212,7 @@ export default async function handler(req,res){
           const detail=await upstream.text().catch(()=> '');lastCode=upstream.status===429?'provider_busy':'provider_unavailable';console.error('Rae provider attempt failed',config.provider,config.model,upstream.status,detail.slice(0,220));continue;
         }
         if(config.provider==='gemini')await pumpGemini(upstream,res,tracker);else await pumpOpenAI(upstream,res,tracker);
-        if(!tracker.count){lastCode='empty_response';console.error('Rae provider returned no text',config.provider,config.model);continue}
+        if(!tracker.count){lastCode='empty_response';console.error('Rae provider returned no text',config.provider,config.model,tracker.finishReason||'unknown',tracker.thoughtTokens??'unknown');continue}
         const meta=buildMeta(message,context,session);sse(res,'meta',meta);sse(res,'done',{finishReason:'stop',emotion:meta.emotion,provider:config.provider,promptVersion:PROMPT_VERSION,recovered:index>0});return res.end();
       }catch(error){
         if(clientClosed||controller.signal.reason==='client_closed'||res.writableEnded)return;

@@ -8,7 +8,7 @@ const DEFAULT_MAX=18;
 const MAX_MESSAGE=1200;
 const MAX_HISTORY=8;
 const PROVIDER_TIMEOUT=8_500;
-const MAX_PROVIDER_ATTEMPTS=3;
+const MAX_PROVIDER_ATTEMPTS=4;
 const PROMPT_VERSION='rae-real-v3';
 
 const clean=value=>String(value??'').replace(/\u0000/g,'').trim();
@@ -97,7 +97,7 @@ function providerCandidates(){
   const preferred=clean(process.env.RAE_PROVIDER).toLowerCase();
   const genericModel=clean(process.env.RAE_MODEL);
   const base={
-    gemini:{provider:'gemini',key:clean(process.env.GEMINI_API_KEY),base:'',models:[preferred==='gemini'?genericModel:'',clean(process.env.GEMINI_MODEL),'gemini-3.8-flash']},
+    gemini:{provider:'gemini',key:clean(process.env.GEMINI_API_KEY),base:'',models:[preferred==='gemini'?genericModel:'',clean(process.env.GEMINI_MODEL),'gemini-3.8-flash','gemini-3.7-flash']},
     groq:{provider:'groq',key:clean(process.env.GROQ_API_KEY),base:clean(process.env.RAE_GROQ_BASE_URL||'https://api.groq.com/openai/v1').replace(/\/$/,''),models:[preferred==='groq'?genericModel:'',clean(process.env.GROQ_MODEL),'openai/gpt-oss-20b']},
     openai:{provider:'openai',key:clean(process.env.OPENAI_API_KEY),base:clean(process.env.RAE_OPENAI_BASE_URL||'https://api.openai.com/v1').replace(/\/$/,''),models:[preferred==='openai'?genericModel:'',clean(process.env.OPENAI_MODEL)]}
   };

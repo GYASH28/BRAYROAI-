@@ -28,10 +28,11 @@ try{
   const req={method:'POST',headers:{'x-forwarded-for':'203.0.113.9'},socket:{remoteAddress:'203.0.113.9'},body:{message:'Can you help me?',history:[],context:{pageKey:'home',pathname:'/'},session:{}}};
   const res=new MockResponse();await handler(req,res);const output=res.text();
   assert(res.writableEnded,'Rae fallback request did not finish');
-  assert(urls.length===3,`Expected three provider attempts, got ${urls.length}`);
-  assert(urls[2].includes('api.groq.com'),'Rae did not reach the Groq backup provider');
+  assert(urls.length===4,`Expected four provider attempts, got ${urls.length}`);
+  assert(urls[2].includes('gemini-3.7-flash'),'Rae did not try the older Gemini backup model');
+  assert(urls[3].includes('api.groq.com'),'Rae did not reach the Groq backup provider');
   assert(output.includes('Backup works.'),'Backup provider text was not streamed');
-  assert(output.includes('"attempt":3'),'Recovery attempt state was not streamed');
+  assert(output.includes('"attempt":4'),'Recovery attempt state was not streamed');
   assert(output.includes('"recovered":true'),'Recovered completion metadata missing');
   assert(output.includes('event: done'),'Successful fallback did not emit done');
 

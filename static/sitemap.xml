@@ -2,14 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://brayroai.vercel.app/</loc></url>
 <url><loc>https://brayroai.vercel.app/plans</loc></url>
+<url><loc>https://brayroai.vercel.app/clients</loc></url>
 <url><loc>https://brayroai.vercel.app/clients/fakhrimart</loc></url>
+<url><loc>https://brayroai.vercel.app/founder</loc></url>
+<url><loc>https://brayroai.vercel.app/ai-workflow-audit</loc></url>
+<url><loc>https://brayroai.vercel.app/company-second-brain</loc></url>
 <url><loc>https://brayroai.vercel.app/terms</loc></url>
 <url><loc>https://brayroai.vercel.app/ae/</loc></url>
 <url><loc>https://brayroai.vercel.app/ae/plans</loc></url>
+<url><loc>https://brayroai.vercel.app/ae/clients</loc></url>
 <url><loc>https://brayroai.vercel.app/ae/clients/fakhrimart</loc></url>
+<url><loc>https://brayroai.vercel.app/ae/founder</loc></url>
+<url><loc>https://brayroai.vercel.app/ae/ai-workflow-audit</loc></url>
+<url><loc>https://brayroai.vercel.app/ae/company-second-brain</loc></url>
 <url><loc>https://brayroai.vercel.app/ae/terms</loc></url>
 <url><loc>https://brayroai.vercel.app/au/</loc></url>
 <url><loc>https://brayroai.vercel.app/au/plans</loc></url>
+<url><loc>https://brayroai.vercel.app/au/clients</loc></url>
 <url><loc>https://brayroai.vercel.app/au/clients/fakhrimart</loc></url>
+<url><loc>https://brayroai.vercel.app/au/founder</loc></url>
+<url><loc>https://brayroai.vercel.app/au/ai-workflow-audit</loc></url>
+<url><loc>https://brayroai.vercel.app/au/company-second-brain</loc></url>
 <url><loc>https://brayroai.vercel.app/au/terms</loc></url>
 </urlset>

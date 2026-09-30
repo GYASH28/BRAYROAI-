@@ -10,7 +10,8 @@ for(const id of ['work','approach','studio','starting-points','contact'])assert(
 assert(home.indexOf('id="work"')<home.indexOf('id="approach"'),'Real work must precede explanation');
 assert(home.includes('/assets/fakhrimart-case-desktop.webp')&&casePage.includes('fakhriyarns.vercel.app'),'Genuine work evidence missing');
 assert(!home.includes('₹17,999')&&!home.includes('₹29,999'),'Homepage repeats the full price book');
-for(const route of ['/clients','/founder','/ai-workflow-audit','/company-second-brain','/ae/ar/:path*'])assert(config.redirects.some(item=>item.source===route),'Retired route redirect missing '+route);
+for(const route of ['/clients','/founder','/ai-workflow-audit','/company-second-brain']){assert(config.rewrites.some(item=>item.source===route),'Restored route rewrite missing '+route);assert(existsSync(`${route.slice(1)}.html`),'Restored page missing '+route)}
+assert(config.redirects.some(item=>item.source==='/ae/ar/:path*'),'Retired Arabic route redirect missing');
 assert(!readFileSync('scripts/build-locales.mjs','utf8').includes('arabic'),'Arabic generation must be retired');
 assert(existsSync('static/assets/yash-cutout.webp')&&existsSync('static/assets/hero-background.webp'),'Original GitHub hero assets must be preserved');
 const lead=leadText({market:'ae',offerId:'company-second-brain',source:'/ae/plans#second-brain'});

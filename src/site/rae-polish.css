@@ -1,0 +1,45 @@
+.rae-dialog{--rae-ease:cubic-bezier(.2,.8,.2,1);color:#f3f0e9;background:#101114;border:1px solid #535252;border-radius:20px;width:min(500px,calc(100vw - 24px));max-height:min(760px,calc(100dvh - 24px));padding:0;box-shadow:0 36px 120px #000b;overflow:auto;overscroll-behavior:contain}
+.rae-dialog::backdrop{background:#050608b5;backdrop-filter:blur(7px)}
+.rae-dialog .dialog-head{position:sticky;top:0;z-index:3;align-items:center;background:#101114eb;backdrop-filter:blur(15px);padding:22px 25px 16px;border-bottom:1px solid #37383b}
+.rae-dialog .dialog-head h2{font-size:34px;letter-spacing:-.065em;margin-top:6px;line-height:1}
+.rae-dialog .dialog-head h2 span{color:#ff5a1f}
+.rae-dialog .dialog-head small{color:#ff9b67;letter-spacing:.19em;font-size:9px}
+.rae-dialog .dialog-head button{border:1px solid #5a5b60;color:#f6f0e5;border-radius:50%;font-size:27px;width:38px;height:38px;transition:background .2s,transform .2s}
+.rae-dialog .dialog-head button:hover{background:#ff5a1f;color:#111;transform:rotate(90deg)}
+.rae-dialog .rae-intro{display:grid;grid-template-columns:160px 1fr;align-items:center;gap:18px;margin:0;padding:17px 25px 9px;background:radial-gradient(circle at 34% 50%,#ff5a1f1d,transparent 45%)}
+.rae-dialog .rae-actor{min-width:0;min-height:168px;display:grid;place-items:center}
+.rae-dialog .rae-character--stage{width:150px;height:168px;filter:drop-shadow(0 14px 12px #0007)}
+.rae-dialog .rae-kicker{font-size:10px;color:#ff965a;font-weight:800;letter-spacing:.17em}
+.rae-dialog .rae-intro p{font-size:19px;font-weight:700;letter-spacing:-.035em;line-height:1.2;margin-top:12px;color:#f4f1ea}
+.rae-dialog .rae-starts{display:grid;gap:0;padding:8px 25px 15px}
+.rae-dialog .rae-starts button{display:grid;grid-template-columns:30px 1fr 18px;gap:7px;align-items:center;text-align:left;padding:13px 0;background:transparent;color:#eeeae3;border:0;border-top:1px solid #49494b;cursor:pointer;transition:color .2s,padding-left .25s}
+.rae-dialog .rae-starts button:hover,.rae-dialog .rae-starts button:focus-visible{color:#ff8c4d;padding-left:7px}
+.rae-dialog .rae-starts button span{font-size:10px;letter-spacing:.1em;color:#ff5a1f}
+.rae-dialog .rae-starts button strong{font-size:14px;font-weight:700}
+.rae-dialog .rae-starts button i{font-size:17px;font-style:normal}
+.rae-dialog .rae-messages{max-height:275px;gap:12px;padding:0 25px;scrollbar-color:#ff5a1f #191a1d}
+.rae-dialog .rae-message{background:#202126;color:#f1eee7;border:1px solid #47484b;border-radius:13px 13px 13px 2px;font-size:14px;line-height:1.55}
+.rae-dialog .rae-message.user{background:#ff5a1f;color:#101114;border-color:#ff5a1f;border-radius:13px 13px 2px 13px;margin-left:32px}
+.rae-dialog .rae-actions{padding:0 25px}
+.rae-dialog .rae-actions a{border-radius:7px;background:#fcf2e8;color:#111}
+.rae-dialog .rae-status{color:#ffae79;margin:5px 25px;min-height:18px}
+.rae-dialog .rae-form{padding:8px 25px 0}
+.rae-dialog .rae-form label{font-family:ui-monospace,monospace;color:#bbb9b3;letter-spacing:.1em;font-size:10px}
+.rae-dialog .rae-form>div{align-items:stretch;border:1px solid #68686a;border-radius:11px;overflow:hidden;background:#1c1d20;margin-top:9px;transition:border-color .2s}
+.rae-dialog .rae-form>div:focus-within{border-color:#ff8b4b}
+.rae-dialog .rae-form textarea{background:transparent;color:#fff;border:0;padding:13px;min-height:56px;max-height:140px;outline:0;resize:vertical}
+.rae-dialog .rae-form textarea::placeholder{color:#a7a8a9}
+.rae-dialog .rae-form button{background:#ff5a1f;color:#101114;font-size:23px;min-width:50px;cursor:pointer}
+.rae-dialog .rae-form button:disabled{opacity:.55;cursor:wait}
+.rae-dialog .rae-dialog-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 25px 21px;color:#a8a6a0;font-size:10px;letter-spacing:.1em}
+.rae-dialog .rae-fallback{color:#ede6dd;margin:0;font-size:11px;letter-spacing:0}
+.rae-dialog.rae-has-conversation .rae-intro{grid-template-columns:70px 1fr;min-height:0;padding-top:12px;padding-bottom:3px}
+.rae-dialog.rae-has-conversation .rae-actor{min-height:72px}
+.rae-dialog.rae-has-conversation .rae-character--stage{width:65px;height:72px}
+.rae-dialog.rae-has-conversation .rae-intro p{font-size:14px;margin-top:3px}
+.rae-dialog.rae-has-conversation .rae-starts{display:none}
+.rae-launcher{display:grid;place-items:center;overflow:visible;background:#101114;border-color:#e9e4da;transition:transform .28s,box-shadow .28s}
+.rae-launcher:hover{transform:translateY(-5px) scale(1.04);box-shadow:0 13px 34px #0007}
+.rae-launcher .rae-character--launcher{width:100%;height:100%}
+@media(max-width:600px){.rae-dialog{inset:auto 8px 8px 8px;width:auto;max-height:calc(100dvh - 16px);border-radius:18px}.rae-dialog .dialog-head{padding:16px 18px 12px}.rae-dialog .rae-intro{grid-template-columns:115px 1fr;padding:12px 17px 5px;gap:10px}.rae-dialog .rae-actor{min-height:122px}.rae-dialog .rae-character--stage{width:105px;height:122px}.rae-dialog .rae-intro p{font-size:16px}.rae-dialog .rae-starts{padding:5px 18px 10px}.rae-dialog .rae-starts button{padding:11px 0}.rae-dialog .rae-messages{padding:0 18px;max-height:24vh}.rae-dialog .rae-status{margin:4px 18px}.rae-dialog .rae-form{padding:8px 18px 0}.rae-dialog .rae-dialog-foot{padding:13px 18px 16px}}
+@media(prefers-reduced-motion:reduce){.rae-dialog .rae-character *,.rae-launcher .rae-character *{animation:none!important;transition:none!important}}

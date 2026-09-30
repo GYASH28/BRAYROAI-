@@ -4,7 +4,7 @@ import {load} from 'cheerio';
 import {MARKETS} from '../data/markets.js';
 import {OFFERS,priceFor} from '../data/pricing.js';
 
-const pages={'/':'index.html','/plans':'plans.html','/clients/fakhrimart':'fakhrimart-case-study.html','/terms':'terms.html'};
+const pages={'/':'index.html','/plans':'plans.html','/clients':'clients.html','/clients/fakhrimart':'fakhrimart-case-study.html','/founder':'founder.html','/ai-workflow-audit':'ai-workflow-audit.html','/company-second-brain':'company-second-brain.html','/terms':'terms.html'};
 const destination=route=>route==='/'?'index.html':route.slice(1)+'/index.html';
 for(const market of ['in','ae','au']){
  for(const [route,source] of Object.entries(pages)){

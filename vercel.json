@@ -37,22 +37,22 @@
     },
     {
       "source": "/ae/clients.html",
-      "destination": "/ae/#work",
+      "destination": "/ae/clients",
       "permanent": true
     },
     {
       "source": "/ae/founder.html",
-      "destination": "/ae/#studio",
+      "destination": "/ae/founder",
       "permanent": true
     },
     {
       "source": "/ae/ai-workflow-audit.html",
-      "destination": "/ae/plans#ai-audit",
+      "destination": "/ae/ai-workflow-audit",
       "permanent": true
     },
     {
       "source": "/ae/company-second-brain.html",
-      "destination": "/ae/plans#second-brain",
+      "destination": "/ae/company-second-brain",
       "permanent": true
     },
     {
@@ -72,42 +72,22 @@
     },
     {
       "source": "/au/clients.html",
-      "destination": "/au/#work",
+      "destination": "/au/clients",
       "permanent": true
     },
     {
       "source": "/au/founder.html",
-      "destination": "/au/#studio",
+      "destination": "/au/founder",
       "permanent": true
     },
     {
       "source": "/au/ai-workflow-audit.html",
-      "destination": "/au/plans#ai-audit",
+      "destination": "/au/ai-workflow-audit",
       "permanent": true
     },
     {
       "source": "/au/company-second-brain.html",
-      "destination": "/au/plans#second-brain",
-      "permanent": true
-    },
-    {
-      "source": "/clients",
-      "destination": "/#work",
-      "permanent": true
-    },
-    {
-      "source": "/founder",
-      "destination": "/#studio",
-      "permanent": true
-    },
-    {
-      "source": "/ai-workflow-audit",
-      "destination": "/plans#ai-audit",
-      "permanent": true
-    },
-    {
-      "source": "/company-second-brain",
-      "destination": "/plans#second-brain",
+      "destination": "/au/company-second-brain",
       "permanent": true
     },
     {
@@ -117,22 +97,22 @@
     },
     {
       "source": "/clients.html",
-      "destination": "/#work",
+      "destination": "/clients",
       "permanent": true
     },
     {
       "source": "/founder.html",
-      "destination": "/#studio",
+      "destination": "/founder",
       "permanent": true
     },
     {
       "source": "/ai-workflow-audit.html",
-      "destination": "/plans#ai-audit",
+      "destination": "/ai-workflow-audit",
       "permanent": true
     },
     {
       "source": "/company-second-brain.html",
-      "destination": "/plans#second-brain",
+      "destination": "/company-second-brain",
       "permanent": true
     },
     {
@@ -148,46 +128,6 @@
     {
       "source": "/ae/ar/:path*",
       "destination": "/ae/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/ae/clients",
-      "destination": "/ae/#work",
-      "permanent": true
-    },
-    {
-      "source": "/au/clients",
-      "destination": "/au/#work",
-      "permanent": true
-    },
-    {
-      "source": "/ae/founder",
-      "destination": "/ae/#studio",
-      "permanent": true
-    },
-    {
-      "source": "/au/founder",
-      "destination": "/au/#studio",
-      "permanent": true
-    },
-    {
-      "source": "/ae/ai-workflow-audit",
-      "destination": "/ae/plans#ai-audit",
-      "permanent": true
-    },
-    {
-      "source": "/au/ai-workflow-audit",
-      "destination": "/au/plans#ai-audit",
-      "permanent": true
-    },
-    {
-      "source": "/ae/company-second-brain",
-      "destination": "/ae/plans#second-brain",
-      "permanent": true
-    },
-    {
-      "source": "/au/company-second-brain",
-      "destination": "/au/plans#second-brain",
       "permanent": true
     }
   ],
@@ -235,6 +175,54 @@
     {
       "source": "/au/terms",
       "destination": "/au/terms/index.html"
+    },
+    {
+      "source": "/clients",
+      "destination": "/clients.html"
+    },
+    {
+      "source": "/founder",
+      "destination": "/founder.html"
+    },
+    {
+      "source": "/ai-workflow-audit",
+      "destination": "/ai-workflow-audit.html"
+    },
+    {
+      "source": "/company-second-brain",
+      "destination": "/company-second-brain.html"
+    },
+    {
+      "source": "/ae/clients",
+      "destination": "/ae/clients/index.html"
+    },
+    {
+      "source": "/ae/founder",
+      "destination": "/ae/founder/index.html"
+    },
+    {
+      "source": "/ae/ai-workflow-audit",
+      "destination": "/ae/ai-workflow-audit/index.html"
+    },
+    {
+      "source": "/ae/company-second-brain",
+      "destination": "/ae/company-second-brain/index.html"
+    },
+    {
+      "source": "/au/clients",
+      "destination": "/au/clients/index.html"
+    },
+    {
+      "source": "/au/founder",
+      "destination": "/au/founder/index.html"
+    },
+    {
+      "source": "/au/ai-workflow-audit",
+      "destination": "/au/ai-workflow-audit/index.html"
+    },
+    {
+      "source": "/au/company-second-brain",
+      "destination": "/au/company-second-brain/index.html"
     }
   ],
   "headers": [

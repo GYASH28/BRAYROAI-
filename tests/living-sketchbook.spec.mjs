@@ -32,6 +32,23 @@ test('regional price books are English and exact',async({page})=>{
  }
 });
 
+test('restored founder, client and AI pages stay navigable in each market',async({page})=>{
+ for(const prefix of ['', '/ae', '/au']){
+  for(const route of ['/clients','/founder','/ai-workflow-audit','/company-second-brain']){
+   await page.goto(prefix+route);
+   await expect(page.locator('main h1')).toBeVisible();
+   await expect(page.locator('.premium-footer')).toBeVisible();
+   await expect(page).toHaveURL(new RegExp(`${prefix}${route}$`));
+  }
+ }
+ await page.goto('/founder');
+ await page.locator('[data-founder-colour]').click();
+ await expect(page.locator('.founder-hero')).toHaveClass(/is-colour/);
+ await page.goto('/clients');
+ await page.locator('.client-feature a').click();
+ await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
+});
+
 test('manual market choice survives navigation and late detection',async({page})=>{
  let releaseDetection;
  const detectionGate=new Promise(resolve=>{releaseDetection=resolve});
@@ -96,7 +113,7 @@ test('Rae keeps drafts and reports provider failures honestly',async({page})=>{
  await expect(page).toHaveURL(/\/au\/?$/);
  await page.locator('.rae-launcher').click();
  await expect(page.locator('#rae-input')).toHaveValue('Can you help with a website?');
- await page.getByRole('button',{name:/Send/}).click();
+ await page.getByRole('button',{name:/Send message to Rae/}).click();
  await expect(page.locator('.rae-status')).toContainText('not configured');
  await expect(page.locator('.rae-message.assistant')).toContainText('could not answer');
  await page.locator('[data-rae-close]').click();
@@ -113,9 +130,9 @@ test('Rae renders only allowlisted, market-aware suggestions',async({page})=>{
  await page.goto('/ae/');
  await page.locator('.rae-launcher').click();
  await page.locator('#rae-input').fill('Tell me about the audit');
- await page.getByRole('button',{name:/Send/}).click();
+ await page.getByRole('button',{name:/Send message to Rae/}).click();
  await expect(page.locator('.rae-message.assistant')).toContainText('focused first step');
- await expect(page.locator('.rae-actions a')).toHaveAttribute('href','/ae/plans#ai-audit');
+ await expect(page.locator('.rae-actions a')).toHaveAttribute('href','/ae/ai-workflow-audit');
  await expect(page.locator('.rae-actions a')).toHaveCount(1);
 });
 
@@ -131,24 +148,25 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('#approach')).toBeVisible();
  await page.route('**/assets/app-*.js',route=>route.abort());
  await page.goto('/plans');
- await expect(page.getByRole('heading',{name:/What kind of work needs doing/i})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Choose the relationship/i})).toBeVisible();
  await expect(page.locator('#ai-systems')).toBeVisible();
 });
 
-test('artboard recovers after fast reverse scroll, tab return and resize',async({page,context})=>{
+test('Scrollcraft scenes recover after reverse scroll, tab return and resize',async({page,context})=>{
  await page.setViewportSize({width:1440,height:900});
- await page.goto('/#approach');
- await page.locator('[data-story-step="2"]').scrollIntoViewIfNeeded();
- await expect.poll(()=>page.locator('[data-story]').getAttribute('data-active')).toMatch(/^[012]$/);
- await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
- await page.evaluate(()=>window.scrollTo(0,0));
- await page.locator('[data-story-step="0"]').scrollIntoViewIfNeeded();
+ await page.goto('/');
+ await expect(page.locator('[data-sc-root]')).toBeVisible();
+ await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+section.offsetHeight*.48,behavior:'instant'})});
+ await expect.poll(()=>page.locator('.work-section').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.25);
+ await expect.poll(()=>page.locator('.work-rail').evaluate(node=>new DOMMatrix(getComputedStyle(node).transform).m41)).toBeLessThan(-100);
+ await page.evaluate(()=>{const section=document.querySelector('.assembly-section');scrollTo({top:section.offsetTop+section.offsetHeight*.72,behavior:'instant'})});
+ await expect.poll(()=>page.locator('.assembly-section').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.45);
+ await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
  const other=await context.newPage();await other.bringToFront();await page.bringToFront();await other.close();
- await expect(page.locator('[data-story-number]')).toHaveText(/^0[1-3] \/ 03$/);
  await page.setViewportSize({width:390,height:844});
- await expect(page.locator('[data-story-number]')).toHaveText('03 / 03');
- await expect(page.locator('[data-story-step="0"] h3')).toBeVisible();
- await expect(page.locator('[data-story-step="2"] h3')).toBeVisible();
+ await expect(page.locator('.hero-copy h1')).toBeVisible();
+ await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+section.offsetHeight*.48,behavior:'instant'})});
+ await expect.poll(()=>page.locator('.work-section').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.25);
 });
 
 test('keyboard menu, market dialog, and accessibility',async({page})=>{
@@ -164,7 +182,7 @@ test('keyboard menu, market dialog, and accessibility',async({page})=>{
  await expect(page.locator('#market-dialog')).toBeVisible();
  await page.keyboard.press('Escape');
  await expect(page.locator('#market-dialog')).not.toBeVisible();
- for(const route of ['/','/plans','/clients/fakhrimart','/terms']){
+ for(const route of ['/','/plans','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms']){
   await page.goto(route);
   const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
   expect(result.violations.map(item=>item.id)).toEqual([]);

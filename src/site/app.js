@@ -3,12 +3,16 @@ import {initPlans} from './plans.js';
 import {initContact} from './contact.js';
 
 if(initMarket()){
+ const customArrow=direction=>{const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 240 90');svg.setAttribute('class',`ui-arrow ${direction==='↘'?'ui-arrow--down':''}`);svg.setAttribute('aria-hidden','true');const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M8 70C48 28 105 18 204 39m-30-25 34 26-38 22');svg.append(path);return svg};
+ document.querySelectorAll('a,button').forEach(control=>{const walker=document.createTreeWalker(control,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())if(/[↗↘]/.test(walker.currentNode.textContent))nodes.push(walker.currentNode);for(const node of nodes){const parts=node.textContent.split(/([↗↘])/);const fragment=document.createDocumentFragment();for(const part of parts)fragment.append(/[↗↘]/.test(part)?customArrow(part):document.createTextNode(part));node.replaceWith(fragment)}});
  const menu=document.querySelector('#menu-dialog');
  document.querySelector('[data-menu-open]')?.addEventListener('click',()=>menu.showModal());
  document.querySelector('[data-menu-close]')?.addEventListener('click',()=>menu.close());
  menu?.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>menu.close()));
  const colour=document.querySelector('[data-colour-toggle]');
  colour?.addEventListener('click',()=>{const on=document.querySelector('.legacy-hero').classList.toggle('is-colour');colour.setAttribute('aria-pressed',String(on));document.querySelector('.hero-person').src=on?'/assets/yash-cutout.webp':'/assets/yash-cutout-mono.webp'});
+ const founderColour=document.querySelector('[data-founder-colour]');
+ founderColour?.addEventListener('click',()=>{const on=document.querySelector('.founder-hero').classList.toggle('is-colour');founderColour.setAttribute('aria-pressed',String(on))});
  initPlans();
  initContact();
 
@@ -25,14 +29,10 @@ if(initMarket()){
  };
  raeButtons.forEach(button=>button.addEventListener('click',openRae));
 
- // The scroll artboard acquires its timeline only as it approaches the viewport.
- const story=document.querySelector('[data-story]');
- if(story&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
-  const observer=new IntersectionObserver(entries=>{
-   if(!entries[0].isIntersecting)return;
-   observer.disconnect();
-   import('./story.js').then(module=>module.initStory());
-  },{rootMargin:'600px 0px'});
-  observer.observe(story);
+ // The homepage owns one scroll timeline; all other routes stay ordinary documents.
+ if(document.body.classList.contains('page-proof')){
+  import('./experience.js').then(module=>module.initExperience()).catch(error=>console.error('Experience enhancement failed',error));
+ }else{
+  import('./inner-motion.js').then(module=>module.initInnerMotion()).catch(()=>{});
  }
 }

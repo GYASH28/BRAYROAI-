@@ -4,7 +4,7 @@
 .page-proof main{overflow:clip}
 .page-proof h2,.page-proof h3{letter-spacing:-.075em}
 .page-proof em{font-style:normal;color:#bc3d13}
-.page-proof .proof-kicker{font-size:clamp(10px,.8vw,12px);font-weight:800;text-transform:uppercase;letter-spacing:.18em;line-height:1.3;color:#b84017}
+.page-proof .proof-kicker{font-size:clamp(10px,.8vw,12px);font-weight:800;text-transform:uppercase;letter-spacing:.18em;line-height:1.3;color:#96320e}
 .page-proof .container{width:min(calc(100% - 9vw),1500px)}
 .page-proof .arrow-mark,.page-proof .contact-arrow,.page-proof .assembly-arrow{display:block;overflow:visible;fill:none;color:var(--proof-orange)}
 .page-proof .arrow-mark path,.page-proof .contact-arrow path,.page-proof .assembly-arrow path{fill:none;stroke:currentColor;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
@@ -31,6 +31,7 @@
 .page-proof .colour-director:hover{transform:translateY(-3px);background:rgba(255,90,31,.12);border-color:var(--proof-orange)}
 .page-proof .hero-chapters a{transition:color .2s,background .2s}
 .page-proof .hero-chapters a:focus-visible{outline-offset:3px}
+.page-proof [data-sc-in],.page-proof [data-sc-stagger]>*{opacity:1;transition:transform 620ms var(--sc-ease-out)}
 @media(prefers-reduced-motion:no-preference){
  .page-proof .hero-opening-light{animation:proof-opening-light 1.4s ease-in-out both}
  .page-proof .hero-copy h1 span{animation:proof-opening-line .72s cubic-bezier(.19,1,.22,1) backwards}
@@ -134,7 +135,7 @@
 .page-proof .starting-list p{font-size:clamp(14px,1.05vw,17px)}
 .page-proof .starting-list .arrow-mark{width:43px;height:22px}
 .page-proof .starting-section>.container>.proof-text-link{margin-top:55px}
-.page-proof .contact-section{background:#08090b;padding:clamp(105px,11vw,195px) 0;content-visibility:auto;contain-intrinsic-size:auto 700px;color:#eeeae2}
+.page-proof .contact-section{background:#08090b;padding:clamp(105px,11vw,195px) 0;content-visibility:visible;contain-intrinsic-size:none;color:#eeeae2}
 .page-proof .contact-grid{gap:10vw}
 .page-proof .contact-grid h2{font-size:clamp(75px,8.2vw,155px);line-height:.88;margin:28px 0 34px}
 .page-proof .contact-grid em{color:var(--proof-orange)}

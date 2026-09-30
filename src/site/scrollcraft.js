@@ -1079,7 +1079,7 @@
       layout();
     }, { passive: true });
 
-    if (document.fonts && document.fonts.ready) {
+    if (document.fonts && document.fonts.status !== 'loaded' && document.fonts.ready) {
       // Line splitting measures line boxes, so it has to wait for the real face.
       document.fonts.ready.then(function () {
         acts.forEach(function (a) { a.cues.forEach(function (q) { if (q.kinetic && q.units) { q.el.__scSplit = null; q.units = null; } }); });
@@ -1087,10 +1087,12 @@
       });
     }
 
+    document.documentElement.classList.add('sc-ready');
     layout();
     initPointer();
-    requestAnimationFrame(tick);
-    document.documentElement.classList.add('sc-ready');
+    // Still-image scenes update on scroll; only video decoders need an idle
+    // frame loop. An empty loop keeps waking the main thread for no result.
+    if (playheads.length) requestAnimationFrame(tick);
 
     var api = { layout: layout, read: read, acts: acts, worlds: worlds, clips: playheads, lerp: LERP };
     global.ScrollCraft.instances.push(api);

@@ -1,0 +1,11 @@
+# Goal prompt for the BRAYROAI premium rebuild
+
+Research the 50 selected Awwwards Site of the Day, Site of the Month and Site of the Year projects in depth. Verify each project's award category and sources. Inspect the live experience at desktop and mobile sizes where accessible, including its opening, first scroll movements, navigation, visual composition, imagery, color, type, interaction and ending. Clearly mark inaccessible or changed live sites and use their Awwwards records and highlights only for claims those sources support. Read primary creator explanations for the most relevant interaction choices. Correct factual mistakes in the first research pass.
+
+Use that evidence to improve the BRAYROAI design skill and build brief. Then review the implementation already started in the clean GitHub-main worktree. Keep the original Yash hero identity and the hand-drawn arrow; give the hero a purposeful, immediate opening sequence. Apply the owner's new tile-fracture BRAYRO AI Agency brand kit from `/home/yashg/Documents/Codex/2026-09-30/cr/outputs/brayro-ai-brand-system/brand-guide.html`: approved wordmark usage, favicon, sharing art, ink/bone palette, blue interaction accents and restrained orange. Rebuild the full BRAYROAI site with original art direction, real FakhriMart desktop/mobile proof, thoughtful scroll, 3D and small interactive motion, direct project/contact actions, truthful offers, tailored inner pages, reliable Rae, complete footer and correct market paths. Make all motion purposeful and provide polished reduced-motion, mobile, no-WebGL and no-script states.
+
+Visually inspect and refine key frames and interactions before release checks. At the final release stage run the existing static, integrity, localization, browser, stress, accessibility and Lighthouse gates. Fix reproducible failures. Commit and push the finished site to GitHub main, then confirm the Vercel deployment serves the exact commit and smoke its real routes and interactions. Continue autonomously without routine questions, and describe any incomplete research or release gate honestly.
+
+## Goal tool status
+
+The user cleared the previous usage-limited goal on 30 September 2026. The Goal API accepted the expanded objective in this file, including brand-kit integration, as an active goal on the same date.

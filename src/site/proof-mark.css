@@ -32,17 +32,7 @@
 .page-proof .hero-chapters a{transition:color .2s,background .2s}
 .page-proof .hero-chapters a:focus-visible{outline-offset:3px}
 .page-proof [data-sc-in],.page-proof [data-sc-stagger]>*{opacity:1;transition:transform 620ms var(--sc-ease-out)}
-@media(prefers-reduced-motion:no-preference){
- .page-proof .hero-opening-light{animation:proof-opening-light 1.4s ease-in-out both}
- .page-proof .hero-copy h1 span{animation:proof-opening-line .72s cubic-bezier(.19,1,.22,1) backwards}
- .page-proof .hero-copy h1 span:nth-child(2){animation-delay:.1s}
- .page-proof .hero-lead{animation:proof-opening-line .65s cubic-bezier(.19,1,.22,1) .32s backwards}
- .page-proof .hero-primary{animation:proof-opening-line .65s cubic-bezier(.19,1,.22,1) .55s backwards}
- .page-proof .hero-primary .arrow-mark path{stroke-dasharray:320;animation:proof-opening-arrow .8s ease .6s backwards}
-}
-@keyframes proof-opening-light{0%{opacity:0;transform:translateX(-30vw) rotate(-14deg)}45%{opacity:1}85%{opacity:0}100%{opacity:0;transform:translateX(96vw) rotate(-14deg)}}
-@keyframes proof-opening-line{from{transform:translateY(18px)}to{transform:translateY(0)}}
-@keyframes proof-opening-arrow{from{stroke-dashoffset:320}to{stroke-dashoffset:0}}
+/* The hero entrance is compositor-only CSS; it does not block the first frame. */
 
 /* Proof is a wide physical surface, rather than a stack of cards. */
 .page-proof .work-section{padding:0;background:#e7e3d8;color:var(--proof-ink);content-visibility:auto;contain-intrinsic-size:auto 280vh;overflow:visible}

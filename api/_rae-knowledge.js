@@ -28,7 +28,7 @@ export const RAE_KNOWLEDGE=Object.freeze({
 
 export const RAE_ALLOWED_ACTIONS=Object.freeze({
   navigateToRoute:['/','/#work','/#studio','/#contact','/plans','/plans#ai-audit','/plans#second-brain','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms'],
-  scrollToSection:['work','approach','studio','starting-points','contact'],
+  scrollToSection:['work','approach','method','studio','starting-points','contact'],
   openProject:['fakhrimart'],
   showPlan:['monthly-starter','monthly-growth','monthly-studio','launch-website','business-experience','premium-experience','ai-workflow-audit','company-second-brain']
 });

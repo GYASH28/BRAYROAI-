@@ -13,9 +13,9 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
  await page.locator('.hero-chapters a[href="#work"]').click();
  await expect(page).toHaveURL(/#work$/);
  await expect(page.locator('#work')).toBeInViewport();
- await page.locator('.work-media').scrollIntoViewIfNeeded();
- await expect.poll(()=>page.locator('.work-desktop').evaluate(image=>image.complete&&image.naturalWidth>0)).toBe(true);
- await page.getByRole('link',{name:'Read the case study',exact:true}).click();
+ await page.locator('.work-proof-screen').scrollIntoViewIfNeeded();
+ await expect.poll(()=>page.locator('.work-proof-screen img').evaluate(image=>image.complete&&image.naturalWidth>0)).toBe(true);
+ await page.getByRole('link',{name:'Open the FakhriMart case study'}).click();
  await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
  await expect(page.getByRole('heading',{name:/FakhriMart/i})).toBeVisible();
  await page.goBack();
@@ -152,37 +152,30 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('#ai-systems')).toBeVisible();
 });
 
-test('Scrollcraft scenes recover after reverse scroll, tab return and resize',async({page,context})=>{
+test('responsive proof follows scroll and control input across resize and tab return',async({page,context})=>{
  await page.setViewportSize({width:1440,height:900});
  await page.goto('/');
  await expect(page.locator('[data-sc-root]')).toBeVisible();
- await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+section.offsetHeight*.48,behavior:'instant'})});
- await expect.poll(()=>page.locator('.work-section').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.25);
- await expect.poll(()=>page.locator('.work-rail').evaluate(node=>new DOMMatrix(getComputedStyle(node).transform).m41)).toBeLessThan(-100);
- await page.evaluate(()=>{const section=document.querySelector('.assembly-section');scrollTo({top:section.offsetTop+section.offsetHeight*.72,behavior:'instant'})});
- await expect.poll(()=>page.locator('.assembly-section').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.45);
+ await page.evaluate(()=>{const section=document.querySelector('#viewport');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.72,behavior:'instant'})});
+ await expect.poll(()=>page.locator('#viewport').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.45);
+ await expect.poll(()=>page.locator('[data-viewport-slider]').inputValue()).not.toBe('0');
+ await page.locator('[data-viewport-slider]').fill('100');
+ await expect(page.locator('[data-device-copy]')).toHaveText('02 / PHONE SCREEN');
+ await expect.poll(()=>page.locator('[data-device-proof]').evaluate(node=>Number(getComputedStyle(node).getPropertyValue('--device-p')))).toBe(1);
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
  const other=await context.newPage();await other.bringToFront();await page.bringToFront();await other.close();
  await page.setViewportSize({width:390,height:844});
  await expect(page.locator('.hero-copy h1')).toBeVisible();
- await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.07,behavior:'instant'})});
- await expect(page.locator('.work-panel--intro h2')).toBeInViewport({ratio:.9});
- await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+section.offsetHeight*.48,behavior:'instant'})});
- await expect.poll(()=>page.locator('.work-section').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.25);
- await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.94,behavior:'instant'})});
- await expect(page.locator('.work-panel--outro .work-bottom p')).toBeInViewport({ratio:.9});
- await page.setViewportSize({width:320,height:568});
- await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.94,behavior:'instant'})});
- await expect.poll(()=>page.evaluate(()=>document.querySelector('.work-mobile').getBoundingClientRect().bottom<document.querySelector('.work-bottom').getBoundingClientRect().top)).toBe(true);
- await page.evaluate(()=>{const section=document.querySelector('.assembly-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.85,behavior:'instant'})});
- await expect.poll(()=>page.evaluate(()=>document.querySelector('.assembly-copy').getBoundingClientRect().bottom<document.querySelector('.assembly-scene').getBoundingClientRect().top)).toBe(true);
- await page.setViewportSize({width:844,height:390});
- await page.evaluate(()=>{const section=document.querySelector('.assembly-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.85,behavior:'instant'})});
- await expect.poll(()=>page.evaluate(()=>document.querySelector('.assembly-copy').getBoundingClientRect().right<document.querySelector('.assembly-scene').getBoundingClientRect().left)).toBe(true);
- await expect(page.locator('.assembly-link')).toBeInViewport({ratio:.9});
- await page.setViewportSize({width:667,height:375});
- await page.evaluate(()=>{const section=document.querySelector('.assembly-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.85,behavior:'instant'})});
- await expect.poll(()=>page.evaluate(()=>document.querySelector('.assembly-copy').getBoundingClientRect().right<document.querySelector('.assembly-scene').getBoundingClientRect().left)).toBe(true);
+ await page.locator('#viewport').scrollIntoViewIfNeeded();
+ await expect(page.locator('.device-poster--mobile')).toBeVisible();
+ await page.locator('[data-viewport-slider]').fill('100');
+ await expect(page.locator('[data-device-copy]')).toHaveText('02 / PHONE SCREEN');
+ for(const [width,height] of [[320,568],[667,375]]){
+  await page.setViewportSize({width,height});
+  await page.locator('#viewport').scrollIntoViewIfNeeded();
+  await expect(page.locator('[data-viewport-slider]')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+ }
 });
 
 test('keyboard menu, market dialog, and accessibility',async({page})=>{

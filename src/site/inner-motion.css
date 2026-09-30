@@ -1,8 +1,4 @@
 @media(prefers-reduced-motion:no-preference){
- .page-inner :is(.founder-hero-copy,.client-hero .inner-kicker,.client-hero h1,.ai-hero .inner-kicker,.ai-hero h1){animation:innerArrive 1s cubic-bezier(.19,1,.22,1) both}
- .page-inner :is(.client-hero h1,.ai-hero h1){animation-delay:.15s}
- .page-inner .founder-hero-copy{animation-delay:.18s}
  .motion-target{transform:translate3d(0,28px,0);transition:transform .9s cubic-bezier(.19,1,.22,1);transition-delay:calc(var(--motion-index)*45ms)}
  .motion-target.is-seen{transform:translate3d(0,0,0)}
- @keyframes innerArrive{from{transform:translate3d(0,42px,0)}to{transform:translate3d(0,0,0)}}
 }

@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build && node scripts/materialize-clean-routes.mjs && node scripts/build-locales.mjs",
     "preview": "vite preview --host 0.0.0.0",
-    "test:syntax": "node --check vite.config.mjs && node --check scripts/build-locales.mjs && node --check scripts/materialize-clean-routes.mjs && node --check src/site/app.js && node --check src/site/market.js && node --check src/site/plans.js && node --check src/site/contact.js && node --check src/site/story.js && node --check src/site/rae.js && node --check api/rae-chat.js && node --check api/_rae-knowledge.js",
+    "test:syntax": "node --check vite.config.mjs && node --check scripts/build-locales.mjs && node --check scripts/materialize-clean-routes.mjs && node --check src/site/app.js && node --check src/site/experience.js && node --check src/site/inner-motion.js && node --check src/site/market.js && node --check src/site/plans.js && node --check src/site/contact.js && node --check src/site/story.js && node --check src/site/rae.js && node --check api/rae-chat.js && node --check api/_rae-knowledge.js",
     "test:integrity": "node tests/rae-api-contract.mjs && node tests/rae-provider-fallback.mjs && node tests/rae-security-integrity.mjs && node tests/living-sketchbook-integrity.mjs",
     "test:dist": "node tests/living-sketchbook-dist.mjs",
     "test:localization": "node tests/living-sketchbook-locales.mjs",
@@ -23,6 +23,7 @@
     "vite": "latest"
   },
   "dependencies": {
-    "cheerio": "^1.2.0"
+    "cheerio": "^1.2.0",
+    "three": "0.186.1"
   }
 }

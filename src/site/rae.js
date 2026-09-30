@@ -11,8 +11,8 @@ const safeRoute=action=>{
  if(!action||typeof action!=='object')return null;
  if(action.name==='showPlan'&&Object.hasOwn(planAnchors,action.args?.planId))return action.args.planId==='ai-workflow-audit'?'/ai-workflow-audit':action.args.planId==='company-second-brain'?'/company-second-brain':`/plans#${planAnchors[action.args.planId]}`;
  if(action.name==='openProject'&&action.args?.name==='fakhrimart')return '/clients/fakhrimart';
- if(action.name==='scrollToSection'&&['work','approach','studio','starting-points','contact'].includes(action.args?.section))return `/#${action.args.section}`;
- if(action.name==='navigateToRoute'&&['/','/#work','/#studio','/#contact','/plans','/plans#ai-audit','/plans#second-brain','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms'].includes(action.args?.route))return action.args.route;
+ if(action.name==='scrollToSection'&&['work','approach','method','studio','starting-points','contact'].includes(action.args?.section))return `/#${action.args.section==='approach'?'method':action.args.section}`;
+ if(action.name==='navigateToRoute'&&['/','/#work','/#approach','/#method','/#studio','/#contact','/plans','/plans#ai-audit','/plans#second-brain','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms'].includes(action.args?.route))return action.args.route==='/#approach'?'/#method':action.args.route;
  return null;
 };
 export function initRae(){

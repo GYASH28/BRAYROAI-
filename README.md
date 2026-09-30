@@ -21,7 +21,8 @@ English UAE and Australia variants use `/ae` and `/au` prefixes. Prices come fro
 
 - Top-level HTML pages: content that remains readable before enhancements load.
 - `src/site/site.css`: shared design system, page compositions, responsive and reduced-motion rules.
-- `src/site/proof-mark.css` and `experience.js`: the original hero's opening animation, Scrollcraft scenes, scroll-index states, and custom-arrow motion.
+- `src/site/proof-mark.css` and `static/premium-redesign.css`: the retained hero, lightweight timed opening sequence, approved brand system, and editorial sitewide composition.
+- `src/site/experience.js`: Scrollcraft-driven viewport proof, custom-arrow range control, restrained parallax, and an optional demand-rendered Three.js rig.
 - `src/site/scrollcraft.js` and `scrollcraft.css`: the Scrollcraft runtime used by the homepage.
 - `src/site/inner-experience.css` and `inner-motion.js`: dedicated founder, client, and AI page art direction and entry/scroll motion.
 - `src/site/app.js`: entry point; `market.js`, `plans.js`, `contact.js`, and `rae.js` own separate interactions. Rae loads on demand.
@@ -32,7 +33,11 @@ English UAE and Australia variants use `/ae` and `/au` prefixes. Prices come fro
 
 Rae is an opt-in companion. Her full-body vector character and expression styles come from the previous BRAYROAI award-experience branch; the grounded streaming transport and route allowlist remain from current `main`. The chat UI does not invent an answer when the provider fails. Existing provider configuration is required for real AI responses. Message drafts remain in the browser session. Route actions from the API are mapped to a local allowlist before becoming links.
 
-The site self-hosts Manrope under its SIL Open Font License (see `static/fonts/OFL-Manrope.txt`). The founder-process images and Rae actor were recovered from the previous BRAYROAI site. The homepage uses real shipped FakhriMart screen assets as proof rather than generated client work.
+The site self-hosts Manrope under its SIL Open Font License (see `static/fonts/OFL-Manrope.txt`). The founder-process images and Rae actor were recovered from the previous BRAYROAI site. The homepage and case page use real shipped FakhriMart screen captures as proof. One generated studio-table image serves as background atmosphere only. Asset origins are recorded in `research/premium-rebuild/assets.md`.
+
+## Research and creative direction
+
+`research/premium-rebuild/` records 50 distinct official Awwwards project examples, per-site observations, live inspection limits, library and license choices, and the rebuild plan. `GOAL_PROMPT.md` is the durable brief for continued refinement. The reusable `brayroai-award-studio` skill is installed in the local Codex skills folder and mirrored at `research/premium-rebuild/skill/`; it was validated before implementation. These references inform the site's craft and interaction decisions without implying that the site has won an award.
 
 ## Work locally
 

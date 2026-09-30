@@ -2,7 +2,7 @@ import './inner-motion.css';
 
 export function initInnerMotion(){
  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
- const selectors='.inner-pad h2,.inner-pad h3,.inner-pad figure,.inner-pad article,.inner-close h2,.client-feature-screen,.client-feature-info,.case-text-grid h2,.case-text-grid p,.offer,.premium-footer-call,.premium-footer-columns';
+ const selectors='.inner-pad h2,.inner-pad h3,.inner-pad figure,.inner-pad article,.inner-close h2,.client-feature-screen,.client-feature-info,.case-text-grid h2,.case-text-grid p,.case-product-copy,.case-product-screen,.offer,.premium-footer-call,.premium-footer-columns';
  const targets=[...document.querySelectorAll(selectors)];
  if(!('IntersectionObserver' in window))return;
  const observer=new IntersectionObserver(entries=>{

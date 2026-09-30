@@ -111,7 +111,7 @@ function providerCandidates(){
   return configs;
 }
 
-const planCard=plan=>plan?{type:'plan',eyebrow:'CURRENT VERIFIED PLAN',title:plan.name,copy:plan.summary||plan.kind||'',price:plan.price,action:{name:plan.id==='ai-workflow-audit'?'navigateToRoute':plan.id==='company-second-brain'?'navigateToRoute':'showPlan',args:plan.id==='ai-workflow-audit'?{route:'/plans#ai-audit'}:plan.id==='company-second-brain'?{route:'/plans#second-brain'}:{planId:plan.id},label:'View this option'}}:null;
+const planCard=plan=>plan?{type:'plan',eyebrow:'CURRENT VERIFIED PLAN',title:plan.name,copy:plan.summary||plan.kind||'',price:plan.price,action:{name:plan.id==='ai-workflow-audit'?'navigateToRoute':plan.id==='company-second-brain'?'navigateToRoute':'showPlan',args:plan.id==='ai-workflow-audit'?{route:'/ai-workflow-audit'}:plan.id==='company-second-brain'?{route:'/company-second-brain'}:{planId:plan.id},label:'View this option'}}:null;
 function matchedPlan(lower,market){
   const knowledge=localizedKnowledge(market),all=[...knowledge.websitePlans,...knowledge.aiOffers];
   if(/workflow audit|ai audit/.test(lower))return all.find(plan=>plan.id==='ai-workflow-audit');

@@ -1,7 +1,7 @@
 @font-face{font-family:Manrope;src:url('/fonts/manrope-latin-variable.woff2') format('woff2');font-style:normal;font-weight:200 800;font-display:swap}
 :root,body,button,textarea{font-family:Manrope,Arial,Helvetica,sans-serif}
 .site-header .header-inner{max-width:1600px}
-.site-header{backdrop-filter:blur(18px)}
+.site-header{backdrop-filter:none}
 .site-header .brand{letter-spacing:-.08em}
 .site-header .desktop-nav a{position:relative}
 .site-header .desktop-nav a::after{content:"";position:absolute;left:0;bottom:-7px;width:100%;height:2px;background:#ff5a1f;transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.19,1,.22,1)}

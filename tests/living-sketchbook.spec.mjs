@@ -171,6 +171,18 @@ test('Scrollcraft scenes recover after reverse scroll, tab return and resize',as
  await expect.poll(()=>page.locator('.work-section').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.25);
  await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.94,behavior:'instant'})});
  await expect(page.locator('.work-panel--outro .work-bottom p')).toBeInViewport({ratio:.9});
+ await page.setViewportSize({width:320,height:568});
+ await page.evaluate(()=>{const section=document.querySelector('.work-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.94,behavior:'instant'})});
+ await expect.poll(()=>page.evaluate(()=>document.querySelector('.work-mobile').getBoundingClientRect().bottom<document.querySelector('.work-bottom').getBoundingClientRect().top)).toBe(true);
+ await page.evaluate(()=>{const section=document.querySelector('.assembly-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.85,behavior:'instant'})});
+ await expect.poll(()=>page.evaluate(()=>document.querySelector('.assembly-copy').getBoundingClientRect().bottom<document.querySelector('.assembly-scene').getBoundingClientRect().top)).toBe(true);
+ await page.setViewportSize({width:844,height:390});
+ await page.evaluate(()=>{const section=document.querySelector('.assembly-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.85,behavior:'instant'})});
+ await expect.poll(()=>page.evaluate(()=>document.querySelector('.assembly-copy').getBoundingClientRect().right<document.querySelector('.assembly-scene').getBoundingClientRect().left)).toBe(true);
+ await expect(page.locator('.assembly-link')).toBeInViewport({ratio:.9});
+ await page.setViewportSize({width:667,height:375});
+ await page.evaluate(()=>{const section=document.querySelector('.assembly-section');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.85,behavior:'instant'})});
+ await expect.poll(()=>page.evaluate(()=>document.querySelector('.assembly-copy').getBoundingClientRect().right<document.querySelector('.assembly-scene').getBoundingClientRect().left)).toBe(true);
 });
 
 test('keyboard menu, market dialog, and accessibility',async({page})=>{

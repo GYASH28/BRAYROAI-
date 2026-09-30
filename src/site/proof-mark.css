@@ -179,8 +179,8 @@
  .page-proof .work-media{width:110vw;transform:rotate(-2deg)}
  .page-proof .work-desktop{height:57vh;width:110vw;object-fit:cover;object-position:left top}
  .page-proof .work-media-label{bottom:-22px;right:7vw;font-size:9px}
- .page-proof .work-panel--outro{width:100vw;padding:55vh 30px 8vh 30px;justify-content:end}
- .page-proof .work-panel--outro .work-mobile{width:42vw;max-height:50vh;left:28vw;top:8vh}
+ .page-proof .work-panel--outro{width:100vw;padding:8vh 30px;justify-content:space-between;gap:20px}
+ .page-proof .work-panel--outro .work-mobile{position:static;align-self:center;width:min(42vw,calc(42svh - 140px));max-height:50vh}
  .page-proof .work-bottom p{font-size:clamp(45px,10vw,74px);margin-bottom:28px}
  .page-proof .approach-section{padding:105px 0 125px}
  .page-proof .approach-heading{margin-bottom:95px}
@@ -226,6 +226,17 @@
  .page-proof .hero-primary,.page-proof .colour-director{gap:4px;padding:0 9px}
  .page-proof .work-panel--intro h2{font-size:58px}
  .page-proof .assembly-copy h2{font-size:49px}
+ .page-proof .assembly-link{font-size:13px;gap:14px}
+}
+@media(max-width:760px) and (max-height:700px){
+ .page-proof .assembly-copy h2{font-size:clamp(36px,10vw,49px)}
+}
+@media(min-aspect-ratio:4/3) and (max-height:540px){
+ .page-proof .assembly-copy{top:24vh;width:32vw}
+ .page-proof .assembly-copy h2{font-size:clamp(34px,4.8vw,58px);margin-top:16px}
+ .page-proof .assembly-scene{left:auto;top:25vh;right:4vw;width:58vw;height:55vh}
+ .page-proof .assembly-arrow{width:32vw;transform:translate3d(calc(var(--sc-p)*18vw),calc(var(--sc-p)*-7vh),0)}
+ .page-proof .assembly-link{left:5vw;right:auto;bottom:5vh}
 }
 @media(prefers-reduced-motion:reduce){
  .page-proof [data-sc-in],.page-proof [data-sc-stagger]>*{opacity:1;transform:none}

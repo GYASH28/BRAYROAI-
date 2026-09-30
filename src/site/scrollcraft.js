@@ -532,6 +532,7 @@
         var r = a.el.getBoundingClientRect();
         a.top = r.top + scrollY;
         a.height = r.height;
+        a.railOver = null;
       });
       if (acts.length) {
         acts.forEach(function (a) {
@@ -796,7 +797,11 @@
           a.vp = a.dwell ? dwell(vraw, a.dwell) : vraw;
         }
         a.live = (y > a.top - vh * 1.25) && (y < a.top + a.height + vh * 1.25);
-        a.el.style.setProperty('--sc-p', a.p.toFixed(4));
+        var progressText = a.p.toFixed(4);
+        if (progressText !== a.progressText) {
+          a.el.style.setProperty('--sc-p', progressText);
+          a.progressText = progressText;
+        }
 
         // Fetch earlier than we drive. A 1080p clip is megabytes, and a reader
         // who scrolls briskly will otherwise arrive at a stage that is still
@@ -811,7 +816,11 @@
 
         // horizontal rail
         if (a.rail) {
-          var over = a.rail.scrollWidth - vw;
+          // Measuring an offscreen content-visibility surface forces it to
+          // render. Wait until the rail is near the viewport, then reuse its
+          // width until fonts or a resize invalidate the layout.
+          if (a.railOver === null && a.live) a.railOver = Math.max(a.rail.scrollWidth - vw, 0);
+          var over = a.railOver || 0;
           if (over > 0) {
             var extra = over * (a.railExtra || 0);
             var panProgress = clamp01((a.p - a.panFrom) / (a.panTo - a.panFrom));

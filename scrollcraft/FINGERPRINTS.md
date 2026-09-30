@@ -30,9 +30,7 @@ changes only grammar and world will fail it.
 |---|---|---|---|---|---|---|---|---|
 | brayroai-signal-fold | Split stage | Fixed compact top controls + responsive chapter rail + moving seam | Divided practical-light installation with split wordmark | pin > flow > pin/pointer > flow > scrub > flow > pin; 7 acts; 11.9vh desktop | Divider exits to edge; trace resolves into wordmark; one underlined email CTA | Persistent signal trace stamps every chapter and assembles BRAYROAI at the final resolve | Photographic architectural studio; glass, paper, cobalt and signal orange | 4500 |
 | brayroai-directors-cut | Rhythmic cutlist | Loud floating glass broadcast bar with active cut, timecode and progress | Reconstructed founder hero, monochrome until a live colour matte is directed or locked | 13 hard flow/reveal cuts; no pin; no dwell; 12.5vh desktop | Abrupt cobalt commercial end card with outlined wordmark field and one underlined CTA | Director's colour matte follows the pointer, reveals the original grade and can be locked with a changed hero statement | Monochrome fashion campaign, signal-orange/cobalt broadcast graphics, glass and neumorphic production surfaces | 4500 |
-
-*(empty: your first build has nothing to clear, so build whatever the interview
-points at. From the second onwards, this table is the constraint.)*
+| brayroai-proof-mark | Editorial proof gallery | Original compact masthead with chapter index | Preserved founder portrait, monochrome colour toggle and opening light sweep | pin > horizontal pan > three decision spreads > pin assembly > founder > offers > contact; 7 chapters | Direct contact chapter followed by oversized orange editorial footer and route archive | The original hand-drawn arrow draws the visitor through real project crops that assemble into a finished screen | Warm paper, monochrome founder photography, real project interfaces and vermilion ink | 4173 |
 
 ---
 
@@ -45,6 +43,7 @@ as a constraint, so writing them down is the whole point.
 
 - **brayroai-signal-fold** takes the split-stage grammar, a moving architectural seam, the seven-act 11.9vh band, the trace-to-wordmark resolution, and the persistent proof-signal signature. A later build should not reuse this combination.
 - **brayroai-directors-cut** takes the rhythmic commercial cutlist, the floating broadcast-timecode chrome, the thirteen-cut 12.5vh band, the abrupt cobalt end card, and the live director's colour-matte signature. It shares only BRAYROAI's real brand assets and project proof with Signal Fold.
+- **brayroai-proof-mark** takes the editorial proof-gallery grammar, the horizontal project pan, the hand-drawn arrow assembling real work, and the orange archive footer. It shares the original founder hero and its colour toggle with earlier BRAYROAI work, but uses a different chapter rhythm and close.
 
 ---
 

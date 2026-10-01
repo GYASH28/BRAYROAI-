@@ -28,6 +28,8 @@ Existing founder, process, client screens, Rae and logo resources retain their p
 - https://threejs.org/examples/?q=physical#webgl_materials_physical_clearcoat : official material example reference for coated surface highlights and reflected lighting.
 - https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/gradient/radial-gradient : soft elliptical light fields in CSS. The broad fading gradients are composed around the objects rather than placed behind every paragraph.
 
-The hero1000px/600px WebP files are responsive encodings of the same generated photograph. They change delivery size, not composition or provenance.
+The 1000px/600px WebP deliveries remain on the studio capability room. The current hero uses authored seeded points from `src/site/particle-points.js`, with a matching generated SVG fallback; rejected metal-object artwork is not used. The footer uses the owner-approved `static/brand/logo-horizontal-reverse.svg`, embedded as an inert template and enhanced on approach. No external particle scene or logo asset was downloaded.
 
 Rae recovery references (1 October2026): https://ai.google.dev/gemini-api/docs/models and https://ai.google.dev/gemini-api/docs/generate-content/thinking . The stable3.5/3.1 Flash-Lite endpoints support minimal thinking; they fill spare recovery slots after the configured providers, preserving the original intelligence/priority and bounded attempt count.
+
+Native transition lifecycle: https://developer.chrome.com/docs/web-platform/view-transitions/cross-document . Incoming `pagereveal` observation must be registered in a classic parser-blocking head script. A small same-origin script observes only expected skip/timeout rejections; unexpected defects retain normal browser error reporting.

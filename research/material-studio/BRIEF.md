@@ -1,5 +1,17 @@
 # Material Intelligence
 
+The current owner-approved medium is procedural particle animation and the interactive approved footer wordmark, described below. The original brief and rejected-object revisions are retained as design history.
+
+## Current direction: particle hero
+
+The owner explicitly rejected the generated metal knot and requested sophisticated orb-like particle animation instead. This supersedes the Luminous Loom object and its artwork; it is not used on the website. The hero uses a procedural layered particle field with a luminous open nucleus and asymmetric orbital filaments, warm/cool depth and coherent fluid travel. The two-scene pinned typography and soft optical handoff remain, with particle response to pointer, scroll and the calm-to-orbit range. The fallback comes from the same seeded points and has restrained native group motion rather than generated sculpture imagery.
+
+## Interactive footer wordmark
+
+The owner requested a more interactive footer logo. The actual approved mosaic SVG is retained. On approach the tiles assemble; pointer movement bends nearby tiles by a few pixels and moves a warm/cool ink gradient through the mark, then the tiles return to their original positions. Keyboard focus gets a visible colour response. The complete mark is a real link back to the top, with the original image serving as the enhancement-failure fallback. SVG enhancement is deferred until the footer approaches; reduced motion keeps the exact stable geometry.
+
+## Original design brief and revision history
+
 Self-authored, not interviewed. The user requested autonomous execution and gave freedom to change the hero and every page.
 
 ## Owner direction
@@ -59,3 +71,7 @@ Vite multipage semantic content remains crawlable and independent of enhancement
 ## 1 October refinement
 
 The owner reviewed the local hero and asked for a richer sculpture, blurred colour blooms, fades and gradients. This updates the visual direction: an unequal spatial ellipse with six rhythmic collar groups, exposed orange arcs and fine cobalt trim; broad reflected softboxes and a moving warm light. The opening unfolds slightly before settling. Backgrounds carry physically motivated amber/cobalt spill, while the scope sheets and client exhibit use warmer paper gradients and layered shadows. The headline stays readable in the darker left field. Translucent sculpture controls make the interaction legible. Fullscreen bloom postprocessing is avoided because a soft CSS field achieves the requested visual with less GPU cost.
+
+## Owner correction: Luminous Loom hero
+
+The owner rejected the collar-based ellipse and opening composition as basic and insufficiently premium. The new hero replaces that geometry with three broad continuous folded ribbons, rounds all edges, uses calm broad studio highlights and an asymmetric rising silhouette. The homepage now begins with a short 2.25-viewport sticky installation: “Ideas, with a pulse.” gives way to “Then we make it real.” as the camera/material unfurls; a soft optical blur and pearl wash hand the scene into the real client exhibit. Cobalt, amber and pearl light wells provide visibly soft depth, with glass only on the actual sculpture control. Original fallback artwork follows this new folded-ribbon art direction. The changes preserve the real work, prices, markets, Rae and useful routes. Reduced motion and failed enhancement retain one readable hero and normal flow.

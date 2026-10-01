@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 test('new visitor reaches real work, case study, and returns',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await page.goto('/');
- await expect(page.getByRole('heading',{name:/An independent digital studio/i})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Ideas, with a pulse/i})).toBeVisible();
  await page.locator('#sculpture-shape').fill('55');
  await expect(page.locator('#sculpture-shape')).toHaveValue('55');
  await page.locator('.object-index a[href="#work"]').click();
@@ -18,6 +18,12 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
  await expect(page.getByRole('link',{name:'Visit the live website'})).toHaveAttribute('href','https://fakhriyarns.vercel.app/');
  await page.goBack();
  await expect(page).toHaveURL(/#work$/);
+ // Same-document anchors must settle after the deferred scene has measured its layout.
+ for(const hash of ['method','contact']){
+  await page.goto('/#'+hash);
+  await expect.poll(()=>page.locator('#'+hash).evaluate(node=>Math.round(node.getBoundingClientRect().top))).toBeLessThan(250);
+  await expect(page.locator('#'+hash+' h2')).toBeInViewport();
+ }
  expect(errors).toEqual([]);
 });
 
@@ -139,7 +145,7 @@ test('small screens, reduced motion and enhancement failure preserve content',as
   await page.setViewportSize({width,height:844});await page.goto('/');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow,`horizontal overflow at ${width}px`).toBeLessThanOrEqual(1);
-  await expect(page.getByRole('heading',{name:/An independent digital studio/i})).toBeVisible();
+  await expect(page.getByRole('heading',{name:/Ideas, with a pulse/i})).toBeVisible();
  }
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/');
@@ -150,7 +156,7 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('#ai-systems')).toBeVisible();
 });
 
-test('sculpture and pinned proof respond across resize, reversed scroll and tab return',async({page,context})=>{
+test('particle hero, footer and pinned proof respond across input, resize and reversed scroll',async({page,context})=>{
  await page.setViewportSize({width:1440,height:900});
  await page.goto('/');
  await expect(page.locator('[data-sc-root]')).toBeVisible();
@@ -159,12 +165,31 @@ test('sculpture and pinned proof respond across resize, reversed scroll and tab 
  await page.locator('#sculpture-shape').focus();
  await page.keyboard.press('ArrowLeft');
  await expect(page.locator('#sculpture-shape')).toHaveValue('74');
+ const heroPosition=async progress=>page.evaluate(progress=>{const section=document.querySelector('.studio-hero'),header=document.querySelector('.site-header');scrollTo({top:section.offsetTop-header.offsetHeight+(section.offsetHeight-innerHeight)*progress,behavior:'instant'})},progress);
+ await heroPosition(.55);
+ await expect(page.locator('.hero-next')).toHaveAttribute('aria-hidden','false');
+ await expect(page.getByRole('heading',{name:/Then we make it real/i})).toBeInViewport();
+ await heroPosition(.94);
+ await expect.poll(()=>page.locator('.hero-next').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.65);
+ await heroPosition(0);
+ await expect(page.locator('.hero-intro')).toHaveAttribute('aria-hidden','false');
  await page.evaluate(()=>{const section=document.querySelector('#work');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.72,behavior:'instant'})});
  await expect.poll(()=>page.locator('#work').getAttribute('data-proof-progress')).toMatch(/^0\.[6-9]/);
  const forward=await page.locator('.work-desktop').evaluate(node=>getComputedStyle(node).transform);
  await page.evaluate(()=>{const section=document.querySelector('#work');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.15,behavior:'instant'})});
  await expect.poll(()=>page.locator('.work-desktop').evaluate(node=>getComputedStyle(node).transform)).not.toBe(forward);
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
+ const mark=page.getByRole('link',{name:'BRAYRO AI — return to the top'});
+ await mark.scrollIntoViewIfNeeded();
+ await expect(mark.locator('.footer-logo rect')).toHaveCount(161);
+ const box=await mark.boundingBox();
+ await page.mouse.move(box.x+box.width*.38,box.y+box.height*.55);
+ await expect.poll(()=>mark.locator('rect').evaluateAll(nodes=>nodes.filter(node=>node.style.transform&&node.style.transform!=='none').length)).toBeGreaterThan(0);
+ await page.mouse.move(0,0);
+ await expect.poll(()=>mark.locator('rect').evaluateAll(nodes=>nodes.filter(node=>node.style.transform&&node.style.transform!=='none').length)).toBe(0);
+ await mark.focus();await page.keyboard.press('Enter');
+ await expect(page).toHaveURL(/#top$/);
+ await expect.poll(()=>page.evaluate(()=>scrollY)).toBeLessThan(2);
  const other=await context.newPage();await other.bringToFront();await page.bringToFront();await other.close();
  for(const [width,height] of [[390,844],[320,568],[667,375]]){
   await page.setViewportSize({width,height});
@@ -173,7 +198,11 @@ test('sculpture and pinned proof respond across resize, reversed scroll and tab 
   await expect(page.locator('#sculpture-shape')).toHaveValue('35');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
  }
- await page.emulateMedia({reducedMotion:'reduce'});await page.reload();
+ await heroPosition(.999);
+ await expect(page.locator('.sculpture-control')).toHaveAttribute('inert','');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect(page.locator('.sculpture-control')).not.toHaveAttribute('inert','');
+ await page.reload();
  await expect(page.locator('.sculpture-poster')).toBeVisible();
  await expect(page.locator('.sculpture-canvas')).toHaveCount(0);
 });

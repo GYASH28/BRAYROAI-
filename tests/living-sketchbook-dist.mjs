@@ -4,7 +4,7 @@ import {gzipSync} from 'node:zlib';
 const assert=(ok,message)=>{if(!ok)throw new Error(message)};
 for(const path of ['index.html','plans.html','clients/index.html','clients/fakhrimart/index.html','founder/index.html','ai-workflow-audit/index.html','company-second-brain/index.html','terms/index.html','ae/index.html','ae/plans/index.html','ae/founder/index.html','au/index.html','au/plans/index.html','au/founder/index.html','assets/yash-cutout-mono.webp','assets/yash-cutout.webp','assets/hero-background.webp','assets/studio-desk.svg','assets/fakhrimart-case-desktop.webp','assets/fakhrimart-case-mobile.webp','sitemap.xml'])assert(existsSync(resolve('dist',path)),'Missing distribution file '+path);
 const home=readFileSync('dist/index.html','utf8');
-assert(home.includes('An independent')&&home.includes('class="site-header"')&&home.includes('class="footer premium-footer"'),'Static content or shell missing');
+assert(home.includes('with a pulse')&&home.includes('class="site-header"')&&home.includes('class="footer premium-footer"'),'Static content or shell missing');
 assert(!home.includes('cinematic-v')&&!home.includes('brayro-v'),'Historical runtime still referenced');
 assert(!readdirSync('dist').some(name=>name==='rae.js'||name==='brayro-v15.js'),'Unused legacy runtime shipped');
 const js=readdirSync('dist/assets').filter(name=>name.endsWith('.js'));

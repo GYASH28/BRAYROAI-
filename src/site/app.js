@@ -1,3 +1,4 @@
+import {initStudioEntry} from './entry.js';
 import {initMarket} from './market.js';
 import {initPlans} from './plans.js';
 import {initContact} from './contact.js';
@@ -29,5 +30,5 @@ if(initMarket()){
  };
  raeButtons.forEach(button=>button.addEventListener('click',openRae));
 
- import('./motion.js').then(module=>module.initStudioMotion()).catch(error=>console.error('Studio motion failed',error));
+ initStudioEntry();
 }

@@ -1,47 +1,42 @@
-# Material Intelligence verification
+# Material Intelligence / particle revision verification
 
-1 October 2026. This file records the local qualification of the redesign. Production qualification is tied to the pushed commit by the GitHub `BRAYROAI Production Smoke` workflow and the Vercel `x-brayro-commit` marker; a build is not evidence of a current deployment.
+1 October 2026. Qualification applies to the current source and, after push, the exact commit served by Vercel. Earlier green builds do not qualify a later revision.
 
-## Scope and preserved facts
+## Current design and preserved facts
 
-All eight routes have distinct new compositions, with English India/UAE/Australia variants. The nine approved offers and their independent price books, original terms, real FakhriMart screens, founder photographs, Rae streaming transport/action allowlist and contact drafts are retained. Source/API/distribution/localization checks passed. Remote main was fetched before work and again before release; the dirty original local checkout was left alone. GitHub currently has only `main`, also its default branch.
+The rejected physical hero has been replaced by an authored 9,600-point field: an open nucleus, six asymmetric orbital streams, amber/cobalt depth, coherent movement and a calm-to-orbit control. The two-beat sticky hero advances from “Ideas, with a pulse.” to “Then we make it real.” and hands into actual client work. The approved footer mosaic is a native return-to-top link; nearby tiles and a local ink gradient respond to pointer movement, while keyboard focus has visible feedback. The brand geometry returns to its exact original position.
 
-## Visual and motion review
+Eight routes retain distinct compositions and English India/UAE/Australia variants. Nine approved offers and independent price books, original terms, actual FakhriMart screens, founder photographs, Rae transport/action allowlist and contact drafts remain. The dirty original checkout was left alone. Remote `main` was compared before this revision; GitHub has only `main`, also its default branch.
 
-Desktop1440×900 and phone390×844 openings, route compositions and intermediate scroll states were captured and reviewed. Additional browser probes cover360,768,320×568 and667×375, tab return, resize, keyboard input and reversed pinned travel. There was no horizontal overflow in the final checks.
+## Visual review and fixes
 
-| Beat | Intended feel | Initial review | Refinement / final observed state |
-| --- | --- | --- | --- |
-| Studio | Intrigue, a physical studio object | Regular torus read as a gear; flat black field and floating cubes felt basic | Unequal spatial ellipse, six collar groups, varying thickness, ceramic/cobalt trim, rounded anodised core, tiny material glints, procedural reflections, arrival unfolding and amber/cobalt light field. Whole and open states remain contained. |
-| Client exhibit | Confidence, strongest evidence | Phone was cropped and screen occupied too much height | Adjusted phone scale/position and screen height; perspective turns into readable actual client screen. Reverse scroll restores earlier perspective. |
-| Capabilities | Possibility, a change of room | Large colour grounds lacked depth | Type object and material photograph remain focal; soft gradients provide spatial light. Desktop lateral movement; mobile vertical collection. |
-| Practice | Understanding | Fallback flex content could overflow before enhancement | Responsive fallback grid and React keyboard tabs preserve real method content. |
-| Founder | Human connection | Art direction needed separation from general offer layouts | Oversized photographic name composition, colour control, staged principles and process photograph. |
-| Scope | Readiness | Hero papers needed more usable sizes and contrast | Responsive CSS3D papers select the native price categories; all offer content and deep links remain. |
-| Contact / close | Commitment |360px contact line overflow and blue paragraph contrast | Narrow footer typography/arrow adjusted; actual brief and market-aware contact targets; readable ink on blue. |
+Desktop 1440×900 and mobile 390×844 opening, enhanced field, middle, closing, reverse scroll and interactive footer states were captured and inspected. There were no runtime errors or horizontal overflow in these captures. The dense white centre was replaced with a clearer aperture; fine orbital trails remain. The closing fade was shortened to avoid a lingering empty stage. The scroll cue and footer utility link were moved clear of Rae. The footer's top target was moved from the sticky header to the document body so native and keyboard navigation actually return to the document start.
 
-The homepage is approximately10.2 desktop viewport heights including the colophon. The main hold is the real work exhibit; mobile capability rooms remain ordinary vertical flow. Screenshots and scripted scroll/input probes demonstrate local rendering and behavior; they do not certify subjective award quality or real-user frame rates.
+The final browser journey checks cover 360/390/768/1440 widths, 320×568 and 667×375 resize, manual range and arrow keys, reversed hero/proof travel, tab return, mobile overflow, footer tile response/reset and keyboard activation. Switching to reduced motion after the hero closes restores the range's operability. Reduced motion and absent JavaScript retain the content and real navigation.
 
-## Actual gates
+A rapid case-study/back-navigation check exposed an expected native transition rejection before the deferred module registered its listener. The same-origin lifecycle script now registers in the head before the first rendering opportunity. It observes only native skip/timeout states; unexpected defects still reach normal browser error reporting. The browser error assertion remains strict.
 
-- `npm run qa:static`: syntax, Rae contracts/provider recovery/security, source integrity, build, clean routes, dist and localization passed.
-- `BASE_URL=http://127.0.0.1:4180 npm run test:browser -- --workers=1`:11/11 passed without retries in the final run. Tests include client journey/history, three market books, restored pages, manual/late geo behavior, legacy preferences, plan hashes/contact links, Rae draft/errors/actions, no-JS/reduced-motion content, sculpture keyboard/resize/tab lifecycle, forward/reverse proof, menu/market keyboard and WCAG scans of eight routes.
-- WCAG2A/AA and2.1A/AA scans: no violations on all eight routes at390px in the final scan; browser suite repeats those checks.
-- Stress:240 requests across20 routes passed.
-- First Lighthouse run:92/100/100/100, CLS0, TBT28ms; LCP3236ms exceeded the existing3000ms gate. Responsive1000/600px encodings now deliver the same generated image at the appropriate screen size. One-time reveals now initialise on viewport arrival, startup waits for fonts and redundant refreshes were removed. Final Lighthouse:97 performance /100 accessibility /100 best practices /100 SEO, LCP2549ms, CLS0.000, TBT11ms; all existing thresholds passed. The report is stored in `artifacts/lighthouse-material-local.json`.
-- Sculpture geometry measured from the authored geometry functions:61,386 triangles. This is a geometry count, not an FPS claim. Offscreen, hidden, open-dialog and context-loss safeguards, mobile DPR1 and desktop DPR≤1.5 are retained.
-- All JavaScript including lazy chunks:approximately278KB compressed. Initial app plus motion:about57KB compressed. Three/React sculpture code is loaded separately; mobile loads3D on range input. Vite's large chunk warning concerns this lazy Three chunk.
+## Final local gates
 
-## Evidence locations
+The final run after the navigation repairs passed all local gates. Budgets have not been relaxed: performance ≥90; accessibility, best practices and SEO ≥98; LCP ≤3000ms; TBT ≤300ms; CLS <0.05; all compressed JavaScript <350KB.
 
-Ignored runtime artifacts: `artifacts/material-studio/` (all route captures, motion positions, sculpture refinements, opened views), `artifacts/playwright-report/`, `artifacts/screenshots/` and Lighthouse JSON. CI uploads browser, Lighthouse, deployment and load evidence to the corresponding GitHub run. Full generation prompts are in `image-prompts.json`; source and license attribution in `SOURCES.md`.
+- Source/API/security/build/distribution/localization: passed.
+- All compressed JavaScript, including lazy chunks: approximately 269KB. Initial application: approximately 5.6KB compressed. Scroll choreography, React, WebGL, Rae and footer enhancement load separately.
+- The particle field is one `Points` draw with 9,600 vertices, without physical meshes or bloom postprocessing. DPR caps and offscreen/tab/dialog/context-loss safeguards remain. This is an implementation count, not an FPS claim.
+- Final mobile Lighthouse: 99 performance / 100 accessibility / 100 best practices / 100 SEO. LCP 1733ms, CLS 0, TBT 54ms; every existing budget passed.
+- Browser suite: 11/11 passed with two workers and zero retries, including eight-route WCAG 2A/AA and 2.1A/AA checks at 390px.
+- The previously intermittent new-visitor/case/back/hash journey also passed three consecutive isolated runs with zero retries.
+- Concurrent route stress: 240 requests across 20 routes passed.
 
-## Limits and intentional fallbacks
+## Evidence and delivery
 
-Mobile initially shows the original generated material photograph and requests the live object when its range is used. Reduced motion, missing WebGL or context loss retains readable imagery and usable routes. Native document transitions depend on browser support; ordinary links and history work throughout. Rae requires a configured provider in production and reports provider failures honestly. The real-provider smoke is verified after deployment, separately from the deterministic browser mocks. No claim is made that every device can render3D at a fixed frame rate, that lab measurements are field data, or that this site has won an award.
+Local artifacts are ignored: `artifacts/particle-hero/` contains visual states and logs; `artifacts/lighthouse-particle-final.json` contains the final local mobile report; Playwright preserves failure traces and its report. The GitHub quality and production workflows upload their own exact-commit evidence. Production qualification verifies the canonical `x-brayro-commit` marker before Lighthouse, 360 requests across 20 routes, and browser/accessibility journeys. A separate real-provider Rae check verifies the deployed API rather than a browser mock.
 
-## First production release
+## Historical releases
 
-The redesigned source shipped as `25e6b2f1f4a850818284794ad503cfe4dadd200c`. Vercel deployment `dpl_3gxguYZ6PsoXFojJ55enVHKi9uDi` was READY and the canonical site returned that exact commit marker. Both [source/quality](https://github.com/GYASH28/BRAYROAI-/actions/runs/36865965949) and [production](https://github.com/GYASH28/BRAYROAI-/actions/runs/36865966192) workflows completed successfully. The production run measured92/100/100/100, LCP2112ms, CLS0 and TBT296ms;360 requests across20 routes and11 browser/accessibility journeys passed.
+- `25e6b2f1f4a850818284794ad503cfe4dadd200c`: both [quality](https://github.com/GYASH28/BRAYROAI-/actions/runs/36865965949) and [production](https://github.com/GYASH28/BRAYROAI-/actions/runs/36865966192) passed; Vercel was READY with the exact marker. Production Lighthouse was 92/100/100/100, LCP 2112ms, CLS 0 and TBT 296ms. This release used the earlier physical hero.
+- `e59ccee6831fb10e4247308d3145ab04e323c724`: Rae Google recovery was repaired and a real response returned the approved ₹9,999 starting build / ₹2,599 monthly context. Its [quality](https://github.com/GYASH28/BRAYROAI-/actions/runs/36867807511) and [production](https://github.com/GYASH28/BRAYROAI-/actions/runs/36867807604) Lighthouse gates failed. It is not described as a green release. The current revision removes startup reflow, defers scroll choreography, fixes real screenshot dimensions/delivery and replaces the hero.
 
-A separate real-provider Rae check revealed Google503/timeout failures on the two configured Flash models, despite the deterministic browser/provider tests passing. The follow-up keeps the configured provider priority and the four-attempt/time bounds, and fills spare Google-only recovery attempts with documented Flash-Lite models using their supported minimal thinking level. Contract tests prove configured Groq remains reachable, grounded price context survives recovery, private reasoning stays hidden and a complete provider outage still produces an honest error. The final release is qualified again by the exact-commit production workflow; real-provider recovery is checked independently.
+## Practical limits
+
+The initial particle SVG is authored from the same deterministic field and carries restrained native group animation. Desktop enhances after the readable opening; mobile enhances on first scroll or range input. Reduced motion and failed WebGL retain a stationary field and usable routes. Document transitions depend on browser support; ordinary links and history continue to work. Rae depends on available production providers and reports complete provider outages honestly. Lab scores are not field measurements; visual review is not a claim of an award or universal frame-rate performance.

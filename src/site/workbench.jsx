@@ -1,0 +1,9 @@
+import React,{useState} from 'react';
+import {createRoot} from 'react-dom/client';
+const stages=[
+ {name:'Direction',text:'Understand the audience, the business and the decision this experience needs to make easier.',items:['Audience','Purpose','Structure'],caption:'A point of view before a visual system.'},
+ {name:'Design',text:'Shape language, typography, imagery and motion together. Every choice has to support the same idea.',items:['Language','Interface','Motion'],caption:'One coherent experience, down to the details.'},
+ {name:'Build',text:'Make the idea work in a real browser. Refine responsive layouts, routes, interaction and the path to enquiry.',items:['Responsive','Interaction','Launch'],caption:'The finish is in what people can actually use.'}
+];
+function Workbench(){const [index,setIndex]=useState(0),stage=stages[index];return <div className="workbench"><div className="workbench-nav" role="tablist" aria-label="Studio practice">{stages.map((s,i)=><button key={s.name} id={`practice-tab-${i}`} role="tab" aria-selected={i===index} aria-controls="practice-panel" tabIndex={i===index?0:-1} onClick={()=>setIndex(i)} onKeyDown={e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key)){e.preventDefault();let n=e.key==='Home'?0:e.key==='End'?2:(index+(['ArrowLeft','ArrowUp'].includes(e.key)?2:1))%3;setIndex(n);document.getElementById(`practice-tab-${n}`).focus()}}}>{s.name}<span>0{i+1}</span></button>)}</div><div className="workbench-panel" id="practice-panel" role="tabpanel" aria-labelledby={`practice-tab-${index}`} tabIndex="0"><p>{stage.text}</p><div className="workbench-diagram" key={index} aria-hidden="true">{stage.items.map((item,i)=><span key={item} style={{'--i':i}}>{item}</span>)}</div><p className="label">{stage.caption}</p></div></div>}
+export function mountWorkbench(host){const root=createRoot(host);root.render(<Workbench/>);return()=>root.unmount()}

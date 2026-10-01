@@ -11,6 +11,7 @@ export function initPlans(){
   tabs.forEach(tab=>{const active=tab.dataset.category===category;tab.setAttribute('aria-selected',active?'true':'false');tab.tabIndex=active?0:-1});
   panels.forEach(panel=>panel.classList.toggle('is-selected',panel.dataset.categoryPanel===category));
   document.documentElement.classList.add('js-ready');
+  window.dispatchEvent(new CustomEvent('studio:category',{detail:{category}}));
   if(scroll){const target=document.getElementById(location.hash.slice(1))||document.getElementById(category);target?.scrollIntoView({block:'start'})}
  }
  tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>{const category=tab.dataset.category;history.pushState({},'',`#${category}`);choose(category,true)});

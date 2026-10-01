@@ -62,13 +62,13 @@ jobs:
           test "$HTTP_CODE" = "200"
           test "$DEPLOYED_COMMIT" = "$GITHUB_SHA"
           grep -q 'BRAYRO AI' /tmp/brayroai-prod-home.html
-          grep -q 'Digital, designed' /tmp/brayroai-prod-home.html
+          grep -q 'An independent' /tmp/brayroai-prod-home.html
 
           # Write route responses to files before grepping. With pipefail,
           # `curl | grep -q` can report curl 23 after grep exits early even
           # when the requested content is present.
           curl -fsSL --max-time 25 "$PROD_URL/plans" -o /tmp/brayroai-prod-plans.html
-          grep -q 'Choose the relationship' /tmp/brayroai-prod-plans.html
+          grep -q 'Different starts' /tmp/brayroai-prod-plans.html
           curl -fsSL --max-time 25 "$PROD_URL/clients/fakhrimart" -o /tmp/brayroai-prod-fakhrimart.html
           grep -q 'Fakhri' /tmp/brayroai-prod-fakhrimart.html
           echo 'Production exact-SHA and clean plans and case routes verified.'

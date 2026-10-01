@@ -9,9 +9,9 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  await page.goto(base+'/',{waitUntil:'networkidle'});
  await page.screenshot({path:`${folder}/${device}-hero.png`});
  await page.locator('#work').scrollIntoViewIfNeeded();
- await page.locator('.work-desktop').evaluate(image=>image.decode());
+ await page.locator('.work-desktop img').evaluate(image=>image.decode());
  await page.screenshot({path:`${folder}/${device}-work.png`});
- await page.locator('.approach-heading').scrollIntoViewIfNeeded();
+ await page.locator('.practice-heading').scrollIntoViewIfNeeded();
  await page.screenshot({path:`${folder}/${device}-artboard.png`});
  for(const [route,name] of [['/plans','plans'],['/clients','clients'],['/clients/fakhrimart','case'],['/founder','founder'],['/ai-workflow-audit','audit'],['/company-second-brain','brain'],['/terms','terms']]){
   await page.goto(base+route,{waitUntil:'networkidle'});await page.screenshot({path:`${folder}/${device}-${name}.png`});

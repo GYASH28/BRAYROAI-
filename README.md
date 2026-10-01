@@ -1,52 +1,27 @@
-# BRAYRO AI website
+# BRAYRO AI studio site
 
-The public studio site is a Vite multi-page build with semantic HTML, CSS, small JavaScript modules, and a Vercel serverless endpoint for Rae. The original GitHub `main` hero remains the opening scene: Yash's monochrome portrait, “Digital, designed to feel different.” headline, and working colour toggle. Its entrance and the following scenes form the Proof Mark scroll experience.
+Production: https://brayroai.vercel.app · Repository: GYASH28/BRAYROAI- · Main branch: main.
 
-## Routes
-
-| Route | Content |
-| --- | --- |
-| `/` | Studio story, verified FakhriMart work, process, founder, starting points, contact |
-| `/plans` | Website builds, monthly support, and practical AI scopes |
-| `/clients` | Verified client archive |
-| `/clients/fakhrimart` | Verified case study and live destination |
-| `/founder` | Yash's founder story, principles, and method |
-| `/ai-workflow-audit` | The audit process, deliverables, and limits |
-| `/company-second-brain` | The proposed knowledge-system scope and limits |
-| `/terms` | Terms and conditions |
-
-English UAE and Australia variants use `/ae` and `/au` prefixes. Prices come from the fixed market books in `data/pricing.js`; there is no exchange-rate conversion. Old Arabic URLs redirect to English UAE. Legacy `.html` URLs redirect to the corresponding clean route.
+The Material Intelligence redesign uses a gallery of physical objects, real client screens and photographic founder features. It replaces the rejected Proof Mark design across all eight routes: home, plans, clients, FakhriMart case, founder, Workflow Audit, Company Second Brain and terms. India, UAE and Australia each use the original independent price book, in English.
 
 ## Architecture
 
-- Top-level HTML pages: content that remains readable before enhancements load.
-- `src/site/site.css`: shared design system, page compositions, responsive and reduced-motion rules.
-- `src/site/proof-mark.css` and `static/premium-redesign.css`: the retained hero, lightweight timed opening sequence, approved brand system, and editorial sitewide composition.
-- `src/site/experience.js`: Scrollcraft-driven viewport proof, custom-arrow range control, restrained parallax, and an optional demand-rendered Three.js rig.
-- `src/site/scrollcraft.js` and `scrollcraft.css`: the Scrollcraft runtime used by the homepage.
-- `src/site/inner-experience.css` and `inner-motion.js`: dedicated founder, client, and AI page art direction and entry/scroll motion.
-- `src/site/app.js`: entry point; `market.js`, `plans.js`, `contact.js`, and `rae.js` own separate interactions. Rae loads on demand.
-- `vite.config.mjs`: shared shell injection, multi-page configuration, and local preview route parity.
-- `scripts/materialize-clean-routes.mjs` and `scripts/build-locales.mjs`: produce static clean routes and regional variants.
-- `api/rae-chat.js` and `api/_rae-knowledge.js`: Rae's provider-backed, grounded streaming API and safe route/plan knowledge.
-- `static/`: only assets shipped to the public site. `public/outbound-fresh/` contains older prospect material and is retained in source, but not copied into the build.
+Vite multi-page semantic HTML preserves direct routes and content without JavaScript. `src/site/studio.css` owns the coherent responsive design system. `src/site/app.js` initializes markets, plans, contact and opt-in Rae. `src/site/motion.js` orchestrates GSAP choreography and the unchanged Scrollcraft engine. Lazy React islands implement the procedural Three.js sculpture (`sculpture.jsx`), practice tabs (`workbench.jsx`) and interactive scope desk (`plan-desk.jsx`). Native cross-document view transitions enhance ordinary links and browser history.
 
-Rae is an opt-in companion. Her full-body vector character and expression styles come from the previous BRAYROAI award-experience branch; the grounded streaming transport and route allowlist remain from current `main`. The chat UI does not invent an answer when the provider fails. Existing provider configuration is required for real AI responses. Message drafts remain in the browser session. Route actions from the API are mapped to a local allowlist before becoming links.
+The sculpture is instanced geometry with procedural studio reflections, no external models. Desktop loads it after the initial readable frame; mobile requests it through the range control. Its unequal elliptical core, grouped silver/ceramic collars and reflected lighting unfold on entry and respond to pointer, scroll and keyboard. It pauses offscreen/hidden/behind dialogs, handles context loss and retains a raster fallback. Reduced motion uses readable flow, stationary photography and operable controls.
 
-The site self-hosts Manrope under its SIL Open Font License (see `static/fonts/OFL-Manrope.txt`). The founder-process images and Rae actor were recovered from the previous BRAYROAI site. The homepage and case page use real shipped FakhriMart screen captures as proof. One generated studio-table image serves as background atmosphere only. Asset origins are recorded in `research/premium-rebuild/assets.md`.
+The supplied tile brand kit and self-hosted Manrope/Space Grotesk fonts remain authoritative. Two original generated material photographs are studio art. All client screens and founder images remain first-party evidence; no generated image is presented as client work. Asset prompts and provenance are in `research/material-studio/`.
 
-## Research and creative direction
+Rae keeps the prior expressive character and grounded provider-backed streaming API. It is opt-in, has honest error behavior and maps actions to a route allowlist. Contact drafts stay in browser session storage until the visitor chooses WhatsApp or email. Price facts come from `data/pricing.js`; markets from `data/markets.js`.
 
-`research/premium-rebuild/` records 50 distinct official Awwwards project examples, per-site observations, live inspection limits, library and license choices, and the rebuild plan. `GOAL_PROMPT.md` is the durable brief for continued refinement. The reusable `brayroai-award-studio` skill is installed in the local Codex skills folder and mirrored at `research/premium-rebuild/skill/`; it was validated before implementation. These references inform the site's craft and interaction decisions without implying that the site has won an award.
-
-## Work locally
+## Local work
 
 ```bash
 npm ci
 npm run dev
 ```
 
-## Verification
+## Release verification
 
 ```bash
 npm run qa:static
@@ -54,7 +29,8 @@ npm run preview -- --host 127.0.0.1 --port 4173
 npm run test:browser
 npm run test:stress
 npm run test:lighthouse
-node scripts/capture-preview.mjs
 ```
 
-`test:lighthouse` is a local lab guardrail, not field Core Web Vitals. Screenshots and the JSON report are written under ignored `artifacts/`. `docs/REBUILD_NOTES.md` records the source comparison, creative decisions, migrations, and verification limits. Older files in `docs/` document previous iterations and are historical.
+GitHub Actions additionally confirms the canonical Vercel meta commit marker matches the pushed SHA, then runs production browser/load/Lighthouse gates. A local build or screenshot alone is not deployment evidence. `research/material-studio/VERIFICATION.md` records this revision's actual results and limits.
+
+The original 50-project award study remains in `research/premium-rebuild/`, including inaccessible/loading-only reference limits. New brief, grammar, fingerprint comparison, sources, asset prompts and refinement evidence are in `research/material-studio/`. The brief is self-authored because the owner directed autonomous execution. Old rebuild notes describe historical versions.

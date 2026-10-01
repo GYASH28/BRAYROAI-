@@ -4,20 +4,18 @@ import AxeBuilder from '@axe-core/playwright';
 test('new visitor reaches real work, case study, and returns',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await page.goto('/');
- await expect(page.getByRole('heading',{name:/Digital, designed to feel different/i})).toBeVisible();
- await page.getByRole('button',{name:'Hold the colour'}).click();
- await expect(page.locator('.hero-person')).toHaveAttribute('src','/assets/yash-cutout.webp');
- await expect(page.getByRole('button',{name:'Hold the colour'})).toHaveAttribute('aria-pressed','true');
- await page.getByRole('button',{name:'Hold the colour'}).click();
- await expect(page.locator('.hero-person')).toHaveAttribute('src','/assets/yash-cutout-mono.webp');
- await page.locator('.hero-chapters a[href="#work"]').click();
+ await expect(page.getByRole('heading',{name:/An independent digital studio/i})).toBeVisible();
+ await page.locator('#sculpture-shape').fill('55');
+ await expect(page.locator('#sculpture-shape')).toHaveValue('55');
+ await page.locator('.object-index a[href="#work"]').click();
  await expect(page).toHaveURL(/#work$/);
  await expect(page.locator('#work')).toBeInViewport();
- await page.locator('.work-proof-screen').scrollIntoViewIfNeeded();
- await expect.poll(()=>page.locator('.work-proof-screen img').evaluate(image=>image.complete&&image.naturalWidth>0)).toBe(true);
+ await page.locator('.work-desktop').scrollIntoViewIfNeeded();
+ await expect.poll(()=>page.locator('.work-desktop img').evaluate(image=>image.complete&&image.naturalWidth>0)).toBe(true);
  await page.getByRole('link',{name:'Open the FakhriMart case study'}).click();
  await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
- await expect(page.getByRole('heading',{name:/FakhriMart/i})).toBeVisible();
+ await expect(page.getByRole('heading',{level:1,name:/Fakhri\s*Mart/i})).toBeVisible();
+ await expect(page.getByRole('link',{name:'Visit the live website'})).toHaveAttribute('href','https://fakhriyarns.vercel.app/');
  await page.goBack();
  await expect(page).toHaveURL(/#work$/);
  expect(errors).toEqual([]);
@@ -45,7 +43,7 @@ test('restored founder, client and AI pages stay navigable in each market',async
  await page.locator('[data-founder-colour]').click();
  await expect(page.locator('.founder-hero')).toHaveClass(/is-colour/);
  await page.goto('/clients');
- await page.locator('.client-feature a').click();
+ await page.locator('.archive-case-title').click();
  await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
 });
 
@@ -141,41 +139,43 @@ test('small screens, reduced motion and enhancement failure preserve content',as
   await page.setViewportSize({width,height:844});await page.goto('/');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow,`horizontal overflow at ${width}px`).toBeLessThanOrEqual(1);
-  await expect(page.getByRole('heading',{name:/Digital, designed to feel different/i})).toBeVisible();
+  await expect(page.getByRole('heading',{name:/An independent digital studio/i})).toBeVisible();
  }
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/');
  await expect(page.locator('#approach')).toBeVisible();
  await page.route('**/assets/app-*.js',route=>route.abort());
  await page.goto('/plans');
- await expect(page.getByRole('heading',{name:/Choose the relationship/i})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Different starts/i})).toBeVisible();
  await expect(page.locator('#ai-systems')).toBeVisible();
 });
 
-test('responsive proof follows scroll and control input across resize and tab return',async({page,context})=>{
+test('sculpture and pinned proof respond across resize, reversed scroll and tab return',async({page,context})=>{
  await page.setViewportSize({width:1440,height:900});
  await page.goto('/');
  await expect(page.locator('[data-sc-root]')).toBeVisible();
- await page.evaluate(()=>{const section=document.querySelector('#viewport');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.72,behavior:'instant'})});
- await expect.poll(()=>page.locator('#viewport').evaluate(node=>parseFloat(getComputedStyle(node).getPropertyValue('--sc-p')))).toBeGreaterThan(.45);
- await expect.poll(()=>page.locator('[data-viewport-slider]').inputValue()).not.toBe('0');
- await page.locator('[data-viewport-slider]').fill('100');
- await expect(page.locator('[data-device-copy]')).toHaveText('02 / PHONE SCREEN');
- await expect.poll(()=>page.locator('[data-device-proof]').evaluate(node=>Number(getComputedStyle(node).getPropertyValue('--device-p')))).toBe(1);
+ await page.locator('#sculpture-shape').fill('75');
+ await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
+ await page.locator('#sculpture-shape').focus();
+ await page.keyboard.press('ArrowLeft');
+ await expect(page.locator('#sculpture-shape')).toHaveValue('74');
+ await page.evaluate(()=>{const section=document.querySelector('#work');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.72,behavior:'instant'})});
+ await expect.poll(()=>page.locator('#work').getAttribute('data-proof-progress')).toMatch(/^0\.[6-9]/);
+ const forward=await page.locator('.work-desktop').evaluate(node=>getComputedStyle(node).transform);
+ await page.evaluate(()=>{const section=document.querySelector('#work');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.15,behavior:'instant'})});
+ await expect.poll(()=>page.locator('.work-desktop').evaluate(node=>getComputedStyle(node).transform)).not.toBe(forward);
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
  const other=await context.newPage();await other.bringToFront();await page.bringToFront();await other.close();
- await page.setViewportSize({width:390,height:844});
- await expect(page.locator('.hero-copy h1')).toBeVisible();
- await page.locator('#viewport').scrollIntoViewIfNeeded();
- await expect(page.locator('.device-poster--mobile')).toBeVisible();
- await page.locator('[data-viewport-slider]').fill('100');
- await expect(page.locator('[data-device-copy]')).toHaveText('02 / PHONE SCREEN');
- for(const [width,height] of [[320,568],[667,375]]){
+ for(const [width,height] of [[390,844],[320,568],[667,375]]){
   await page.setViewportSize({width,height});
-  await page.locator('#viewport').scrollIntoViewIfNeeded();
-  await expect(page.locator('[data-viewport-slider]')).toBeVisible();
+  await expect(page.locator('#hero-title')).toBeVisible();
+  await page.locator('#sculpture-shape').fill('35');
+  await expect(page.locator('#sculpture-shape')).toHaveValue('35');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
  }
+ await page.emulateMedia({reducedMotion:'reduce'});await page.reload();
+ await expect(page.locator('.sculpture-poster')).toBeVisible();
+ await expect(page.locator('.sculpture-canvas')).toHaveCount(0);
 });
 
 test('keyboard menu, market dialog, and accessibility',async({page})=>{
@@ -192,7 +192,7 @@ test('keyboard menu, market dialog, and accessibility',async({page})=>{
  await page.keyboard.press('Escape');
  await expect(page.locator('#market-dialog')).not.toBeVisible();
  for(const route of ['/','/plans','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms']){
-  await page.goto(route);
+  await page.goto(route);await page.waitForTimeout(1200);
   const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
   expect(result.violations.map(item=>item.id)).toEqual([]);
  }

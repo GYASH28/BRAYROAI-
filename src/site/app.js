@@ -10,7 +10,7 @@ if(initMarket()){
  document.querySelector('[data-menu-close]')?.addEventListener('click',()=>menu.close());
  menu?.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>menu.close()));
  const colour=document.querySelector('[data-colour-toggle]');
- colour?.addEventListener('click',()=>{const on=document.querySelector('.legacy-hero').classList.toggle('is-colour');colour.setAttribute('aria-pressed',String(on));document.querySelector('.hero-person').src=on?'/assets/yash-cutout.webp':'/assets/yash-cutout-mono.webp'});
+ colour?.addEventListener('click',()=>{const on=document.querySelector('.legacy-hero')?.classList.toggle('is-colour');colour.setAttribute('aria-pressed',String(on));document.querySelector('.hero-person').src=on?'/assets/yash-cutout.webp':'/assets/yash-cutout-mono.webp'});
  const founderColour=document.querySelector('[data-founder-colour]');
  founderColour?.addEventListener('click',()=>{const on=document.querySelector('.founder-hero').classList.toggle('is-colour');founderColour.setAttribute('aria-pressed',String(on))});
  initPlans();
@@ -29,10 +29,5 @@ if(initMarket()){
  };
  raeButtons.forEach(button=>button.addEventListener('click',openRae));
 
- // The homepage owns one scroll timeline; all other routes stay ordinary documents.
- if(document.body.classList.contains('page-proof')){
-  import('./experience.js').then(module=>module.initExperience()).catch(error=>console.error('Experience enhancement failed',error));
- }else{
-  import('./inner-motion.js').then(module=>module.initInnerMotion()).catch(()=>{});
- }
+ import('./motion.js').then(module=>module.initStudioMotion()).catch(error=>console.error('Studio motion failed',error));
 }

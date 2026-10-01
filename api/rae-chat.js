@@ -109,6 +109,16 @@ function providerCandidates(){
       if(configs.length>=MAX_PROVIDER_ATTEMPTS)return configs;
     }
   }
+  // Preserve configured providers first. If only Google is configured, use
+  // the remaining bounded attempts for a separate, low-latency model family.
+  if(base.gemini.key){
+    for(const model of ['gemini-3.5-flash-lite','gemini-3.1-flash-lite']){
+      const key=`gemini:${model}`;
+      if(seen.has(key))continue;
+      seen.add(key);configs.push({provider:'gemini',key:base.gemini.key,model,base:''});
+      if(configs.length>=MAX_PROVIDER_ATTEMPTS)break;
+    }
+  }
   return configs;
 }
 
@@ -181,7 +191,7 @@ async function openProviderStream(config,{message,history,context,session,signal
   const system=systemPrompt(context,session);
   if(config.provider==='gemini'){
     const contents=[];for(const item of history)contents.push({role:item.role==='assistant'?'model':'user',parts:[{text:item.text}]});contents.push({role:'user',parts:[{text:message}]});
-    const generationConfig=/^gemini-3[.-]/.test(config.model)?{maxOutputTokens:1536,thinkingConfig:{thinkingLevel:'low'}}:{temperature:.72,topP:.9,maxOutputTokens:420};
+    const generationConfig=/^gemini-3[.-]/.test(config.model)?{maxOutputTokens:1536,thinkingConfig:{thinkingLevel:config.model.includes('flash-lite')?'minimal':'low'}}:{temperature:.72,topP:.9,maxOutputTokens:420};
     return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(config.model)}:streamGenerateContent?alt=sse`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':config.key},body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents,generationConfig}),signal});
   }
   const messages=[{role:'system',content:system},...history.map(item=>({role:item.role==='assistant'?'assistant':'user',content:item.text})),{role:'user',content:message}];

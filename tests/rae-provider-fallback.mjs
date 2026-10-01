@@ -51,6 +51,27 @@ try{
   assert(geminiRes.text().includes('Gemini answer.')&&geminiRes.text().includes('event: done'),'Gemini response was not streamed');
   assert(!geminiRes.text().includes('private reasoning'),'Thought parts must not be sent to visitors');
 
+  const recoveryModels=[];
+  globalThis.fetch=async(url,options)=>{
+    const model=String(url).match(/models\/([^:]+)/)?.[1];
+    recoveryModels.push(model);
+    if(model==='gemini-3.8-flash'||model==='gemini-3.7-flash')return{ok:false,status:503,body:null,text:async()=>'{"error":"overloaded"}'};
+    const body=JSON.parse(options.body);
+    assert(body.generationConfig.thinkingConfig.thinkingLevel==='minimal','Flash-Lite recovery must use supported minimal thinking');
+    assert(body.systemInstruction.parts[0].text.includes('₹9,999'),'Recovery model lost the verified India price context');
+    return{ok:true,status:200,body:streamOf('data: {"candidates":[{"content":{"parts":[{"text":"Launch Website starts at ₹9,999."}]},"finishReason":"STOP"}]}\n\n'),text:async()=>''};
+  };
+  const recoveryRes=new MockResponse();await handler({...req,headers:{'x-forwarded-for':'203.0.113.11'}},recoveryRes);
+  assert(recoveryModels.join(',')==='gemini-3.8-flash,gemini-3.7-flash,gemini-3.5-flash-lite','Google-only recovery did not reach a separate model family');
+  assert(recoveryRes.text().includes('Launch Website starts at ₹9,999.')&&recoveryRes.text().includes('event: done'),'Recovery answer did not complete');
+  assert(recoveryRes.text().includes('"recovered":true'),'Recovery must be recorded in completion metadata');
+
+  let exhaustedAttempts=0;
+  globalThis.fetch=async()=>{exhaustedAttempts++;return{ok:false,status:503,body:null,text:async()=>'{"error":"overloaded"}'}};
+  const exhaustedRes=new MockResponse();await handler({...req,headers:{'x-forwarded-for':'203.0.113.12'}},exhaustedRes);
+  assert(exhaustedAttempts===4,'Recovery must stay within four provider attempts');
+  assert(exhaustedRes.text().includes('event: error')&&!exhaustedRes.text().includes('event: done'),'An exhausted outage must remain an honest error');
+
   console.log('Rae provider fallback OK: provider recovery is working.');
 }finally{
   globalThis.fetch=originalFetch;

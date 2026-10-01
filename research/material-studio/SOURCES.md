@@ -29,3 +29,5 @@ Existing founder, process, client screens, Rae and logo resources retain their p
 - https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/gradient/radial-gradient : soft elliptical light fields in CSS. The broad fading gradients are composed around the objects rather than placed behind every paragraph.
 
 The hero1000px/600px WebP files are responsive encodings of the same generated photograph. They change delivery size, not composition or provenance.
+
+Rae recovery references (1 October2026): https://ai.google.dev/gemini-api/docs/models and https://ai.google.dev/gemini-api/docs/generate-content/thinking . The stable3.5/3.1 Flash-Lite endpoints support minimal thinking; they fill spare recovery slots after the configured providers, preserving the original intelligence/priority and bounded attempt count.

@@ -11,15 +11,26 @@ const recalled=()=>{try{
  const cookie=normalized(document.cookie.split('; ').find(part=>part.startsWith('brayro_market_manual='))?.split('=')[1]);
  const chosen=valid(old)?old:valid(cookie)?cookie:null;if(chosen)remember(chosen);return chosen;
 }catch{return null}};
-// Let the incoming document reach pagereveal before a preference redirect.
-// Redirecting during module evaluation can abandon an unobserved native transition.
-const replaceAfterReveal=url=>requestAnimationFrame(()=>location.replace(url));
+let changingMarket=false;
+// A country change replaces the whole price context. Fade it as one operation;
+// a native snapshot transition can race the modal leaving the top layer.
+const changeMarket=(url,replace=false)=>{
+ if(changingMarket)return;changingMarket=true;
+ (window.brayroPageRevealed||Promise.resolve()).then(()=>{
+  const style=document.createElement('style');style.dataset.marketNavigation='';style.textContent='@view-transition{navigation:none}';document.head.append(style);
+  document.documentElement.classList.add('market-switching');
+  const delay=matchMedia('(prefers-reduced-motion:reduce)').matches?0:180;
+  setTimeout(()=>replace?location.replace(url):location.assign(url),delay);
+ });
+};
+window.addEventListener('pageshow',event=>{if(!event.persisted)return;changingMarket=false;document.documentElement.classList.remove('market-switching');document.querySelector('style[data-market-navigation]')?.remove()});
 const oldPreference=()=>{try{localStorage.removeItem('brayro_lang');localStorage.removeItem('brayro_market_language')}catch{}};
 export const currentMarket=()=>splitMarketPath(location.pathname).market;
+const marketDestination=(id,route)=>marketRoute(id,route)+location.search+location.hash;
 export function initMarket(){
  oldPreference();
  const here=splitMarketPath(location.pathname),manual=recalled();
- if(manual&&manual!==here.market){replaceAfterReveal(marketRoute(manual,here.route,location.hash)+location.search);return false}
+ if(manual&&manual!==here.market){changeMarket(marketDestination(manual,here.route),true);return false}
  const dialog=document.querySelector('#market-dialog');
  let detectionCancelled=false;
  const buttons=[...document.querySelectorAll('[data-market-open]')];
@@ -37,7 +48,7 @@ export function initMarket(){
  dialog.addEventListener('click',event=>{if(backdropStart&&isBackdrop(event))dialog.close();backdropStart=false});
  dialog.querySelectorAll('[data-market-choice]').forEach(button=>button.addEventListener('click',()=>{
   const chosen=button.dataset.marketChoice;remember(chosen);paint(chosen);dialog.close();
-  if(chosen!==currentMarket())location.assign(marketRoute(chosen,here.route,location.hash)+location.search);
+  if(chosen!==currentMarket())changeMarket(marketDestination(chosen,here.route));
  }));
  dialog.addEventListener('keydown',event=>{
   if(!['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(event.key))return;
@@ -48,7 +59,7 @@ export function initMarket(){
   document.documentElement.classList.add('market-detecting');
   fetch('/api/market',{credentials:'same-origin',cache:'no-store'}).then(response=>response.ok?response.json():null).then(data=>{
    if(detectionCancelled||recalled()||!data||!valid(data.market)||data.market==='in'||location.pathname!=='/')return;
-   replaceAfterReveal(marketRoute(data.market,'/',location.hash));
+   changeMarket(marketDestination(data.market,'/'),true);
   }).catch(()=>{}).finally(()=>document.documentElement.classList.remove('market-detecting'));
  }
  return true;

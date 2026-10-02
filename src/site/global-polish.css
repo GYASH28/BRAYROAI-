@@ -16,3 +16,5 @@
 @media(prefers-reduced-motion:reduce){.market-dialog[open],.menu-dialog[open]{animation:none}.market-chevron{transition:none}}
 
 html:has(#market-dialog[open],#menu-dialog[open],#rae-dialog[open]){overflow:hidden}
+.market-switching body{opacity:0;filter:blur(3px);transition:opacity .18s ease-out,filter .18s ease-out;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.market-switching body{filter:none;transition:none}}

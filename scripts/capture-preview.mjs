@@ -11,12 +11,13 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  await page.locator('#work').scrollIntoViewIfNeeded();
  await page.locator('.work-desktop img').evaluate(image=>image.decode());
  await page.screenshot({path:`${folder}/${device}-work.png`});
- await page.locator('.practice-heading').scrollIntoViewIfNeeded();
- await page.screenshot({path:`${folder}/${device}-artboard.png`});
+ await page.locator('[data-project-path] .path-heading').scrollIntoViewIfNeeded();
+ await page.screenshot({path:`${folder}/${device}-project-path.png`});
  for(const [route,name] of [['/plans','plans'],['/clients','clients'],['/clients/fakhrimart','case'],['/founder','founder'],['/ai-workflow-audit','audit'],['/company-second-brain','brain'],['/terms','terms']]){
   await page.goto(base+route,{waitUntil:'networkidle'});await page.screenshot({path:`${folder}/${device}-${name}.png`});
  }
  await page.locator('.rae-launcher').click();
+ await page.locator('#rae-dialog').waitFor({state:'visible'});
  await page.screenshot({path:`${folder}/${device}-rae.png`});
  await context.close();
 }

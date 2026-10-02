@@ -76,8 +76,9 @@ test('manual market choice survives navigation and late detection',async({page})
  await expect(page).toHaveURL(/\/ae\/?$/);
  await expect(page.locator('.header-inner [data-market-open]')).toContainText('UAE · AED');
  await expect(page).toHaveURL(/\/ae\/?$/);
- await page.goto('/plans');
- await expect(page).toHaveURL(/\/ae\/plans$/);
+ await page.goto('/plans?ref=brief#monthly-support');
+ await expect(page).toHaveURL(/\/ae\/plans\?ref=brief#monthly-support$/);
+ await expect(page.locator('[data-category="monthly-support"]')).toHaveAttribute('aria-selected','true');
  await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 2,990');
 });
 
@@ -316,6 +317,7 @@ test('full plans explain every offer in each market and restore keyboard focus',
  await page.goto('/plans#premium-experience');
  await expect(page.locator('#plan-detail-dialog')).toHaveCount(0);
  await page.locator('[data-plan-detail="premium-experience"]').click();
+ await expect(page.locator('#plan-detail-dialog')).toBeVisible();
  await page.mouse.click(5,5);
  await expect(page.locator('#plan-detail-dialog')).not.toBeVisible();
  expect(errors).toEqual([]);

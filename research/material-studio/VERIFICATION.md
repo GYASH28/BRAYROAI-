@@ -15,7 +15,7 @@ Large centred Space Grotesk “Make your MARK.” with four responsive letterfor
 - The shared glass stylesheet was initially absent from the production bundle. The Vite shell now runs before HTML asset processing; the built pages use the compiled stylesheet.
 - An entry animation completion reset a stationary pointer's type response. Remeasurement now retains that pointer and repaints the four letters.
 - Full-plan muted labels had contrast 4.46:1. They now use a darker colour and pass the open-dialog audit.
-- A strict global exception fixture exposed a saved-market redirect abandoning the incoming native transition before reveal. Preference/detection redirects now wait for the next rendering callback. The existing transition listener remains specific; no page-error assertion or arbitrary error suppression was added to disguise the failure.
+- A strict global exception fixture exposed a saved-market redirect abandoning the incoming native transition before reveal. The initial rendering-callback delay passed four local journeys but proved insufficient in CI. Country changes now use a controlled 180ms fade/blur and opt out of the competing native snapshot for that context replacement. Preference redirects wait for the actual head-observed `pagereveal` readiness. The existing exception assertion and specific native readiness handling remain intact.
 - Rae request ownership now guards every asynchronous continuation and terminal history commit. Cancelled text/actions cannot contaminate a later reply; only completed history and allowlisted metadata survive.
 
 ## Local qualification
@@ -36,6 +36,16 @@ The separate [quality workflow](https://github.com/GYASH28/BRAYROAI-/actions/run
 A shared audit script now launches the headless Chromium bundled with the project lockfile through Playwright and gives Lighthouse that isolated CDP endpoint. The local, build and deployed audits use that same entry point. It retains Lighthouse's default mobile throttling, every category, saved report/trace assets, and the existing fail-fast budget checker. Launch failures and budget failures remain failures. This removes host-browser version selection and full-browser UI startup from the test setup; it does not establish a performance pass by itself.
 
 Initial local verification of the pinned regular browser scored 69 (TBT1455ms), and the shared headless runner scored 79 (TBT746ms); neither qualifies performance. The host load average was approximately 4.7 with active desktop/browser rendering. The exact next GitHub run must qualify both workflows before completion. Reports are retained under `artifacts/mark-studio/`.
+
+### Subsequent audit and navigation correction
+
+On `f3b8750`, the shared pinned audits passed: build **98/100/100/100**, LCP2426ms/TBT0ms; production **100/100/100/100**, LCP1567ms/TBT3ms. Both browser suites passed 13 journeys and failed one: quality caught the market transition exception, while production's last popup dismissal check clicked the backdrop before its fresh lazy dialog was visible. The strict fixtures retained those failures.
+
+The market error also reproduced in two of three local runs after waiting only for native reveal; the trace places it during the country choice before the later saved-preference redirect. That replacement now uses its own brief fade rather than racing a native snapshot with modal top-layer changes. Three consecutive manual-market runs then passed with zero retries. Market destinations also preserve search parameters before hash anchors; the existing journey now verifies `?ref=brief#monthly-support` reaches the selected UAE category. The popup dismissal test waits for the visible lazy dialog before clicking its backdrop. The screenshot script now targets the actual new project-path section and waits for Rae to open.
+
+A real-provider browser check on canonical `f3b8750` completed via Gemini in6593ms with `done.finishReason=stop`, correct ₹9,999 website/₹2,599 monthly prices, and zero console/page errors. Desktop/mobile captures are in `artifacts/mark-studio/`. Final exact-commit qualification remains required after the navigation fixes.
+
+The five affected navigation/dialog journeys passed with one worker and zero retries (1.1min), including the query/anchor case and all 27 offer/market combinations. Syntax/API/security/provider fallback/source/distribution/localization passed; current compressed JavaScript is276789bytes. The updated desktop/mobile capture workflow completed and its hero/project-path/Rae outputs were inspected. The initial particle surface now defaults to the same0.88 opacity as the authored opening, so it keeps its brightness before the scroll module loads.
 
 ## Release gate
 

@@ -15,6 +15,7 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
  await page.locator('.object-index a[href="#work"]').click();
  await expect(page).toHaveURL(/#work$/);
  await expect(page.locator('#work')).toBeInViewport();
+ await expect.poll(()=>page.locator('#work').evaluate(node=>Math.abs(node.getBoundingClientRect().top-document.querySelector('.site-header').getBoundingClientRect().bottom-16))).toBeLessThan(2);
  await page.locator('.work-desktop').scrollIntoViewIfNeeded();
  await expect.poll(()=>page.locator('.work-desktop img').evaluate(image=>image.complete&&image.naturalWidth>0)).toBe(true);
  await page.getByRole('link',{name:'Open the FakhriMart case study'}).click();

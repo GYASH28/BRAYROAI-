@@ -16,7 +16,9 @@ ${raeDialog}`;
 function shell(){
  return {name:'living-sketchbook-html',transformIndexHtml:{order:'pre',handler(html,ctx){
   const route=pathForFile(ctx.filename||''),canonical=`${origin}${route}`;
-  return html.replace('<head>','<head><script src="/view-transition-lifecycle.js"></script>').replace('<body ','<body id="top" ').replace('<!-- SHELL_HEADER -->',`<header class="site-header"><div class="container header-inner">${nav}</div></header>`)
+  const navRoute=route.startsWith('/clients/')?'/clients':route;
+  const currentNav=nav.replace(`href="${navRoute}"`,`href="${navRoute}" aria-current="${route===navRoute?'page':'location'}"`);
+  return html.replace('<head>','<head><script src="/view-transition-lifecycle.js"></script>').replace('<body ','<body id="top" ').replace('<!-- SHELL_HEADER -->',`<header class="site-header"><div class="container header-inner">${currentNav}</div></header>`)
    .replace('<!-- SHELL_FOOTER -->',footer)
    .replace('<!-- SHELL_DIALOGS -->',dialogs)
    .replace('</head>',`<link rel="stylesheet" href="/src/site/global-polish.css"><link rel="preload" href="/fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/space-grotesk-variable.woff2" as="font" type="font/woff2" crossorigin><link rel="canonical" href="${canonical}"><meta property="og:url" content="${canonical}">${html.includes('property="og:image"')?'':'<meta property="og:image" content="https://brayroai.vercel.app/brand/og-card.png">'}<meta name="x-brayro-commit" content="${process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA||'local'}"></head>`);

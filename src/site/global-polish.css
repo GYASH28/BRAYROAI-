@@ -25,8 +25,28 @@ html:has(#market-dialog[open],#menu-dialog[open],#rae-dialog[open]){overflow:hid
 .page-home .studio-ready .hero-stage{top:0}
 .page-home.page-material .hero-intro{padding-top:calc(var(--header) + 38px)}
 .page-home.page-material .hero-masthead{top:calc(var(--header) + 18px)}
-.page-home .site-header .header-inner{transition:background .35s ease,box-shadow .35s ease}
+.page-home .site-header .header-inner{transition:background .35s ease,box-shadow .35s ease,max-width .5s var(--ease)}
 .page-home .site-header.is-scrolled .header-inner{background:linear-gradient(115deg,#202735cc,#101620d9);box-shadow:0 12px 40px #0003,inset 0 1px #ffffff16}
 @media(max-width:760px){.site-header .header-inner{border-radius:100px}.page-home .site-header{padding:8px 12px}.page-home.page-material .hero-intro{padding-top:calc(var(--header) + 48px)}.page-home.page-material .hero-masthead{top:calc(var(--header) + 17px)}}
 @media(max-height:440px) and (min-width:600px){.page-home.page-material .hero-masthead{display:none}.page-home.page-material .hero-intro{padding-top:calc(var(--header) + 8px);padding-bottom:16px;justify-content:flex-start}.page-home.page-material .hero-mark-line{font-size:100px}}
 @media(prefers-reduced-motion:reduce){.page-home .site-header .header-inner{transition:none}}
+
+/* Navigation remembers the route and settles into a smaller reading surface. */
+.site-header .desktop-nav a{padding:12px 10px;border-radius:100px;transition:color .2s ease,background .2s ease}
+.site-header .desktop-nav{gap:8px}
+.site-header .desktop-nav a:hover,.site-header .desktop-nav a:focus-visible{background:#d8e4ff0e;color:var(--bone)}
+.site-header .desktop-nav a[aria-current]{color:var(--bone);background:#d8e4ff0a}
+.site-header .desktop-nav a::after{left:10px;right:10px;bottom:7px}
+.site-header .header-cta:hover .ui-arrow{transform:translateX(4px) rotate(-5deg)}
+.site-header :is(.brand,.menu-button,.market-button){border-radius:100px}
+.page-home .site-header.is-scrolled .header-inner{max-width:1180px}
+@media(max-width:760px){.site-header .brand{min-height:44px;display:flex;align-items:center}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.site-header .header-inner{background:#141b28f2}}
+@media(prefers-reduced-motion:reduce){.site-header .desktop-nav a,.site-header .header-cta .ui-arrow{transition:none}.site-header .header-cta:hover .ui-arrow{transform:none}}
+/* Keep the navigation anchored while the page beneath it changes. */
+.site-header{view-transition-name:studio-navigation}
+::view-transition-group(studio-navigation){z-index:1;animation-duration:.45s;animation-timing-function:var(--ease)}
+@media(prefers-reduced-motion:reduce){::view-transition-group(studio-navigation),::view-transition-old(studio-navigation),::view-transition-new(studio-navigation){animation:none}}
+/* One safe inset is enough for home anchors; padding and margin used to add up. */
+html:has(body.page-home){scroll-padding-top:calc(var(--header) + 16px)}
+.page-home section[id],.page-home .anchor-alias{scroll-margin-top:0}

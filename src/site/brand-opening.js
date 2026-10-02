@@ -25,8 +25,11 @@ export function initBrandOpening(){
  const ceiling=Math.max(0,headerBounds.bottom-scene.top+6);
  const offerTop=Math.max(headlineY+40,bottomBounds.top-scene.top-8);
  const availableHeight=Math.max(120,offerTop-ceiling);
- const centerY=Math.max(ceiling+availableHeight*.48,Math.min(headlineY,offerTop-availableHeight*.2));
- const size=Math.max(92,Math.min(compact?scene.width*.72:scene.width*.34,short?scene.height*.54:scene.height*.48,460));
+ const size=Math.max(92,Math.min(compact?scene.width*.58:scene.width*.34,short?scene.height*.54:scene.height*.48,460));
+ const naturalCenter=Math.max(ceiling+availableHeight*.48,Math.min(headlineY,offerTop-availableHeight*.2));
+ // Portrait choreography lives above the sales copy. The visible BR silhouette
+ // occupies roughly 56% of the square, so this keeps its lower edge clear.
+ const centerY=compact?Math.max(ceiling+size*.31,Math.min(headlineY-12,offerTop-size*.30-14)):naturalCenter;
  const mosaicLeft=centerX-size/2,mosaicTop=centerY-size/2;
  const seamAngle=compact?-16:-11,seamSlope=Math.tan(seamAngle*Math.PI/180);
 
@@ -72,22 +75,23 @@ export function initBrandOpening(){
   tiles.forEach((tile,index)=>{
    const rect=fragments[index],x=Number(rect.getAttribute('x')),y=Number(rect.getAttribute('y')),w=Number(rect.getAttribute('width')),h=Number(rect.getAttribute('height'));
    const tileX=mosaicLeft+(x+w/2)/512*size,tileY=mosaicTop+(y+h/2)/512*size;
-   const seamX=scene.width*(.08+.84*(index/count)),seamY=scene.height*.49+(seamX-scene.width*.5)*seamSlope;
+   const seamX=scene.width*(.08+.84*(index/count)),seamBaseY=compact?centerY:scene.height*.49,seamY=seamBaseY+(seamX-centerX)*seamSlope;
    const compressX=seamX-tileX,compressY=seamY-tileY;
    const side=index%2?-1:1,depth=(index%3-1)*150;
    const startX=((index*83)%101)/100*scene.width-tileX+side*scene.width*.22;
    const startY=((index*47)%97)/96*scene.height-tileY+(index%3-1)*scene.height*.14;
    const passX=compressX+side*scene.width*(.16+(index%5)*.018),passY=compressY+(index%4-1.5)*scene.height*.075;
-   const lane=index%4,fanX=(lane-1.5)*scene.width*(compact?.24:.28),fanY=(index%2?-1:1)*scene.height*(compact?.18:.22);
+   const lane=index%4,fanX=(lane-1.5)*scene.width*(compact?.34:.28),fanY=(index%2?-1:1)*scene.height*(compact?.10:.22);
    const spin=side*(18+(index%5)*8);
+   const compressAt=compact?.46:.52,resolveAt=compact?.58:.69,holdAt=compact?.64:.76,fanAt=compact?.80:.93;
    play(tile,[
     {offset:0,opacity:0,transform:`translate3d(${startX}px,${startY}px,${-320+depth}px) rotateX(${side*58}deg) rotate(${spin}deg) scale(.28)`,easing:resolve},
     {offset:.10,opacity:.2,transform:`translate3d(${startX*.68}px,${startY*.68}px,${-220+depth*.6}px) rotateX(${side*42}deg) rotate(${spin*.7}deg) scale(.46)`,easing:resolve},
     {offset:.34,opacity:1,transform:`translate3d(${passX}px,${passY}px,${-55+depth*.25}px) rotateY(${side*22}deg) rotate(${spin*.25}deg) scale(.78)`,easing:compress},
-    {offset:.52,opacity:1,transform:`translate3d(${compressX}px,${compressY}px,0) rotate(${seamAngle}deg) scale(.56)`,easing:resolve},
-    {offset:.69,opacity:1,transform:'translate3d(0,0,0) rotate(0deg) scale(1)',easing:'linear'},
-    {offset:.76,opacity:1,transform:'translate3d(0,0,0) rotate(0deg) scale(1)',easing:depart},
-    {offset:.93,opacity:.08,transform:`translate3d(${fanX}px,${fanY}px,100px) rotateY(${side*62}deg) rotate(${-spin*.8}deg) scale(.38)`},
+    {offset:compressAt,opacity:1,transform:`translate3d(${compressX}px,${compressY}px,0) rotate(${seamAngle}deg) scale(.56)`,easing:resolve},
+    {offset:resolveAt,opacity:1,transform:'translate3d(0,0,0) rotate(0deg) scale(1)',easing:'linear'},
+    {offset:holdAt,opacity:1,transform:'translate3d(0,0,0) rotate(0deg) scale(1)',easing:depart},
+    {offset:fanAt,opacity:.08,transform:`translate3d(${fanX}px,${fanY}px,100px) rotateY(${side*62}deg) rotate(${-spin*.8}deg) scale(.38)`},
     {offset:1,opacity:0,transform:`translate3d(${fanX*1.12}px,${fanY*1.12}px,130px) rotateY(${side*76}deg) rotate(${-spin}deg) scale(.26)`},
    ],{easing:'linear'});
   });
@@ -146,7 +150,7 @@ export function initBrandOpening(){
   ],{easing:'linear'});
 
   stage.querySelectorAll('.hero-word').forEach((letter,index)=>{
-   const arrival=.70+index*.018,settled=Math.min(.94,arrival+.15),side=index%2?-1:1;
+   const arrival=(compact?.78:.70)+index*(compact?.012:.018),settled=Math.min(compact?.95:.94,arrival+(compact?.11:.15)),side=index%2?-1:1;
    play(letter,[
     {offset:0,opacity:0,transform:`translate3d(${(index-1.5)*.2}em,.34em,-130px) rotateY(${side*58}deg) rotateX(-22deg) scale(.72)`},
     {offset:arrival,opacity:0,transform:`translate3d(${(index-1.5)*.16}em,.29em,-100px) rotateY(${side*48}deg) rotateX(-18deg) scale(.78)`,easing:resolve},
@@ -157,14 +161,14 @@ export function initBrandOpening(){
   });
   play(stage.querySelector('.hero-prelude'),[
    {offset:0,opacity:0,transform:'translate3d(0,16px,0)'},
-   {offset:.67,opacity:0,transform:'translate3d(0,16px,0)'},
-   {offset:.80,opacity:1,transform:'translate3d(0,0,0)'},
+   {offset:compact?.74:.67,opacity:0,transform:'translate3d(0,16px,0)'},
+   {offset:compact?.87:.80,opacity:1,transform:'translate3d(0,0,0)'},
    {offset:1,opacity:1,transform:'none'},
   ],{easing:'linear'});
   play(stage.querySelector('.hero-mark-line i'),[
    {offset:0,opacity:0,transform:'translate3d(-.7em,-.8em,0) rotate(-110deg) scale(.2)'},
-   {offset:.81,opacity:0,transform:'translate3d(-.7em,-.8em,0) rotate(-110deg) scale(.2)'},
-   {offset:.94,opacity:1,transform:'translate3d(0,.03em,0) rotate(0deg) scale(1.12)',easing:resolve},
+   {offset:compact?.86:.81,opacity:0,transform:'translate3d(-.7em,-.8em,0) rotate(-110deg) scale(.2)'},
+   {offset:compact?.96:.94,opacity:1,transform:'translate3d(0,.03em,0) rotate(0deg) scale(1.12)',easing:resolve},
    {offset:1,opacity:1,transform:'none'},
   ],{easing:'linear'});
 

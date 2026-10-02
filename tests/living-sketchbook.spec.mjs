@@ -37,6 +37,26 @@ test('brand opening hands control to visitors without blocking or replaying over
  await page.reload({waitUntil:'domcontentloaded'});
  await page.getByRole('button',{name:'Skip intro'}).click();
  await expect(page.locator('.brand-opening')).toHaveCount(0);
+
+ // Portrait beats keep opaque mosaic material above the commercial copy.
+ const desktopViewport=page.viewportSize();
+ await page.setViewportSize({width:390,height:844});
+ await page.reload({waitUntil:'domcontentloaded'});
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
+ for(const time of [1100,1650,2200]){
+  const overlap=await page.evaluate(time=>{
+   const animations=document.getAnimations().filter(animation=>animation.id.startsWith('brand-opening-'));
+   animations.forEach(animation=>{animation.pause();animation.currentTime=time});
+   const copy=document.querySelector('.hero-bottom').getBoundingClientRect();
+   return [...document.querySelectorAll('.opening-tile')].filter(tile=>Number(getComputedStyle(tile).opacity)>.35).filter(tile=>{
+    const rect=tile.getBoundingClientRect();
+    return rect.right>copy.left&&rect.left<copy.right&&rect.bottom>copy.top&&rect.top<copy.bottom;
+   }).length;
+  },time);
+  expect(overlap,`opaque portrait fragments over sales copy at ${time}ms`).toBe(0);
+ }
+ await page.getByRole('button',{name:'Skip intro'}).click();
+ await page.setViewportSize(desktopViewport);
  await page.reload({waitUntil:'domcontentloaded'});
  await page.keyboard.press('Tab');
  await expect(page.locator('.brand-opening')).toHaveCount(0);

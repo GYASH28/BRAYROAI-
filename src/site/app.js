@@ -14,6 +14,11 @@ if(initMarket()){
  colour?.addEventListener('click',()=>{const on=document.querySelector('.legacy-hero')?.classList.toggle('is-colour');colour.setAttribute('aria-pressed',String(on));document.querySelector('.hero-person').src=on?'/assets/yash-cutout.webp':'/assets/yash-cutout-mono.webp'});
  const founderColour=document.querySelector('[data-founder-colour]');
  founderColour?.addEventListener('click',()=>{const on=document.querySelector('.founder-hero').classList.toggle('is-colour');founderColour.setAttribute('aria-pressed',String(on))});
+ const header=document.querySelector('.site-header');
+ if(document.body.classList.contains('page-home')){
+  const syncHeader=()=>header?.classList.toggle('is-scrolled',scrollY>40);
+  addEventListener('scroll',syncHeader,{passive:true});syncHeader();
+ }
  initPlans();
  initContact();
 

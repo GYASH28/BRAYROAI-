@@ -206,7 +206,9 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await expect.poll(()=>page.locator('.hero-word').evaluateAll(words=>words.some(word=>parseFloat(word.style.getPropertyValue('--type-y'))<-.1))).toBe(true);
  await page.mouse.move(0,0);
  await expect.poll(()=>page.locator('.hero-word').evaluateAll(words=>words.every(word=>!word.style.getPropertyValue('--type-y')))).toBe(true);
- const heroPosition=async progress=>page.evaluate(progress=>{const section=document.querySelector('.studio-hero'),header=document.querySelector('.site-header');scrollTo({top:section.offsetTop-header.offsetHeight+(section.offsetHeight-innerHeight)*progress,behavior:'instant'})},progress);
+ const geometry=await page.locator('.hero-stage').evaluate(el=>({top:el.getBoundingClientRect().top,height:el.getBoundingClientRect().height,viewport:innerHeight}));
+ expect(geometry.top).toBe(0);expect(Math.abs(geometry.height-geometry.viewport)).toBeLessThan(2);
+ const heroPosition=async progress=>page.evaluate(progress=>{const section=document.querySelector('.studio-hero');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*progress,behavior:'instant'})},progress);
  await heroPosition(.66);
  await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
  await expect(page.locator('.studio-hero')).toHaveAttribute('data-assembly-progress','1.000');

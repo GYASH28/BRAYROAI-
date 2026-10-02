@@ -45,7 +45,7 @@ export async function initStudioMotion(){
     if(next){const active=nextOpacity>.08;next.inert=!active;next.setAttribute('aria-hidden',String(!active));next.classList.toggle('is-active',active)}
     if(scene){scene.dispatchEvent(new CustomEvent('studio:travel',{detail:{progress:p}}));scene.dispatchEvent(new CustomEvent('studio:assembly',{detail:{progress:assembly}}))}
    };
-   ScrollTrigger.create({trigger:hero,start:()=>`top top+=${document.querySelector('.site-header')?.offsetHeight||0}`,end:()=>`+=${Math.max(1,hero.offsetHeight-innerHeight)}`,onUpdate:s=>pose(s.progress),onRefresh:s=>pose(s.progress)});
+   ScrollTrigger.create({trigger:hero,start:'top top',end:()=>`+=${Math.max(1,hero.offsetHeight-innerHeight)}`,onUpdate:s=>pose(s.progress),onRefresh:s=>pose(s.progress)});
   }
   gsap.from('.footer-mark',{yPercent:8,opacity:.6,ease:'none',scrollTrigger:{trigger:'.footer-mark',start:'top bottom',end:'bottom bottom',scrub:.7}});
   return()=>{

@@ -62,3 +62,8 @@ These primary references inform implementation mechanics. The repository's fifty
 ### Navigation qualification
 
 - [Chrome for Developers: cross-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document): the incoming listener must be registered before the first rendering opportunity. The global exception fixture caught an early saved-market redirect abandoning its incoming transition before that document revealed. Preference and detection redirects now wait for the next rendering callback so the existing lifecycle listener can observe the incoming transition. Unexpected errors remain visible; the browser assertion is unchanged.
+
+### Consistent performance audit runtime
+
+- [Playwright browsers](https://playwright.dev/docs/browsers): the installed dependency version supplies a dedicated Chromium headless shell for default headless runs. The audit uses the public launch API and a separate CDP port, with cleanup in `finally`.
+- [Chrome Launcher configuration](https://github.com/GoogleChrome/chrome-launcher/blob/main/README.md): an existing remote-debugging port can be used for Lighthouse instead of automatic system Chrome selection.

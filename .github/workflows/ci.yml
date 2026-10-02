@@ -55,9 +55,7 @@ jobs:
           exit 1
       - name: Lighthouse mobile audit
         run: |
-          mkdir -p artifacts/lighthouse
-          npx lighthouse http://127.0.0.1:4173/ --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --save-assets --output=json --output-path=artifacts/lighthouse/home.json
-          node tests/lighthouse-budget.mjs artifacts/lighthouse/home.json
+          node scripts/audit-lighthouse.mjs http://127.0.0.1:4173/ artifacts/lighthouse/home.json
       - run: npm run test:stress
       - run: npm run test:browser
       - run: node scripts/capture-preview.mjs

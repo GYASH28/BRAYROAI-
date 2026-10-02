@@ -27,6 +27,16 @@ Large centred Space Grotesk “Make your MARK.” with four responsive letterfor
 - The full 14-test strict exception run then passed 13 journeys and exposed the early market-transition rejection. After its fix, all four affected redirect/history/draft journeys passed with zero retries and no uncaught exceptions. The Rae cancellation/new-thread/history/open-dialog audit passed in the full run.
 - Route stress: **240 requests across 20 routes passed**.
 
+## Release audit investigation
+
+The design release `5fdf074` reached READY canonical Vercel with the matching commit marker. Its [production workflow](https://github.com/GYASH28/BRAYROAI-/actions/runs/36990310611) passed all 14 strict browser journeys and 360 requests across 20 routes. Production Lighthouse was **99/100/100/100**, LCP **2004ms**, TBT **0ms**, CLS **0.00025**.
+
+The separate [quality workflow](https://github.com/GYASH28/BRAYROAI-/actions/runs/36990310617) failed Lighthouse: **81/100/100/100**, LCP **2650ms**, TBT **445ms**. Its browser step did not run after that failure. Both saved traces used system Chrome 154. The failed trace spent 1546ms on style/layout versus 267ms in production, and included full-browser omnibox startup work; its longest renderer task was layout/paint, not the particle renderer. The mobile opening did not load the Three/React module.
+
+A shared audit script now launches the headless Chromium bundled with the project lockfile through Playwright and gives Lighthouse that isolated CDP endpoint. The local, build and deployed audits use that same entry point. It retains Lighthouse's default mobile throttling, every category, saved report/trace assets, and the existing fail-fast budget checker. Launch failures and budget failures remain failures. This removes host-browser version selection and full-browser UI startup from the test setup; it does not establish a performance pass by itself.
+
+Initial local verification of the pinned regular browser scored 69 (TBT1455ms), and the shared headless runner scored 79 (TBT746ms); neither qualifies performance. The host load average was approximately 4.7 with active desktop/browser rendering. The exact next GitHub run must qualify both workflows before completion. Reports are retained under `artifacts/mark-studio/`.
+
 ## Release gate
 
 Production is not asserted by this pre-release local report. The goal requires main to be pushed, a READY Vercel deployment, the canonical exact-commit marker, both full GitHub workflow results, and a complete real-provider Rae response. Their authoritative outputs and the ignored `RESUME.md` handoff record release qualification without changing the commit under test. The existing performance budgets and exception assertions remain in force.

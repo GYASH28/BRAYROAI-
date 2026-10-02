@@ -4,7 +4,7 @@ The current owner-approved medium is procedural particle animation and the inter
 
 ## Current direction: particle hero
 
-The owner explicitly rejected the generated metal knot and requested sophisticated orb-like particle animation instead. This supersedes the Luminous Loom object and its artwork; it is not used on the website. The hero uses a procedural layered particle field with a luminous open nucleus and asymmetric orbital filaments, warm/cool depth and coherent fluid travel. The two-scene pinned typography and soft optical handoff remain, with particle response to pointer, scroll and the calm-to-orbit range. The fallback comes from the same seeded points and has restrained native group motion rather than generated sculpture imagery.
+The owner explicitly rejected the generated metal knot and requested sophisticated orb-like particle animation instead. This supersedes the Luminous Loom object and its artwork; it is not used on the website. The hero uses a procedural layered particle field with a luminous open nucleus and asymmetric orbital filaments, warm/cool depth and coherent fluid travel. The two-scene pinned typography and soft optical handoff remain, with particle response to pointer, scroll and the calm-to-orbit range. The fallback comes from the same seeded points and has restrained composited image drift rather than generated sculpture imagery.
 
 ## Interactive footer wordmark
 

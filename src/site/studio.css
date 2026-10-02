@@ -204,6 +204,10 @@ dialog{border:1px solid #514b41;background:var(--deep);color:var(--bone);padding
 .hero-stage{background:radial-gradient(ellipse at 82% 50%,#1b263e 0,#10131e 39%,#09090b 75%)}
 .halo-cobalt{opacity:.7;filter:blur(65px)}.halo-amber{opacity:.65;filter:blur(65px)}
 .hero-object .sculpture-poster{mask-image:radial-gradient(ellipse at 50% 50%,black 47%,transparent 74%)}
+.sculpture-poster{animation:particle-drift 14s ease-in-out infinite alternate;will-change:rotate}
+.hero-object:has(.is-ready) .sculpture-poster{animation-play-state:paused;will-change:auto}
+@keyframes particle-drift{from{rotate:-1.6deg}to{rotate:2.1deg}}
+@media(prefers-reduced-motion:reduce){.sculpture-poster{animation:none;will-change:auto}}
 @media(max-width:760px){.hero-object{top:37%;height:58%}.hero-halo{filter:blur(38px)}.hero-intro .hero-bottom{gap:13px}.hero-intro .hero-bottom .pill-link{padding:13px 17px}}
 .footer-mark{position:relative;display:block;perspective:1100px;cursor:pointer}
 .footer-base{padding-right:72px}

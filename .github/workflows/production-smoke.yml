@@ -76,7 +76,7 @@ jobs:
       - name: Production Lighthouse mobile audit
         run: |
           mkdir -p artifacts/production-lighthouse
-          npx lighthouse "$PROD_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --output=json --output-path=artifacts/production-lighthouse/home.json
+          npx lighthouse "$PROD_URL/" --quiet --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo --form-factor=mobile --save-assets --output=json --output-path=artifacts/production-lighthouse/home.json
           node tests/lighthouse-budget.mjs artifacts/production-lighthouse/home.json
 
       - name: Production concurrent load test
@@ -103,7 +103,9 @@ jobs:
         with:
           name: brayroai-production-qa-${{ github.run_number }}
           path: |
-            artifacts/
+            artifacts/deployment-verification.txt
+            artifacts/production-lighthouse/
+            artifacts/playwright-report/
             test-results/
           if-no-files-found: ignore
           retention-days: 14

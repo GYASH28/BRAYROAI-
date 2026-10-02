@@ -120,6 +120,13 @@ test('Rae keeps drafts and reports provider failures honestly',async({page})=>{
  await page.getByRole('button',{name:/Send message to Rae/}).click();
  await expect(page.locator('.rae-status')).toContainText('not configured');
  await expect(page.locator('.rae-message.assistant')).toContainText('could not answer');
+ await page.unroute('**/api/rae-chat');
+ await page.route('**/api/rae-chat',route=>route.fulfill({status:200,contentType:'text/event-stream',body:'event: delta\ndata: {"text":"An incomplete explanation cut off at"}\n\nevent: error\ndata: {"code":"output_truncated","message":"The answer ended early. Please retry."}\n\n'}));
+ await page.locator('#rae-input').fill('Please compare the offers.');
+ await page.getByRole('button',{name:/Send message to Rae/}).click();
+ await expect(page.locator('.rae-status')).toContainText('ended early');
+ await expect(page.locator('.rae-message.assistant').last()).toHaveText('Rae could not answer right now.');
+ await expect(page.locator('.rae-messages')).not.toContainText('incomplete explanation');
  await page.locator('[data-rae-close]').click();
  await expect(page.locator('#rae-dialog')).not.toBeVisible();
 });

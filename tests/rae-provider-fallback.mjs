@@ -23,7 +23,7 @@ try{
   globalThis.fetch=async url=>{
     urls.push(String(url));
     if(String(url).includes('generativelanguage.googleapis.com'))return{ok:false,status:429,body:null,text:async()=>'{"error":"quota"}'};
-    return{ok:true,status:200,body:streamOf('data: {"choices":[{"delta":{"content":"Backup works."}}]}\n\ndata: [DONE]\n\n'),text:async()=>''};
+    return{ok:true,status:200,body:streamOf('data: {"choices":[{"delta":{"content":"Backup works."}}]}\n\ndata: {"choices":[{"delta":{},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n'),text:async()=>''};
   };
   const req={method:'POST',headers:{'x-forwarded-for':'203.0.113.9'},socket:{remoteAddress:'203.0.113.9'},body:{message:'Can you help me?',history:[],context:{pageKey:'home',pathname:'/'},session:{}}};
   const res=new MockResponse();await handler(req,res);const output=res.text();
@@ -46,10 +46,26 @@ try{
   const geminiReq={...req,headers:{'x-forwarded-for':'203.0.113.10'}};
   const geminiRes=new MockResponse();await handler(geminiReq,geminiRes);
   assert(generationConfig?.thinkingConfig?.thinkingLevel==='low','Gemini 3 chat should use low thinking effort');
-  assert(generationConfig.maxOutputTokens>=1000,'Gemini 3 needs enough output space after thinking');
+  assert(generationConfig.maxOutputTokens===8192,'Gemini 3 needs output headroom after internal thinking');
   assert(!('temperature' in generationConfig)&&!('topP' in generationConfig),'Gemini 3 must use its supported generation defaults');
   assert(geminiRes.text().includes('Gemini answer.')&&geminiRes.text().includes('event: done'),'Gemini response was not streamed');
   assert(!geminiRes.text().includes('private reasoning'),'Thought parts must not be sent to visitors');
+
+  for(const [reason,code] of [['MAX_TOKENS','output_truncated'],[null,'provider_incomplete']]){
+    let calls=0;
+    globalThis.fetch=async()=>{calls++;const event={candidates:[{content:{parts:[{text:'private reasoning',thought:true},{text:'Launch Website starts at ₹9,999 for'}]},...(reason?{finishReason:reason}:{})}],usageMetadata:{thoughtsTokenCount:1500}};return{ok:true,status:200,body:streamOf(`data: ${JSON.stringify(event)}\n\n`)}};
+    const partialRes=new MockResponse();await handler({...req,headers:{'x-forwarded-for':`203.0.113.${reason?13:14}`}},partialRes);
+    assert(calls===1,'Never append a second provider after partial visible text');
+    assert(partialRes.text().includes(`"code":"${code}"`),'Incomplete provider response must be reported accurately');
+    assert(!partialRes.text().includes('event: done')&&!partialRes.text().includes('event: meta'),'Incomplete text must not be declared successful');
+    assert(!partialRes.text().includes('private reasoning'),'Incomplete responses must still hide thoughts');
+  }
+
+  process.env.RAE_PROVIDER='groq';process.env.GROQ_API_KEY='test-groq';
+  globalThis.fetch=async()=>({ok:true,status:200,body:streamOf('data: {"choices":[{"delta":{"content":"A cut off answer"},"finish_reason":"length"}]}\n\ndata: [DONE]\n\n')});
+  const lengthRes=new MockResponse();await handler({...req,headers:{'x-forwarded-for':'203.0.113.15'}},lengthRes);
+  assert(lengthRes.text().includes('"code":"output_truncated"')&&!lengthRes.text().includes('event: done'),'OpenAI compatible length termination must remain an error');
+  process.env.RAE_PROVIDER='gemini';delete process.env.GROQ_API_KEY;
 
   const recoveryModels=[];
   globalThis.fetch=async(url,options)=>{

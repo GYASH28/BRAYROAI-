@@ -68,6 +68,6 @@ export function initRae(){
    flush();if(error||!completed)throw new Error(error||'Rae’s response stopped early. Please retry.');
    answer.textContent=answer.textContent.replace(/\*\*/g,'').replace(/^\s*[-*]\s+/gm,'• ');
    history.push({role:'user',text:question},{role:'assistant',text:answer.textContent});state('');setCharacter('positive');
-  }catch(caught){if(caught.name==='AbortError')return;answer.textContent=answer.textContent||'Rae could not answer right now.';state(caught.message||'Please retry or contact Yash directly.');setCharacter('error')}finally{busy=false;controller=null;form.querySelector('button').disabled=false}
+  }catch(caught){if(caught.name==='AbortError'){answer.remove();return}answer.textContent='Rae could not answer right now.';state(caught.message||'Please retry or contact Yash directly.');setCharacter('error')}finally{busy=false;controller=null;form.querySelector('button').disabled=false}
  });
 }

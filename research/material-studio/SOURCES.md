@@ -33,3 +33,5 @@ The 1000px/600px WebP deliveries remain on the studio capability room. The curre
 Rae recovery references (1 October2026): https://ai.google.dev/gemini-api/docs/models and https://ai.google.dev/gemini-api/docs/generate-content/thinking . The stable3.5/3.1 Flash-Lite endpoints support minimal thinking; they fill spare recovery slots after the configured providers, preserving the original intelligence/priority and bounded attempt count.
 
 Native transition lifecycle: https://developer.chrome.com/docs/web-platform/view-transitions/cross-document . Incoming `pagereveal` observation must be registered in a classic parser-blocking head script. A small same-origin script observes only expected skip/timeout rejections; unexpected defects retain normal browser error reporting.
+
+Rae completion recovery, 2 October2026: https://ai.google.dev/gemini-api/docs/thinking and https://ai.google.dev/api/generate-content . Gemini thought tokens share the output ceiling; the token ceiling is increased while supported low/minimal thinking and existing attempt/time bounds remain. Only a validated terminal STOP is success. A cut-off or unconfirmed response stays an honest retry state.

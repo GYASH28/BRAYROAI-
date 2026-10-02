@@ -1,81 +1,63 @@
-# Material Intelligence
+# Make your mark — BRAYRO AI refinement
 
-The current owner-approved medium is procedural particle animation and the interactive approved footer wordmark, described below. The original brief and rejected-object revisions are retained as design history.
+Self-authored from the owner's instructions and screenshots, 2 October 2026. The owner asked for autonomous execution, brighter particles, expressive interactive typography, premium navigation and market selection, richer plan pop-ups, a rebuilt Rae interface and a better complete studio page. The four rejected screenshots show homepage sections; their content is replaced here while actual service routes remain available.
 
-## Current direction: particle hero
+## Direction
 
-The owner rejected physical sculpture imagery, then the ordinary headline and shapeless particles, then clarified the sequence: dispersed particles in the opening; scroll assembles them into a full-screen identity composition; a strong transition introduces the work. The control panel is removed completely. ‘Get noticed. Get chosen.’ is a centred, oversized self-hosted Instrument Serif composition with interactive word lift, local light and italic contrast, orange punctuation, a direct website plan link, an AI service link and the correct market starting price. Six broken helical ribbons carry 9,600 particles in depth. Per-point stagger and curved paths draw 7,680 of them into targets from the 38 approved BR mosaic tiles; 1,920 continue as thin asymmetric orbital filaments. Bone, cobalt and orange strands travel at different phases. Pointer swirl, ripple and local glow respond around the hand; a mobile tap adds a decaying pulse without interfering with native scroll. The final mark remains centred and front-facing. Pointer interaction repels nearby particles with ripples. Scrolling reverses the entire sequence. A paper disc expands from the formed identity, fills the viewport and hands the visitor to the real client work. Static raster fallbacks derive from the same cloud/mark generator and crossfade with scroll; reduced motion keeps a normal readable flow.
+A living typographic opening leads to actual client work, a useful choice about the visitor's next project, the person making it, clear starting prices and a direct enquiry. The visual system uses the owner's mosaic identity, ink, bone, orange and cobalt. Glass is reserved for controls and conversation surfaces. Larger room gradients fade into the background rather than carrying the text.
 
-## Homepage rooms
+## Opening
 
-The latest owner refinement extends the typography through distinct homepage rooms: an asymmetric practice statement, opposing orange website and cobalt AI scenes, an accessible React process instrument with Direction/Design/Build flows, a portrait spread, a numbered price index and a cobalt enquiry close. The hero stays centred while later layouts change rhythm. Native pointer interaction is decorative; service links and keyboard tabs remain explicit controls.
+“Make your MARK.” is real, selectable Space Grotesk text, centred and enlarged. Four letterforms lift, tilt and reveal an offset outline in response to the hand. A brief staggered arrival establishes their depth; reduced motion keeps them stable. The supporting lines explain the studio's two actual offers: distinctive websites and practical AI. Website plans, the AI audit and the published regional starting price are immediately available.
 
-## Interactive footer wordmark
+The approved 9,600-particle choreography remains. Six broken helical ribbons begin dispersed in depth; scroll moves them along staggered curved paths into the exact 38-tile BR monogram. The mark uses 7,680 points with 1,920 orbital filaments. Stronger cobalt, larger points and higher alpha make the material more visible. Pointer ripple and swirl are local, and mobile input never takes over scrolling. A full-screen formation leads through the existing expanding paper transition to FakhriMart. Reverse scrolling unwinds the sequence.
 
-The owner requested a more interactive footer logo. The actual approved mosaic SVG is retained. On approach the tiles assemble; pointer movement bends nearby tiles by a few pixels and moves a warm/cool ink gradient through the mark, then the tiles return to their original positions. Keyboard focus gets a visible colour response. The complete mark is a real link back to the top, with the original image serving as the enhancement-failure fallback. SVG enhancement is deferred until the footer approaches; reduced motion keeps the exact stable geometry.
+The SVG and WebP fallback assets are authored from the same deterministic point generator. The mobile fallback is small; WebGL is deferred until interaction. Reduced motion receives readable native flow. No sculpture or shape-control box returns.
 
-## Original design brief and revision history
+## Homepage
 
-Self-authored, not interviewed. The user requested autonomous execution and gave freedom to change the hero and every page.
+The old practice statement, two capability screens and process diagram are removed. One “Where do you want to go?” surface explains three useful choices:
 
-## Owner direction
+- A new website: story, design, frontend and enquiry, with actual starting price and plans link.
+- A better live website: scoped recurring changes, with the monthly starting price.
+- A lighter way to work: one workflow, audit deliverables and the real audit route.
 
-- Premium, surprising, very creative. Visible motion from the smallest interactions to the main scroll sequence.
-- Scrollcraft and the custom 50-site award-study skill are the main guides.
-- Change the hero, plans, founder, terms and all other routes. Generate original images. Use React and 3D when useful.
-- Retain the owner's tile-fracture brand system and recover useful previous resources, especially Rae, photography, the custom arrow and the full footer.
-- Research is already documented across 50 official examples; use it to make decisions rather than repeat a loader-heavy research loop.
-- Implement and visually refine before final QA. Push main and check the matching Vercel deployment.
+Native radio controls operate with keyboard, pointer and HTML/CSS when JavaScript is unavailable. Each choice changes the explanation and its next action. The later portrait, starting price index and contact form retain their actual functions, with stronger typography and restrained material depth. The approved interactive 161-tile footer wordmark remains.
 
-## Self-authored answers
+## Shared controls
 
-1. Vibe: tactile, precise, experimental, confident, human. References outside websites: a kinetic sculpture gallery, a photographic contact sheet, an industrial designer's material table.
-2. Journey: studio object, real client evidence, capability objects, operating practice, founder, published starting points, the visitor's brief.
-3. Energy: striking entry, controlled build toward the real work, hard changes between orange and blue rooms, tactile practice, human pause, decisive contact.
-4. Feelings: intrigue, confidence, possibility, understanding, connection, readiness. Peak: the real FakhriMart screen rotates from a perspective object into a readable finished interface.
-5. Signature: open the studio sculpture into separated silver fins with a range control, then let it settle back into a complete form. Pointer, scroll and keyboard each operate the same material sculpture.
-6. Range: expressive and asymmetric, with readable utilitarian content. Avoid bland minimal marketing and repeated three-card grids.
-7. Distinct objects and rooms, with one pinned exhibit. No continuous flight.
-8. Assets: owner tile logo/palette, actual founder portraits/process imagery, real FakhriMart screenshots, original Rae character/custom arrow. Two new generated material photographs are studio art only.
+An inset glass navigation bar frames the site. Work, Plans, Studio, market and project actions keep explicit labels. Market selection is a native dialog with three published English price books. It keeps the current route and manual preference, with no converted or invented prices. The menu, selector and conversation isolate background interaction while open.
 
-## Grammar
+## Plans
 
-Gallery/catalog. The hero is the studio as an object, identified with a factual title. Object labels explain what it is. Real client proof follows. The only long hold is the work exhibit; no pinned persuasive text act or magnetic CTA. The close is an inquiry plate followed by a factual colophon. Motion families: object manipulation, pinned perspective reveal, lateral collection, progressive diagrams, photographic parallax, ink-drawn link feedback.
+All nine existing offers remain, with source scopes visible without JavaScript. Each full-plan action opens a native dialog containing fit, approved inclusions, intended practical benefits, boundaries and separate scope, exact current-market price, working terms and a prefilled enquiry. Benefits describe use, not guaranteed returns. Escape, close, backdrop dismissal, scroll containment and return focus are required. Deep links choose and locate an offer without opening a dialog. Rapid clicks may open only the latest selected plan.
 
-The other grammars lose because this studio has a collection of different kinds of work and a human practice. Filmic one-shot hides useful route choices; continuous world invents geography; split stage repeats the discarded seam; live surface falsely makes the studio a software product; poster excludes requested imagery/3D; cutlist repeats the previous broadcast build; chaptered editorial makes the opening a static title page.
+## Rae
 
-## Fingerprint gate
+The original character is retained in a spacious ink/glass conversation workspace. Starting questions, scrollable conversation, status, stop control, composer, new thread and direct contact remain clear. Real streaming, reset/recovery capability, complete history, allowlisted routes, draft preservation and honest failures are preserved. Cancelled requests cannot update the next conversation. Suggested links become available only with a completed answer. Smaller screens keep the composer accessible, including a constrained visual viewport.
 
-Compared with Signal Fold: 6/6 differences (gallery rather than split, indexed exhibition masthead, sculpture rather than seam, object collection rather than seven seam acts, inquiry plate rather than trace resolve, open fins rather than trace-to-mark).
-Compared with Director's Cut: 6/6 differences (gallery rather than cutlist, route/index navigation rather than broadcast timecode, material object rather than colour matte, eight rooms rather than thirteen cuts, inquiry rather than abrupt end card, sculpture rather than colour direction).
-Compared with Proof Mark: 5/6 conservative differences (both have gallery sensibilities; navigation, hero, sequence, close, signature all change). The custom arrow remains a link mark and does not assemble screens.
+## Studio
 
-## Feeling curve and scroll score
+The existing Yash portrait/name opening stays. Its body becomes a direct studio letter, native expandable beliefs, an internal process-image spread, three concrete making steps and a personal contact note. The old attributed quotation and decorative diagram stack are removed. No fictional clients, testimonials, team size or outcomes are introduced.
 
-| Room | Intended feeling | Cause | Device |
-| --- | --- | --- | --- |
-| Studio | Intrigue | Physical silver/orange object, entry typography and direct control | Pointer/range + 3D |
-| FakhriMart | Confidence, peak | Actual interface comes square to the viewer while mobile rises | Pin + perspective |
-| Capabilities | Possibility | Orange type room cuts laterally into blue material room | Pan + reveal |
-| Practice | Understanding | Three real decisions change the workbench content | React tab surface |
-| Person | Connection | Portrait and the person making the work | Photographic parallax |
-| Scope | Readiness | Exact starting prices and direct category paths | Flow + interaction |
-| Brief | Commitment | An actual draft field and selected contact app | Inquiry plate |
+## Motion score
 
-Desktop homepage measured around 10.2 viewport heights including colophon. Mobile gets vertical capability objects, shorter compositions, raster fallback until 3D is requested, and the same content/control access. Reduced motion gets ordinary readable flow and all routes/controls.
+| Scene | Purpose | Motion / control |
+| --- | --- | --- |
+| Opening | A distinct presence and a clear offer | Staggered type arrival, local letter depth, particle response |
+| Identity | Possibility becomes a recognisable mark | Reversible particle assembly and opaque paper handoff |
+| Client proof | Show actual delivered work | Perspective resolves into a readable screen |
+| Starting point | Understand what to do next | Native selection changes scope, price and action |
+| Person | Connect the work to its maker | Portrait parallax and restrained colour response |
+| Plans | Understand an offer before enquiring | Native dialog, clear scope and practical value |
+| Studio beliefs | Read the reasoning at your pace | Native details, plus/minus response |
+| Rae | Ask a real question | Character state, streamed response, stop/reset |
+| Footer | Close with the approved identity | Local tile response and a real return-to-top link |
 
-## Page contracts
+## Qualification
 
-Home: identify the studio, show real work early and lead to a brief. Plans: compare the nine approved offers without changing the price books, expose scope. Clients: one verified project. Case: real desktop/mobile/product details, no invented outcomes. Founder: photographic identity and operating principles. Audit: one workflow and concrete deliverables. Second Brain: approved sources, agreed users and human review. Terms: original complete text, indexed reading with progress.
+Visual refinement precedes final testing. Check desktop, 390px, 320px and landscape layouts, formation/reversal, native controls and fallback. Then source/API/security, distribution/locales, strict browser errors, keyboard/accessibility, unchanged Lighthouse budgets and load checks. Release is complete only after main is pushed, canonical Vercel serves that exact commit, both workflows pass and real Rae returns a complete provider answer. No review is considered proof solely because an image or build exists.
 
-## Implementation choices
+## Model instruction
 
-Vite multipage semantic content remains crawlable and independent of enhancements. React 19.3 islands operate the sculpture, workbench and scope desk. Three 0.186.1 implements procedural geometry/reflections with instancing, visibility lifecycle and fallback. GSAP 3.15 drives fine choreography and SVG strokes; the existing Scrollcraft engine drives section geometry and lateral travel. Native cross-document View Transitions preserve link/history semantics. The user's request for React and a new hero overrides those older preservation instructions in the custom skill.
-
-## 1 October refinement
-
-The owner reviewed the local hero and asked for a richer sculpture, blurred colour blooms, fades and gradients. This updates the visual direction: an unequal spatial ellipse with six rhythmic collar groups, exposed orange arcs and fine cobalt trim; broad reflected softboxes and a moving warm light. The opening unfolds slightly before settling. Backgrounds carry physically motivated amber/cobalt spill, while the scope sheets and client exhibit use warmer paper gradients and layered shadows. The headline stays readable in the darker left field. Translucent sculpture controls make the interaction legible. Fullscreen bloom postprocessing is avoided because a soft CSS field achieves the requested visual with less GPU cost.
-
-## Owner correction: Luminous Loom hero
-
-The owner rejected the collar-based ellipse and opening composition as basic and insufficiently premium. The new hero replaces that geometry with three broad continuous folded ribbons, rounds all edges, uses calm broad studio highlights and an asymmetric rising silhouette. The homepage now begins with a short 2.25-viewport sticky installation: “Ideas, with a pulse.” gives way to “Then we make it real.” as the camera/material unfurls; a soft optical blur and pearl wash hand the scene into the real client exhibit. Cobalt, amber and pearl light wells provide visibly soft depth, with glass only on the actual sculpture control. Original fallback artwork follows this new folded-ribbon art direction. The changes preserve the real work, prices, markets, Rae and useful routes. Reduced motion and failed enhancement retain one readable hero and normal flow.
+The owner explicitly disabled Smart Model Router for this chat. GPT-5.6 workers were interrupted. The unfinished plans and Rae work was reviewed and completed by GPT-6.1 Sol workers with high reasoning. No Astra is used. The delegated model setting does not change the main chat's selected model.

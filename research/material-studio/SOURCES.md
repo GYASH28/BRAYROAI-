@@ -47,3 +47,18 @@ Owner refinement, 2 October 2026: the opening now explains website and AI offers
 Native rendering optimization: https://web.dev/articles/content-visibility . Non-hero rooms use `content-visibility:auto` with measured intrinsic size estimates; completed sizes are cached by the browser. Scene measurements refresh when an offscreen room becomes rendered. Hero particles and text remain rendered continuously; semantic content stays in the document.
 
 Centred typography refinement: the existing licensed Instrument Serif is composed at 16.3vw desktop and 21.4vw phone, with regular/italic contrast. A four-word native transform/light response loads only after fine-pointer interaction and is disabled for reduced motion. Later room layouts use the same owner palette and genuine content; the process instrument uses semantic roving tabs and explanatory SVG flows. No new external assets or libraries were added for this refinement.
+
+## 2 October: material controls and refinement
+
+- Owner's four screenshots: identify the rejected homepage practice, capability and process scenes. The actual routes are retained; those scenes are replaced with a useful project choice.
+- Owner's brand-guide.html: approved mosaic identity and ink/bone/orange/cobalt palette, retained across new type, glass controls and conversation.
+- [MDN backdrop-filter](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter): translucent controls can filter the content behind them. Used on the navigation and modal surfaces, with restrained blur and opaque-enough text backgrounds.
+- [MDN dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog): native modal semantics and showModal/Escape behavior used for full plan details and shared controls.
+- [MDN ::backdrop](https://developer.mozilla.org/docs/Web/CSS/::backdrop): separate modal backdrop provides a dimmed, lightly blurred surrounding page.
+- [Three.js Material](https://threejs.org/docs/pages/Material.html): existing single Points shader remains; visibility is improved through authored alpha, point size and palette rather than a new post-processing dependency.
+
+These primary references inform implementation mechanics. The repository's fifty-site study remains the design research; this correction adds a distinct current composition instead of treating an old brief as owner approval.
+
+### Navigation qualification
+
+- [Chrome for Developers: cross-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document): the incoming listener must be registered before the first rendering opportunity. The global exception fixture caught an early saved-market redirect abandoning its incoming transition before that document revealed. Preference and detection redirects now wait for the next rendering callback so the existing lifecycle listener can observe the incoming transition. Unexpected errors remain visible; the browser assertion is unchanged.

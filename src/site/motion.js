@@ -9,8 +9,6 @@ export async function initStudioMotion(){
  const root=document.querySelector('[data-sc-root]');
  if(root&&!reduced.matches)window.ScrollCraft.mount(root);
  const scene=document.querySelector('[data-sculpture]');
- const bench=document.querySelector('[data-workbench]');
- if(bench){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./workbench.jsx').then(m=>m.mountWorkbench(bench)).catch(()=>{})}},{rootMargin:'300px'});observer.observe(bench)}
  function reading(){const sections=[...document.querySelectorAll('.terms-section')],nav=document.querySelector('.terms-layout>nav');if(!nav)return;ScrollTrigger.create({trigger:'.terms-sections',start:'top center',end:'bottom bottom',onUpdate:s=>nav.style.setProperty('--reading',s.progress)});sections.forEach(section=>ScrollTrigger.create({trigger:section,start:'top 35%',end:'bottom 35%',onToggle:s=>{if(s.isActive)nav.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',String(a.hash==='#'+section.id)))}}))}
  reading();
  if(reduced.matches)return;
@@ -41,7 +39,7 @@ export async function initStudioMotion(){
    const blend=(a,b,p)=>{const t=Math.max(0,Math.min(1,(p-a)/(b-a)));return t*t*(3-2*t)};
    const pose=p=>{
     const leave=blend(.1,.34,p),assembly=Math.max(0,Math.min(1,(p-.18)/.4)),arrive=blend(.53,.65,p),close=blend(.86,1,p),nextOpacity=arrive*(1-close);
-    const values={'--intro-opacity':1-leave,'--intro-blur':`${leave*10}px`,'--intro-y':`${leave*-70}px`,'--next-opacity':nextOpacity,'--next-y':`${(1-arrive)*25-close*20}px`,'--next-blur':`${(1-arrive)*5}px`,'--object-x':'0px','--object-y':`${close*-20}px`,'--object-scale':1+leave*.08-close*.18,'--object-blur':`${close*12}px`,'--object-opacity':(.6+leave*.4)*(1-close),'--halo-rise':`${p*-100}px`,'--halo-slide':`${p*-75}px`,'--control-opacity':1-blend(.18,.38,p),'--handoff-opacity':blend(.852,.87,p),'--handoff-scale':.005+close*1.03,'--assembly-progress':assembly,'--veil-opacity':1-leave};
+    const values={'--intro-opacity':1-leave,'--intro-blur':`${leave*10}px`,'--intro-y':`${leave*-70}px`,'--next-opacity':nextOpacity,'--next-y':`${(1-arrive)*25-close*20}px`,'--next-blur':`${(1-arrive)*5}px`,'--object-x':'0px','--object-y':`${close*-20}px`,'--object-scale':1+leave*.08-close*.18,'--object-blur':`${close*12}px`,'--object-opacity':(.88+leave*.12)*(1-close),'--halo-rise':`${p*-100}px`,'--halo-slide':`${p*-75}px`,'--control-opacity':1-blend(.18,.38,p),'--handoff-opacity':blend(.852,.87,p),'--handoff-scale':.005+close*1.03,'--assembly-progress':assembly,'--veil-opacity':1-leave};
     Object.entries(values).forEach(([key,value])=>hero.style.setProperty(key,value));hero.dataset.heroProgress=p.toFixed(3);hero.dataset.assemblyProgress=assembly.toFixed(3);
     if(intro){intro.inert=leave>.96;intro.setAttribute('aria-hidden',String(leave>.96))}
     if(next){const active=nextOpacity>.08;next.inert=!active;next.setAttribute('aria-hidden',String(!active));next.classList.toggle('is-active',active)}
@@ -58,7 +56,6 @@ export async function initStudioMotion(){
   };
  });
  ScrollTrigger.refresh();
- let measuredBench=false;const resizeObserver=new ResizeObserver(()=>{if(measuredBench)ScrollTrigger.refresh();measuredBench=true});if(bench)resizeObserver.observe(bench);
  window.addEventListener('pageshow',event=>{if(event.persisted)ScrollTrigger.refresh()});
  window.addEventListener('studio:category',()=>{ScrollTrigger.refresh();gsap.fromTo('.plan-category.is-selected .offer',{y:18,opacity:.5},{y:0,opacity:1,duration:.4,stagger:.05,clearProps:'transform,opacity'})});
 

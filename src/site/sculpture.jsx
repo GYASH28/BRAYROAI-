@@ -80,12 +80,12 @@ const vertexShader = /* glsl */ `
     float pointerGlow = pointerInfluence * uPointerStrength;
     float pointSize = mix(aSize, max(aSize, 1.0), localAssembly)
       * (1.0 + pointerGlow * 0.32 + aChoreography.w * 0.18 + filamentLight * loose * 0.16);
-    gl_PointSize = clamp(pointSize * uPixelRatio * depthScale * sizePulse, 0.7, 4.8);
+    gl_PointSize = clamp(pointSize * uPixelRatio * depthScale * sizePulse, 1.0, 5.2);
     gl_Position = projectionMatrix * viewPosition;
 
     vColor = mix(aColor, aTargetColor, localAssembly)
       * (0.93 + sin(uTime * 0.18 + aPhase) * 0.07);
-    float formedAlpha = mix(0.46 + aAlpha * 0.22, 0.31 + aAlpha * 0.3, role);
+    float formedAlpha = mix(0.64 + aAlpha * 0.22, 0.44 + aAlpha * 0.3, role);
     vAlpha = mix(aAlpha, formedAlpha, localAssembly)
       * (0.94 + sin(uTime * 0.27 + aPhase * 1.3) * 0.06);
     vPointerGlow = pointerGlow;
@@ -114,7 +114,7 @@ const fragmentShader = /* glsl */ `
     if (alpha < 0.008) discard;
     vec3 glowColor = mix(vColor, vec3(1.0, 0.56, 0.24), vPointerGlow * 0.18);
     gl_FragColor = vec4(glowColor
-      * (0.76 + heart * 0.55 + vPointerGlow * 0.24 + vFlowLight * 0.16), alpha);
+      * (0.88 + heart * 0.55 + vPointerGlow * 0.24 + vFlowLight * 0.16), alpha);
   }
 `;
 

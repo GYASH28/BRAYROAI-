@@ -47,6 +47,7 @@ export function initStudioEntry(){
   hero.addEventListener('pointerleave',()=>{hero.style.setProperty('--light-x','0px');hero.style.setProperty('--light-y','0px')});
  }
  const mark=document.querySelector('[data-footer-wordmark]');if(mark){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./footer-wordmark.js').then(m=>m.initFooterWordmark(mark)).catch(()=>{})}},{rootMargin:'300px'});observer.observe(mark)}
+ const path=document.querySelector('[data-project-path]');if(path){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./project-path.js').then(m=>m.initProjectPath(path)).catch(()=>{})}},{rootMargin:'500px'});observer.observe(path)}
  const planDesk=document.querySelector('[data-plan-desk]');if(planDesk)import('./plan-desk.jsx').then(m=>m.mountPlanDesk(planDesk)).catch(()=>{});
  window.addEventListener('pagehide',()=>{if(!document.hidden)sculpture?.()});
 }

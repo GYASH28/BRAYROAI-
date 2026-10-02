@@ -1,3 +1,40 @@
+# Make your mark — current refinement qualification
+
+2 October 2026. This section records the current changes before their main release. Earlier sections are historical evidence for earlier designs.
+
+## Delivered design
+
+Large centred Space Grotesk “Make your MARK.” with four responsive letterforms, brighter authored particle ribbons and the preserved full-screen BR assembly/paper handoff. The four rejected homepage scenes are replaced by a native website/monthly/AI project choice with useful scope, price and next action. Inset glass navigation and regional dialog, nine full-plan pop-ups, a new Rae conversation workspace and the complete founder/studio body are integrated. Genuine client proof, approved identity/footer, independent prices, working terms, contact drafts and all routes remain.
+
+## Visual evidence
+
+`artifacts/mark-studio/` contains inspected desktop 1440×900, phone 390×844/320×568 and landscape 667×375 states; opening, pointer response, formed mark, paper transition, reverse, homepage choice, market, plans, Rae and studio captures. The reviewed layouts have no horizontal overflow and keep the opening action within the viewport. Source room estimates were corrected using measured rendered heights. Reduced motion and failed enhancement retain readable content; the homepage choice also works with HTML/CSS alone.
+
+## Actual fixes found during qualification
+
+- The shared glass stylesheet was initially absent from the production bundle. The Vite shell now runs before HTML asset processing; the built pages use the compiled stylesheet.
+- An entry animation completion reset a stationary pointer's type response. Remeasurement now retains that pointer and repaints the four letters.
+- Full-plan muted labels had contrast 4.46:1. They now use a darker colour and pass the open-dialog audit.
+- A strict global exception fixture exposed a saved-market redirect abandoning the incoming native transition before reveal. Preference/detection redirects now wait for the next rendering callback. The existing transition listener remains specific; no page-error assertion or arbitrary error suppression was added to disguise the failure.
+- Rae request ownership now guards every asynchronous continuation and terminal history commit. Cancelled text/actions cannot contaminate a later reply; only completed history and allowlisted metadata survive.
+
+## Local qualification
+
+- Syntax, API contract/provider fallback/security, source integrity, distribution and all regional routes/prices: passed.
+- All JavaScript, including lazy modules: 276,637 compressed bytes, below the unchanged 350KB budget.
+- Mobile Lighthouse: **97 performance / 100 accessibility / 100 best practices / 100 SEO**. LCP **2439ms**, TBT **83ms**, CLS **0**; unchanged budgets passed. This report precedes the redirect scheduling fix, which does not execute for the audited fresh default-market opening. The exact released source is audited again by both workflows.
+- Five affected integrated browser journeys passed with zero retries: particles/reverse/footer/mobile/reduced motion, native choice without JavaScript, studio keyboard controls, shared market accessibility and all 27 full-plan/market combinations including native dismissal, scope, enquiry and focus return.
+- The full 14-test strict exception run then passed 13 journeys and exposed the early market-transition rejection. After its fix, all four affected redirect/history/draft journeys passed with zero retries and no uncaught exceptions. The Rae cancellation/new-thread/history/open-dialog audit passed in the full run.
+- Route stress: **240 requests across 20 routes passed**.
+
+## Release gate
+
+Production is not asserted by this pre-release local report. The goal requires main to be pushed, a READY Vercel deployment, the canonical exact-commit marker, both full GitHub workflow results, and a complete real-provider Rae response. Their authoritative outputs and the ignored `RESUME.md` handoff record release qualification without changing the commit under test. The existing performance budgets and exception assertions remain in force.
+
+---
+
+## Historical qualification records
+
 # Material Intelligence / particle revision verification
 
 1 October 2026. Qualification applies to the current source and, after push, the exact commit served by Vercel. Earlier green builds do not qualify a later revision.

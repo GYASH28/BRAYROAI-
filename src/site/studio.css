@@ -215,10 +215,10 @@ dialog{border:1px solid #514b41;background:var(--deep);color:var(--bone);padding
 
 /* Native offscreen rendering keeps the opening independent of later rooms. */
 .page-home main>section:not(.studio-hero){content-visibility:auto;contain-intrinsic-block-size:auto var(--room-size,900px)}
-.page-home .practice-intro{--room-size:clamp(210px,24vw,410px)}.page-home .practice{--room-size:980px}.page-home .scope-preview{--room-size:795px}.page-home .contact-plate{--room-size:460px}
+.page-home .path-studio{--room-size:772px}.page-home .scope-preview{--room-size:623px}.page-home .contact-plate{--room-size:412px}
 .page-home .premium-footer{content-visibility:auto;contain-intrinsic-block-size:auto 840px}
-@media(max-width:760px){.page-home .practice-intro{--room-size:445px}.page-home .capability-gallery{--room-size:1560px}.page-home .practice{--room-size:1060px}.page-home .person-section{--room-size:calc(72svh + 650px)}.page-home .scope-preview{--room-size:645px}.page-home .contact-plate{--room-size:710px}.page-home .premium-footer{contain-intrinsic-block-size:auto 800px}}
-@media(max-width:350px){.page-home .practice-intro{--room-size:460px}.page-home .practice{--room-size:1120px}.page-home .scope-preview{--room-size:670px}}
+@media(max-width:760px){.page-home .path-studio{--room-size:1214px}.page-home .person-section{--room-size:calc(max(68svh,420px) + 590px)}.page-home .scope-preview{--room-size:585px}.page-home .contact-plate{--room-size:593px}.page-home .premium-footer{contain-intrinsic-block-size:auto 800px}}
+@media(max-width:350px){.page-home .path-studio{--room-size:1250px}.page-home .scope-preview{--room-size:620px}}
 
 /* The type responds in four small gestures; its text stays selectable. */
 .hero-word{display:inline-block;transform:translateY(var(--type-y,0px)) rotate(var(--type-r,0deg));text-shadow:0 0 30px rgb(175 194 255 / var(--type-light,0));transition:transform .55s var(--ease),text-shadow .65s var(--ease);transform-origin:50% 72%}

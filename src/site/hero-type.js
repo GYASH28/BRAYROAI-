@@ -1,4 +1,4 @@
-// Four words share the particle field's pointer; the headline remains real text.
+// Four letterforms share the particle field's pointer; the headline remains real text.
 export function initHeroType(stage, initialPointer) {
  const preference=matchMedia('(prefers-reduced-motion:reduce)');
  if(preference.matches)return()=>{};
@@ -11,14 +11,16 @@ export function initHeroType(stage, initialPointer) {
   words.forEach((word,index)=>{
    const rect=bounds[index],dx=pointer.x-rect.x,dy=pointer.y-rect.y;
    const influence=Math.max(0,1-Math.hypot(dx,dy)/Math.max(240,rect.width*1.7));
-   word.style.setProperty('--type-y',`${-influence*7}px`);
-   word.style.setProperty('--type-r',`${Math.max(-1,Math.min(1,dx/300))*influence*1.6}deg`);
-   word.style.setProperty('--type-light',String(influence*.8));
+   word.style.setProperty('--type-y',`${-influence*18}px`);
+   word.style.setProperty('--type-r',`${Math.max(-1,Math.min(1,dx/300))*influence*3.5}deg`);
+   word.style.setProperty('--type-rx',`${Math.max(-1,Math.min(1,-dy/160))*influence*12}deg`);
+   word.style.setProperty('--type-ry',`${Math.max(-1,Math.min(1,dx/160))*influence*10}deg`);
+   word.style.setProperty('--type-light',String(influence*.9));
   });
  };
  const move=event=>{pointer={x:event.clientX,y:event.clientY};if(!frame)frame=requestAnimationFrame(paint)};
- const reset=()=>{pointer=null;cancelAnimationFrame(frame);frame=0;words.forEach(word=>{word.style.removeProperty('--type-y');word.style.removeProperty('--type-r');word.style.removeProperty('--type-light')})};
- const remeasure=()=>{reset();measure()};
+ const reset=()=>{pointer=null;cancelAnimationFrame(frame);frame=0;words.forEach(word=>{word.style.removeProperty('--type-y');word.style.removeProperty('--type-r');word.style.removeProperty('--type-light');word.style.removeProperty('--type-rx');word.style.removeProperty('--type-ry')})};
+ const remeasure=()=>{const retained=pointer;reset();measure();pointer=retained;if(pointer)paint()};
  const preferenceChanged=()=>{enabled=!preference.matches;reset()};
  measure();
  stage.addEventListener('pointermove',move,{passive:true});stage.addEventListener('pointerleave',reset);

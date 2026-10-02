@@ -1,10 +1,16 @@
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import {OFFERS,leadText,priceFor} from '../data/pricing.js';
+import {OFFER_DETAILS} from '../data/offer-details.js';
+
+const runtimeErrors=new WeakMap();
+test.beforeEach(({page})=>{const errors=[];runtimeErrors.set(page,errors);page.on('pageerror',error=>errors.push(error.message))});
+test.afterEach(({page})=>{expect(runtimeErrors.get(page),'Uncaught browser exceptions').toEqual([])});
 
 test('new visitor reaches real work, case study, and returns',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await page.goto('/');
- await expect(page.getByRole('heading',{name:/Get noticed. Get chosen/i})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Make your mark/i})).toBeVisible();
  await expect(page.locator('.sculpture-control')).toHaveCount(0);
  await page.locator('.object-index a[href="#work"]').click();
  await expect(page).toHaveURL(/#work$/);
@@ -47,6 +53,10 @@ test('restored founder, client and AI pages stay navigable in each market',async
  await page.goto('/founder');
  await page.locator('[data-founder-colour]').click();
  await expect(page.locator('.founder-hero')).toHaveClass(/is-colour/);
+ await page.locator('#principles summary').filter({hasText:'Motion with meaning.'}).focus();
+ await page.keyboard.press('Enter');
+ await expect(page.locator('#principles details').nth(1)).toHaveAttribute('open','');
+ await expect(page.locator('#principles details').nth(1)).toContainText('when motion is reduced');
  await page.goto('/clients');
  await page.locator('.archive-case-title').click();
  await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
@@ -169,15 +179,19 @@ test('small screens, reduced motion and enhancement failure preserve content',as
   await page.setViewportSize({width,height:844});await page.goto('/');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow,`horizontal overflow at ${width}px`).toBeLessThanOrEqual(1);
-  await expect(page.getByRole('heading',{name:/Get noticed. Get chosen/i})).toBeVisible();
+  await expect(page.getByRole('heading',{name:/Make your mark/i})).toBeVisible();
  }
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/');
- await expect(page.locator('#approach')).toBeVisible();
- await page.route('**/assets/app-*.js',route=>route.abort());
+ await expect(page.locator('#method')).toBeVisible();
+ await page.route('**/assets/*.js',route=>route.abort());
  await page.goto('/plans');
  await expect(page.getByRole('heading',{name:/Different starts/i})).toBeVisible();
  await expect(page.locator('#ai-systems')).toBeVisible();
+ await page.goto('/#method');
+ await page.getByRole('radio',{name:'A better live website'}).check();
+ await expect(page.locator('[data-path-panel=monthly]')).toBeVisible();
+ await expect(page.locator('[data-path-panel=monthly] a')).toHaveAttribute('href','/plans#monthly-support');
 });
 
 test('particle hero, footer and pinned proof respond across input, resize and reversed scroll',async({page,context})=>{
@@ -208,15 +222,16 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await page.evaluate(()=>{const section=document.querySelector('#work');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.15,behavior:'instant'})});
  await expect.poll(()=>page.locator('.work-desktop').evaluate(node=>getComputedStyle(node).transform)).not.toBe(forward);
  await page.locator('#method').scrollIntoViewIfNeeded();
- const practice=page.getByRole('tablist',{name:'Studio practice'});
- await expect(practice.getByRole('tab',{name:/Direction/})).toBeVisible();
- await practice.getByRole('tab',{name:/Direction/}).focus();
- await page.keyboard.press('ArrowRight');
- await expect(practice.getByRole('tab',{name:/Design/})).toBeFocused();
- await expect(page.getByRole('tabpanel',{name:/Design/})).toContainText('Type, imagery, interface and motion');
- await page.keyboard.press('End');
- await expect(practice.getByRole('tab',{name:/Build/})).toHaveAttribute('aria-selected','true');
- const processAccess=await new AxeBuilder({page}).include('.workbench').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+ const choices=page.getByRole('group',{name:'What does your business need?'});
+ await choices.getByRole('radio',{name:'A new website'}).focus();
+ await page.keyboard.press('ArrowDown');
+ await expect(choices.getByRole('radio',{name:'A better live website'})).toBeChecked();
+ await expect(page.locator('[data-path-panel="monthly"]')).toBeVisible();
+ await expect(page.locator('[data-path-panel="monthly"] [data-price]')).toHaveText('₹2,599/mo');
+ await choices.getByRole('radio',{name:'A lighter way to work'}).check();
+ await expect(page.locator('[data-path-panel="ai"]')).toContainText('Three to five realistic opportunities');
+ await expect(page.locator('[data-path-panel="ai"] a')).toHaveAttribute('href','/ai-workflow-audit');
+ const processAccess=await new AxeBuilder({page}).include('.path-studio').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
  expect(processAccess.violations).toEqual([]);
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
  const mark=page.getByRole('link',{name:'BRAYRO AI — return to the top'});
@@ -255,6 +270,8 @@ test('keyboard menu, market dialog, and accessibility',async({page})=>{
  await page.getByRole('button',{name:'Open menu'}).click();
  await page.locator('#menu-dialog [data-market-open]').click();
  await expect(page.locator('#market-dialog')).toBeVisible();
+ const marketAccess=await new AxeBuilder({page}).include('#market-dialog').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+ expect(marketAccess.violations).toEqual([]);
  await page.keyboard.press('Escape');
  await expect(page.locator('#market-dialog')).not.toBeVisible();
  for(const route of ['/','/plans','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms']){
@@ -262,4 +279,80 @@ test('keyboard menu, market dialog, and accessibility',async({page})=>{
   const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
   expect(result.violations.map(item=>item.id)).toEqual([]);
  }
+});
+
+
+test('full plans explain every offer in each market and restore keyboard focus',async({page})=>{
+ test.setTimeout(90_000);
+ const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ for(const [market,prefix] of [['in',''],['ae','/ae'],['au','/au']]){
+  await page.goto(prefix+'/plans');
+  for(const id of Object.keys(OFFERS)){
+   const category=id.startsWith('monthly')?'monthly-support':['ai-workflow-audit','company-second-brain','knowledge-care'].includes(id)?'ai-systems':'new-website';
+   await page.locator(`[data-category="${category}"]`).click();
+   const opener=page.locator(`[data-plan-detail="${id}"]`);
+   await opener.click();
+   const modal=page.locator('#plan-detail-dialog');
+   await expect(modal).toBeVisible();
+   await expect(modal.locator('#plan-detail-title')).toHaveText(OFFERS[id].name);
+   await expect(modal.locator('[data-detail-price]')).toHaveText(priceFor(id,market));
+   await expect(modal.locator('.plan-detail-inclusions li')).toHaveText(OFFER_DETAILS[id].inclusions);
+   await expect(modal.locator('.plan-detail-benefits li')).toHaveText(OFFER_DETAILS[id].benefits);
+   await expect(modal.locator('.plan-detail-boundaries li')).toHaveText(OFFER_DETAILS[id].boundaries);
+   await expect(modal.locator('[data-detail-terms]')).toHaveAttribute('href',prefix+'/terms');
+   const href=await modal.locator('[data-detail-enquire]').getAttribute('href');
+   expect(new URL(href).searchParams.get('text')).toBe(leadText({market,offerId:id,source:prefix+'/plans#'+category}));
+   if(market==='in'&&id==='launch-website'){
+    const access=await new AxeBuilder({page}).include('#plan-detail-dialog').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+    expect(access.violations).toEqual([]);
+    await page.mouse.wheel(0,500);
+    expect(await page.locator('html').evaluate(node=>getComputedStyle(node).overflow)).toBe('hidden');
+   }
+   await page.keyboard.press('Escape');
+   await expect(modal).not.toBeVisible();
+   await expect(opener).toBeFocused();
+  }
+ }
+ await page.goto('/plans#premium-experience');
+ await expect(page.locator('#plan-detail-dialog')).toHaveCount(0);
+ await page.locator('[data-plan-detail="premium-experience"]').click();
+ await page.mouse.click(5,5);
+ await expect(page.locator('#plan-detail-dialog')).not.toBeVisible();
+ expect(errors).toEqual([]);
+});
+
+test('Rae cancellation discards late stream events and conversation reset clears history',async({page})=>{
+ const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ await page.addInitScript(()=>{
+  const nativeFetch=window.fetch;window.raeRequests=[];
+  window.fetch=(url,options)=>{
+   if(!String(url).includes('/api/rae-chat'))return nativeFetch(url,options);
+   window.raeRequests.push(JSON.parse(options.body));
+   const encoder=new TextEncoder();let controller;
+   const stream=new ReadableStream({start(c){controller=c}});
+   if(window.raeRequests.length===1){
+    window.finishOldRae=()=>{try{controller.enqueue(encoder.encode('event: meta\ndata: {"actions":[{"name":"navigateToRoute","args":{"route":"/terms"},"label":"Stale link"}]}\n\nevent: done\ndata: {"finishReason":"stop"}\n\n'));controller.close()}catch{}};
+    controller.enqueue(encoder.encode('event: delta\ndata: {"text":"The unfinished answer"}\n\n'));
+   }else{controller.enqueue(encoder.encode('event: delta\ndata: {"text":"The fresh answer"}\n\nevent: done\ndata: {"finishReason":"stop"}\n\n'));controller.close()}
+   return Promise.resolve(new Response(stream,{headers:{'Content-Type':'text/event-stream'}}));
+  };
+ });
+ await page.goto('/');await page.locator('.rae-launcher').click();
+ await page.locator('#rae-input').fill('The old question');await page.getByRole('button',{name:'Send message to Rae'}).click();
+ await expect(page.locator('.rae-message.assistant')).toHaveText('The unfinished answer');
+ await page.getByRole('button',{name:'Stop response'}).click();
+ await expect(page.locator('.rae-message')).toHaveCount(0);
+ await expect(page.locator('#rae-input')).toHaveValue('The old question');
+ await page.locator('#rae-input').fill('A fresh question');await page.getByRole('button',{name:'Send message to Rae'}).click();
+ await expect(page.locator('.rae-message.assistant')).toHaveText('The fresh answer');
+ await page.evaluate(()=>window.finishOldRae());
+ await expect(page.locator('.rae-message.assistant')).toHaveText('The fresh answer');
+ await expect(page.locator('.rae-actions')).toHaveCount(0);
+ await page.getByRole('button',{name:'Start a new conversation with Rae'}).click();
+ await expect(page.locator('.rae-message')).toHaveCount(0);
+ await page.locator('#rae-input').fill('After a new thread');await page.getByRole('button',{name:'Send message to Rae'}).click();
+ await expect(page.locator('.rae-message.assistant')).toHaveText('The fresh answer');
+ const requests=await page.evaluate(()=>window.raeRequests);expect(requests[1].history).toEqual([]);expect(requests[2].history).toEqual([]);
+ const access=await new AxeBuilder({page}).include('#rae-dialog').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();expect(access.violations).toEqual([]);
+ expect(errors).toEqual([]);
 });

@@ -34,7 +34,7 @@ function mixColor(from, to, amount) {
 const BONE = [0.86, 0.84, 0.78];
 const WHITE = [1, 0.985, 0.94];
 const ORANGE = [1, 0.245, 0.055];
-const COBALT = [0.08, 0.2, 0.58];
+const COBALT = [0.2, 0.43, 1];
 
 // Exact white mosaic tiles from static/brand/brayro-monogram.svg. The dark
 // rounded plate and the two corner accents are deliberately not part of the
@@ -245,8 +245,8 @@ export function createParticleField(count = PARTICLE_COUNT, seed = PARTICLE_SEED
         : mixColor(BONE, WHITE, 0.18 + random() * 0.62);
     colors.set(spark ? mixColor(ribbonColor, WHITE, 0.52) : ribbonColor, offset);
     phases[index] = ribbon * 1.13 + loose.ribbonProgress[index] * TAU * 2.1;
-    sizes[index] = (0.72 + random() * 0.82) * (spark ? 1.78 : 1);
-    alphas[index] = Math.min(0.88, 0.28 + random() * 0.34 + spark * 0.19);
+    sizes[index] = (0.9 + random() * 0.9) * (spark ? 1.78 : 1);
+    alphas[index] = Math.min(0.98, 0.48 + random() * 0.34 + spark * 0.15);
   }
 
   return {

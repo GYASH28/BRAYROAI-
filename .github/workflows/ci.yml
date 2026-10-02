@@ -48,7 +48,7 @@ jobs:
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/brayroai-preview.log 2>&1 &
           for i in {1..40}; do
-            if curl -fsS http://127.0.0.1:4173/ | grep -q 'Get noticed'; then exit 0; fi
+            if curl -fsS http://127.0.0.1:4173/ -o /tmp/brayroai-preview-home.html && grep -q 'Make your mark.' /tmp/brayroai-preview-home.html; then exit 0; fi
             sleep 1
           done
           cat /tmp/brayroai-preview.log

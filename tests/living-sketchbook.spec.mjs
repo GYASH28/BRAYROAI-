@@ -189,11 +189,11 @@ test('plans deep links, history, and English enquiry URLs',async({page})=>{
  await expect(page.locator('#second-brain [data-price]')).toHaveText('A$4,900');
  await page.reload();
  await expect(page.locator('#second-brain')).toBeVisible();
- await page.getByRole('tab',{name:'Monthly support'}).click();
+ await page.getByRole('tab',{name:/Monthly care/i}).click();
  await expect(page).toHaveURL(/#monthly-support$/);
  await page.getByRole('tab',{name:'AI systems'}).click();
  await page.goBack();
- await expect(page.getByRole('tab',{name:'Monthly support'})).toHaveAttribute('aria-selected','true');
+ await expect(page.getByRole('tab',{name:/Monthly care/i})).toHaveAttribute('aria-selected','true');
  const href=await page.locator('#monthly-starter [data-offer-contact]').getAttribute('href');
  expect(decodeURIComponent(href)).toContain('A$390/month');
  expect(decodeURIComponent(href)).toContain('Monthly Starter');

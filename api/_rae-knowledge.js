@@ -9,9 +9,9 @@ export const RAE_KNOWLEDGE=Object.freeze({
     {id:'monthly-starter',name:'Starter partnership',price:'₹2,599/month',kind:'ongoing website support'},
     {id:'monthly-growth',name:'Growth partnership',price:'₹3,999/month',kind:'ongoing website support'},
     {id:'monthly-studio',name:'Studio partnership',price:'₹5,999+/month',kind:'ongoing website support'},
-    {id:'launch-website',name:'Launch Website',price:'₹9,999',kind:'complete one-time website build'},
-    {id:'business-experience',name:'Business Experience',price:'₹17,999',kind:'larger one-time website build'},
-    {id:'premium-experience',name:'Premium Experience',price:'₹25K–₹35K+',kind:'premium one-time website experience'}
+    {id:'launch-website',name:'Website Starter',price:'₹2,599',kind:'complete one-time website build'},
+    {id:'business-experience',name:'Business Website',price:'₹3,999',kind:'complete business website build'},
+    {id:'premium-experience',name:'Premium Website',price:'₹5,999+',kind:'premium one-time website build'}
   ],
   aiOffers:[
     {id:'ai-workflow-audit',name:'AI Workflow Audit',price:'₹9,999',summary:'Maps a workflow, identifies useful AI or automation opportunities, prioritises them and includes a workflow map, opportunity shortlist, priority matrix and 30-minute review.'},

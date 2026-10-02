@@ -44,8 +44,8 @@ export async function initStudioMotion(){
    const blend=(a,b,p)=>{const t=Math.max(0,Math.min(1,(p-a)/(b-a)));return t*t*(3-2*t)};
    const lastValues={};
    const pose=p=>{
-    const leave=blend(.1,.34,p),assembly=Math.max(0,Math.min(1,(p-.18)/.4)),arrive=blend(.53,.65,p),close=blend(.965,1,p),nextOpacity=arrive;
-    const values={'--intro-opacity':1-leave,'--intro-y':`${leave*-70}px`,'--next-opacity':nextOpacity,'--next-y':`${(1-arrive)*25}px`,'--object-x':'0px','--object-y':`${close*-12}px`,'--object-scale':1+leave*.08-close*.04,'--object-opacity':.88+leave*.12,'--halo-rise':`${p*-100}px`,'--halo-slide':`${p*-75}px`,'--control-opacity':1-blend(.18,.38,p),'--assembly-progress':assembly,'--veil-opacity':1-leave};
+    const leave=blend(.1,.34,p),assembly=Math.max(0,Math.min(1,(p-.18)/.4)),arrive=blend(.53,.65,p),close=blend(.965,1,p),handoff=blend(.86,.96,p),nextOpacity=arrive;
+    const values={'--intro-opacity':1-leave,'--intro-y':`${leave*-70}px`,'--next-opacity':nextOpacity,'--next-y':`${(1-arrive)*25}px`,'--object-x':'0px','--object-y':`${close*-12}px`,'--object-scale':1+leave*.08-close*.04,'--object-opacity':.88+leave*.12,'--halo-rise':`${p*-100}px`,'--halo-slide':`${p*-75}px`,'--control-opacity':1-blend(.18,.38,p),'--assembly-progress':assembly,'--veil-opacity':1-leave,'--handoff-opacity':handoff,'--handoff-y':`${(1-handoff)*72}px`,'--handoff-line':handoff};
     Object.entries(values).forEach(([key,value])=>{if(lastValues[key]!==value){hero.style.setProperty(key,value);lastValues[key]=value}});hero.dataset.heroProgress=p.toFixed(3);hero.dataset.assemblyProgress=assembly.toFixed(3);
     if(intro){intro.inert=leave>.96;intro.setAttribute('aria-hidden',String(leave>.96))}
     if(next){const active=nextOpacity>.08;next.inert=!active;next.setAttribute('aria-hidden',String(!active));next.classList.toggle('is-active',active)}

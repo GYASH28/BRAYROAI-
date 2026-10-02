@@ -224,3 +224,13 @@ dialog{border:1px solid #514b41;background:var(--deep);color:var(--bone);padding
 .hero-intro h1 .title-row>span{animation-name:hero-type-arrival}
 @keyframes hero-type-arrival{from{opacity:0;transform:translateY(.24em) rotate(-1.5deg);filter:blur(12px)}to{opacity:1;transform:none;filter:blur(0)}}
 @media(prefers-reduced-motion:reduce){.hero-word{transform:none;text-shadow:none;transition:none}.hero-intro h1 .title-row>span{animation:none}}
+
+
+/* BR → FakhriMart handoff: visible motion, never a blank interstitial. */
+.page-home .hero-handoff{position:absolute;z-index:5;left:0;right:0;bottom:0;height:clamp(68px,9vh,108px);pointer-events:none;overflow:hidden;opacity:var(--handoff-opacity,0);transform:translate3d(0,var(--handoff-y,72px),0);background:linear-gradient(180deg,transparent 0,rgb(231 226 217 / .035) 48%,rgb(231 226 217 / .15) 100%);will-change:transform,opacity}
+.page-home .hero-handoff::after{content:'';position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--paper)}
+.page-home .hero-handoff i{position:absolute;display:block;bottom:6px;transform-origin:left center}
+.page-home .hero-handoff i:first-child{left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent 0,#afc2ff6e 22%,#f3f0eab8 62%,transparent 100%);transform:scaleX(var(--handoff-line,0))}
+.page-home .hero-handoff i:last-child{left:var(--gutter);width:clamp(70px,10vw,150px);height:2px;background:linear-gradient(90deg,var(--orange),transparent);transform:scaleX(var(--handoff-line,0))}
+@media(max-width:760px){.page-home .hero-handoff{height:74px}.page-home .hero-handoff::after{height:4px}.page-home .hero-handoff i{bottom:4px}}
+@media(prefers-reduced-motion:reduce){.page-home .hero-handoff{display:none}}

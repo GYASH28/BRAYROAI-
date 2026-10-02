@@ -27,6 +27,9 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  await page.screenshot({path:`${folder}/${device}-project-path.png`});
  for(const [route,name] of [['/plans','plans'],['/clients','clients'],['/clients/fakhrimart','case'],['/founder','founder'],['/ai-workflow-audit','audit'],['/company-second-brain','brain'],['/terms','terms']]){
   await page.goto(base+route,{waitUntil:'networkidle'});await page.screenshot({path:`${folder}/${device}-${name}.png`});
+  if(name==='plans'){await page.locator('#starter-build').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-plans-builds.png`})}
+  if(name==='founder'){await page.locator('.founder-opening').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-founder-opening.png`})}
+  if(name==='terms'){await page.locator('#pricing').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-terms-reading.png`})}
  }
  await page.locator('.rae-launcher').click();
  await page.locator('#rae-dialog').waitFor({state:'visible'});

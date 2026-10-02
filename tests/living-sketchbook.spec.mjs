@@ -107,7 +107,7 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
 });
 
 test('regional price books are English and exact',async({page})=>{
- for(const [route,label,price] of [['/plans','India · INR','₹9,999'],['/ae/plans','UAE · AED','AED 2,990'],['/au/plans','Australia · AUD','A$1,490']]){
+ for(const [route,label,price] of [['/plans','India · INR','₹2,599'],['/ae/plans','UAE · AED','AED 690'],['/au/plans','Australia · AUD','A$390']]){
   await page.goto(route);await expect(page.getByRole('button',{name:new RegExp(label)}).first()).toBeVisible();
   await expect(page.locator('[data-price="launch-website"]').first()).toHaveText(price);
   await expect(page.locator('html')).toHaveAttribute('lang','en');
@@ -136,6 +136,20 @@ test('restored founder, client and AI pages stay navigable in each market',async
  await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
 });
 
+test('plans keep complete website builds separate from optional monthly care',async({page})=>{
+ await page.goto('/plans');
+ await expect(page.getByRole('heading',{level:1,name:/Build the site. Choose the depth./i})).toBeVisible();
+ await expect(page.locator('#starter-build [data-price="launch-website"]')).toHaveText('₹2,599');
+ await expect(page.locator('#business-build [data-price="business-experience"]')).toHaveText('₹3,999');
+ await expect(page.locator('#premium-build [data-price="premium-experience"]')).toHaveText('₹5,999+');
+ await expect(page.locator('#new-website')).toContainText('complete website builds, not maintenance plans');
+ await expect(page.locator('#monthly-support')).toBeHidden();
+ await page.getByRole('tab',{name:/Monthly care/i}).click();
+ await expect(page.locator('#monthly-support')).toBeVisible();
+ await expect(page.locator('#new-website')).toBeHidden();
+ await expect(page.locator('#monthly-starter [data-price="monthly-starter"]')).toHaveText('₹2,599/mo');
+});
+
 test('manual market choice survives navigation and late detection',async({page})=>{
  let releaseDetection;
  const detectionGate=new Promise(resolve=>{releaseDetection=resolve});
@@ -153,14 +167,14 @@ test('manual market choice survives navigation and late detection',async({page})
  await page.goto('/plans?ref=brief#monthly-support');
  await expect(page).toHaveURL(/\/ae\/plans\?ref=brief#monthly-support$/);
  await expect(page.locator('[data-category="monthly-support"]')).toHaveAttribute('aria-selected','true');
- await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 2,990');
+ await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 690');
 });
 
 test('old Arabic URLs and manual preferences resolve to English UAE',async({page})=>{
  await page.goto('/ae/ar/plans');
  await expect(page).toHaveURL(/\/ae\/plans$/);
  await expect(page.locator('html')).toHaveAttribute('lang','en');
- await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 2,990');
+ await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 690');
  await page.goto('/');
  await page.evaluate(()=>{localStorage.setItem('brayro_market_source','manual');localStorage.setItem('brayro_market','ae-ar');localStorage.setItem('brayro_lang','ar')});
  await page.reload();
@@ -219,18 +233,18 @@ test('Rae replaces interrupted text and retains only completed answers',async({p
  const requests=[];
  await page.route('**/api/rae-chat',async route=>{
   requests.push(route.request().postDataJSON());
-  const replacement='Launch Website starts at ₹9,999. Monthly support starts at ₹2,599.';
+  const replacement='Website Starter starts at ₹2,599. Monthly support starts at ₹2,599.';
   const body=requests.length===1?`event: delta\ndata: {"text":"Discard this partial"}\n\nevent: reset\ndata: {"reason":"provider_recovery"}\n\nevent: state\ndata: {"state":"thinking","attempt":2,"recovering":true}\n\nevent: delta\ndata: ${JSON.stringify({text:replacement})}\n\nevent: done\ndata: {"finishReason":"stop"}\n\n`:'event: delta\ndata: {"text":"We can discuss your scope."}\n\nevent: done\ndata: {"finishReason":"stop"}\n\n';
   await route.fulfill({status:200,contentType:'text/event-stream',body});
  });
  await page.goto('/');await page.locator('.rae-launcher').click();
  await page.locator('#rae-input').fill('What are the starting prices?');await page.getByRole('button',{name:'Send message to Rae'}).click();
- await expect(page.locator('.rae-message.assistant').last()).toHaveText('Launch Website starts at ₹9,999. Monthly support starts at ₹2,599.');
+ await expect(page.locator('.rae-message.assistant').last()).toHaveText('Website Starter starts at ₹2,599. Monthly support starts at ₹2,599.');
  await expect(page.locator('.rae-messages')).not.toContainText('Discard this partial');
  await page.locator('#rae-input').fill('What happens next?');await page.getByRole('button',{name:'Send message to Rae'}).click();
  await expect(page.locator('.rae-message.assistant').last()).toHaveText('We can discuss your scope.');
  expect(requests[0].supportsStreamReset).toBe(true);
- expect(requests[1].history).toEqual([{role:'user',text:'What are the starting prices?'},{role:'assistant',text:'Launch Website starts at ₹9,999. Monthly support starts at ₹2,599.'}]);
+ expect(requests[1].history).toEqual([{role:'user',text:'What are the starting prices?'},{role:'assistant',text:'Website Starter starts at ₹2,599. Monthly support starts at ₹2,599.'}]);
 });
 
 test('Rae renders only allowlisted, market-aware suggestions',async({page})=>{
@@ -261,7 +275,7 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('#method')).toBeVisible();
  await page.route('**/assets/*.js',route=>route.abort());
  await page.goto('/plans');
- await expect(page.getByRole('heading',{name:/Different starts/i})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Build the site/i})).toBeVisible();
  await expect(page.locator('#ai-systems')).toBeVisible();
  await page.goto('/#method');
  await page.getByRole('radio',{name:'A better live website'}).check();
@@ -297,7 +311,12 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await expect(page.locator('.hero-next')).toHaveAttribute('aria-hidden','false');
  await expect(page.getByRole('heading',{name:/Strategy becomes structure. Character becomes experience/i})).toBeInViewport();
  await heroPosition(.94);
- await expect(page.locator('.hero-handoff')).toHaveCount(0);
+ const handoff=page.locator('.hero-handoff');
+ await expect(handoff).toHaveCount(1);
+ await expect.poll(()=>handoff.evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.6);
+ const handoffBox=await handoff.boundingBox();
+ expect(handoffBox.height).toBeLessThan(150);
+ expect(handoffBox.y).toBeGreaterThan(page.viewportSize().height-170);
  await expect.poll(()=>page.locator('.hero-object').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.85);
  await heroPosition(0);
  await expect(page.locator('.hero-intro')).toHaveAttribute('aria-hidden','false');
@@ -338,7 +357,8 @@ test('particle hero, footer and pinned proof respond across input, resize and re
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
  }
  await heroPosition(.999);
- await expect(page.locator('.hero-handoff')).toHaveCount(0);
+ await expect(page.locator('.hero-handoff')).toHaveCount(1);
+ await expect.poll(()=>page.locator('.hero-handoff').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.95);
  await expect.poll(()=>page.locator('.hero-object').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.85);
  await expect(page.locator('.hero-next')).toHaveAttribute('aria-hidden','false');
  await page.emulateMedia({reducedMotion:'reduce'});

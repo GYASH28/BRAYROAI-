@@ -129,16 +129,14 @@ function Sculpture({ host }) {
     const assemblyParent = host.closest('[data-assembly-progress]') || host.parentElement;
     let targetAssembly = clamp(assemblyParent?.dataset.assemblyProgress ?? host.dataset.assembly);
     let targetTravel = clamp(host.closest('.studio-hero')?.dataset.heroProgress);
-    let lastInteraction = performance.now();
     const setAssembly = (event) => {
       targetAssembly = clamp(event.detail?.progress ?? event.detail?.value);
-      lastInteraction = performance.now();
     };
     // The aliases keep older callers harmless while studio:assembly is the
     // authored cloud-to-mark signal.
     const shape = setAssembly;
     const progress = setAssembly;
-    const travelScene = (event) => { targetTravel = clamp(event.detail?.progress); lastInteraction = performance.now(); };
+    const travelScene = (event) => { targetTravel = clamp(event.detail?.progress); };
     host.addEventListener('studio:assembly', setAssembly);
     host.addEventListener('studio:shape', shape);
     host.addEventListener('studio:progress', progress);
@@ -153,7 +151,7 @@ function Sculpture({ host }) {
           canvas,
           antialias: false,
           alpha: true,
-          powerPreference: 'low-power',
+          powerPreference: 'high-performance',
         });
       } catch {
         host.dataset.renderState = 'fallback';
@@ -217,7 +215,6 @@ function Sculpture({ host }) {
         let contextLost = false;
         let rendered = false;
         let previousTime = 0;
-        let arrivalStartedAt = null;
         let elapsed = 0;
         let fieldAssembly = targetAssembly;
         let travel = targetTravel;
@@ -227,12 +224,18 @@ function Sculpture({ host }) {
         let pointerInside = false;
         let pointerStrength = 0;
         let touchPulse = 0;
+        let pendingPointer = null;
+        let pixelRatio = 1;
+        let qualityScale = 1;
+        let slowFrames = 0;
+        let fastFrames = 0;
+        let settlingFrames = 30;
 
         const resize = () => {
           const rect = host.getBoundingClientRect();
           if (!rect.width || !rect.height) return;
           mobile = window.matchMedia('(max-width: 767px)').matches;
-          const pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.5);
+          pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.25) * qualityScale;
           renderer.setPixelRatio(pixelRatio);
           renderer.setSize(rect.width, rect.height, false);
           material.uniforms.uPixelRatio.value = pixelRatio;
@@ -251,20 +254,29 @@ function Sculpture({ host }) {
         function render(time) {
           frame = 0;
           if (!visible || !intersecting || modalOpen || contextLost) return;
-          if (arrivalStartedAt === null) arrivalStartedAt = time;
-          const active = time - arrivalStartedAt < 2400 || time - lastInteraction < 1800
-            || Math.abs(targetAssembly - fieldAssembly) > 0.002 || Math.abs(targetTravel - travel) > 0.002
-            || pointerStrength > 0.002 || touchPulse > 0.002;
-          const interval = 1000 / (active ? (mobile ? 30 : 45) : 24);
-          if (previousTime && time - previousTime < interval) {
-            frame = requestAnimationFrame(render);
-            return;
-          }
           const realDelta = previousTime ? (time - previousTime) / 1000 : 1 / 30;
           const delta = Math.min(realDelta, 0.05);
           previousTime = time;
+          // Sustained frame pressure lowers raster resolution, never the mark's
+          // point count. Hysteresis prevents quality oscillation while scrolling.
+          if (settlingFrames > 0) settlingFrames--;
+          else if (realDelta > 0.028) { slowFrames++; fastFrames = 0; }
+          else { fastFrames++; slowFrames = Math.max(0, slowFrames - 1); }
+          if (slowFrames >= 18 && qualityScale > 0.7) {
+            qualityScale = Math.max(0.7, qualityScale - 0.15);
+            slowFrames = 0; settlingFrames = 30; resize();
+          } else if (fastFrames >= 300 && qualityScale < 1) {
+            qualityScale = Math.min(1, qualityScale + 0.15);
+            fastFrames = 0; settlingFrames = 60; resize();
+          }
+          if (pendingPointer) {
+            const rect = host.getBoundingClientRect();
+            pointer.set(((pendingPointer.x - rect.left) / rect.width) * 2 - 1,
+              1 - ((pendingPointer.y - rect.top) / rect.height) * 2);
+            pendingPointer = null;
+          }
           elapsed += delta;
-          const easing = 1 - Math.exp(-Math.min(realDelta, 0.25) * 4.4);
+          const easing = 1 - Math.exp(-Math.min(realDelta, 0.25) * 12);
           fieldAssembly += (targetAssembly - fieldAssembly) * easing;
           travel += (targetTravel - travel) * easing;
           const assembled = fieldAssembly * fieldAssembly * (3 - 2 * fieldAssembly);
@@ -334,19 +346,15 @@ function Sculpture({ host }) {
         };
         const move = (event) => {
           if (event.pointerType === 'touch') return;
-          lastInteraction = performance.now();
           pointerInside = true;
-          const rect = host.getBoundingClientRect();
-          pointer.set(
-            ((event.clientX - rect.left) / rect.width) * 2 - 1,
-            1 - ((event.clientY - rect.top) / rect.height) * 2,
-          );
+          pendingPointer = { x: event.clientX, y: event.clientY };
         };
         const leave = () => {
           pointerInside = false;
-          lastInteraction = performance.now();
+          pendingPointer = null;
         };
         const press = (event) => {
+          pendingPointer = null;
           const rect = host.getBoundingClientRect();
           pointer.set(
             ((event.clientX - rect.left) / rect.width) * 2 - 1,
@@ -354,7 +362,6 @@ function Sculpture({ host }) {
           );
           easedPointer.copy(pointer);
           touchPulse = 1;
-          lastInteraction = performance.now();
         };
         const dialogObserver = new MutationObserver(() => {
           const nextOpen = Boolean(document.querySelector('dialog[open]'));
@@ -362,12 +369,7 @@ function Sculpture({ host }) {
           modalOpen = nextOpen;
           if (modalOpen) suspend(); else resume();
         });
-        dialogObserver.observe(document.body, {
-          subtree: true,
-          attributes: true,
-          attributeFilter: ['open'],
-          childList: true,
-        });
+        document.querySelectorAll('dialog').forEach(dialog=>dialogObserver.observe(dialog, {attributes:true,attributeFilter:['open']}));
         const lost = (event) => {
           event.preventDefault();
           contextLost = true;

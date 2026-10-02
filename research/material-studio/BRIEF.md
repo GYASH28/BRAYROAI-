@@ -61,3 +61,14 @@ Visual refinement precedes final testing. Check desktop, 390px, 320px and landsc
 ## Model instruction
 
 The owner explicitly disabled Smart Model Router for this chat. GPT-5.6 workers were interrupted. The unfinished plans and Rae work was reviewed and completed by GPT-6.1 Sol workers with high reasoning. No Astra is used. The delegated model setting does not change the main chat's selected model.
+
+
+## Navigation and motion continuation, 2 October 2026
+
+The shared navigation uses three separated glass surfaces: the mosaic identity, numbered destinations and project/market controls. The focus surface follows pointer and keyboard selection and returns to the actual route. Labels roll on hover/focus; the controls arrive with a restrained stagger. On home scroll the outer groups move inward using transforms while the header keeps its layout width. The hero remains a full viewport.
+
+Headings have three authored treatments: clipped word lift for large narrative headings, soft horizontal arrival for offer/method/legal headings, and a depth resolve for the person, studio letter and closing invitations. Labels and real project imagery arrive once; project-path choices transition when selected. Direct text links and full-plan controls have rolling labels without duplicated accessible names. Paragraphs remain readable, selectable prose. Native reduced-motion and no-JavaScript presentation retain the actual content and controls.
+
+The particle field uses display-aligned animation frames instead of an interval that skipped frames on common 60 Hz displays. Adaptive raster resolution responds to sustained frame pressure with hysteresis, retaining all 9,600 positions and the complete brand formation. Hero and real-work scroll poses interpolate over a short interval. Pointer work is batched, footer tiles avoid unchanged writes and the dialog observer watches only actual open state. Large moving blur filters and canvas blend composition are removed; feathered gradients carry the atmosphere, with static glass reserved for small control surfaces.
+
+Implementation follows the browser guidance on transform/opacity motion and explicit drawing-buffer resolution: https://web.dev/articles/animations-and-performance?hl=en and https://threejs.org/manual/en/responsive.html. Lab frame timings depend on renderer, CPU contention and viewport; they are not a promise of a universal frame rate.

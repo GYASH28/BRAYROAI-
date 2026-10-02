@@ -258,6 +258,10 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await heroPosition(.999);
  await expect.poll(()=>page.locator('.hero-handoff').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.98);
  await page.emulateMedia({reducedMotion:'reduce'});
+ // A preference change after enhancement must leave one readable link label.
+ await page.locator('.person-copy .text-link').scrollIntoViewIfNeeded();
+ await expect.poll(async()=>(await page.locator('.person-copy .text-link').innerText()).trim()).toBe('Meet Yash');
+ await expect(page.getByRole('heading',{name:'One mind. Many ways to make.'})).toBeVisible();
  await page.reload();
  await expect(page.locator('.particle-cloud')).toBeVisible();
  await expect(page.locator('.sculpture-canvas')).toHaveCount(0);

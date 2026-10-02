@@ -1,3 +1,4 @@
+import {initPremiumMotion} from './premium-motion.js';
 // The first frame has native entry motion; below-fold choreography loads on arrival.
 export function initStudioEntry(){
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -13,6 +14,7 @@ export function initStudioEntry(){
   });
   document.querySelectorAll('main>section:first-child [data-enter]:not([data-opening])').forEach(el=>{el.classList.add('opening-block');el.dataset.opening='true'});
  }
+ initPremiumMotion();
  const root=document.querySelector('[data-sc-root]');
  if(root&&!reduced.matches)root.classList.add('studio-ready');
  let motionPromise=null;
@@ -43,8 +45,9 @@ export function initStudioEntry(){
   let disposeType=null;
   hero.addEventListener('pointermove',event=>{const pointer={clientX:event.clientX,clientY:event.clientY};import('./hero-type.js').then(m=>{disposeType=m.initHeroType(hero,pointer)}).catch(()=>{})},{once:true,passive:true});
   window.addEventListener('pagehide',()=>disposeType?.());
-  hero.addEventListener('pointermove',event=>{const rect=hero.getBoundingClientRect();hero.style.setProperty('--light-x',`${(event.clientX/rect.width-.5)*36}px`);hero.style.setProperty('--light-y',`${((event.clientY-rect.top)/rect.height-.5)*24}px`)},{passive:true});
-  hero.addEventListener('pointerleave',()=>{hero.style.setProperty('--light-x','0px');hero.style.setProperty('--light-y','0px')});
+  let lightFrame=0,lightPointer=null;
+  hero.addEventListener('pointermove',event=>{lightPointer={x:event.clientX,y:event.clientY};if(!lightFrame)lightFrame=requestAnimationFrame(()=>{lightFrame=0;if(!lightPointer)return;const rect=hero.getBoundingClientRect();hero.style.setProperty('--light-x',`${((lightPointer.x-rect.left)/rect.width-.5)*36}px`);hero.style.setProperty('--light-y',`${((lightPointer.y-rect.top)/rect.height-.5)*24}px`)})},{passive:true});
+  hero.addEventListener('pointerleave',()=>{lightPointer=null;cancelAnimationFrame(lightFrame);lightFrame=0;hero.style.setProperty('--light-x','0px');hero.style.setProperty('--light-y','0px')});
  }
  const mark=document.querySelector('[data-footer-wordmark]');if(mark){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./footer-wordmark.js').then(m=>m.initFooterWordmark(mark)).catch(()=>{})}},{rootMargin:'300px'});observer.observe(mark)}
  const path=document.querySelector('[data-project-path]');if(path){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./project-path.js').then(m=>m.initProjectPath(path)).catch(()=>{})}},{rootMargin:'500px'});observer.observe(path)}

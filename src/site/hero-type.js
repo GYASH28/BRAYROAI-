@@ -19,7 +19,7 @@ export function initHeroType(stage, initialPointer) {
   });
  };
  const move=event=>{pointer={x:event.clientX,y:event.clientY};if(!frame)frame=requestAnimationFrame(paint)};
- const reset=()=>{pointer=null;cancelAnimationFrame(frame);frame=0;words.forEach(word=>{word.style.removeProperty('--type-y');word.style.removeProperty('--type-r');word.style.removeProperty('--type-light');word.style.removeProperty('--type-rx');word.style.removeProperty('--type-ry')})};
+ const reset=()=>{if(!pointer&&!frame)return;pointer=null;cancelAnimationFrame(frame);frame=0;words.forEach(word=>{word.style.removeProperty('--type-y');word.style.removeProperty('--type-r');word.style.removeProperty('--type-light');word.style.removeProperty('--type-rx');word.style.removeProperty('--type-ry')})};
  const remeasure=()=>{const retained=pointer;reset();measure();pointer=retained;if(pointer)paint()};
  const preferenceChanged=()=>{enabled=!preference.matches;reset()};
  measure();

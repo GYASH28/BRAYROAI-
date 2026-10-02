@@ -230,9 +230,11 @@ function Sculpture({ host }) {
         let slowFrames = 0;
         let fastFrames = 0;
         let settlingFrames = 30;
+        let hostRect = null;
 
         const resize = () => {
           const rect = host.getBoundingClientRect();
+          hostRect = rect;
           if (!rect.width || !rect.height) return;
           mobile = window.matchMedia('(max-width: 767px)').matches;
           pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.25) * qualityScale;
@@ -270,7 +272,7 @@ function Sculpture({ host }) {
             fastFrames = 0; settlingFrames = 60; resize();
           }
           if (pendingPointer) {
-            const rect = host.getBoundingClientRect();
+            const rect = hostRect || host.getBoundingClientRect();
             pointer.set(((pendingPointer.x - rect.left) / rect.width) * 2 - 1,
               1 - ((pendingPointer.y - rect.top) / rect.height) * 2);
             pendingPointer = null;
@@ -311,6 +313,8 @@ function Sculpture({ host }) {
             renderer.render(scene, camera);
             if (!rendered) {
               rendered = true;
+              host.dataset.drawCalls = String(renderer.info.render.calls);
+              host.dataset.renderPoints = String(renderer.info.render.points);
               host.classList.add('is-ready');
               host.dataset.renderState = 'ready';
               host.dispatchEvent(new Event('studio:ready'));
@@ -355,7 +359,7 @@ function Sculpture({ host }) {
         };
         const press = (event) => {
           pendingPointer = null;
-          const rect = host.getBoundingClientRect();
+          const rect = hostRect || host.getBoundingClientRect();
           pointer.set(
             ((event.clientX - rect.left) / rect.width) * 2 - 1,
             1 - ((event.clientY - rect.top) / rect.height) * 2,
@@ -369,7 +373,7 @@ function Sculpture({ host }) {
           modalOpen = nextOpen;
           if (modalOpen) suspend(); else resume();
         });
-        document.querySelectorAll('dialog').forEach(dialog=>dialogObserver.observe(dialog, {attributes:true,attributeFilter:['open']}));
+        dialogObserver.observe(document.documentElement, {subtree:true,attributes:true,attributeFilter:['open']});
         const lost = (event) => {
           event.preventDefault();
           contextLost = true;
@@ -405,6 +409,8 @@ function Sculpture({ host }) {
           material.dispose();
           renderer.dispose();
           host.classList.remove('is-ready');
+          host.removeAttribute('data-draw-calls');
+          host.removeAttribute('data-render-points');
         };
       } catch {
         renderer.dispose();

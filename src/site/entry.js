@@ -40,8 +40,8 @@ export function initStudioEntry(){
   scene.addEventListener('studio:ready',sync,{once:true});
   loading=import('./sculpture.jsx').then(m=>{sculpture=m.mountSculpture(scene)}).catch(()=>{scene.dataset.renderState='fallback'});return loading;
  };
- if(scene&&!reduced.matches&&matchMedia('(min-width:761px)').matches){const timer=setTimeout(()=>opening.finished.then(loadSculpture),2400);scene.addEventListener('pointerenter',()=>{clearTimeout(timer);opening.finished.then(loadSculpture)},{once:true});scene.addEventListener('pointerdown',()=>{clearTimeout(timer);opening.finished.then(loadSculpture)},{once:true})}
- window.addEventListener('scroll',loadSculpture,{once:true,passive:true});
+ if(scene&&!reduced.matches&&matchMedia('(min-width:761px)').matches)opening.finished.then(()=>{if(!document.hidden)loadSculpture()});
+ window.addEventListener('scroll',()=>opening.finished.then(loadSculpture),{once:true,passive:true});
  const hero=document.querySelector('.hero-stage');
  if(hero&&!reduced.matches&&matchMedia('(pointer:fine)').matches){
   let disposeType=null;
@@ -54,5 +54,5 @@ export function initStudioEntry(){
  const mark=document.querySelector('[data-footer-wordmark]');if(mark){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./footer-wordmark.js').then(m=>m.initFooterWordmark(mark)).catch(()=>{})}},{rootMargin:'300px'});observer.observe(mark)}
  const path=document.querySelector('[data-project-path]');if(path){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./project-path.js').then(m=>m.initProjectPath(path)).catch(()=>{})}},{rootMargin:'500px'});observer.observe(path)}
  const planDesk=document.querySelector('[data-plan-desk]');if(planDesk)import('./plan-desk.jsx').then(m=>m.mountPlanDesk(planDesk)).catch(()=>{});
- window.addEventListener('pagehide',()=>{if(!document.hidden)sculpture?.()});
+ window.addEventListener('pagehide',event=>{if(!event.persisted)sculpture?.()});
 }

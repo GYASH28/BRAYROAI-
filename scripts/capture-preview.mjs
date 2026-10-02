@@ -4,7 +4,19 @@ const base=process.env.BASE_URL||'http://127.0.0.1:4173',folder='artifacts/scree
 mkdirSync(folder,{recursive:true});
 const browser=await chromium.launch({headless:true});
 for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
+ const openingContext=await browser.newContext({viewport:{width,height},deviceScaleFactor:1,reducedMotion:'no-preference'});
+ await openingContext.addInitScript(()=>{try{localStorage.setItem('brayro_market_manual','in')}catch{}});
+ const openingPage=await openingContext.newPage();
+ await openingPage.goto(base+'/',{waitUntil:'domcontentloaded'});
+ await openingPage.locator('.brand-opening').waitFor({state:'attached',timeout:1500});
+ let elapsed=0;
+ for(const time of [300,1100,1650,2200,3100]){await openingPage.waitForTimeout(Math.max(0,time-elapsed));elapsed=time;await openingPage.screenshot({path:`${folder}/${device}-opening-${String(time).padStart(4,'0')}.png`})}
+ await openingPage.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='settled',undefined,{timeout:5000});
+ await openingPage.screenshot({path:`${folder}/${device}-opening-settled.png`});
+ await openingContext.close();
+
  const context=await browser.newContext({viewport:{width,height},deviceScaleFactor:1,reducedMotion:'reduce'});
+ await context.addInitScript(()=>{try{localStorage.setItem('brayro_market_manual','in')}catch{}});
  const page=await context.newPage();
  await page.goto(base+'/',{waitUntil:'networkidle'});
  await page.screenshot({path:`${folder}/${device}-hero.png`});

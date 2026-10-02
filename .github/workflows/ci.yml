@@ -56,6 +56,9 @@ jobs:
       - name: Lighthouse mobile audit
         run: |
           node scripts/audit-lighthouse.mjs http://127.0.0.1:4173/ artifacts/lighthouse/home.json
+      - name: Motion performance evidence
+        run: |
+          node scripts/profile-home.mjs http://127.0.0.1:4173/ artifacts/performance
       - run: npm run test:stress
       - run: npm run test:browser
       - run: node scripts/capture-preview.mjs
@@ -67,6 +70,7 @@ jobs:
           path: |
             artifacts/screenshots/
             artifacts/lighthouse/
+            artifacts/performance/
             artifacts/playwright-report/
             test-results/
           if-no-files-found: ignore

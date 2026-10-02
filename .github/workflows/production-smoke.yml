@@ -76,6 +76,9 @@ jobs:
       - name: Production Lighthouse mobile audit
         run: |
           node scripts/audit-lighthouse.mjs "$PROD_URL/" artifacts/production-lighthouse/home.json
+      - name: Production motion performance evidence
+        run: |
+          node scripts/profile-home.mjs "$PROD_URL/" artifacts/production-performance
 
       - name: Production concurrent load test
         env:
@@ -103,6 +106,7 @@ jobs:
           path: |
             artifacts/deployment-verification.txt
             artifacts/production-lighthouse/
+            artifacts/production-performance/
             artifacts/playwright-report/
             test-results/
           if-no-files-found: ignore

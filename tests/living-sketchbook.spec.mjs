@@ -10,13 +10,33 @@ test.afterEach(({page})=>{expect(runtimeErrors.get(page),'Uncaught browser excep
 test('brand opening hands control to visitors without blocking or replaying over deep links',async({page})=>{
  await page.goto('/',{waitUntil:'domcontentloaded'});
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
+ await expect(page.getByRole('button',{name:'Skip intro'})).toBeVisible();
+ await expect(page.locator('.opening-tile')).toHaveCount(38);
+ await expect(page.locator('.opening-plane')).toHaveCount(2);
+ const openingBox=await page.locator('.brand-opening').boundingBox();
+ const viewport=page.viewportSize();
+ expect(Math.abs(openingBox.x)).toBeLessThan(2);expect(Math.abs(openingBox.y)).toBeLessThan(2);
+ expect(Math.abs(openingBox.width-viewport.width)).toBeLessThan(2);expect(Math.abs(openingBox.height-viewport.height)).toBeLessThan(2);
  await expect(page.locator('.hero-actions .pill-link')).toBeVisible();
- await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:4000});
+ // Early physical intent settles immediately rather than consuming scroll progress.
+ await page.waitForTimeout(260);
+ await page.evaluate(()=>window.dispatchEvent(new WheelEvent('wheel',{deltaY:20})));
  await expect(page.locator('.brand-opening')).toHaveCount(0);
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled');
+
+ // A fresh uninterrupted entry owns at most its finite 3.2 second score.
+ await page.reload({waitUntil:'domcontentloaded'});
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:5000});
+ await expect(page.locator('.brand-opening,.brand-opening-skip')).toHaveCount(0);
  expect(await page.evaluate(()=>document.getAnimations().filter(a=>a.id.startsWith('brand-opening-')).length)).toBe(0);
  await expect(page.locator('.hero-word').first()).toHaveCSS('opacity','1');
  await expect(page.locator('.hero-actions .pill-link')).toBeVisible();
- // A keyboard user never has to wait for the cinematic entrance to finish.
+
+ // The visible skip action and keyboard/control intent both hand ownership back.
+ await page.reload({waitUntil:'domcontentloaded'});
+ await page.getByRole('button',{name:'Skip intro'}).click();
+ await expect(page.locator('.brand-opening')).toHaveCount(0);
  await page.reload({waitUntil:'domcontentloaded'});
  await page.keyboard.press('Tab');
  await expect(page.locator('.brand-opening')).toHaveCount(0);
@@ -26,6 +46,7 @@ test('brand opening hands control to visitors without blocking or replaying over
  await expect(page.locator('#market-dialog')).toBeVisible();
  await expect(page.locator('.brand-opening')).toHaveCount(0);
  await page.keyboard.press('Escape');
+
  await page.goto('/#work');
  await expect(page.locator('.brand-opening')).toHaveCount(0);
  await expect(page.locator('#work h2')).toBeInViewport();
@@ -37,6 +58,7 @@ test('brand opening hands control to visitors without blocking or replaying over
  await expect(page.locator('.brand-opening')).toHaveCount(0);
  await expect(page.locator('.hero-prelude')).toHaveCSS('opacity','1');
 });
+
 
 test('new visitor reaches real work, case study, and returns',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
@@ -243,6 +265,14 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  const heroPosition=async progress=>page.evaluate(progress=>{const section=document.querySelector('.studio-hero');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*progress,behavior:'instant'})},progress);
  await heroPosition(.66);
  await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
+ await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-draw-calls','1');
+ await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-render-points','9600');
+ const canLoseContext=await page.locator('.sculpture-canvas').evaluate(canvas=>{const gl=canvas.getContext('webgl2')||canvas.getContext('webgl'),extension=gl?.getExtension('WEBGL_lose_context');if(!extension)return false;window.__brayroLoseContext=extension;extension.loseContext();return true});
+ if(canLoseContext){
+  await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('fallback');
+  await page.evaluate(()=>window.__brayroLoseContext?.restoreContext());
+  await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
+ }
  await expect(page.locator('.studio-hero')).toHaveAttribute('data-assembly-progress','1.000');
  await expect(page.locator('.hero-next')).toHaveAttribute('aria-hidden','false');
  await expect(page.getByRole('heading',{name:/Strategy becomes structure. Character becomes experience/i})).toBeInViewport();

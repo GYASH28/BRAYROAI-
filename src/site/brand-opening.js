@@ -75,13 +75,18 @@ export function initBrandOpening(){
   tiles.forEach((tile,index)=>{
    const rect=fragments[index],x=Number(rect.getAttribute('x')),y=Number(rect.getAttribute('y')),w=Number(rect.getAttribute('width')),h=Number(rect.getAttribute('height'));
    const tileX=mosaicLeft+(x+w/2)/512*size,tileY=mosaicTop+(y+h/2)/512*size;
-   const seamX=scene.width*(.08+.84*(index/count)),seamBaseY=compact?centerY:scene.height*.49,seamY=seamBaseY+(seamX-centerX)*seamSlope;
+   const seamX=scene.width*(.08+.84*(index/count)),seamBaseY=compact?centerY:scene.height*.49;
+   const rawSeamY=seamBaseY+(seamX-centerX)*seamSlope;
+   // Keep the portrait seam and its opaque tiles inside a protected visual band
+   // above the proposition, even on the low/left end of the diagonal.
+   const seamY=compact?Math.min(rawSeamY,offerTop-56):rawSeamY;
    const compressX=seamX-tileX,compressY=seamY-tileY;
    const side=index%2?-1:1,depth=(index%3-1)*150;
    const startX=((index*83)%101)/100*scene.width-tileX+side*scene.width*.22;
    const startY=((index*47)%97)/96*scene.height-tileY+(index%3-1)*scene.height*.14;
-   const passX=compressX+side*scene.width*(.16+(index%5)*.018),passY=compressY+(index%4-1.5)*scene.height*.075;
-   const lane=index%4,fanX=(lane-1.5)*scene.width*(compact?.34:.28),fanY=(index%2?-1:1)*scene.height*(compact?.10:.22);
+   const passX=compressX+side*scene.width*(.16+(index%5)*.018),passY=compressY+(index%4-1.5)*scene.height*(compact?.018:.075);
+   const lane=index%4,fanX=(lane-1.5)*scene.width*(compact?.34:.28);
+   const fanY=compact?((index%3)-1)*scene.height*.035-scene.height*.04:(index%2?-1:1)*scene.height*.22;
    const spin=side*(18+(index%5)*8);
    const compressAt=compact?.46:.52,resolveAt=compact?.58:.69,holdAt=compact?.64:.76,fanAt=compact?.80:.93;
    play(tile,[

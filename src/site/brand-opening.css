@@ -1,0 +1,13 @@
+/* The brand arrives as a material impression. The live offer is always above
+   this pointer-transparent layer; only the headline has a short entrance. */
+.brand-opening{position:absolute;inset:var(--opening-ceiling) 0 auto;height:var(--opening-floor);z-index:1;overflow:clip;pointer-events:none;contain:layout paint;perspective:900px}
+.opening-mosaic{position:absolute;left:calc(var(--opening-x) - var(--opening-size)/2);top:calc(var(--opening-y) - var(--opening-size)/2);width:var(--opening-size);height:var(--opening-size);perspective:750px}
+.opening-tile{position:absolute;display:block;background:var(--bone);border-radius:1px;backface-visibility:hidden}
+.opening-rails{position:absolute;left:var(--opening-x);top:var(--opening-y);width:1px;height:1px}
+.opening-rails i{position:absolute;width:min(100vw,1300px);height:1px;left:max(-50vw,-650px);background:linear-gradient(90deg,transparent,#afc2ff88 40%,#f3f0ea 50%,#afc2ff88 60%,transparent);transform-origin:center}
+.opening-frame{position:absolute;left:var(--opening-x);top:var(--opening-y);width:calc(var(--opening-size)*1.17);height:calc(var(--opening-size)*.68)}
+.opening-frame i{position:absolute;width:18px;height:18px;border-color:#afc2ff88;border-style:solid;border-width:0}.opening-frame i:first-child{left:0;top:0;border-left-width:1px;border-top-width:1px}.opening-frame i:nth-child(2){right:0;top:0;border-right-width:1px;border-top-width:1px}.opening-frame i:nth-child(3){right:0;bottom:0;border-right-width:1px;border-bottom-width:1px}.opening-frame i:last-child{left:0;bottom:0;border-left-width:1px;border-bottom-width:1px}
+.opening-frame i:last-child{border-color:var(--orange)}
+.opening-strike{position:absolute;left:var(--opening-x);top:var(--opening-y);width:min(88vw,1200px);height:3px;background:linear-gradient(90deg,transparent,#afc2ffbb 30%,#f3f0ea 50%,#ff6b2cbb 70%,transparent);transform-origin:center}
+.page-home .hero-stage[data-opening-state] :is(.hero-word,.hero-prelude,.hero-mark-line i){animation:none}
+@media(prefers-reduced-motion:reduce){.brand-opening{display:none}}

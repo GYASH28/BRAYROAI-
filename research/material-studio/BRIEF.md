@@ -72,3 +72,18 @@ Headings have three authored treatments: clipped word lift for large narrative h
 The particle field uses display-aligned animation frames instead of an interval that skipped frames on common 60 Hz displays. Adaptive raster resolution responds to sustained frame pressure with hysteresis, retaining all 9,600 positions and the complete brand formation. Hero and real-work scroll poses interpolate over a short interval. Pointer work is batched, footer tiles avoid unchanged writes and the dialog observer watches only actual open state. Large moving blur filters and canvas blend composition are removed; feathered gradients carry the atmosphere, with static glass reserved for small control surfaces.
 
 Implementation follows the browser guidance on transform/opacity motion and explicit drawing-buffer resolution: https://web.dev/articles/animations-and-performance?hl=en and https://threejs.org/manual/en/responsive.html. Lab frame timings depend on renderer, CPU contention and viewport; they are not a promise of a universal frame rate.
+# Native mosaic opening, 2 October 2026
+
+Owner direction: implement a distinctive, elaborate opening before delivering a detailed60fps/performance prompt. This focused sequence is authored from the approved tile kit and the owner's existing creative direction; no new interview or generic loader is required.
+
+The opening reads as a material impression:38 exact bone BR fragments approach from different depths, resolve into the source monogram, hold briefly for recognition, then fan through four columns as the physical MARK letterforms unfold. Thin cobalt registration rays and an angled light strike support the handoff; the orange full stop lands last. The sales proposition, price and actions remain above the decorative layer from the first frame. At approximately1.77s, native animation objects and markup are removed, and pointer/particle control owns the scene. The scroll-driven full-screen particle formation remains the page's principal peak.
+
+| Time | Feeling and visible cause |
+| --- | --- |
+| 0–.50s | Anticipation. Fragments converge through different depths; the real offer is already readable. |
+| .50–.75s | Recognition. The supplied BR mosaic locks into its actual shape. |
+| .75–1.15s | Release. Pieces fan out and clear the headline, with a thin diagonal registration strike. |
+| .82–1.69s | Presence. Four large letters unfold from alternating planes into centred typography. |
+| 1.11–1.77s | Resolution. The orange full stop lands; native animation ownership is released. |
+
+No scroll lock, loading progress, sound, raster asset or new library. Wheel/scroll/touch/keyboard/control input, resize, hidden tab and preference changes settle immediately. Hash/history/reduced-motion entry render the final state. The mark fits between the floating navigation and commercial copy, including short landscape layouts; animated decor cannot cover the offer. Tiny fragments retain the source geometry. Existing9600particle field, full-screen formation, reversible paper handoff and161tile footer stay intact.

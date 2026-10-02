@@ -7,6 +7,37 @@ const runtimeErrors=new WeakMap();
 test.beforeEach(({page})=>{const errors=[];runtimeErrors.set(page,errors);page.on('pageerror',error=>errors.push(error.message))});
 test.afterEach(({page})=>{expect(runtimeErrors.get(page),'Uncaught browser exceptions').toEqual([])});
 
+test('brand opening hands control to visitors without blocking or replaying over deep links',async({page})=>{
+ await page.goto('/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
+ await expect(page.locator('.hero-actions .pill-link')).toBeVisible();
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:4000});
+ await expect(page.locator('.brand-opening')).toHaveCount(0);
+ expect(await page.evaluate(()=>document.getAnimations().filter(a=>a.id.startsWith('brand-opening-')).length)).toBe(0);
+ await expect(page.locator('.hero-word').first()).toHaveCSS('opacity','1');
+ await expect(page.locator('.hero-actions .pill-link')).toBeVisible();
+ // A keyboard user never has to wait for the cinematic entrance to finish.
+ await page.reload({waitUntil:'domcontentloaded'});
+ await page.keyboard.press('Tab');
+ await expect(page.locator('.brand-opening')).toHaveCount(0);
+ await expect(page.locator('.skip-link')).toBeFocused();
+ await page.reload({waitUntil:'domcontentloaded'});
+ await page.locator('.header-inner [data-market-open]').click();
+ await expect(page.locator('#market-dialog')).toBeVisible();
+ await expect(page.locator('.brand-opening')).toHaveCount(0);
+ await page.keyboard.press('Escape');
+ await page.goto('/#work');
+ await expect(page.locator('.brand-opening')).toHaveCount(0);
+ await expect(page.locator('#work h2')).toBeInViewport();
+ await page.goto('/');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect(page.locator('.brand-opening')).toHaveCount(0);
+ await expect(page.locator('.hero-word').first()).toHaveCSS('opacity','1');
+ await page.reload();
+ await expect(page.locator('.brand-opening')).toHaveCount(0);
+ await expect(page.locator('.hero-prelude')).toHaveCSS('opacity','1');
+});
+
 test('new visitor reaches real work, case study, and returns',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await page.goto('/');

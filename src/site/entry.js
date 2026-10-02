@@ -1,4 +1,5 @@
 import {initPremiumMotion} from './premium-motion.js';
+import {initBrandOpening} from './brand-opening.js';
 // The first frame has native entry motion; below-fold choreography loads on arrival.
 export function initStudioEntry(){
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -15,6 +16,7 @@ export function initStudioEntry(){
   document.querySelectorAll('main>section:first-child [data-enter]:not([data-opening])').forEach(el=>{el.classList.add('opening-block');el.dataset.opening='true'});
  }
  initPremiumMotion();
+ const opening=initBrandOpening();
  const root=document.querySelector('[data-sc-root]');
  if(root&&!reduced.matches)root.classList.add('studio-ready');
  let motionPromise=null;
@@ -38,12 +40,12 @@ export function initStudioEntry(){
   scene.addEventListener('studio:ready',sync,{once:true});
   loading=import('./sculpture.jsx').then(m=>{sculpture=m.mountSculpture(scene)}).catch(()=>{scene.dataset.renderState='fallback'});return loading;
  };
- if(scene&&!reduced.matches&&matchMedia('(min-width:761px)').matches){const timer=setTimeout(loadSculpture,2400);scene.addEventListener('pointerenter',()=>{clearTimeout(timer);loadSculpture()},{once:true});scene.addEventListener('pointerdown',()=>{clearTimeout(timer);loadSculpture()},{once:true})}
+ if(scene&&!reduced.matches&&matchMedia('(min-width:761px)').matches){const timer=setTimeout(()=>opening.finished.then(loadSculpture),2400);scene.addEventListener('pointerenter',()=>{clearTimeout(timer);opening.finished.then(loadSculpture)},{once:true});scene.addEventListener('pointerdown',()=>{clearTimeout(timer);opening.finished.then(loadSculpture)},{once:true})}
  window.addEventListener('scroll',loadSculpture,{once:true,passive:true});
  const hero=document.querySelector('.hero-stage');
  if(hero&&!reduced.matches&&matchMedia('(pointer:fine)').matches){
   let disposeType=null;
-  hero.addEventListener('pointermove',event=>{const pointer={clientX:event.clientX,clientY:event.clientY};import('./hero-type.js').then(m=>{disposeType=m.initHeroType(hero,pointer)}).catch(()=>{})},{once:true,passive:true});
+  hero.addEventListener('pointermove',event=>{const pointer={clientX:event.clientX,clientY:event.clientY};opening.finished.then(()=>import('./hero-type.js')).then(m=>{if(!reduced.matches)disposeType=m.initHeroType(hero,pointer)}).catch(()=>{})},{once:true,passive:true});
   window.addEventListener('pagehide',()=>disposeType?.());
   let lightFrame=0,lightPointer=null;
   hero.addEventListener('pointermove',event=>{lightPointer={x:event.clientX,y:event.clientY};if(!lightFrame)lightFrame=requestAnimationFrame(()=>{lightFrame=0;if(!lightPointer)return;const rect=hero.getBoundingClientRect();hero.style.setProperty('--light-x',`${((lightPointer.x-rect.left)/rect.width-.5)*36}px`);hero.style.setProperty('--light-y',`${((lightPointer.y-rect.top)/rect.height-.5)*24}px`)})},{passive:true});

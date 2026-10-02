@@ -35,3 +35,15 @@ Rae recovery references (1 October2026): https://ai.google.dev/gemini-api/docs/m
 Native transition lifecycle: https://developer.chrome.com/docs/web-platform/view-transitions/cross-document . Incoming `pagereveal` observation must be registered in a classic parser-blocking head script. A small same-origin script observes only expected skip/timeout rejections; unexpected defects retain normal browser error reporting.
 
 Rae completion recovery, 2 October2026: https://ai.google.dev/gemini-api/docs/thinking and https://ai.google.dev/api/generate-content . Gemini thought tokens share the output ceiling; the token ceiling is increased while supported low/minimal thinking and existing attempt/time bounds remain. Only a validated terminal STOP is success. A cut-off or unconfirmed response stays an honest retry state.
+
+
+Hero typography and monogram refinement, 2 October 2026: Instrument Serif regular and italic are served locally in WOFF2, converted from the official Google Fonts distribution. Primary font license: https://raw.githubusercontent.com/google/fonts/main/ofl/instrumentserif/OFL.txt . The SIL OFL 1.1 license is retained at `static/fonts/InstrumentSerif-OFL.txt`; no Reserved Font Name is specified. Particle targets derive from the owner's approved `static/brand/brayro-monogram.svg`, with no external scene or copied website artwork.
+
+Rae interrupted-stream recovery is capability negotiated: only the current client advertising `supportsStreamReset` can receive a reset followed by replacement provider text. Legacy clients receive the existing honest error. Only terminal STOP emits completion metadata and completed history. Retry order and the four-attempt/8.5-second-per-attempt bounds remain.
+
+
+Owner refinement, 2 October 2026: the opening now explains website and AI offers and renders the market-specific website starting price. Scrolling controls the assembly sequence with no range or burst panel. Fallbacks are rasterized by Chromium from the authored SVG generator and delivered in 1000px/600px WebP sizes; ImageMagick is used only for PNG-to-WebP conversion because its SVG renderer misread modern color syntax. Optional regeneration: `node scripts/generate-particle-fallbacks.mjs`. Font and other asset provenance above remains unchanged.
+
+Native rendering optimization: https://web.dev/articles/content-visibility . Non-hero rooms use `content-visibility:auto` with measured intrinsic size estimates; completed sizes are cached by the browser. Scene measurements refresh when an offscreen room becomes rendered. Hero particles and text remain rendered continuously; semantic content stays in the document.
+
+Centred typography refinement: the existing licensed Instrument Serif is composed at 16.3vw desktop and 21.4vw phone, with regular/italic contrast. A four-word native transform/light response loads only after fine-pointer interaction and is disabled for reduced motion. Later room layouts use the same owner palette and genuine content; the process instrument uses semantic roving tabs and explanatory SVG flows. No new external assets or libraries were added for this refinement.

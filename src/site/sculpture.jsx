@@ -7,55 +7,91 @@ const clamp = (value) => Math.max(0, Math.min(1, Number(value) || 0));
 
 const vertexShader = /* glsl */ `
   uniform float uTime;
-  uniform float uShape;
+  uniform float uAssembly;
   uniform float uPixelRatio;
+  uniform vec2 uPointer;
+  uniform float uPointerStrength;
+  uniform float uPointerAspect;
 
+  attribute vec3 aLoosePosition;
+  attribute vec3 aMarkPosition;
   attribute vec3 aColor;
+  attribute vec3 aTargetColor;
+  attribute vec4 aChoreography;
+  attribute vec3 aArcOffset;
+  attribute vec3 aCurlOffset;
   attribute float aPhase;
   attribute float aSize;
-  attribute float aKind;
   attribute float aFlow;
   attribute float aAlpha;
 
   varying vec3 vColor;
   varying float vAlpha;
-
-  mat2 rotate2d(float angle) {
-    float sine = sin(angle);
-    float cosine = cos(angle);
-    return mat2(cosine, -sine, sine, cosine);
-  }
+  varying float vPointerGlow;
+  varying float vSpark;
+  varying float vFlowLight;
 
   void main() {
-    vec3 transformed = position;
-    float shape = smoothstep(0.0, 1.0, uShape);
-    float orbitalDrift = uTime * (0.026 + aKind * 0.022)
-      + shape * (0.055 + aKind * 0.105);
+    float assembly = smoothstep(0.0, 1.0, uAssembly);
+    float localAssembly = smoothstep(aChoreography.x, aChoreography.y, assembly);
+    float loose = 1.0 - localAssembly;
+    float arcEnvelope = 4.0 * localAssembly * (1.0 - localAssembly);
+    float curlEnvelope = arcEnvelope * 0.62
+      * sin(localAssembly * 6.2831853 + aPhase);
+    vec3 transformed = mix(aLoosePosition, aMarkPosition, localAssembly)
+      + aArcOffset * arcEnvelope
+      + aCurlOffset * curlEnvelope;
 
-    transformed.xz = rotate2d(orbitalDrift) * transformed.xz;
-    transformed.xy = rotate2d(-orbitalDrift * 0.12) * transformed.xy;
+    float filamentPhase = aFlow * 18.0 - uTime * 1.35 + aPhase * 0.12;
+    float filamentWave = sin(filamentPhase);
+    float filamentLight = 0.5 + 0.5 * sin(filamentPhase - 0.8);
+    transformed.y += filamentWave * loose * (0.026 + aChoreography.w * 0.012);
+    transformed.z += cos(filamentPhase * 0.72) * loose
+      * (0.024 + aChoreography.w * 0.018);
+    transformed.x += cos(aPhase + uTime * 0.62) * loose * 0.012;
 
-    vec3 orbitAxis = normalize(vec3(0.18, 1.0, 0.12));
-    vec3 tangent = normalize(cross(orbitAxis, transformed) + vec3(0.0001));
-    float coherentWave = sin(uTime * 0.31 + aPhase * 1.08 + transformed.y * 1.7);
-    transformed += tangent * coherentWave
-      * (0.005 + aKind * 0.011 + shape * aKind * 0.02);
-
-    float pulse = sin(uTime * 0.24 + aPhase)
-      * (0.004 + aKind * 0.006 + shape * 0.012);
-    transformed *= 1.0 + pulse;
-
-    float peel = smoothstep(0.64, 1.0, aFlow) * aKind * shape;
-    transformed += vec3(0.065, 0.04, 0.025) * peel;
+    float role = aChoreography.z;
+    vec2 orbitTangent = normalize(vec2(-aMarkPosition.y * 1.3, aMarkPosition.x * 0.72)
+      + vec2(0.0001));
+    float orbitFlow = sin(uTime * 1.05 + aPhase * 0.72) * 0.052 * role * localAssembly;
+    transformed.xy += orbitTangent * orbitFlow;
+    transformed.z += cos(uTime * 0.44 + aPhase) * 0.018 * role * localAssembly;
 
     vec4 viewPosition = modelViewMatrix * vec4(transformed, 1.0);
+    vec4 pointerClip = projectionMatrix * viewPosition;
+    vec2 particleNdc = pointerClip.xy / max(0.0001, pointerClip.w);
+    vec2 pointerDelta = particleNdc - uPointer;
+    vec2 pointerMetric = vec2(pointerDelta.x * uPointerAspect, pointerDelta.y);
+    float pointerDistance = length(pointerMetric);
+    float pointerInfluence = 1.0 - smoothstep(0.055, 0.34, pointerDistance);
+    float ripple = 0.5 + 0.5 * sin(pointerDistance * 38.0 - uTime * 8.0 + aPhase * 0.16);
+    float pointerForce = min(0.225, pointerInfluence * (0.105 + ripple * 0.07))
+      * uPointerStrength;
+    vec2 pointerDirection = normalize(pointerDelta + vec2(cos(aPhase), sin(aPhase)) * 0.0001);
+    vec2 swirlDirection = vec2(-pointerDirection.y, pointerDirection.x);
+    float swirlForce = min(0.105, pointerInfluence * (0.035 + ripple * 0.052))
+      * uPointerStrength;
+    float swirlSign = sin(aPhase * 0.41 + pointerDistance * 24.0 - uTime * 3.1);
+    viewPosition.xy += pointerDirection * pointerForce + swirlDirection * swirlForce * swirlSign;
+    viewPosition.z += pointerInfluence * uPointerStrength * (0.025 + ripple * 0.035);
+
     float depthScale = clamp(7.0 / max(1.0, -viewPosition.z), 0.72, 1.48);
     float sizePulse = 1.0 + sin(uTime * 0.38 + aPhase * 1.7) * 0.065;
-    gl_PointSize = clamp(aSize * uPixelRatio * depthScale * sizePulse, 0.7, 4.35);
+    float pointerGlow = pointerInfluence * uPointerStrength;
+    float pointSize = mix(aSize, max(aSize, 1.0), localAssembly)
+      * (1.0 + pointerGlow * 0.32 + aChoreography.w * 0.18 + filamentLight * loose * 0.16);
+    gl_PointSize = clamp(pointSize * uPixelRatio * depthScale * sizePulse, 0.7, 4.8);
     gl_Position = projectionMatrix * viewPosition;
 
-    vColor = aColor * (0.93 + sin(uTime * 0.18 + aPhase) * 0.07);
-    vAlpha = aAlpha * (0.94 + sin(uTime * 0.27 + aPhase * 1.3) * 0.06);
+    vColor = mix(aColor, aTargetColor, localAssembly)
+      * (0.93 + sin(uTime * 0.18 + aPhase) * 0.07);
+    float formedAlpha = mix(0.46 + aAlpha * 0.22, 0.31 + aAlpha * 0.3, role);
+    vAlpha = mix(aAlpha, formedAlpha, localAssembly)
+      * (0.94 + sin(uTime * 0.27 + aPhase * 1.3) * 0.06);
+    vPointerGlow = pointerGlow;
+    vSpark = aChoreography.w;
+    vFlowLight = filamentLight * loose + role * localAssembly
+      * (0.5 + 0.5 * sin(aFlow * 17.0 - uTime * 1.6));
   }
 `;
 
@@ -64,15 +100,21 @@ const fragmentShader = /* glsl */ `
 
   varying vec3 vColor;
   varying float vAlpha;
+  varying float vPointerGlow;
+  varying float vSpark;
+  varying float vFlowLight;
 
   void main() {
     vec2 point = gl_PointCoord - 0.5;
     float distanceSquared = dot(point, point) * 4.0;
     float disc = 1.0 - smoothstep(0.58, 1.0, distanceSquared);
     float heart = 1.0 - smoothstep(0.0, 0.28, distanceSquared);
-    float alpha = disc * vAlpha * uOpacity;
+    float halo = 1.0 - smoothstep(0.0, 1.0, distanceSquared);
+    float alpha = (disc * vAlpha + halo * (vPointerGlow * 0.14 + vSpark * 0.055)) * uOpacity;
     if (alpha < 0.008) discard;
-    gl_FragColor = vec4(vColor * (0.76 + heart * 0.55), alpha);
+    vec3 glowColor = mix(vColor, vec3(1.0, 0.56, 0.24), vPointerGlow * 0.18);
+    gl_FragColor = vec4(glowColor
+      * (0.76 + heart * 0.55 + vPointerGlow * 0.24 + vFlowLight * 0.16), alpha);
   }
 `;
 
@@ -84,13 +126,20 @@ function Sculpture({ host }) {
     const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
     let disposeScene = null;
     let stopped = false;
-    let targetShape = clamp(Number(document.querySelector('#sculpture-shape')?.value || 0) / 100);
+    const assemblyParent = host.closest('[data-assembly-progress]') || host.parentElement;
+    let targetAssembly = clamp(assemblyParent?.dataset.assemblyProgress ?? host.dataset.assembly);
     let targetTravel = clamp(host.closest('.studio-hero')?.dataset.heroProgress);
-    if(!targetShape)targetShape=targetTravel*.65;
     let lastInteraction = performance.now();
-    const shape = (event) => { targetShape = clamp(event.detail?.value); lastInteraction = performance.now(); };
-    const progress = (event) => { targetShape = clamp(event.detail?.progress); lastInteraction = performance.now(); };
+    const setAssembly = (event) => {
+      targetAssembly = clamp(event.detail?.progress ?? event.detail?.value);
+      lastInteraction = performance.now();
+    };
+    // The aliases keep older callers harmless while studio:assembly is the
+    // authored cloud-to-mark signal.
+    const shape = setAssembly;
+    const progress = setAssembly;
     const travelScene = (event) => { targetTravel = clamp(event.detail?.progress); lastInteraction = performance.now(); };
+    host.addEventListener('studio:assembly', setAssembly);
     host.addEventListener('studio:shape', shape);
     host.addEventListener('studio:progress', progress);
     host.addEventListener('studio:travel', travelScene);
@@ -122,10 +171,15 @@ function Sculpture({ host }) {
         const particleData = createParticleField();
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(particleData.positions, 3));
+        geometry.setAttribute('aLoosePosition', new THREE.BufferAttribute(particleData.loosePositions, 3));
+        geometry.setAttribute('aMarkPosition', new THREE.BufferAttribute(particleData.markPositions, 3));
         geometry.setAttribute('aColor', new THREE.BufferAttribute(particleData.colors, 3));
+        geometry.setAttribute('aTargetColor', new THREE.BufferAttribute(particleData.targetColors, 3));
+        geometry.setAttribute('aChoreography', new THREE.BufferAttribute(particleData.choreography, 4));
+        geometry.setAttribute('aArcOffset', new THREE.BufferAttribute(particleData.arcOffsets, 3));
+        geometry.setAttribute('aCurlOffset', new THREE.BufferAttribute(particleData.curlOffsets, 3));
         geometry.setAttribute('aPhase', new THREE.BufferAttribute(particleData.phases, 1));
         geometry.setAttribute('aSize', new THREE.BufferAttribute(particleData.sizes, 1));
-        geometry.setAttribute('aKind', new THREE.BufferAttribute(particleData.kinds, 1));
         geometry.setAttribute('aFlow', new THREE.BufferAttribute(particleData.flows, 1));
         geometry.setAttribute('aAlpha', new THREE.BufferAttribute(particleData.alphas, 1));
         geometry.computeBoundingSphere();
@@ -133,9 +187,12 @@ function Sculpture({ host }) {
         const material = new THREE.ShaderMaterial({
           uniforms: {
             uTime: { value: 0 },
-            uShape: { value: targetShape },
+            uAssembly: { value: targetAssembly },
             uPixelRatio: { value: 1 },
             uOpacity: { value: 0.92 },
+            uPointer: { value: new THREE.Vector2() },
+            uPointerStrength: { value: 0 },
+            uPointerAspect: { value: 1 },
           },
           vertexShader,
           fragmentShader,
@@ -148,7 +205,7 @@ function Sculpture({ host }) {
 
         const field = new THREE.Points(geometry, material);
         field.frustumCulled = false;
-        field.rotation.set(-0.055, -0.19, -0.075);
+        field.rotation.set(0, 0, 0);
         field.position.set(0.12, 0.02, 0);
         scene.add(field);
 
@@ -162,11 +219,14 @@ function Sculpture({ host }) {
         let previousTime = 0;
         let arrivalStartedAt = null;
         let elapsed = 0;
-        let fieldShape = targetShape || 0.18;
+        let fieldAssembly = targetAssembly;
         let travel = targetTravel;
         let cameraBaseZ = 6.45;
         const pointer = new THREE.Vector2();
         const easedPointer = new THREE.Vector2();
+        let pointerInside = false;
+        let pointerStrength = 0;
+        let touchPulse = 0;
 
         const resize = () => {
           const rect = host.getBoundingClientRect();
@@ -177,6 +237,7 @@ function Sculpture({ host }) {
           renderer.setSize(rect.width, rect.height, false);
           material.uniforms.uPixelRatio.value = pixelRatio;
           camera.aspect = rect.width / rect.height;
+          material.uniforms.uPointerAspect.value = camera.aspect;
           cameraBaseZ = (mobile ? 6.85 : 6.45) / Math.min(1, Math.max(0.38, camera.aspect));
           camera.position.z = cameraBaseZ;
           field.position.x = mobile ? 0 : 0.12;
@@ -192,7 +253,8 @@ function Sculpture({ host }) {
           if (!visible || !intersecting || modalOpen || contextLost) return;
           if (arrivalStartedAt === null) arrivalStartedAt = time;
           const active = time - arrivalStartedAt < 2400 || time - lastInteraction < 1800
-            || Math.abs(targetShape - fieldShape) > 0.002 || Math.abs(targetTravel - travel) > 0.002;
+            || Math.abs(targetAssembly - fieldAssembly) > 0.002 || Math.abs(targetTravel - travel) > 0.002
+            || pointerStrength > 0.002 || touchPulse > 0.002;
           const interval = 1000 / (active ? (mobile ? 30 : 45) : 24);
           if (previousTime && time - previousTime < interval) {
             frame = requestAnimationFrame(render);
@@ -203,28 +265,35 @@ function Sculpture({ host }) {
           previousTime = time;
           elapsed += delta;
           const easing = 1 - Math.exp(-Math.min(realDelta, 0.25) * 4.4);
-          const arrival = targetShape === 0 ? Math.max(0, 1 - (time - arrivalStartedAt) / 1900) * 0.18 : 0;
-          fieldShape += (Math.max(targetShape, arrival) - fieldShape) * easing;
+          fieldAssembly += (targetAssembly - fieldAssembly) * easing;
           travel += (targetTravel - travel) * easing;
-          const shaped = fieldShape * fieldShape * (3 - 2 * fieldShape);
+          const assembled = fieldAssembly * fieldAssembly * (3 - 2 * fieldAssembly);
+          const loose = 1 - assembled;
           const travelEase = travel * travel * (3 - 2 * travel);
-          easedPointer.lerp(pointer, easing);
+          touchPulse *= Math.exp(-Math.min(realDelta, 0.25) * 4.6);
+          const pointerTarget = Math.max(pointerInside ? 1 : 0, touchPulse);
+          const pointerEasing = 1 - Math.exp(-Math.min(realDelta, 0.25) * (pointerTarget > 0.01 ? 11 : 5.2));
+          easedPointer.lerp(pointer, pointerEasing);
+          pointerStrength += (pointerTarget - pointerStrength) * pointerEasing;
 
           material.uniforms.uTime.value = elapsed;
-          material.uniforms.uShape.value = shaped;
+          material.uniforms.uAssembly.value = fieldAssembly;
           material.uniforms.uOpacity.value = 0.9 + Math.sin(elapsed * 0.19) * 0.025;
+          material.uniforms.uPointer.value.copy(easedPointer);
+          material.uniforms.uPointerStrength.value = pointerStrength;
 
-          camera.position.x = Math.sin(travelEase * Math.PI * 0.58) * 0.2;
-          camera.position.y = 0.05 + Math.sin(travelEase * Math.PI) * 0.085 + travelEase * 0.04;
-          camera.position.z = cameraBaseZ * (1 - travelEase * 0.115);
+          camera.position.x = loose * Math.sin(travelEase * Math.PI * 0.58) * 0.15;
+          camera.position.y = 0.05 + loose * (Math.sin(travelEase * Math.PI) * 0.06 + travelEase * 0.03);
+          camera.position.z = cameraBaseZ * (1 - loose * travelEase * 0.075);
           camera.lookAt(0, 0.05, 0);
 
-          field.rotation.x = -0.055 + travelEase * 0.085 + easedPointer.y * 0.055
-            + Math.sin(elapsed * 0.09) * 0.012;
-          field.rotation.y = -0.19 + travelEase * 0.215 + easedPointer.x * 0.085
-            + Math.sin(elapsed * 0.075) * 0.025;
-          field.rotation.z = -0.075 - travelEase * 0.035 + Math.sin(elapsed * 0.065) * 0.012;
-          field.position.y = 0.02 + Math.sin(elapsed * 0.14) * 0.012;
+          field.rotation.x = loose * (-0.035 + travelEase * 0.06
+            + Math.sin(elapsed * 0.09) * 0.012);
+          field.rotation.y = loose * (-0.08 + travelEase * 0.1
+            + Math.sin(elapsed * 0.075) * 0.025);
+          field.rotation.z = loose * (-0.025 - travelEase * 0.02
+            + Math.sin(elapsed * 0.065) * 0.012);
+          field.position.y = 0.02 + Math.sin(elapsed * 0.14) * (0.002 + loose * 0.008);
 
           try {
             renderer.render(scene, camera);
@@ -232,6 +301,7 @@ function Sculpture({ host }) {
               rendered = true;
               host.classList.add('is-ready');
               host.dataset.renderState = 'ready';
+              host.dispatchEvent(new Event('studio:ready'));
             }
           } catch {
             contextLost = true;
@@ -265,13 +335,27 @@ function Sculpture({ host }) {
         const move = (event) => {
           if (event.pointerType === 'touch') return;
           lastInteraction = performance.now();
+          pointerInside = true;
           const rect = host.getBoundingClientRect();
           pointer.set(
             ((event.clientX - rect.left) / rect.width) * 2 - 1,
-            ((event.clientY - rect.top) / rect.height) * 2 - 1,
+            1 - ((event.clientY - rect.top) / rect.height) * 2,
           );
         };
-        const leave = () => pointer.set(0, 0);
+        const leave = () => {
+          pointerInside = false;
+          lastInteraction = performance.now();
+        };
+        const press = (event) => {
+          const rect = host.getBoundingClientRect();
+          pointer.set(
+            ((event.clientX - rect.left) / rect.width) * 2 - 1,
+            1 - ((event.clientY - rect.top) / rect.height) * 2,
+          );
+          easedPointer.copy(pointer);
+          touchPulse = 1;
+          lastInteraction = performance.now();
+        };
         const dialogObserver = new MutationObserver(() => {
           const nextOpen = Boolean(document.querySelector('dialog[open]'));
           if (nextOpen === modalOpen) return;
@@ -297,6 +381,7 @@ function Sculpture({ host }) {
           resume();
         };
         host.addEventListener('pointermove', move, { passive: true });
+        host.addEventListener('pointerdown', press, { passive: true });
         host.addEventListener('pointerleave', leave);
         document.addEventListener('visibilitychange', visibility);
         canvas.addEventListener('webglcontextlost', lost);
@@ -309,6 +394,7 @@ function Sculpture({ host }) {
           intersectionObserver.disconnect();
           dialogObserver.disconnect();
           host.removeEventListener('pointermove', move);
+          host.removeEventListener('pointerdown', press);
           host.removeEventListener('pointerleave', leave);
           document.removeEventListener('visibilitychange', visibility);
           canvas.removeEventListener('webglcontextlost', lost);
@@ -338,6 +424,7 @@ function Sculpture({ host }) {
     return () => {
       stopped = true;
       disposeScene?.();
+      host.removeEventListener('studio:assembly', setAssembly);
       host.removeEventListener('studio:shape', shape);
       host.removeEventListener('studio:progress', progress);
       host.removeEventListener('studio:travel', travelScene);

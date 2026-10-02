@@ -4,9 +4,8 @@ import AxeBuilder from '@axe-core/playwright';
 test('new visitor reaches real work, case study, and returns',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await page.goto('/');
- await expect(page.getByRole('heading',{name:/Ideas, with a pulse/i})).toBeVisible();
- await page.locator('#sculpture-shape').fill('55');
- await expect(page.locator('#sculpture-shape')).toHaveValue('55');
+ await expect(page.getByRole('heading',{name:/Get noticed. Get chosen/i})).toBeVisible();
+ await expect(page.locator('.sculpture-control')).toHaveCount(0);
  await page.locator('.object-index a[href="#work"]').click();
  await expect(page).toHaveURL(/#work$/);
  await expect(page.locator('#work')).toBeInViewport();
@@ -131,6 +130,24 @@ test('Rae keeps drafts and reports provider failures honestly',async({page})=>{
  await expect(page.locator('#rae-dialog')).not.toBeVisible();
 });
 
+test('Rae replaces interrupted text and retains only completed answers',async({page})=>{
+ const requests=[];
+ await page.route('**/api/rae-chat',async route=>{
+  requests.push(route.request().postDataJSON());
+  const replacement='Launch Website starts at ₹9,999. Monthly support starts at ₹2,599.';
+  const body=requests.length===1?`event: delta\ndata: {"text":"Discard this partial"}\n\nevent: reset\ndata: {"reason":"provider_recovery"}\n\nevent: state\ndata: {"state":"thinking","attempt":2,"recovering":true}\n\nevent: delta\ndata: ${JSON.stringify({text:replacement})}\n\nevent: done\ndata: {"finishReason":"stop"}\n\n`:'event: delta\ndata: {"text":"We can discuss your scope."}\n\nevent: done\ndata: {"finishReason":"stop"}\n\n';
+  await route.fulfill({status:200,contentType:'text/event-stream',body});
+ });
+ await page.goto('/');await page.locator('.rae-launcher').click();
+ await page.locator('#rae-input').fill('What are the starting prices?');await page.getByRole('button',{name:'Send message to Rae'}).click();
+ await expect(page.locator('.rae-message.assistant').last()).toHaveText('Launch Website starts at ₹9,999. Monthly support starts at ₹2,599.');
+ await expect(page.locator('.rae-messages')).not.toContainText('Discard this partial');
+ await page.locator('#rae-input').fill('What happens next?');await page.getByRole('button',{name:'Send message to Rae'}).click();
+ await expect(page.locator('.rae-message.assistant').last()).toHaveText('We can discuss your scope.');
+ expect(requests[0].supportsStreamReset).toBe(true);
+ expect(requests[1].history).toEqual([{role:'user',text:'What are the starting prices?'},{role:'assistant',text:'Launch Website starts at ₹9,999. Monthly support starts at ₹2,599.'}]);
+});
+
 test('Rae renders only allowlisted, market-aware suggestions',async({page})=>{
  const body=[
   'event: delta\ndata: {"text":"The audit is a focused first step."}\n\n',
@@ -152,7 +169,7 @@ test('small screens, reduced motion and enhancement failure preserve content',as
   await page.setViewportSize({width,height:844});await page.goto('/');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow,`horizontal overflow at ${width}px`).toBeLessThanOrEqual(1);
-  await expect(page.getByRole('heading',{name:/Ideas, with a pulse/i})).toBeVisible();
+  await expect(page.getByRole('heading',{name:/Get noticed. Get chosen/i})).toBeVisible();
  }
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/');
@@ -167,24 +184,40 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await page.setViewportSize({width:1440,height:900});
  await page.goto('/');
  await expect(page.locator('[data-sc-root]')).toBeVisible();
- await page.locator('#sculpture-shape').fill('75');
- await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
- await page.locator('#sculpture-shape').focus();
- await page.keyboard.press('ArrowLeft');
- await expect(page.locator('#sculpture-shape')).toHaveValue('74');
+ await page.waitForTimeout(1200);
+ const title=await page.locator('#hero-title').boundingBox();
+ expect(Math.abs(title.x+title.width/2-720)).toBeLessThan(2);
+ await page.mouse.move(790,340);
+ await expect.poll(()=>page.locator('.hero-word').evaluateAll(words=>words.some(word=>parseFloat(word.style.getPropertyValue('--type-y'))<-.1))).toBe(true);
+ await page.mouse.move(0,0);
+ await expect.poll(()=>page.locator('.hero-word').evaluateAll(words=>words.every(word=>!word.style.getPropertyValue('--type-y')))).toBe(true);
  const heroPosition=async progress=>page.evaluate(progress=>{const section=document.querySelector('.studio-hero'),header=document.querySelector('.site-header');scrollTo({top:section.offsetTop-header.offsetHeight+(section.offsetHeight-innerHeight)*progress,behavior:'instant'})},progress);
- await heroPosition(.55);
+ await heroPosition(.66);
+ await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
+ await expect(page.locator('.studio-hero')).toHaveAttribute('data-assembly-progress','1.000');
  await expect(page.locator('.hero-next')).toHaveAttribute('aria-hidden','false');
- await expect(page.getByRole('heading',{name:/Then we make it real/i})).toBeInViewport();
+ await expect(page.getByRole('heading',{name:/Strategy becomes structure. Character becomes experience/i})).toBeInViewport();
  await heroPosition(.94);
- await expect.poll(()=>page.locator('.hero-next').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.65);
+ await expect.poll(()=>page.locator('.hero-handoff').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.8);
  await heroPosition(0);
  await expect(page.locator('.hero-intro')).toHaveAttribute('aria-hidden','false');
+ await expect(page.locator('.studio-hero')).toHaveAttribute('data-assembly-progress','0.000');
  await page.evaluate(()=>{const section=document.querySelector('#work');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.72,behavior:'instant'})});
  await expect.poll(()=>page.locator('#work').getAttribute('data-proof-progress')).toMatch(/^0\.[6-9]/);
  const forward=await page.locator('.work-desktop').evaluate(node=>getComputedStyle(node).transform);
  await page.evaluate(()=>{const section=document.querySelector('#work');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.15,behavior:'instant'})});
  await expect.poll(()=>page.locator('.work-desktop').evaluate(node=>getComputedStyle(node).transform)).not.toBe(forward);
+ await page.locator('#method').scrollIntoViewIfNeeded();
+ const practice=page.getByRole('tablist',{name:'Studio practice'});
+ await expect(practice.getByRole('tab',{name:/Direction/})).toBeVisible();
+ await practice.getByRole('tab',{name:/Direction/}).focus();
+ await page.keyboard.press('ArrowRight');
+ await expect(practice.getByRole('tab',{name:/Design/})).toBeFocused();
+ await expect(page.getByRole('tabpanel',{name:/Design/})).toContainText('Type, imagery, interface and motion');
+ await page.keyboard.press('End');
+ await expect(practice.getByRole('tab',{name:/Build/})).toHaveAttribute('aria-selected','true');
+ const processAccess=await new AxeBuilder({page}).include('.workbench').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+ expect(processAccess.violations).toEqual([]);
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
  const mark=page.getByRole('link',{name:'BRAYRO AI — return to the top'});
  await mark.scrollIntoViewIfNeeded();
@@ -201,16 +234,13 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  for(const [width,height] of [[390,844],[320,568],[667,375]]){
   await page.setViewportSize({width,height});
   await expect(page.locator('#hero-title')).toBeVisible();
-  await page.locator('#sculpture-shape').fill('35');
-  await expect(page.locator('#sculpture-shape')).toHaveValue('35');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
  }
  await heroPosition(.999);
- await expect(page.locator('.sculpture-control')).toHaveAttribute('inert','');
+ await expect.poll(()=>page.locator('.hero-handoff').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.98);
  await page.emulateMedia({reducedMotion:'reduce'});
- await expect(page.locator('.sculpture-control')).not.toHaveAttribute('inert','');
  await page.reload();
- await expect(page.locator('.sculpture-poster')).toBeVisible();
+ await expect(page.locator('.particle-cloud')).toBeVisible();
  await expect(page.locator('.sculpture-canvas')).toHaveCount(0);
 });
 

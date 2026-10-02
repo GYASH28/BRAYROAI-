@@ -28,20 +28,21 @@ export function initStudioEntry(){
   window.addEventListener('scroll',()=>{arrival.disconnect();loadMotion()},{once:true,passive:true});
   window.addEventListener('pageshow',event=>{if(event.persisted&&scrollY>0){arrival.disconnect();loadMotion()}});
  }
- const scene=document.querySelector('[data-sculpture]'),shape=document.querySelector('#sculpture-shape');
+ const scene=document.querySelector('[data-sculpture]');
  let sculpture=null,loading=null;
  const loadSculpture=()=>{
-  if(!scene||reduced.matches||loading)return;
-  loading=import('./sculpture.jsx').then(m=>{sculpture=m.mountSculpture(scene);setTimeout(()=>{const travel=Number(scene.closest('.studio-hero')?.dataset.heroProgress||0);scene.dispatchEvent(new CustomEvent('studio:travel',{detail:{progress:travel}}));scene.dispatchEvent(new CustomEvent('studio:shape',{detail:{value:Number(shape?.value||0)>0?Number(shape.value)/100:travel*.65}}))},100)}).catch(()=>{scene.dataset.renderState='fallback'});
+  if(!scene||reduced.matches)return Promise.resolve();if(loading)return loading;
+  const sync=()=>{const hero=scene.closest('.studio-hero');scene.dispatchEvent(new CustomEvent('studio:travel',{detail:{progress:Number(hero?.dataset.heroProgress||0)}}));scene.dispatchEvent(new CustomEvent('studio:assembly',{detail:{progress:Number(hero?.dataset.assemblyProgress||0)}}))};
+  scene.addEventListener('studio:ready',sync,{once:true});
+  loading=import('./sculpture.jsx').then(m=>{sculpture=m.mountSculpture(scene)}).catch(()=>{scene.dataset.renderState='fallback'});return loading;
  };
- shape?.addEventListener('input',()=>{
-  loadSculpture();scene?.dispatchEvent(new CustomEvent('studio:shape',{detail:{value:Number(shape.value)/100}}));
-  const poster=document.querySelector('.sculpture-poster');if(poster&&!scene?.classList.contains('is-ready'))poster.style.transform=`rotate(${Number(shape.value)*.05}deg) scale(${1+Number(shape.value)*.0008})`;
- });
- if(scene&&!reduced.matches&&matchMedia('(min-width:761px)').matches){const timer=setTimeout(loadSculpture,2400);scene.addEventListener('pointerdown',()=>{clearTimeout(timer);loadSculpture()},{once:true})}
+ if(scene&&!reduced.matches&&matchMedia('(min-width:761px)').matches){const timer=setTimeout(loadSculpture,2400);scene.addEventListener('pointerenter',()=>{clearTimeout(timer);loadSculpture()},{once:true});scene.addEventListener('pointerdown',()=>{clearTimeout(timer);loadSculpture()},{once:true})}
  window.addEventListener('scroll',loadSculpture,{once:true,passive:true});
  const hero=document.querySelector('.hero-stage');
  if(hero&&!reduced.matches&&matchMedia('(pointer:fine)').matches){
+  let disposeType=null;
+  hero.addEventListener('pointermove',event=>{const pointer={clientX:event.clientX,clientY:event.clientY};import('./hero-type.js').then(m=>{disposeType=m.initHeroType(hero,pointer)}).catch(()=>{})},{once:true,passive:true});
+  window.addEventListener('pagehide',()=>disposeType?.());
   hero.addEventListener('pointermove',event=>{const rect=hero.getBoundingClientRect();hero.style.setProperty('--light-x',`${(event.clientX/rect.width-.5)*36}px`);hero.style.setProperty('--light-y',`${((event.clientY-rect.top)/rect.height-.5)*24}px`)},{passive:true});
   hero.addEventListener('pointerleave',()=>{hero.style.setProperty('--light-x','0px');hero.style.setProperty('--light-y','0px')});
  }

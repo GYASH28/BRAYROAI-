@@ -52,14 +52,15 @@ export function initRae(){
   busy=true;setCharacter('thinking');dialog.classList.add('rae-has-conversation');form.querySelector('button').disabled=true;controller=new AbortController();message('user',question);input.value='';try{sessionStorage.removeItem(draftKey)}catch{}state('Rae is thinking…');
   const answer=message('assistant','');let completed=false,error=null;
   try{
-   const response=await fetch('/api/rae-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:question,history:history.slice(-8),context:{pathname:location.pathname,pageTitle:document.title,pageKey:document.body.className.replace('page-',''),market:currentMarket()},session:{}}),signal:controller.signal});
+   const response=await fetch('/api/rae-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:question,supportsStreamReset:true,history:history.slice(-8),context:{pathname:location.pathname,pageTitle:document.title,pageKey:document.body.className.replace('page-',''),market:currentMarket()},session:{}}),signal:controller.signal});
    if(!response.ok){const payload=await response.json().catch(()=>({}));throw new Error(payload.error||'Rae is unavailable right now.')}
    if(!response.body)throw new Error('Rae could not start a response.');
    const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='',eventName='',data='';
    const flush=()=>{if(!data)return;let payload;try{payload=JSON.parse(data)}catch{return}
     if(eventName==='delta'){answer.textContent+=payload.text||'';setCharacter('speaking')}
     if(eventName==='meta')renderMeta(answer,payload);
-    if(eventName==='state')state(payload.state==='thinking'?'Rae is thinking…':'Rae is answering…');
+    if(eventName==='reset'){answer.textContent='';setCharacter('thinking');state('Rae is trying another connection…')}
+    if(eventName==='state')state(payload.recovering?'Rae is trying another connection…':payload.state==='thinking'?'Rae is thinking…':'Rae is answering…');
     if(eventName==='error')error=payload.message||'Rae was interrupted. Please retry.';
     if(eventName==='done')completed=true;
     log.scrollTop=log.scrollHeight;eventName='';data='';

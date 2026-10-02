@@ -61,6 +61,35 @@ try{
     assert(!partialRes.text().includes('private reasoning'),'Incomplete responses must still hide thoughts');
   }
 
+  // Clients that advertise reset support can replace a failed partial answer
+  // without blending providers or adding that partial to conversation history.
+  for(const failure of ['EOF','MAX_TOKENS','reader-error']){
+    let calls=0;const models=[];
+    globalThis.fetch=async url=>{
+      calls++;models.push(String(url).match(/models\/([^:]+)/)?.[1]);
+      if(calls===1){
+        const partial=`data: ${JSON.stringify({candidates:[{content:{parts:[{text:'Discard this partial'}]},...(failure==='MAX_TOKENS'?{finishReason:'MAX_TOKENS'}:{})}]})}\n\n`;
+        const body=failure==='reader-error'?new ReadableStream({start(controller){controller.enqueue(encoder.encode(partial))},pull(controller){controller.error(new Error('connection closed'))}}):streamOf(partial);
+        return{ok:true,status:200,body};
+      }
+      return{ok:true,status:200,body:streamOf('data: {"candidates":[{"content":{"parts":[{"text":"Launch ₹9,999; monthly ₹2,599."}]},"finishReason":"STOP"}]}\n\n')};
+    };
+    const replaced=new MockResponse();await handler({...req,headers:{'x-forwarded-for':`203.0.113.${failure==='EOF'?16:failure==='MAX_TOKENS'?17:18}`},body:{...req.body,supportsStreamReset:true}},replaced);
+    const events=replaced.text();
+    assert(calls===2&&models.join(',')==='gemini-3.8-flash,gemini-3.7-flash','Partial recovery must respect model priority');
+    assert(events.indexOf('Discard this partial')<events.indexOf('event: reset'),'Reset must follow the failed visible partial');
+    assert(events.indexOf('event: reset')<events.indexOf('"attempt":2'),'Reset must precede the replacement connection');
+    assert(events.indexOf('"attempt":2')<events.indexOf('Launch ₹9,999'),'Replacement text must follow recovery state');
+    assert(events.includes('event: done')&&!events.includes('event: error'),'Successful replacement must finish without a stale error');
+    assert((events.match(/event: meta/g)||[]).length===1,'Only the completed provider may emit metadata');
+  }
+  let partialAttempts=0;
+  globalThis.fetch=async()=>{partialAttempts++;return{ok:true,status:200,body:streamOf('data: {"candidates":[{"content":{"parts":[{"text":"Another partial"}]}}]}\n\n')}};
+  const exhaustedPartial=new MockResponse();await handler({...req,headers:{'x-forwarded-for':'203.0.113.19'},body:{...req.body,supportsStreamReset:true}},exhaustedPartial);
+  assert(partialAttempts===4,'Partial replacement must stay within four attempts');
+  assert((exhaustedPartial.text().match(/event: reset/g)||[]).length===3,'Never reset after the final available provider');
+  assert(exhaustedPartial.text().includes('event: error')&&!exhaustedPartial.text().includes('event: done'),'Exhausted partial replies remain failures');
+
   process.env.RAE_PROVIDER='groq';process.env.GROQ_API_KEY='test-groq';
   globalThis.fetch=async()=>({ok:true,status:200,body:streamOf('data: {"choices":[{"delta":{"content":"A cut off answer"},"finish_reason":"length"}]}\n\ndata: [DONE]\n\n')});
   const lengthRes=new MockResponse();await handler({...req,headers:{'x-forwarded-for':'203.0.113.15'}},lengthRes);

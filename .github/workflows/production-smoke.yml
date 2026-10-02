@@ -62,7 +62,7 @@ jobs:
           test "$HTTP_CODE" = "200"
           test "$DEPLOYED_COMMIT" = "$GITHUB_SHA"
           grep -q 'BRAYRO AI' /tmp/brayroai-prod-home.html
-          grep -q 'with a pulse' /tmp/brayroai-prod-home.html
+          grep -q 'Get noticed' /tmp/brayroai-prod-home.html
 
           # Write route responses to files before grepping. With pipefail,
           # `curl | grep -q` can report curl 23 after grep exits early even

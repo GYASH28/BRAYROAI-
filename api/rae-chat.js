@@ -205,7 +205,7 @@ export default async function handler(req,res){
   if(isLimited(req))return sendJson(res,429,{error:'Rae has hit the public rate limit for this minute.',code:'rate_limited'});
   const body=parseBody(req);if(!body)return sendJson(res,400,{error:'Invalid JSON request.',code:'invalid_request'});
   const message=clean(body.message).slice(0,MAX_MESSAGE);if(!message)return sendJson(res,400,{error:'Message required.',code:'message_required'});
-  const history=safeHistory(body.history),context=safeContext(body.context),session=safeSession(body.session),candidates=providerCandidates();
+  const history=safeHistory(body.history),context=safeContext(body.context),session=safeSession(body.session),candidates=providerCandidates(),supportsReset=body.supportsStreamReset===true;
   if(history.at(-1)?.role==='user'&&history.at(-1)?.text===message)history.pop();
   if(!candidates.length)return sendJson(res,503,{error:'Rae AI is not configured on this deployment.',code:'provider_not_configured'});
 
@@ -230,13 +230,14 @@ export default async function handler(req,res){
         if(finishReason!=='STOP'){
           const code=['MAX_TOKENS','LENGTH'].includes(finishReason)?'output_truncated':'provider_incomplete';
           console.error('Rae provider response incomplete',config.provider,config.model,finishReason||'unknown',tracker.thoughtTokens??'unknown');
+          if(supportsReset&&index+1<candidates.length){sse(res,'reset',{reason:'provider_recovery'});continue}
           sse(res,'error',{code,message:'Rae’s answer ended before it was complete. Please retry.'});return res.end();
         }
         const meta=buildMeta(message,context,session);sse(res,'meta',meta);sse(res,'done',{finishReason:finishReason.toLowerCase(),emotion:meta.emotion,provider:config.provider,promptVersion:PROMPT_VERSION,recovered:index>0});return res.end();
       }catch(error){
         if(clientClosed||controller.signal.reason==='client_closed'||res.writableEnded)return;
         const timeout=controller.signal.aborted&&controller.signal.reason==='timeout';lastCode=timeout?'timeout':'provider_unavailable';console.error('Rae provider stream failed',config.provider,config.model,error?.name||error);
-        if(tracker.count){sse(res,'error',{code:'stream_interrupted',message:'Rae’s answer was interrupted. Please retry.'});return res.end()}
+        if(tracker.count){if(supportsReset&&index+1<candidates.length){sse(res,'reset',{reason:'provider_recovery'});continue}sse(res,'error',{code:'stream_interrupted',message:'Rae’s answer was interrupted. Please retry.'});return res.end()}
       }finally{clearTimeout(timer);if(currentController===controller)currentController=null}
     }
     if(!res.writableEnded){sse(res,'error',{code:'all_providers_failed',reason:lastCode,message:'Rae’s AI connections are busy right now. Please retry in a moment.'});res.end()}

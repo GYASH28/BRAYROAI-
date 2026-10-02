@@ -297,7 +297,8 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await expect(page.locator('.hero-next')).toHaveAttribute('aria-hidden','false');
  await expect(page.getByRole('heading',{name:/Strategy becomes structure. Character becomes experience/i})).toBeInViewport();
  await heroPosition(.94);
- await expect.poll(()=>page.locator('.hero-handoff').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.8);
+ await expect(page.locator('.hero-handoff')).toHaveCount(0);
+ await expect.poll(()=>page.locator('.hero-object').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.85);
  await heroPosition(0);
  await expect(page.locator('.hero-intro')).toHaveAttribute('aria-hidden','false');
  await expect(page.locator('.studio-hero')).toHaveAttribute('data-assembly-progress','0.000');
@@ -337,7 +338,9 @@ test('particle hero, footer and pinned proof respond across input, resize and re
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
  }
  await heroPosition(.999);
- await expect.poll(()=>page.locator('.hero-handoff').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.98);
+ await expect(page.locator('.hero-handoff')).toHaveCount(0);
+ await expect.poll(()=>page.locator('.hero-object').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.85);
+ await expect(page.locator('.hero-next')).toHaveAttribute('aria-hidden','false');
  await page.emulateMedia({reducedMotion:'reduce'});
  // A preference change after enhancement must leave one readable link label.
  await page.locator('.person-copy .text-link').scrollIntoViewIfNeeded();

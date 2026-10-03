@@ -9,18 +9,23 @@
 @media(prefers-reduced-motion:reduce){.studio-belief-content{animation:none}.studio-belief-notes summary i:after,.studio-belief-notes details{transition:none}}
 
 
-/* Full-viewport Studio hero. */
+/* True fullscreen Studio hero: navigation overlays the first scene. */
+.page-founder .site-header{
+  position:fixed;
+  inset:0 0 auto;
+  z-index:50;
+}
 @media(min-width:761px){
   .page-founder .founder-stage{
-    height:calc(100svh - var(--header));
+    height:100svh;
     min-height:720px;
-    padding-top:50px;
+    padding-top:0;
     position:relative;
     overflow:hidden;
   }
   .page-founder .founder-stage-top{
     position:absolute;
-    top:50px;
+    top:calc(var(--header) + 34px);
     left:var(--gutter);
     right:var(--gutter);
     width:auto;
@@ -42,7 +47,7 @@
   }
   .page-founder .founder-name>span:first-child{
     left:var(--gutter);
-    top:20%;
+    top:22%;
   }
   .page-founder .founder-name>span:last-child{
     right:var(--gutter);
@@ -57,13 +62,19 @@
     height:76%;
   }
   .page-founder .founder-colour{
-    top:50%;
+    top:52%;
     transform:translateY(-50%);
   }
 }
 @media(min-width:761px) and (max-height:820px){
-  .page-founder .founder-stage{min-height:calc(100svh - var(--header))}
+  .page-founder .founder-stage{min-height:100svh}
   .page-founder .founder-name{font-size:20vw}
-  .page-founder .founder-name>span:first-child{top:18%}
+  .page-founder .founder-name>span:first-child{top:20%}
   .page-founder .founder-portrait{height:78%;right:17%}
+}
+@media(max-width:760px){
+  .page-founder .founder-stage{
+    min-height:100svh;
+    padding-top:calc(var(--header) + 30px);
+  }
 }

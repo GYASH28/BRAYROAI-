@@ -161,9 +161,9 @@ test('restored founder, client and AI pages stay navigable in each market',async
   }
  }
  await page.goto('/founder');
- await expect(page.locator('.founder-hero-copy')).toBeVisible();
- await expect(page.locator('.founder-opening,.founder-name')).toHaveCount(0);
- await expect(page.getByRole('heading',{level:1,name:/The work stays close to the idea/i})).toBeVisible();
+ await expect(page.locator('.founder-name')).toBeVisible();
+ await expect(page.locator('.founder-opening,.founder-hero-copy')).toHaveCount(0);
+ await expect(page.getByRole('heading',{level:1,name:'Yash Ganesh'})).toBeVisible();
  await page.locator('[data-founder-colour]').click();
  await expect(page.locator('.founder-hero')).toHaveClass(/is-colour/);
  await page.locator('#principles summary').filter({hasText:'Motion with meaning.'}).focus();

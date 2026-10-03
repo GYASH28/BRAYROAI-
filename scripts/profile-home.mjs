@@ -35,12 +35,15 @@ try{
  await page.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='settled',undefined,{timeout:5000});
  summaries.opening=summarise(await page.evaluate(()=>window.__stopFrameProbe()));
 
- await page.waitForFunction(()=>['ready','fallback'].includes(document.querySelector('[data-sculpture]')?.dataset.renderState),undefined,{timeout:6000}).catch(()=>{});
+ await page.waitForFunction(()=>['ready','fallback'].includes(document.querySelector('[data-sculpture]')?.dataset.renderState),undefined,{timeout:6000});
+ // Measure a warmed interaction, separately from imports and the first draw.
+ await page.waitForTimeout(1200);
  await page.evaluate(()=>window.__startFrameProbe('pointer'));
  const box=await page.locator('.hero-stage').boundingBox();
  if(box){
   const points=[[.2,.45],[.42,.32],[.62,.5],[.78,.38],[.55,.64],[.3,.58],[.5,.45]];
-  for(const [x,y] of points){await page.mouse.move(box.x+box.width*x,box.y+box.height*y,{steps:8});await page.waitForTimeout(70)}
+  const started=performance.now();
+  do{for(const [x,y] of points){await page.mouse.move(box.x+box.width*x,box.y+box.height*y,{steps:8});await page.waitForTimeout(70)}}while(performance.now()-started<10000);
   await page.mouse.move(2,2,{steps:5});await page.waitForTimeout(180);
  }
  summaries.pointer=summarise(await page.evaluate(()=>window.__stopFrameProbe()));

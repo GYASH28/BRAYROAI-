@@ -68,7 +68,7 @@ Keep all of the following:
 
 - Giant centred, selectable “Make your MARK” typography, pointer response, the custom drawn arrow and the ink/bone/cobalt/orange palette.
 - The new opening: 38 original BR tiles converge at different depths, resolve into the supplied monogram, fan out, then hand off to four dimensional letters and the orange full stop. Commercial copy and actions stay available. Scrolling, keyboard input or opening a control cancels the entrance immediately. Hash entry, history restoration and reduced motion do not replay it.
-- All 9,600 particles in the reference hero, their ribbon choreography, pointer response, full-screen exact BR formation, complete small mosaic chips, scroll reversal and the paper transition into FakhriMart. Preserve shape, brightness, apparent particle size, density distribution and trajectory, including at intermediate scroll positions.
+- All 9,600 particles in the reference hero, their ribbon choreography, pointer response, full-screen exact BR formation, complete small mosaic chips, scroll reversal and the current seamless handoff into FakhriMart. Do not restore the removed blank paper interlude. Preserve shape, brightness, apparent particle size, density distribution and trajectory, including at intermediate scroll positions.
 - The 161-tile interactive footer wordmark, keyboard-equivalent return to top, real project media, Yash photos and actual case facts.
 - Premium glass navigation, market picker, all routes and English IN/AE/AU market behavior. Keep three independent price books from `data/pricing.js`; no currency conversion or invented prices.
 - All nine plan dialogs, scope, benefits, boundaries, enquiry links, native focus/dismissal and clean deep links.
@@ -123,7 +123,7 @@ Core Web Vitals field targets are p75 LCP ≤2.5s, INP ≤200ms and CLS ≤.1. L
 
 Inspect these owners:
 
-- `src/site/brand-opening.js` and `.css`: finite native animation ownership, 38 small tile layers, one layout measurement before writes, no timer/rAF render loop, full cleanup. The current reference sequence is around1.8s with a2.4s defensive cap. For the new integrated full-screen sequence, use the3.0–3.4s score above and update its defensive settlement bound accordingly; input must still settle immediately. Do not introduce a blocking logo loader, scroll lock, fake progress or full-screen animated Gaussian blur.
+- `src/site/brand-opening.js` and `.css`: finite native animation ownership, 38 small tile layers, one layout measurement before writes, no timer/rAF render loop, full cleanup. The implemented integrated sequence follows the3.0–3.4s score above; preserve its defensive settlement bound and immediate input interruption. Do not introduce a blocking logo loader, scroll lock, fake progress or full-screen animated Gaussian blur.
 - `src/site/entry.js`: lazy-load boundaries, entrance-to-pointer ownership, no delayed initialization after page disposal, hash alignment and correct restored-scene behavior.
 - `src/site/sculpture.jsx`: one Points draw call, immutable buffers, shader cost, transparent overdraw, drawing-buffer dimensions, DPR adaptation and lifecycle. Measure actual bottlenecks before moving data into workers or rewriting shaders.
 - `src/site/particle-points.js`: deterministic stratified complete mark/ribbon geometry. Naively drawing only the first N positions can erase later tiles and orbit paths; any future LOD must preserve the entire silhouette and each small chip, and must pass reference comparison.
@@ -138,7 +138,7 @@ Use transform/opacity for motion when appropriate. Measure clipping, masks, shad
 
 ## 6. Adapt deliberately, without damaging the design
 
-The current hero already caps DPR at desktop1.25/mobile1 and adjusts raster scale after sustained pressure while preserving all 9,600 points. Inspect its real behavior before adding another controller. Changes need hysteresis, a settling interval after resize and a clean return to higher quality. Exclude hidden-tab, startup and context-loss timing from normal adaptation decisions.
+The current hero caps DPR at desktop1.25/mobile1 and uses raster-budget.js for time-based pressure/recovery at scales1/.85/.7 while preserving all 9,600 points. It settles after resize/resume and updates the drawing buffer once per actual size/ratio change. Inspect its real behavior before adding another controller. Changes need hysteresis, a settling interval after resize and a clean return to higher quality. Exclude hidden-tab, startup and context-loss timing from normal adaptation decisions.
 
 Prefer eliminating wasted work before any fidelity reduction. If adaptation remains necessary, tune it against side-by-side captures at actual viewing size. Preserve point CSS size, small mark chips, contrast, perceived glow and all formation landmarks. Do not silently remove blur, interaction, full-screen composition or transitions as a “low-end mode.” Any lower-tier renderer or shader variant must be visibly coherent, deterministic and explicitly tested. No-WebGL fallback must remain useful, but a static fallback is not proof that the animated experience achieved 60fps.
 

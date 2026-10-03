@@ -13,6 +13,12 @@ GitHub main9318028 already contains the3.2second First Signal fullscreen opening
 - The delayed hero-type initializer now receives the latest pointer position or no position after pointerleave, rather than a stale first event. Temporary tracking is removed once the real handler is mounted. Actual BFCache pagehide preserves the mounted type handlers instead of disposing them unconditionally.
 - Source/API/security/provider/build/dist/localization passed;281071compressed JS bytes. Expanded opening regression passed with one worker and zero retries. Complete canonical release qualification is required after push.
 
+## Cycle two
+
+- Corrected raster recovery that treated25ms frames as headroom, made hysteresis time-based and reset pressure after lifecycle interruptions. Preserved the existing raster bounds, all9600points and original shaders/geometry.
+- Consolidated duplicate drawing-buffer resizes and guarded identical observer notifications. Integrated browser regression rejects duplicate allocations.
+- Extended the warmed pointer profile to at least10seconds and made missing scene readiness explicit. Local SwiftShader before/after timing remains poor and mixed; no general FPS improvement claimed. Exact release qualification is required.
+
 ## Next measured cycles
 
 1. Inspect the current home performance trace and identify the largest attributable CPU/raster/compositor/GPU costs. The headless renderer may be SwiftShader: distinguish compatibility diagnostics from hardware60fps evidence. Keep full particle geometry and visual fidelity.

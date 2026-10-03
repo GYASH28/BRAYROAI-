@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import * as THREE from 'three';
 import { createParticleField } from './particle-points.js';
+import { createRasterBudget } from './raster-budget.js';
 
 const clamp = (value) => Math.max(0, Math.min(1, Number(value) || 0));
 
@@ -227,19 +228,26 @@ function Sculpture({ host }) {
         let pendingPointer = null;
         let pixelRatio = 1;
         let qualityScale = 1;
-        let slowFrames = 0;
-        let fastFrames = 0;
-        let settlingFrames = 30;
+        const rasterBudget = createRasterBudget();
         let hostRect = null;
+        let bufferWidth = 0;
+        let bufferHeight = 0;
 
         const resize = () => {
+          rasterBudget.reset();
           const rect = host.getBoundingClientRect();
           hostRect = rect;
           if (!rect.width || !rect.height) return;
           mobile = window.matchMedia('(max-width: 767px)').matches;
           pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.25) * qualityScale;
-          renderer.setPixelRatio(pixelRatio);
-          renderer.setSize(rect.width, rect.height, false);
+          // setPixelRatio itself calls setSize. Update all three dimensions
+          // together, and skip the observer's identical initial notification.
+          if (bufferWidth !== rect.width || bufferHeight !== rect.height
+            || renderer.getPixelRatio() !== pixelRatio) {
+            renderer.setDrawingBufferSize(rect.width, rect.height, pixelRatio);
+            bufferWidth = rect.width;
+            bufferHeight = rect.height;
+          }
           material.uniforms.uPixelRatio.value = pixelRatio;
           camera.aspect = rect.width / rect.height;
           material.uniforms.uPointerAspect.value = camera.aspect;
@@ -256,21 +264,11 @@ function Sculpture({ host }) {
         function render(time) {
           frame = 0;
           if (!visible || !intersecting || modalOpen || contextLost) return;
-          const realDelta = previousTime ? (time - previousTime) / 1000 : 1 / 30;
+          const realDelta = previousTime ? (time - previousTime) / 1000 : 0;
           const delta = Math.min(realDelta, 0.05);
           previousTime = time;
-          // Sustained frame pressure lowers raster resolution, never the mark's
-          // point count. Hysteresis prevents quality oscillation while scrolling.
-          if (settlingFrames > 0) settlingFrames--;
-          else if (realDelta > 0.028) { slowFrames++; fastFrames = 0; }
-          else { fastFrames++; slowFrames = Math.max(0, slowFrames - 1); }
-          if (slowFrames >= 18 && qualityScale > 0.7) {
-            qualityScale = Math.max(0.7, qualityScale - 0.15);
-            slowFrames = 0; settlingFrames = 30; resize();
-          } else if (fastFrames >= 300 && qualityScale < 1) {
-            qualityScale = Math.min(1, qualityScale + 0.15);
-            fastFrames = 0; settlingFrames = 60; resize();
-          }
+          const nextScale = rasterBudget.sample(realDelta);
+          if (nextScale !== null) { qualityScale = nextScale; resize(); }
           if (pendingPointer) {
             const rect = hostRect || host.getBoundingClientRect();
             pointer.set(((pendingPointer.x - rect.left) / rect.width) * 2 - 1,
@@ -331,6 +329,7 @@ function Sculpture({ host }) {
         const resume = () => {
           if (!frame && visible && intersecting && !modalOpen && !contextLost) {
             previousTime = 0;
+            rasterBudget.reset();
             frame = requestAnimationFrame(render);
           }
         };

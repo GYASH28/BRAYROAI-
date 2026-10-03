@@ -294,6 +294,14 @@ test('small screens, reduced motion and enhancement failure preserve content',as
 });
 
 test('particle hero, footer and pinned proof respond across input, resize and reversed scroll',async({page,context})=>{
+ await page.addInitScript(()=>{
+  window.__particleBufferSizes=[];
+  const descriptor=Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype,'height');
+  Object.defineProperty(HTMLCanvasElement.prototype,'height',{...descriptor,set(value){
+   descriptor.set.call(this,value);
+   if(this.classList.contains('sculpture-canvas'))window.__particleBufferSizes.push([this.width,this.height]);
+  }});
+ });
  await page.setViewportSize({width:1440,height:900});
  await page.goto('/');
  await expect(page.locator('[data-sc-root]')).toBeVisible();
@@ -311,6 +319,10 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
  await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-draw-calls','1');
  await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-render-points','9600');
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ const bufferSizes=await page.evaluate(()=>window.__particleBufferSizes);
+ expect(bufferSizes.length).toBeGreaterThan(0);
+ expect(bufferSizes.filter((size,index)=>index&&size[0]===bufferSizes[index-1][0]&&size[1]===bufferSizes[index-1][1]),'Repeated identical drawing-buffer resets').toEqual([]);
  const canLoseContext=await page.locator('.sculpture-canvas').evaluate(canvas=>{const gl=canvas.getContext('webgl2')||canvas.getContext('webgl'),extension=gl?.getExtension('WEBGL_lose_context');if(!extension)return false;window.__brayroLoseContext=extension;extension.loseContext();return true});
  if(canLoseContext){
   await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('fallback');

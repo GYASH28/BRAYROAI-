@@ -19,6 +19,11 @@ GitHub main9318028 already contains the3.2second First Signal fullscreen opening
 - Consolidated duplicate drawing-buffer resizes and guarded identical observer notifications. Integrated browser regression rejects duplicate allocations.
 - Extended the warmed pointer profile to at least10seconds and made missing scene readiness explicit. Local SwiftShader before/after timing remains poor and mixed; no general FPS improvement claimed. Exact release qualification is required.
 
+## Pointer atmosphere cycle
+
+- Diagnostic isolation identified inherited light variables on the whole hero as avoidable style work. Direct atmosphere transforms preserve the same motion while caching bounds and disposing correctly on hidden/preference/history events.
+- Matched36move lab workload: style recalculations290→146 and style time454→248ms; frame median50ms and tail66.7/66.8ms remain effectively unchanged. This is a style-work reduction, not a60fps result. Preserve complete particles, text interaction and gradient movement.
+
 ## Next measured cycles
 
 1. Inspect the current home performance trace and identify the largest attributable CPU/raster/compositor/GPU costs. The headless renderer may be SwiftShader: distinguish compatibility diagnostics from hardware60fps evidence. Keep full particle geometry and visual fidelity.

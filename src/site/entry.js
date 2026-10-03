@@ -1,5 +1,6 @@
 import {initPremiumMotion} from './premium-motion.js';
 import {initBrandOpening} from './brand-opening.js';
+import {initHeroLight} from './hero-light.js';
 // The first frame has native entry motion; below-fold choreography loads on arrival.
 export function initStudioEntry(){
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -52,9 +53,7 @@ export function initStudioEntry(){
   hero.addEventListener('pointerleave',forgetPointer,{passive:true});
   hero.addEventListener('pointermove',()=>{opening.finished.then(()=>import('./hero-type.js')).then(m=>{stopTracking();if(!reduced.matches&&hero.isConnected)disposeType=m.initHeroType(hero,pendingTypePointer)}).catch(stopTracking)},{once:true,passive:true});
   window.addEventListener('pagehide',event=>{forgetPointer();if(!event.persisted){stopTracking();disposeType?.()}});
-  let lightFrame=0,lightPointer=null;
-  hero.addEventListener('pointermove',event=>{lightPointer={x:event.clientX,y:event.clientY};if(!lightFrame)lightFrame=requestAnimationFrame(()=>{lightFrame=0;if(!lightPointer)return;const rect=hero.getBoundingClientRect();hero.style.setProperty('--light-x',`${((lightPointer.x-rect.left)/rect.width-.5)*36}px`);hero.style.setProperty('--light-y',`${((lightPointer.y-rect.top)/rect.height-.5)*24}px`)})},{passive:true});
-  hero.addEventListener('pointerleave',()=>{lightPointer=null;cancelAnimationFrame(lightFrame);lightFrame=0;hero.style.setProperty('--light-x','0px');hero.style.setProperty('--light-y','0px')});
+  initHeroLight(hero);
  }
  const mark=document.querySelector('[data-footer-wordmark]');if(mark){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./footer-wordmark.js').then(m=>m.initFooterWordmark(mark)).catch(()=>{})}},{rootMargin:'300px'});observer.observe(mark)}
  const path=document.querySelector('[data-project-path]');if(path){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./project-path.js').then(m=>m.initProjectPath(path)).catch(()=>{})}},{rootMargin:'500px'});observer.observe(path)}

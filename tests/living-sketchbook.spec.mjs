@@ -310,8 +310,12 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  expect(Math.abs(title.x+title.width/2-720)).toBeLessThan(2);
  await page.mouse.move(790,340);
  await expect.poll(()=>page.locator('.hero-word').evaluateAll(words=>words.some(word=>parseFloat(word.style.getPropertyValue('--type-y'))<-.1))).toBe(true);
+ await expect.poll(()=>page.locator('.hero-atmosphere').evaluate(node=>node.style.transform)).toMatch(/^translate3d\(/);
+ expect(await page.locator('.hero-atmosphere').evaluate(node=>node.style.transform)).not.toBe('translate3d(0px, 0px, 0px)');
+ expect(await page.locator('.hero-stage').evaluate(node=>node.style.getPropertyValue('--light-x'))).toBe('');
  await page.mouse.move(0,0);
  await expect.poll(()=>page.locator('.hero-word').evaluateAll(words=>words.every(word=>!word.style.getPropertyValue('--type-y')))).toBe(true);
+ await expect.poll(()=>page.locator('.hero-atmosphere').evaluate(node=>node.style.transform)).toBe('translate3d(0px, 0px, 0px)');
  const geometry=await page.locator('.hero-stage').evaluate(el=>({top:el.getBoundingClientRect().top,height:el.getBoundingClientRect().height,viewport:innerHeight}));
  expect(geometry.top).toBe(0);expect(Math.abs(geometry.height-geometry.viewport)).toBeLessThan(2);
  const heroPosition=async progress=>page.evaluate(progress=>{const section=document.querySelector('.studio-hero');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*progress,behavior:'instant'})},progress);
@@ -384,6 +388,10 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await expect.poll(()=>page.locator('.hero-object').evaluate(node=>Number(getComputedStyle(node).opacity))).toBeGreaterThan(.85);
  await expect(page.locator('.hero-next')).toHaveAttribute('aria-hidden','false');
  await page.emulateMedia({reducedMotion:'reduce'});
+ await expect.poll(()=>page.locator('.hero-atmosphere').evaluate(node=>node.style.transform)).toBe('translate3d(0px, 0px, 0px)');
+ await page.locator('.hero-stage').dispatchEvent('pointermove',{clientX:260,clientY:120});
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ expect(await page.locator('.hero-atmosphere').evaluate(node=>node.style.transform)).toBe('translate3d(0px, 0px, 0px)');
  // A preference change after enhancement must leave one readable link label.
  await page.locator('.person-copy .text-link').scrollIntoViewIfNeeded();
  await expect.poll(async()=>(await page.locator('.person-copy .text-link').innerText()).trim()).toBe('Meet Yash');

@@ -47,11 +47,11 @@
   }
   .page-founder .founder-name>span:first-child{
     left:var(--gutter);
-    top:22%;
+    top:17%;
   }
   .page-founder .founder-name>span:last-child{
     right:var(--gutter);
-    bottom:2%;
+    bottom:7%;
     transform:none;
   }
   .page-founder .founder-portrait{
@@ -69,7 +69,8 @@
 @media(min-width:761px) and (max-height:820px){
   .page-founder .founder-stage{min-height:100svh}
   .page-founder .founder-name{font-size:20vw}
-  .page-founder .founder-name>span:first-child{top:20%}
+  .page-founder .founder-name>span:first-child{top:16%}
+  .page-founder .founder-name>span:last-child{bottom:6%}
   .page-founder .founder-portrait{height:78%;right:17%}
 }
 @media(max-width:760px){

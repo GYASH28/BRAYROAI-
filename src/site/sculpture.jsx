@@ -108,12 +108,12 @@ const vertexShader = /* glsl */ `
     float sizePulse = 1.0 + drift * 0.05;
     float pointSize = mix(aSize, max(aSize, 1.0), localAssembly)
       * (1.0 + pointerGlow * 0.32 + aChoreography.w * 0.18 + filamentLight * loose * 0.16);
-    gl_PointSize = clamp(pointSize * uPixelRatio * depthScale * sizePulse, 1.0, 5.2);
+    gl_PointSize = clamp(pointSize * uPixelRatio * depthScale * sizePulse, 1.15, 5.8);
     gl_Position = projectionMatrix * viewPosition;
 
     vColor = mix(aColor, aTargetColor, localAssembly) * (0.94 + wave * 0.06);
-    float formedAlpha = mix(0.64 + aAlpha * 0.22, 0.44 + aAlpha * 0.3, role);
-    vAlpha = mix(aAlpha, formedAlpha, localAssembly) * (0.95 + drift * 0.05);
+    float formedAlpha = mix(0.76 + aAlpha * 0.20, 0.62 + aAlpha * 0.26, role);
+    vAlpha = min(1.0, mix(aAlpha, formedAlpha, localAssembly) * (1.0 + drift * 0.04));
     vPointerGlow = pointerGlow;
     vSpark = aChoreography.w;
     vFlowLight = filamentLight * loose + role * localAssembly * filamentLight;
@@ -139,7 +139,7 @@ const fragmentShader = /* glsl */ `
     if (alpha < 0.008) discard;
     vec3 glowColor = mix(vColor, vec3(1.0, 0.56, 0.24), vPointerGlow * 0.18);
     gl_FragColor = vec4(glowColor
-      * (0.88 + heart * 0.55 + vPointerGlow * 0.24 + vFlowLight * 0.16), alpha);
+      * (0.98 + heart * 0.62 + vPointerGlow * 0.24 + vFlowLight * 0.18), alpha);
   }
 `;
 
@@ -219,7 +219,7 @@ function Sculpture({ host }) {
             uTime: { value: 0 },
             uAssembly: { value: targetAssembly },
             uPixelRatio: { value: 1 },
-            uOpacity: { value: 0.92 },
+            uOpacity: { value: 1.0 },
             uPointer: { value: new THREE.Vector2() },
             uPointerStrength: { value: 0 },
             uPointerAspect: { value: 1 },

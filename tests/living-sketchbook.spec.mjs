@@ -504,6 +504,32 @@ test('keyboard menu, market dialog, and accessibility',async({page})=>{
 });
 
 
+
+test('cinematic first scenes fill the viewport behind the top bar',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ const scenes=[
+  ['/', '.hero-stage'],
+  ['/plans', '.plans-hero'],
+  ['/clients', '.archive-hero'],
+  ['/founder', '.founder-stage'],
+  ['/ai-workflow-audit', '.audit-hero'],
+  ['/company-second-brain', '.brain-hero'],
+  ['/clients/fakhrimart', '.case-hero']
+ ];
+ for(const [route,selector] of scenes){
+  await page.goto(route);
+  const header=page.locator('.site-header');
+  await expect(header).toHaveCSS('position','fixed');
+  const box=await page.locator(selector).boundingBox();
+  expect(box).not.toBeNull();
+  expect(box.height).toBeGreaterThanOrEqual(899);
+  expect(Math.abs(box.y)).toBeLessThanOrEqual(1);
+ }
+ await page.goto('/terms');
+ await expect(page.locator('.site-header')).toHaveCSS('position','sticky');
+});
+
+
 test('full plans explain every offer in each market and restore keyboard focus',async({page})=>{
  test.setTimeout(90_000);
  const errors=[];page.on('pageerror',error=>errors.push(error.message));

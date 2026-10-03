@@ -64,3 +64,115 @@ html:has(body.page-home){scroll-padding-top:calc(var(--header) + 16px)}
 @media(prefers-reduced-motion:reduce){.nav-word>span,.site-header .menu-button span{transition:none}.site-header .desktop-nav a:hover .nav-word>span:first-child,.site-header .desktop-nav a:focus-visible .nav-word>span:first-child{transform:none}.site-header .desktop-nav a .nav-word>span:last-child{display:none}}
 
 @media(prefers-reduced-motion:reduce){.site-header :is(.brand,.desktop-nav,.header-actions),.site-header .desktop-nav a,.site-header .header-cta .ui-arrow,.market-chevron{transition:none}.site-header .header-cta:hover .ui-arrow{transform:none}.market-dialog[open],.menu-dialog[open]{animation:none}}
+
+
+/* 2026-10 full-screen route + particle visibility refinement */
+:is(.page-home,.page-plans,.page-clients,.page-founder,.page-audit,.page-brain,.page-case) .site-header{
+  position:fixed;
+  inset:0 0 auto;
+  z-index:50;
+}
+:is(.page-plans,.page-clients,.page-founder,.page-ai,.page-case) main{
+  overflow:clip;
+}
+
+/* Home: the installation now occupies the physical viewport behind navigation. */
+.page-home .hero-stage{
+  height:100svh!important;
+}
+.page-home main.studio-ready .hero-stage{
+  top:0;
+}
+.page-home .hero-masthead{
+  top:calc(var(--header) + 20px);
+}
+.page-home :is(.particle-cloud,.particle-mark){
+  filter:brightness(1.18) contrast(1.08);
+}
+
+/* Plans: both columns belong to one complete first-screen composition. */
+.page-plans .plans-hero,
+.page-plans .plans-hero-grid{
+  min-height:100svh;
+}
+.page-plans .plans-hero-grid{
+  padding-top:calc(var(--header) + 42px);
+}
+.page-plans .plans-hero-ruler{
+  top:calc(var(--header) + 12px);
+}
+
+/* Work archive: the opening archive room reaches the bottom edge of the viewport. */
+.page-clients .archive-hero{
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  padding-top:calc(var(--header) + 34px);
+  padding-bottom:clamp(58px,7vw,92px);
+}
+.page-clients .archive-hero>.wrap{
+  width:calc(100% - var(--gutter)*2);
+}
+
+/* AI offer pages: keep the visual and proposition together in the first screen. */
+.page-audit .audit-hero{
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  padding-top:calc(var(--header) + 38px);
+  padding-bottom:clamp(55px,6vw,88px);
+}
+.page-audit .audit-hero>.wrap{
+  width:calc(100% - var(--gutter)*2);
+}
+.page-brain .brain-hero{
+  min-height:100svh;
+}
+.page-brain .brain-hero-copy{
+  min-height:100svh;
+  padding-top:calc(var(--header) + 38px);
+  padding-bottom:72px;
+}
+
+/* The case study may naturally exceed one screen because the evidence is part
+   of the hero, but the fixed header no longer steals vertical space from it. */
+.page-case .case-hero{
+  min-height:100svh;
+  padding-top:calc(var(--header) + 40px);
+}
+
+/* Terms remains a reading page on purpose: sticky navigation is more useful
+   than a cinematic full-screen legal hero. */
+.page-terms .site-header{
+  position:sticky;
+  top:0;
+}
+
+@media(max-width:760px){
+  .page-home .hero-masthead{
+    top:calc(var(--header) + 12px);
+  }
+  .page-plans .plans-hero-grid{
+    min-height:100svh;
+    padding-top:calc(var(--header) + 24px);
+  }
+  .page-clients .archive-hero{
+    min-height:100svh;
+    padding-top:calc(var(--header) + 24px);
+    padding-bottom:58px;
+  }
+  .page-audit .audit-hero{
+    min-height:100svh;
+    padding-top:calc(var(--header) + 24px);
+    padding-bottom:55px;
+  }
+  .page-brain .brain-hero-copy{
+    min-height:100svh;
+    padding-top:calc(var(--header) + 24px);
+    padding-bottom:55px;
+  }
+  .page-case .case-hero{
+    min-height:100svh;
+    padding-top:calc(var(--header) + 24px);
+  }
+}

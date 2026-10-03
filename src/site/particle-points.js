@@ -1,5 +1,5 @@
 const TAU = Math.PI * 2;
-export const PARTICLE_COUNT = 9600;
+export const PARTICLE_COUNT = 11520;
 export const PARTICLE_SEED = 0x4b524159;
 
 function seededRandom(seed = PARTICLE_SEED) {
@@ -245,8 +245,8 @@ export function createParticleField(count = PARTICLE_COUNT, seed = PARTICLE_SEED
         : mixColor(BONE, WHITE, 0.18 + random() * 0.62);
     colors.set(spark ? mixColor(ribbonColor, WHITE, 0.52) : ribbonColor, offset);
     phases[index] = ribbon * 1.13 + loose.ribbonProgress[index] * TAU * 2.1;
-    sizes[index] = (0.9 + random() * 0.9) * (spark ? 1.78 : 1);
-    alphas[index] = Math.min(0.98, 0.48 + random() * 0.34 + spark * 0.15);
+    sizes[index] = (1.0 + random() * 0.92) * (spark ? 1.72 : 1);
+    alphas[index] = Math.min(0.99, 0.62 + random() * 0.31 + spark * 0.1);
   }
 
   return {

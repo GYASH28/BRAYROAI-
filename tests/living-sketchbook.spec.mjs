@@ -57,6 +57,15 @@ test('brand opening hands control to visitors without blocking or replaying over
  }
  await page.getByRole('button',{name:'Skip intro'}).click();
  await page.setViewportSize(desktopViewport);
+ // Leaving before the delayed pointer enhancement is mounted must not seed
+ // letter tilt from a pointer which is no longer inside the hero.
+ await page.reload({waitUntil:'domcontentloaded'});
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
+ await page.mouse.move(520,350);await page.mouse.move(70,30);
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled');
+ await page.waitForLoadState('networkidle');
+ expect(await page.locator('.hero-word').evaluateAll(words=>words.every(word=>!Number(word.style.getPropertyValue('--type-light'))))).toBe(true);
+ // A keyboard user never has to wait for the cinematic entrance to finish.
  await page.reload({waitUntil:'domcontentloaded'});
  await page.keyboard.press('Tab');
  await expect(page.locator('.brand-opening')).toHaveCount(0);

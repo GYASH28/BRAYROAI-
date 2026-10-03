@@ -1,12 +1,51 @@
 # BRAYROAI: preserve the experience, eliminate the jank
 
-Copy the prompt below into the implementation chat. It is written for this actual project, including its particle hero, new mosaic opening, glass navigation, regional plans and Rae. The opening has already been implemented; this prompt commissions the next measured performance pass.
+Use this brief for the ongoing refinement cycles. It is written for this actual project, including its particle hero, full-screen opening, glass navigation, regional plans and Rae. GitHub main now includes the First Signal opening and rebuilt plan ladders. Fetch and inspect the latest main before editing; refine the existing experience rather than rebuilding an already delivered opening from an outdated local copy.
 
 ---
 
 ## Your assignment
 
 Act as a senior browser performance engineer and motion designer. Optimize BRAYROAI so that its elaborate opening, interactive particle hero, reversible scroll sequences, text choreography, navigation, page transitions, plan dialogs, Rae and footer feel immediate, coherent and consistently smooth. Preserve the approved art direction and every useful feature.
+
+## Latest owner addition: a cinematic full-screen opening
+
+This score records the owner's approved full-screen direction, now implemented on GitHub main. Use it as a visual and motion reference for refinement and profiling. Preserve the single integrated sequence and its mosaic/typography handoff; do not add another introduction ahead of it or mistake this reference for an instruction to recreate completed work.
+
+### Creative direction: The First Signal
+
+Make the browser feel like a vast editorial stage waking into a living studio. The experience moves from dispersed potential, through intense directional motion, into a precise brand impression. Use the actual BR tiles, broken particle ribbons, dimensional typography and custom arrow. Do not introduce another sculpture, generic orb, spinning logo or percentage loader. The memorable moment is a field of fragments abruptly finding an architectural seam across the entire viewport, which opens into the approved hero.
+
+The effect must be materially stronger than the current compact entrance: full-viewport composition, pronounced depth, asymmetric movement, sharply controlled typography and a seamless opening-to-hero transition. Sophistication comes from timing, scale and contrast, rather than piling on effects. Preserve the final approved hero and its subsequent scroll-driven formation.
+
+### Opening score: approximately 3.0–3.4 seconds total
+
+| Beat | What the visitor sees | Motion and meaning |
+| --- | --- | --- |
+| 0–.30s: presence | A full-screen ink stage with restrained cobalt/amber atmosphere. The actual studio name and a concise truthful website/AI proposition are readable immediately. | A narrow oblique light seam establishes direction; the composition already communicates a business, not a loading state. |
+| .30–1.10s: acceleration | Fractured mosaic elements and fine particle ribbons pass through different depth planes, with large restrained typographic silhouettes beyond them. | Three clear depth layers, opposing lateral vectors and one controlled camera-like push create scale. Keep large text as live DOM/vector content. Avoid chaotic random wobble. |
+| 1.10–1.65s: compression | The scattered material draws toward a diagonal architectural seam stretching across the viewport. Peripheral movement quiets while the seam becomes decisive. | Curved approach paths compress into an exact geometric relationship. This is the first strong contrast in speed, rather than continuous frantic movement. |
+| 1.65–2.20s: the opening | Two substantial planes fold away from that seam with convincing perspective and occlusion. The actual hero atmosphere is revealed underneath. | A full-screen spatial reveal, not a circular mask or ordinary fade. One restrained orange accent travels along the seam; no white strobe or repeated flashing. |
+| 2.20–3.10s: the brand impression | The existing BR mosaic and MARK letter choreography become the final beat, retimed to receive the departing fragments. The orange full stop lands and the live particle hero remains. | Use shared geometry and matched positions so the two sequences feel physically related. Do not replay the entire existing entrance after a separate loader. The final pose must be exactly the approved hero. |
+| By 3.40s: ownership | All opening-only layers and animations are removed. Scroll and pointer input own the existing experience. | No ghost planes, retained transforms, backdrop flashes, late imports or scroll jumps. |
+
+This is an art-direction score, not a demand to add a dependency for every beat. Prototype the composition and timing first, then keep only mechanisms that earn their cost. Give mobile a deliberate portrait composition with the same story and peak; do not merely scale a desktop camera shot into an unreadable phone view.
+
+### Full-screen experience rules
+
+- Make it full-screen visually, without trapping scrolling or hiding functional controls behind an input-blocking overlay.
+- Keep truthful product/service copy readable during the first beat. Essential content must not wait for WebGL, fonts or an API response.
+- Provide an unobtrusive, keyboard-accessible “Skip intro” action while the extended sequence runs. Scroll, touch intent, Tab/Escape, navigation, market/menu/Rae input and preference changes must also settle to the usable hero immediately.
+- Play on deliberate fresh homepage entry. Do not replay over hash/deep links, history restoration, BFCache or an already scrolled page. Preserve reduced-motion final-state behavior.
+- Keep the actual hero scroll animation separate from the opening clock. The new prelude must not consume scroll progress, prematurely assemble the hero mark or disrupt reversal into the existing paper/client-work transition.
+- Use one transform owner per element. Opening, pointer typography, ScrollTrigger and native page transitions need explicit handoff and complete cancellation/disposal.
+- Reuse first-party vector geometry and immutable particle data. If GPU rendering earns its cost, prefer one shared renderer/context and a small finite phase rather than a second full-screen scene. Do not eagerly import a heavy 3D package merely to implement the prelude.
+- Use native transform/opacity and bounded vector layers for supporting planes and typography where they deliver the same appearance. Avoid animated full-screen Gaussian filters, accumulating translucent passes, oversized promoted layers and unbounded fragment counts.
+- A fallback must preserve the composition and narrative. It may use the existing first-party poster/vector material with native movement; do not label a static fallback as 60fps particle rendering.
+- Confirm visual quality with real uninterrupted playback, intermediate captures, interruptions, orientation change and the final pixel/geometry handoff. Preserve brand geometry, type clarity, contrast and the offer's accessibility.
+- The cinematic opening must pass the same load/frame/input budgets as the rest of this brief. Do not exclude its startup work from traces, hide it from Lighthouse, manipulate test detection or treat its duration as permission to delay the first meaningful message.
+
+Deliver the new full-screen sequence together with the measured performance pass, not as an unqualified visual experiment. Keep the existing approved opening and final hero as references for the seamless handoff.
 
 The intended standard is sustained 60 fps on the declared, tested device matrix, with efficient behavior on faster displays and graceful behavior on weaker hardware. Do not promise universal 60 fps or identical physical rendering on every device: hardware, software rendering, thermal throttling, refresh rate and browser capabilities impose real limits. Measure those limits and report them. Preserve visual identity, readability, complete mark formation and responsive controls throughout. Any perceptible quality tradeoff must be recorded and reviewed against the reference captures.
 
@@ -84,7 +123,7 @@ Core Web Vitals field targets are p75 LCP ≤2.5s, INP ≤200ms and CLS ≤.1. L
 
 Inspect these owners:
 
-- `src/site/brand-opening.js` and `.css`: finite native animation ownership, 38 small tile layers, one layout measurement before writes, no timer/rAF render loop, full cleanup. Keep the opening around 1.8s, with a defensive 2.4s settlement cap. Do not introduce a blocking logo loader, scroll lock, fake progress or full-screen animated Gaussian blur.
+- `src/site/brand-opening.js` and `.css`: finite native animation ownership, 38 small tile layers, one layout measurement before writes, no timer/rAF render loop, full cleanup. The current reference sequence is around1.8s with a2.4s defensive cap. For the new integrated full-screen sequence, use the3.0–3.4s score above and update its defensive settlement bound accordingly; input must still settle immediately. Do not introduce a blocking logo loader, scroll lock, fake progress or full-screen animated Gaussian blur.
 - `src/site/entry.js`: lazy-load boundaries, entrance-to-pointer ownership, no delayed initialization after page disposal, hash alignment and correct restored-scene behavior.
 - `src/site/sculpture.jsx`: one Points draw call, immutable buffers, shader cost, transparent overdraw, drawing-buffer dimensions, DPR adaptation and lifecycle. Measure actual bottlenecks before moving data into workers or rewriting shaders.
 - `src/site/particle-points.js`: deterministic stratified complete mark/ribbon geometry. Naively drawing only the first N positions can erase later tiles and orbit paths; any future LOD must preserve the entire silhouette and each small chip, and must pass reference comparison.
@@ -113,7 +152,7 @@ Keep first-paint media useful, and verify poster-to-canvas handoff for flash, di
 
 ## 8. Visual and functional verification, after the design settles
 
-Capture cold opening frames around180/650/1050/1700ms and the settled hero on desktop and phone. Verify the mark-to-headline handoff is clean, fragments do not obscure sales copy, and no native animation retains transform ownership once pointer or scroll control begins. Inspect the actual images and watch uninterrupted playback; paused screenshots cannot prove smoothness.
+Capture the reference opening around180/650/1050/1700ms, and the new full-screen sequence around.30/1.10/1.65/2.20/3.10s plus its settled hero, on desktop and phone. Verify the mark-to-headline handoff is clean, fragments do not obscure sales copy, and no native animation retains transform ownership once pointer or scroll control begins. Inspect the actual images and watch uninterrupted playback; paused screenshots cannot prove smoothness.
 
 Capture the hero/proof at intermediate and reversed scroll states, all key typography modes, open navigation/market/plan/Rae states, the complete footer and reduced motion. Verify contrast on the composed backgrounds, descenders, touch targets, title safe insets and no horizontal overflow. Keep real copy selectable and duplicate animated labels aria-hidden.
 

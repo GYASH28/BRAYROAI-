@@ -44,9 +44,14 @@ export function initStudioEntry(){
  window.addEventListener('scroll',()=>opening.finished.then(loadSculpture),{once:true,passive:true});
  const hero=document.querySelector('.hero-stage');
  if(hero&&!reduced.matches&&matchMedia('(pointer:fine)').matches){
-  let disposeType=null;
-  hero.addEventListener('pointermove',event=>{const pointer={clientX:event.clientX,clientY:event.clientY};opening.finished.then(()=>import('./hero-type.js')).then(m=>{if(!reduced.matches)disposeType=m.initHeroType(hero,pointer)}).catch(()=>{})},{once:true,passive:true});
-  window.addEventListener('pagehide',()=>disposeType?.());
+  let disposeType=null,pendingTypePointer=null;
+  const rememberPointer=event=>{pendingTypePointer={clientX:event.clientX,clientY:event.clientY}};
+  const forgetPointer=()=>{pendingTypePointer=null};
+  const stopTracking=()=>{hero.removeEventListener('pointermove',rememberPointer);hero.removeEventListener('pointerleave',forgetPointer)};
+  hero.addEventListener('pointermove',rememberPointer,{passive:true});
+  hero.addEventListener('pointerleave',forgetPointer,{passive:true});
+  hero.addEventListener('pointermove',()=>{opening.finished.then(()=>import('./hero-type.js')).then(m=>{stopTracking();if(!reduced.matches&&hero.isConnected)disposeType=m.initHeroType(hero,pendingTypePointer)}).catch(stopTracking)},{once:true,passive:true});
+  window.addEventListener('pagehide',event=>{forgetPointer();if(!event.persisted){stopTracking();disposeType?.()}});
   let lightFrame=0,lightPointer=null;
   hero.addEventListener('pointermove',event=>{lightPointer={x:event.clientX,y:event.clientY};if(!lightFrame)lightFrame=requestAnimationFrame(()=>{lightFrame=0;if(!lightPointer)return;const rect=hero.getBoundingClientRect();hero.style.setProperty('--light-x',`${((lightPointer.x-rect.left)/rect.width-.5)*36}px`);hero.style.setProperty('--light-y',`${((lightPointer.y-rect.top)/rect.height-.5)*24}px`)})},{passive:true});
   hero.addEventListener('pointerleave',()=>{lightPointer=null;cancelAnimationFrame(lightFrame);lightFrame=0;hero.style.setProperty('--light-x','0px');hero.style.setProperty('--light-y','0px')});

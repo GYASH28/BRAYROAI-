@@ -2,9 +2,26 @@ import React, { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import * as THREE from 'three';
 import { createParticleField } from './particle-points.js';
-import { createRasterBudget } from './raster-budget.js';
+import { createPointBudget, createRasterBudget } from './raster-budget.js';
 
 const clamp = (value) => Math.max(0, Math.min(1, Number(value) || 0));
+
+function createStratifiedPointOrder(count) {
+  const ArrayType = count > 65535 ? Uint32Array : Uint16Array;
+  const order = new ArrayType(count);
+  const ranges = [[0, count - 1]];
+  let read = 0;
+  let write = 0;
+  while (read < ranges.length && write < count) {
+    const [start, end] = ranges[read++];
+    if (start > end) continue;
+    const middle = Math.floor((start + end) / 2);
+    order[write++] = middle;
+    if (start <= middle - 1) ranges.push([start, middle - 1]);
+    if (middle + 1 <= end) ranges.push([middle + 1, end]);
+  }
+  return order;
+}
 
 const vertexShader = /* glsl */ `
   uniform float uTime;
@@ -37,62 +54,69 @@ const vertexShader = /* glsl */ `
     float localAssembly = smoothstep(aChoreography.x, aChoreography.y, assembly);
     float loose = 1.0 - localAssembly;
     float arcEnvelope = 4.0 * localAssembly * (1.0 - localAssembly);
-    float curlEnvelope = arcEnvelope * 0.62
-      * sin(localAssembly * 6.2831853 + aPhase);
+    float curlEnvelope = 0.0;
+    if (arcEnvelope > 0.0005) {
+      curlEnvelope = arcEnvelope * 0.62
+        * sin(localAssembly * 6.2831853 + aPhase);
+    }
+
     vec3 transformed = mix(aLoosePosition, aMarkPosition, localAssembly)
       + aArcOffset * arcEnvelope
       + aCurlOffset * curlEnvelope;
 
-    float filamentPhase = aFlow * 18.0 - uTime * 1.35 + aPhase * 0.12;
-    float filamentWave = sin(filamentPhase);
-    float filamentLight = 0.5 + 0.5 * sin(filamentPhase - 0.8);
-    transformed.y += filamentWave * loose * (0.026 + aChoreography.w * 0.012);
-    transformed.z += cos(filamentPhase * 0.72) * loose
-      * (0.024 + aChoreography.w * 0.018);
-    transformed.x += cos(aPhase + uTime * 0.62) * loose * 0.012;
+    // Two shared waves replace the old stack of independent trigonometric
+    // evaluations. The composition keeps its drift, pulse and ribbon life
+    // while substantially reducing per-point shader work.
+    float wave = sin(aPhase + aFlow * 12.0 - uTime * 0.92);
+    float drift = sin(aPhase * 0.67 + uTime * 0.41);
+    float filamentLight = 0.5 + 0.5 * wave;
+    transformed.y += wave * loose * (0.024 + aChoreography.w * 0.012);
+    transformed.z += drift * loose * (0.022 + aChoreography.w * 0.016);
+    transformed.x += drift * loose * 0.011;
 
     float role = aChoreography.z;
-    vec2 orbitTangent = normalize(vec2(-aMarkPosition.y * 1.3, aMarkPosition.x * 0.72)
-      + vec2(0.0001));
-    float orbitFlow = sin(uTime * 1.05 + aPhase * 0.72) * 0.052 * role * localAssembly;
-    transformed.xy += orbitTangent * orbitFlow;
-    transformed.z += cos(uTime * 0.44 + aPhase) * 0.018 * role * localAssembly;
+    if (role > 0.5 && localAssembly > 0.001) {
+      vec2 orbitTangent = normalize(vec2(-aMarkPosition.y * 1.3, aMarkPosition.x * 0.72)
+        + vec2(0.0001));
+      float orbitFlow = drift * 0.05 * localAssembly;
+      transformed.xy += orbitTangent * orbitFlow;
+      transformed.z += wave * 0.017 * localAssembly;
+    }
 
     vec4 viewPosition = modelViewMatrix * vec4(transformed, 1.0);
-    vec4 pointerClip = projectionMatrix * viewPosition;
-    vec2 particleNdc = pointerClip.xy / max(0.0001, pointerClip.w);
-    vec2 pointerDelta = particleNdc - uPointer;
-    vec2 pointerMetric = vec2(pointerDelta.x * uPointerAspect, pointerDelta.y);
-    float pointerDistance = length(pointerMetric);
-    float pointerInfluence = 1.0 - smoothstep(0.055, 0.34, pointerDistance);
-    float ripple = 0.5 + 0.5 * sin(pointerDistance * 38.0 - uTime * 8.0 + aPhase * 0.16);
-    float pointerForce = min(0.225, pointerInfluence * (0.105 + ripple * 0.07))
-      * uPointerStrength;
-    vec2 pointerDirection = normalize(pointerDelta + vec2(cos(aPhase), sin(aPhase)) * 0.0001);
-    vec2 swirlDirection = vec2(-pointerDirection.y, pointerDirection.x);
-    float swirlForce = min(0.105, pointerInfluence * (0.035 + ripple * 0.052))
-      * uPointerStrength;
-    float swirlSign = sin(aPhase * 0.41 + pointerDistance * 24.0 - uTime * 3.1);
-    viewPosition.xy += pointerDirection * pointerForce + swirlDirection * swirlForce * swirlSign;
-    viewPosition.z += pointerInfluence * uPointerStrength * (0.025 + ripple * 0.035);
+    float pointerGlow = 0.0;
+    if (uPointerStrength > 0.001) {
+      vec4 pointerClip = projectionMatrix * viewPosition;
+      vec2 particleNdc = pointerClip.xy / max(0.0001, pointerClip.w);
+      vec2 pointerDelta = particleNdc - uPointer;
+      vec2 pointerMetric = vec2(pointerDelta.x * uPointerAspect, pointerDelta.y);
+      float pointerDistance = length(pointerMetric);
+      float pointerInfluence = 1.0 - smoothstep(0.055, 0.34, pointerDistance);
+      float ripple = 0.5 + 0.5 * sin(pointerDistance * 32.0 - uTime * 6.0 + aPhase * 0.14);
+      float pointerForce = min(0.225, pointerInfluence * (0.105 + ripple * 0.07))
+        * uPointerStrength;
+      vec2 pointerDirection = normalize(pointerDelta + vec2(0.0001));
+      vec2 swirlDirection = vec2(-pointerDirection.y, pointerDirection.x);
+      float swirlForce = min(0.105, pointerInfluence * (0.035 + ripple * 0.052))
+        * uPointerStrength;
+      viewPosition.xy += pointerDirection * pointerForce + swirlDirection * swirlForce * wave;
+      viewPosition.z += pointerInfluence * uPointerStrength * (0.025 + ripple * 0.035);
+      pointerGlow = pointerInfluence * uPointerStrength;
+    }
 
     float depthScale = clamp(7.0 / max(1.0, -viewPosition.z), 0.72, 1.48);
-    float sizePulse = 1.0 + sin(uTime * 0.38 + aPhase * 1.7) * 0.065;
-    float pointerGlow = pointerInfluence * uPointerStrength;
+    float sizePulse = 1.0 + drift * 0.05;
     float pointSize = mix(aSize, max(aSize, 1.0), localAssembly)
       * (1.0 + pointerGlow * 0.32 + aChoreography.w * 0.18 + filamentLight * loose * 0.16);
     gl_PointSize = clamp(pointSize * uPixelRatio * depthScale * sizePulse, 1.0, 5.2);
     gl_Position = projectionMatrix * viewPosition;
 
-    vColor = mix(aColor, aTargetColor, localAssembly)
-      * (0.93 + sin(uTime * 0.18 + aPhase) * 0.07);
+    vColor = mix(aColor, aTargetColor, localAssembly) * (0.94 + wave * 0.06);
     float formedAlpha = mix(0.64 + aAlpha * 0.22, 0.44 + aAlpha * 0.3, role);
-    vAlpha = mix(aAlpha, formedAlpha, localAssembly)
-      * (0.94 + sin(uTime * 0.27 + aPhase * 1.3) * 0.06);
+    vAlpha = mix(aAlpha, formedAlpha, localAssembly) * (0.95 + drift * 0.05);
     vPointerGlow = pointerGlow;
     vSpark = aChoreography.w;
-    vFlowLight = filamentLight * loose + role * localAssembly
-      * (0.5 + 0.5 * sin(aFlow * 17.0 - uTime * 1.6));
+    vFlowLight = filamentLight * loose + role * localAssembly * filamentLight;
   }
 `;
 
@@ -152,6 +176,8 @@ function Sculpture({ host }) {
           canvas,
           antialias: false,
           alpha: true,
+          precision: 'mediump',
+          stencil: false,
           powerPreference: 'high-performance',
         });
       } catch {
@@ -166,6 +192,7 @@ function Sculpture({ host }) {
         camera.lookAt(0, 0.05, 0);
         renderer.setClearColor(0x000000, 0);
         renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.sortObjects = false;
 
         const particleData = createParticleField();
         const geometry = new THREE.BufferGeometry();
@@ -181,6 +208,10 @@ function Sculpture({ host }) {
         geometry.setAttribute('aSize', new THREE.BufferAttribute(particleData.sizes, 1));
         geometry.setAttribute('aFlow', new THREE.BufferAttribute(particleData.flows, 1));
         geometry.setAttribute('aAlpha', new THREE.BufferAttribute(particleData.alphas, 1));
+        // A single low-discrepancy index lets adaptive draw ranges keep an
+        // even sample of both the BR mark and surrounding ribbons.
+        geometry.setIndex(new THREE.BufferAttribute(createStratifiedPointOrder(particleData.count), 1));
+        geometry.setDrawRange(0, particleData.count);
         geometry.computeBoundingSphere();
 
         const material = new THREE.ShaderMaterial({
@@ -229,11 +260,24 @@ function Sculpture({ host }) {
         let pixelRatio = 1;
         let qualityScale = 1;
         const rasterBudget = createRasterBudget();
+        const pointBudget = createPointBudget(particleData.count);
+        let activePointCount = particleData.count;
         let bufferWidth = 0;
         let bufferHeight = 0;
 
+        const applyPointCount = (count) => {
+          const next = Math.max(1, Math.min(particleData.count, Math.round(count)));
+          if (next === activePointCount) return;
+          activePointCount = next;
+          geometry.setDrawRange(0, activePointCount);
+          host.dataset.renderPoints = String(activePointCount);
+          host.dataset.renderQuality = `${Math.round(activePointCount / particleData.count * 100)}%`;
+        };
+        host.dataset.renderQuality = '100%';
+
         const resize = () => {
           rasterBudget.reset();
+          if (rendered) pointBudget.reset();
           // CSS scene travel scales the visual bounds. Allocate from layout
           // dimensions so resizing mid-scroll does not magnify the buffer twice.
           const width = host.clientWidth;
@@ -270,6 +314,8 @@ function Sculpture({ host }) {
           previousTime = time;
           const nextScale = rasterBudget.sample(realDelta);
           if (nextScale !== null) { qualityScale = nextScale; resize(); }
+          const nextPointCount = pointBudget.sample(realDelta);
+          if (nextPointCount !== null) applyPointCount(nextPointCount);
           if (pendingPointer) {
             // Read once per input frame, after the authored scale/translation.
             const rect = host.getBoundingClientRect();
@@ -332,6 +378,7 @@ function Sculpture({ host }) {
           if (!frame && visible && intersecting && !modalOpen && !contextLost) {
             previousTime = 0;
             rasterBudget.reset();
+            pointBudget.reset();
             frame = requestAnimationFrame(render);
           }
         };
@@ -412,6 +459,7 @@ function Sculpture({ host }) {
           host.classList.remove('is-ready');
           host.removeAttribute('data-draw-calls');
           host.removeAttribute('data-render-points');
+          host.removeAttribute('data-render-quality');
         };
       } catch {
         renderer.dispose();

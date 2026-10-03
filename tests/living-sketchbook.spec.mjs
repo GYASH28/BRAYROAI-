@@ -161,6 +161,9 @@ test('restored founder, client and AI pages stay navigable in each market',async
   }
  }
  await page.goto('/founder');
+ await expect(page.locator('.founder-hero-copy')).toBeVisible();
+ await expect(page.locator('.founder-opening,.founder-name')).toHaveCount(0);
+ await expect(page.getByRole('heading',{level:1,name:/The work stays close to the idea/i})).toBeVisible();
  await page.locator('[data-founder-colour]').click();
  await expect(page.locator('.founder-hero')).toHaveClass(/is-colour/);
  await page.locator('#principles summary').filter({hasText:'Motion with meaning.'}).focus();
@@ -349,7 +352,8 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await heroPosition(.66);
  await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
  await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-draw-calls','1');
- await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-render-points','9600');
+ await expect.poll(()=>page.locator('[data-sculpture]').evaluate(host=>Number(host.dataset.renderPoints||0))).toBeGreaterThanOrEqual(3240);
+ await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-render-quality',/^(100|75|56|44|34)%$/);
  // Scroll transforms change visual bounds without changing layout dimensions.
  // Pointer coordinates must follow that visual surface; buffers must not.
  await page.locator('[data-sculpture]').evaluate(host=>{

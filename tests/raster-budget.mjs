@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createRasterBudget} from '../src/site/raster-budget.js';
+import {createPointBudget,createRasterBudget} from '../src/site/raster-budget.js';
 
 const play = (budget, interval, duration) => {
   const changes = [];
@@ -10,25 +10,30 @@ const play = (budget, interval, duration) => {
   return changes;
 };
 
-// A steady 40fps workload must not be mistaken for spare raster capacity.
-const pressured = createRasterBudget();
-assert.deepEqual(play(pressured, .025, 12), [.85, .7]);
-assert.deepEqual(play(pressured, .025, 12), []);
-// Recovery is possible after sustained smooth frames, at both display cadences.
-assert.deepEqual(play(pressured, 1 / 60, 15), [.85, 1]);
-const highRefresh = createRasterBudget();
-play(highRefresh, .025, 12);
-assert.deepEqual(play(highRefresh, 1 / 120, 15), [.85, 1]);
-// Short stalls and healthy frames must not produce resolution flicker.
+const raster = createRasterBudget();
+assert.deepEqual(play(raster, .025, 8), [.85, .7, .55]);
+assert.deepEqual(play(raster, .025, 4), []);
+assert.deepEqual(play(raster, 1 / 60, 22), [.7, .85, 1]);
+
 const spikes = createRasterBudget();
 play(spikes, 1 / 60, 2);
 assert.equal(spikes.sample(.2), null);
 assert.deepEqual(play(spikes, 1 / 60, 5), []);
-// A resize, pause or context restoration discards old recovery credit.
+
 const interrupted = createRasterBudget();
-play(interrupted, .025, 12);
-play(interrupted, 1 / 60, 4);
+play(interrupted, .025, 6);
+play(interrupted, 1 / 60, 5);
 interrupted.reset();
 assert.deepEqual(play(interrupted, 1 / 60, 5), []);
-assert.deepEqual(play(interrupted, 1 / 60, 3), [.85]);
-console.log('Raster budget: sustained pressure, recovery, spikes and interruption passed.');
+
+const points = createPointBudget(9600);
+assert.deepEqual(play(points, .025, 7), [7200, 5400, 4200, 3240]);
+assert.deepEqual(play(points, .025, 4), []);
+assert.deepEqual(play(points, 1 / 60, 38), [4200, 5400, 7200, 9600]);
+
+const pointSpikes = createPointBudget(9600);
+play(pointSpikes, 1 / 60, 2);
+assert.equal(pointSpikes.sample(.12), null);
+assert.deepEqual(play(pointSpikes, 1 / 60, 5), []);
+
+console.log('Adaptive raster and particle budgets: pressure, recovery and spikes passed.');

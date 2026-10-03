@@ -1,3 +1,7 @@
+# Latest owner correction — 3 October 2026
+
+The owner explicitly requests a NEW, independent full-screen opening before the existing animation. Preserve both: the 2.7-second UNMISSABLE typographic depth sequence, followed by the original 3.2-second BR mosaic/planes/MARK choreography. The earlier single-integrated-opening restriction below is superseded by this instruction. The new prelude has its own visual world, finite native timeline and disposable DOM; it must never replay the original by accident after a visitor skips. Do not remove either to improve an audit score. Keep actual prices, actions, reduced motion, deep links, native focus and interruption, and the same release budgets. The full opening workload includes both sequences.
+
 # BRAYROAI: preserve the experience, eliminate the jank
 
 Use this brief for the ongoing refinement cycles. It is written for this actual project, including its particle hero, full-screen opening, glass navigation, regional plans and Rae. GitHub main now includes the First Signal opening and rebuilt plan ladders. Fetch and inspect the latest main before editing; refine the existing experience rather than rebuilding an already delivered opening from an outdated local copy.

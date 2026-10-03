@@ -11,6 +11,20 @@ test('brand opening hands control to visitors without blocking or replaying over
  await page.goto('/',{waitUntil:'domcontentloaded'});
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
  await expect(page.getByRole('button',{name:'Skip intro'})).toBeVisible();
+ await expect(page.locator('.studio-prelude')).toBeVisible();
+ await expect(page.locator('.prelude-frame')).toHaveCount(12);
+ await expect(page.locator('.prelude-type')).toContainText('UNMISS');
+ const preludeBox=await page.locator('.studio-prelude').boundingBox();
+ expect(Math.abs(preludeBox.x)).toBeLessThan(2);expect(Math.abs(preludeBox.y)).toBeLessThan(2);
+ expect(Math.abs(preludeBox.width-page.viewportSize().width)).toBeLessThan(2);
+ expect(Math.abs(preludeBox.height-page.viewportSize().height)).toBeLessThan(2);
+ // Input during the NEW sequence must skip the entire queue, not play the old one.
+ await page.keyboard.press('Escape');
+ await expect(page.locator('.studio-prelude,.brand-opening')).toHaveCount(0);
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled');
+ await page.reload({waitUntil:'domcontentloaded'});
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-prelude-state','complete',{timeout:5000});
+ await expect(page.locator('.studio-prelude')).toHaveCount(0);
  await expect(page.locator('.opening-tile')).toHaveCount(38);
  await expect(page.locator('.opening-plane')).toHaveCount(2);
  const openingBox=await page.locator('.brand-opening').boundingBox();
@@ -24,12 +38,12 @@ test('brand opening hands control to visitors without blocking or replaying over
  await expect(page.locator('.brand-opening')).toHaveCount(0);
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled');
 
- // A fresh uninterrupted entry owns at most its finite 3.2 second score.
+ // A fresh entry plays the independent 2.7s film, THEN the existing 3.2s score.
  await page.reload({waitUntil:'domcontentloaded'});
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
- await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:5000});
- await expect(page.locator('.brand-opening,.brand-opening-skip')).toHaveCount(0);
- expect(await page.evaluate(()=>document.getAnimations().filter(a=>a.id.startsWith('brand-opening-')).length)).toBe(0);
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:8000});
+ await expect(page.locator('.studio-prelude,.studio-prelude-skip,.brand-opening,.brand-opening-skip')).toHaveCount(0);
+ expect(await page.evaluate(()=>document.getAnimations().filter(a=>a.id.startsWith('brand-opening-')||a.id.startsWith('studio-prelude-')).length)).toBe(0);
  await expect(page.locator('.hero-word').first()).toHaveCSS('opacity','1');
  await expect(page.locator('.hero-actions .pill-link')).toBeVisible();
 
@@ -43,6 +57,7 @@ test('brand opening hands control to visitors without blocking or replaying over
  await page.setViewportSize({width:390,height:844});
  await page.reload({waitUntil:'domcontentloaded'});
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
+ await expect(page.locator('.brand-opening')).toBeAttached({timeout:5000});
  for(const time of [1100,1650,2200]){
   const overlap=await page.evaluate(time=>{
    const animations=document.getAnimations().filter(animation=>animation.id.startsWith('brand-opening-'));
@@ -62,7 +77,7 @@ test('brand opening hands control to visitors without blocking or replaying over
  await page.reload({waitUntil:'domcontentloaded'});
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
  await page.mouse.move(520,350);await page.mouse.move(70,30);
- await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled');
+ await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:8000});
  await page.waitForLoadState('networkidle');
  expect(await page.locator('.hero-word').evaluateAll(words=>words.every(word=>!Number(word.style.getPropertyValue('--type-light'))))).toBe(true);
  // A keyboard user never has to wait for the cinematic entrance to finish.
@@ -77,11 +92,11 @@ test('brand opening hands control to visitors without blocking or replaying over
  await page.keyboard.press('Escape');
 
  await page.goto('/#work');
- await expect(page.locator('.brand-opening')).toHaveCount(0);
+ await expect(page.locator('.studio-prelude,.brand-opening')).toHaveCount(0);
  await expect(page.locator('#work h2')).toBeInViewport();
  await page.goto('/');
  await page.emulateMedia({reducedMotion:'reduce'});
- await expect(page.locator('.brand-opening')).toHaveCount(0);
+ await expect(page.locator('.studio-prelude,.brand-opening')).toHaveCount(0);
  await expect(page.locator('.hero-word').first()).toHaveCSS('opacity','1');
  await page.reload();
  await expect(page.locator('.brand-opening')).toHaveCount(0);

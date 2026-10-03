@@ -8,7 +8,20 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  await openingContext.addInitScript(()=>{try{localStorage.setItem('brayro_market_manual','in')}catch{}});
  const openingPage=await openingContext.newPage();
  await openingPage.goto(base+'/',{waitUntil:'domcontentloaded'});
- await openingPage.locator('.brand-opening').waitFor({state:'attached',timeout:1500});
+ // Each frozen pose gets a fresh clock; the live safety timeout must not
+ // silently turn a late prelude capture into a legacy-opening screenshot.
+ for(const time of [300,1100,1900]){
+  const poseContext=await browser.newContext({viewport:{width,height},deviceScaleFactor:1,reducedMotion:'no-preference'});
+  const posePage=await poseContext.newPage();
+  await posePage.goto(base+'/',{waitUntil:'domcontentloaded'});
+  await posePage.locator('.studio-prelude').waitFor({state:'attached',timeout:1500});
+  await posePage.evaluate(time=>document.getAnimations().filter(a=>a.id.startsWith('studio-prelude-')).forEach(a=>{a.pause();a.currentTime=time}),time);
+  await posePage.screenshot({path:`${folder}/${device}-prelude-${time}.png`});
+  await poseContext.close();
+ }
+ // Start a fresh uninterrupted queue for the original opening's own captures.
+ await openingPage.reload({waitUntil:'domcontentloaded'});
+ await openingPage.locator('.brand-opening').waitFor({state:'attached',timeout:5000});
  let elapsed=0;
  for(const time of [300,1100,1650,2200,3100]){await openingPage.waitForTimeout(Math.max(0,time-elapsed));elapsed=time;await openingPage.screenshot({path:`${folder}/${device}-opening-${String(time).padStart(4,'0')}.png`})}
  await openingPage.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='settled',undefined,{timeout:5000});

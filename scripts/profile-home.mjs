@@ -32,7 +32,7 @@ try{
  await page.goto(new URL('/',base).href,{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='playing',undefined,{timeout:1800});
  await page.evaluate(()=>window.__startFrameProbe('opening'));
- await page.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='settled',undefined,{timeout:5000});
+ await page.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='settled',undefined,{timeout:8000});
  summaries.opening=summarise(await page.evaluate(()=>window.__stopFrameProbe()));
 
  await page.waitForFunction(()=>['ready','fallback'].includes(document.querySelector('[data-sculpture]')?.dataset.renderState),undefined,{timeout:6000});

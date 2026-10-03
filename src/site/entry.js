@@ -4,6 +4,8 @@ import {initHeroLight} from './hero-light.js';
 // The first frame has native entry motion; below-fold choreography loads on arrival.
 export function initStudioEntry(){
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ // Decide entry before word wrapping dirties the whole document's layout.
+ const opening=initBrandOpening();
  if(!reduced.matches){
   document.querySelectorAll('h1:not(#hero-title)').forEach(el=>{
    let index=0;const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),nodes=[];
@@ -17,7 +19,6 @@ export function initStudioEntry(){
   document.querySelectorAll('main>section:first-child [data-enter]:not([data-opening])').forEach(el=>{el.classList.add('opening-block');el.dataset.opening='true'});
  }
  initPremiumMotion();
- const opening=initBrandOpening();
  const root=document.querySelector('[data-sc-root]');
  if(root&&!reduced.matches)root.classList.add('studio-ready');
  let motionPromise=null;

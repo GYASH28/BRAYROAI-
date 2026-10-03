@@ -87,3 +87,12 @@ The opening reads as a material impression:38 exact bone BR fragments approach f
 | 1.11–1.77s | Resolution. The orange full stop lands; native animation ownership is released. |
 
 No scroll lock, loading progress, sound, raster asset or new library. Wheel/scroll/touch/keyboard/control input, resize, hidden tab and preference changes settle immediately. Hash/history/reduced-motion entry render the final state. The mark fits between the floating navigation and commercial copy, including short landscape layouts; animated decor cannot cover the offer. Tiny fragments retain the source geometry. Existing9600particle field, full-screen formation, reversible paper handoff and161tile footer stay intact.
+
+
+## Independent full-screen opening — owner's 3 October correction
+
+The owner requests a completely new full-screen sequence BEFORE the existing animation, and rejects treating the integrated First Signal as sufficient. Their newest direction supersedes previous single-opening restrictions. Preserve existing BR mosaic/planes/letter choreography at its original3.2s duration.
+
+The new2.7s editorial film says BE UNMISSABLE. Curiosity: an off-axis ink stage, truthful websites/AI signature and navigable header. Tension: eleven dimensional letterforms rotate toward the visitor while twelve architectural frames run through depth. Recognition: a large Space/Instrument typographic poster resolves across two rows, with the orange full stop. Release: the camera passes through the letter field and a blue depth plane; the separate original brand impression then starts. The new scene reuses no tiles, particles, seam or loading percentage. Portrait uses an enlarged italic second line; landscape reduces the type and moves it below the live header. Every input can skip the entire queue immediately. Reduced motion and deep links remain direct final-state entry.
+
+The signature is the typographic depth corridor, ending in the original BR brand impression. Native transform/opacity and finite geometric layers; no new library, unbounded shader or animated full-screen blur. Performance checks include both sequences.

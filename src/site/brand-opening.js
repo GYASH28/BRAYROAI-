@@ -1,19 +1,21 @@
 import monogramSource from '../../static/brand/brayro-monogram.svg?raw';
 import './brand-opening.css';
+import {playStudioPrelude} from './studio-prelude.js';
 
 const OPENING_DURATION=3200;
 
 // A finite brand impression, never a loading gate. The live proposition and
 // controls stay above this decorative layer while native animations own only
 // opening transforms. Pointer and scroll systems take over after cleanup.
-export function initBrandOpening(){
+function initMosaicOpening(){
  const stage=document.querySelector('.page-home .hero-stage');
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const navigation=performance.getEntriesByType('navigation')[0];
  const idle={finished:Promise.resolve()};
  if(!stage)return idle;
+ const skipEntry=reduced.matches||location.hash||scrollY>8||document.hidden||navigation?.type==='back_forward'||document.activeElement?.matches('a,button,input,textarea,summary')||!Element.prototype.animate;
  stage.dataset.openingState='settled';
- if(reduced.matches||location.hash||scrollY>8||document.hidden||navigation?.type==='back_forward'||document.activeElement?.matches('a,button,input,textarea,summary')||!Element.prototype.animate)return idle;
+ if(skipEntry)return idle;
 
  const line=stage.querySelector('.hero-mark-line'),bottom=stage.querySelector('.hero-bottom'),header=document.querySelector('.site-header');
  if(!line||!bottom||!header)return idle;
@@ -181,4 +183,23 @@ export function initBrandOpening(){
   safetyTimer=setTimeout(settle,3380);
  }catch(error){settle();throw error}
  return {finished};
+}
+
+
+// Owner's 3 October direction: a separate full-screen editorial sequence first,
+// then the existing 38-tile impression, with one interruption contract for both.
+export function initBrandOpening(){
+ const stage=document.querySelector('.page-home .hero-stage');
+ if(!stage)return{finished:Promise.resolve()};
+ const navigation=performance.getEntriesByType('navigation')[0];
+ const skipEntry=matchMedia('(prefers-reduced-motion:reduce)').matches||location.hash||scrollY>8||document.hidden||navigation?.type==='back_forward'||document.activeElement?.matches('a,button,input,textarea,summary')||!Element.prototype.animate;
+ stage.dataset.openingState='settled';
+ stage.dataset.preludeState='skipped';
+ if(skipEntry)return{finished:Promise.resolve()};
+ const prelude=playStudioPrelude(stage);
+ const finished=prelude.finished.then(completed=>{
+  if(!completed)return;
+  return initMosaicOpening().finished;
+ });
+ return{finished};
 }

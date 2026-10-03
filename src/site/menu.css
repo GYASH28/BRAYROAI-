@@ -48,5 +48,5 @@
  #menu-dialog .menu-secondary a{font-size:10px;min-height:36px}
  #menu-dialog .menu-market{margin-top:12px;width:100%;justify-content:space-between}
 }
-@media(max-height:650px){#menu-dialog .dialog-head{position:sticky;top:0;background:#11151ef5;z-index:2;padding-block:8px;isolation:isolate}#menu-dialog .dialog-head::before{content:"";position:absolute;inset:-30px 0 0;z-index:-1;background:#11151ef5}}
+@media(max-height:650px){#menu-dialog .dialog-head{position:sticky;top:0;background:#11151e;z-index:2;padding-block:8px;isolation:isolate}#menu-dialog .dialog-head::before{content:"";position:absolute;inset:-30px 0 0;z-index:-1;background:#11151e}}
 @media(prefers-reduced-motion:reduce){#menu-dialog *{transition:none!important}#menu-dialog nav a:is(:hover,:focus-visible) .menu-link-title,#menu-dialog nav a:is(:hover,:focus-visible) .menu-link-arrow{transform:none}#menu-dialog .dialog-head button:hover{transform:none}}

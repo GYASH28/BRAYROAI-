@@ -68,7 +68,7 @@ jobs:
           # `curl | grep -q` can report curl 23 after grep exits early even
           # when the requested content is present.
           curl -fsSL --max-time 25 "$PROD_URL/plans" -o /tmp/brayroai-prod-plans.html
-          grep -q 'Build the site' /tmp/brayroai-prod-plans.html
+          grep -q 'Two ways to build' /tmp/brayroai-prod-plans.html
           curl -fsSL --max-time 25 "$PROD_URL/clients/fakhrimart" -o /tmp/brayroai-prod-fakhrimart.html
           grep -q 'Fakhri' /tmp/brayroai-prod-fakhrimart.html
           echo 'Production exact-SHA and clean plans and case routes verified.'

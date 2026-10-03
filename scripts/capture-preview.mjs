@@ -30,7 +30,10 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  await page.screenshot({path:`${folder}/${device}-project-path.png`});
  for(const [route,name] of [['/plans','plans'],['/clients','clients'],['/clients/fakhrimart','case'],['/founder','founder'],['/ai-workflow-audit','audit'],['/company-second-brain','brain'],['/terms','terms']]){
   await page.goto(base+route,{waitUntil:'networkidle'});await page.screenshot({path:`${folder}/${device}-${name}.png`});
-  if(name==='plans'){await page.locator('#starter-build').evaluate(node=>node.scrollIntoView({block:'start',behavior:'instant'}));await page.waitForTimeout(120);await page.screenshot({path:`${folder}/${device}-plans-builds.png`})}
+  if(name==='plans'){
+    await page.locator('#monthly-builds').evaluate(node=>node.scrollIntoView({block:'start',behavior:'instant'}));await page.waitForTimeout(120);await page.screenshot({path:`${folder}/${device}-plans-monthly.png`});
+    await page.locator('#one-time-builds').evaluate(node=>node.scrollIntoView({block:'start',behavior:'instant'}));await page.waitForTimeout(120);await page.screenshot({path:`${folder}/${device}-plans-onetime.png`});
+   }
   if(name==='founder'){await page.locator('.founder-opening').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-founder-opening.png`})}
   if(name==='terms'){await page.locator('#pricing').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-terms-reading.png`})}
  }

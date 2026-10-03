@@ -6,12 +6,12 @@ export const RAE_KNOWLEDGE=Object.freeze({
     principle:'Recommend the smallest sensible scope. Help first; do not force a bigger package.'
   },
   websitePlans:[
-    {id:'monthly-starter',name:'Starter partnership',price:'₹2,599/month',kind:'ongoing website support'},
-    {id:'monthly-growth',name:'Growth partnership',price:'₹3,999/month',kind:'ongoing website support'},
-    {id:'monthly-studio',name:'Studio partnership',price:'₹5,999+/month',kind:'ongoing website support'},
-    {id:'launch-website',name:'Website Starter',price:'₹2,599',kind:'complete one-time website build'},
-    {id:'business-experience',name:'Business Website',price:'₹3,999',kind:'complete business website build'},
-    {id:'premium-experience',name:'Premium Website',price:'₹5,999+',kind:'premium one-time website build'}
+    {id:'monthly-starter',name:'Monthly Website Starter',price:'₹2,599/month',kind:'monthly website build engagement'},
+    {id:'monthly-growth',name:'Monthly Website Growth',price:'₹3,999/month',kind:'monthly website build engagement'},
+    {id:'monthly-studio',name:'Monthly Website Studio',price:'₹5,999+/month',kind:'monthly website build engagement'},
+    {id:'launch-website',name:'Launch Website',price:'₹9,999',kind:'complete one-time website build'},
+    {id:'business-experience',name:'Business Experience',price:'₹17,999',kind:'larger one-time website build'},
+    {id:'premium-experience',name:'Premium Experience',price:'₹25K–₹35K+',kind:'premium one-time website experience'}
   ],
   aiOffers:[
     {id:'ai-workflow-audit',name:'AI Workflow Audit',price:'₹9,999',summary:'Maps a workflow, identifies useful AI or automation opportunities, prioritises them and includes a workflow map, opportunity shortlist, priority matrix and 30-minute review.'},
@@ -27,7 +27,7 @@ export const RAE_KNOWLEDGE=Object.freeze({
 });
 
 export const RAE_ALLOWED_ACTIONS=Object.freeze({
-  navigateToRoute:['/','/#work','/#studio','/#contact','/plans','/plans#ai-audit','/plans#second-brain','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms'],
+  navigateToRoute:['/','/#work','/#studio','/#contact','/plans','/plans#monthly-builds','/plans#one-time-builds','/plans#ai-systems','/plans#ai-audit','/plans#second-brain','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms'],
   scrollToSection:['work','approach','method','studio','starting-points','contact'],
   openProject:['fakhrimart'],
   showPlan:['monthly-starter','monthly-growth','monthly-studio','launch-website','business-experience','premium-experience','ai-workflow-audit','company-second-brain']

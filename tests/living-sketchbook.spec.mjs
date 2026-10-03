@@ -107,7 +107,7 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
 });
 
 test('regional price books are English and exact',async({page})=>{
- for(const [route,label,price] of [['/plans','India · INR','₹2,599'],['/ae/plans','UAE · AED','AED 690'],['/au/plans','Australia · AUD','A$390']]){
+ for(const [route,label,price] of [['/plans','India · INR','₹9,999'],['/ae/plans','UAE · AED','AED 2,990'],['/au/plans','Australia · AUD','A$1,490']]){
   await page.goto(route);await expect(page.getByRole('button',{name:new RegExp(label)}).first()).toBeVisible();
   await expect(page.locator('[data-price="launch-website"]').first()).toHaveText(price);
   await expect(page.locator('html')).toHaveAttribute('lang','en');
@@ -136,18 +136,18 @@ test('restored founder, client and AI pages stay navigable in each market',async
  await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
 });
 
-test('plans keep complete website builds separate from optional monthly care',async({page})=>{
+test('plans preserve both monthly website builds and bigger one-time projects',async({page})=>{
  await page.goto('/plans');
- await expect(page.getByRole('heading',{level:1,name:/Build the site. Choose the depth./i})).toBeVisible();
- await expect(page.locator('#starter-build [data-price="launch-website"]')).toHaveText('₹2,599');
- await expect(page.locator('#business-build [data-price="business-experience"]')).toHaveText('₹3,999');
- await expect(page.locator('#premium-build [data-price="premium-experience"]')).toHaveText('₹5,999+');
- await expect(page.locator('#new-website')).toContainText('complete website builds, not maintenance plans');
- await expect(page.locator('#monthly-support')).toBeHidden();
- await page.getByRole('tab',{name:/Monthly care/i}).click();
- await expect(page.locator('#monthly-support')).toBeVisible();
- await expect(page.locator('#new-website')).toBeHidden();
- await expect(page.locator('#monthly-starter [data-price="monthly-starter"]')).toHaveText('₹2,599/mo');
+ await expect(page.getByRole('heading',{level:1,name:/Same ambition. Two ways to build./i})).toBeVisible();
+ await expect(page.locator('#monthly-builds')).toBeVisible();
+ await expect(page.locator('#one-time-builds')).toBeVisible();
+ await expect(page.locator('#monthly-starter-plan [data-price="monthly-starter"]')).toHaveText('₹2,599/mo');
+ await expect(page.locator('#monthly-growth-plan [data-price="monthly-growth"]')).toHaveText('₹3,999/mo');
+ await expect(page.locator('#monthly-studio-plan [data-price="monthly-studio"]')).toHaveText('₹5,999+/mo');
+ await expect(page.locator('#launch-website-plan [data-price="launch-website"]')).toHaveText('₹9,999');
+ await expect(page.locator('#business-experience-plan [data-price="business-experience"]')).toHaveText('₹17,999');
+ await expect(page.locator('#premium-experience-plan [data-price="premium-experience"]')).toHaveText('₹25K–₹35K+');
+ await expect(page.locator('#monthly-builds')).toContainText('not “support plans”');
 });
 
 test('manual market choice survives navigation and late detection',async({page})=>{
@@ -164,17 +164,17 @@ test('manual market choice survives navigation and late detection',async({page})
  await expect(page).toHaveURL(/\/ae\/?$/);
  await expect(page.locator('.header-inner [data-market-open]')).toContainText('UAE · AED');
  await expect(page).toHaveURL(/\/ae\/?$/);
- await page.goto('/plans?ref=brief#monthly-support');
- await expect(page).toHaveURL(/\/ae\/plans\?ref=brief#monthly-support$/);
- await expect(page.locator('[data-category="monthly-support"]')).toHaveAttribute('aria-selected','true');
- await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 690');
+ await page.goto('/plans?ref=brief#monthly-builds');
+ await expect(page).toHaveURL(/\/ae\/plans\?ref=brief#monthly-builds$/);
+ await expect(page.locator('#monthly-builds [data-price="monthly-starter"]').first()).toHaveText('AED 690/month');
+ await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 2,990');
 });
 
 test('old Arabic URLs and manual preferences resolve to English UAE',async({page})=>{
  await page.goto('/ae/ar/plans');
  await expect(page).toHaveURL(/\/ae\/plans$/);
  await expect(page.locator('html')).toHaveAttribute('lang','en');
- await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 690');
+ await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 2,990');
  await page.goto('/');
  await page.evaluate(()=>{localStorage.setItem('brayro_market_source','manual');localStorage.setItem('brayro_market','ae-ar');localStorage.setItem('brayro_lang','ar')});
  await page.reload();
@@ -189,14 +189,15 @@ test('plans deep links, history, and English enquiry URLs',async({page})=>{
  await expect(page.locator('#second-brain [data-price]')).toHaveText('A$4,900');
  await page.reload();
  await expect(page.locator('#second-brain')).toBeVisible();
- await page.getByRole('tab',{name:/Monthly care/i}).click();
- await expect(page).toHaveURL(/#monthly-support$/);
- await page.getByRole('tab',{name:'AI systems'}).click();
+ await page.getByRole('link',{name:/Monthly builds/i}).first().click();
+ await expect(page).toHaveURL(/#monthly-builds$/);
+ await page.getByRole('link',{name:/AI systems/i}).first().click();
+ await expect(page).toHaveURL(/#ai-systems$/);
  await page.goBack();
- await expect(page.getByRole('tab',{name:/Monthly care/i})).toHaveAttribute('aria-selected','true');
- const href=await page.locator('#monthly-starter [data-offer-contact]').getAttribute('href');
+ await expect(page).toHaveURL(/#monthly-builds$/);
+ const href=await page.locator('#monthly-starter-plan [data-offer-contact]').getAttribute('href');
  expect(decodeURIComponent(href)).toContain('A$390/month');
- expect(decodeURIComponent(href)).toContain('Monthly Starter');
+ expect(decodeURIComponent(href)).toContain('Monthly Website Starter');
  await page.goto('/au/#contact');
  await page.locator('#project-brief').fill('A catalogue for my shop');
  const contact=await page.locator('[data-contact-whatsapp]').getAttribute('href');
@@ -233,18 +234,18 @@ test('Rae replaces interrupted text and retains only completed answers',async({p
  const requests=[];
  await page.route('**/api/rae-chat',async route=>{
   requests.push(route.request().postDataJSON());
-  const replacement='Website Starter starts at ₹2,599. Monthly support starts at ₹2,599.';
+  const replacement='Launch Website starts at ₹9,999. Monthly Website Starter starts at ₹2,599/mo.';
   const body=requests.length===1?`event: delta\ndata: {"text":"Discard this partial"}\n\nevent: reset\ndata: {"reason":"provider_recovery"}\n\nevent: state\ndata: {"state":"thinking","attempt":2,"recovering":true}\n\nevent: delta\ndata: ${JSON.stringify({text:replacement})}\n\nevent: done\ndata: {"finishReason":"stop"}\n\n`:'event: delta\ndata: {"text":"We can discuss your scope."}\n\nevent: done\ndata: {"finishReason":"stop"}\n\n';
   await route.fulfill({status:200,contentType:'text/event-stream',body});
  });
  await page.goto('/');await page.locator('.rae-launcher').click();
  await page.locator('#rae-input').fill('What are the starting prices?');await page.getByRole('button',{name:'Send message to Rae'}).click();
- await expect(page.locator('.rae-message.assistant').last()).toHaveText('Website Starter starts at ₹2,599. Monthly support starts at ₹2,599.');
+ await expect(page.locator('.rae-message.assistant').last()).toHaveText('Launch Website starts at ₹9,999. Monthly Website Starter starts at ₹2,599/mo.');
  await expect(page.locator('.rae-messages')).not.toContainText('Discard this partial');
  await page.locator('#rae-input').fill('What happens next?');await page.getByRole('button',{name:'Send message to Rae'}).click();
  await expect(page.locator('.rae-message.assistant').last()).toHaveText('We can discuss your scope.');
  expect(requests[0].supportsStreamReset).toBe(true);
- expect(requests[1].history).toEqual([{role:'user',text:'What are the starting prices?'},{role:'assistant',text:'Website Starter starts at ₹2,599. Monthly support starts at ₹2,599.'}]);
+ expect(requests[1].history).toEqual([{role:'user',text:'What are the starting prices?'},{role:'assistant',text:'Launch Website starts at ₹9,999. Monthly Website Starter starts at ₹2,599/mo.'}]);
 });
 
 test('Rae renders only allowlisted, market-aware suggestions',async({page})=>{
@@ -275,12 +276,12 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('#method')).toBeVisible();
  await page.route('**/assets/*.js',route=>route.abort());
  await page.goto('/plans');
- await expect(page.getByRole('heading',{name:/Build the site/i})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Same ambition/i})).toBeVisible();
  await expect(page.locator('#ai-systems')).toBeVisible();
  await page.goto('/#method');
- await page.getByRole('radio',{name:'A better live website'}).check();
+ await page.getByRole('radio',{name:'A monthly website build'}).check();
  await expect(page.locator('[data-path-panel=monthly]')).toBeVisible();
- await expect(page.locator('[data-path-panel=monthly] a')).toHaveAttribute('href','/plans#monthly-support');
+ await expect(page.locator('[data-path-panel=monthly] a')).toHaveAttribute('href','/plans#monthly-builds');
 });
 
 test('particle hero, footer and pinned proof respond across input, resize and reversed scroll',async({page,context})=>{
@@ -330,7 +331,7 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  const choices=page.getByRole('group',{name:'What does your business need?'});
  await choices.getByRole('radio',{name:'A new website'}).focus();
  await page.keyboard.press('ArrowDown');
- await expect(choices.getByRole('radio',{name:'A better live website'})).toBeChecked();
+ await expect(choices.getByRole('radio',{name:'A monthly website build'})).toBeChecked();
  await expect(page.locator('[data-path-panel="monthly"]')).toBeVisible();
  await expect(page.locator('[data-path-panel="monthly"] [data-price]')).toHaveText('₹2,599/mo');
  await choices.getByRole('radio',{name:'A lighter way to work'}).check();
@@ -400,8 +401,6 @@ test('full plans explain every offer in each market and restore keyboard focus',
  for(const [market,prefix] of [['in',''],['ae','/ae'],['au','/au']]){
   await page.goto(prefix+'/plans');
   for(const id of Object.keys(OFFERS)){
-   const category=id.startsWith('monthly')?'monthly-support':['ai-workflow-audit','company-second-brain','knowledge-care'].includes(id)?'ai-systems':'new-website';
-   await page.locator(`[data-category="${category}"]`).click();
    const opener=page.locator(`[data-plan-detail="${id}"]`);
    await opener.click();
    const modal=page.locator('#plan-detail-dialog');
@@ -413,7 +412,7 @@ test('full plans explain every offer in each market and restore keyboard focus',
    await expect(modal.locator('.plan-detail-boundaries li')).toHaveText(OFFER_DETAILS[id].boundaries);
    await expect(modal.locator('[data-detail-terms]')).toHaveAttribute('href',prefix+'/terms');
    const href=await modal.locator('[data-detail-enquire]').getAttribute('href');
-   expect(new URL(href).searchParams.get('text')).toBe(leadText({market,offerId:id,source:prefix+'/plans#'+category}));
+   expect(new URL(href).searchParams.get('text')).toBe(leadText({market,offerId:id,source:prefix+'/plans'}));
    if(market==='in'&&id==='launch-website'){
     const access=await new AxeBuilder({page}).include('#plan-detail-dialog').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
     expect(access.violations).toEqual([]);

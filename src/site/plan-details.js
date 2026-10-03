@@ -55,6 +55,7 @@ function buildDialog(){
 }
 
 function priceLabel(id,kind){
+ if(id==='premium-experience')return 'Indicative range · one-time';
  if(id==='ai-workflow-audit')return 'Fixed starting scope · one-time';
  if(kind==='monthly')return 'From · per month';
  if(kind==='scoped')return 'From · scoped implementation';

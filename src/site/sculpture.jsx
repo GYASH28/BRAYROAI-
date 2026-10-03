@@ -229,27 +229,28 @@ function Sculpture({ host }) {
         let pixelRatio = 1;
         let qualityScale = 1;
         const rasterBudget = createRasterBudget();
-        let hostRect = null;
         let bufferWidth = 0;
         let bufferHeight = 0;
 
         const resize = () => {
           rasterBudget.reset();
-          const rect = host.getBoundingClientRect();
-          hostRect = rect;
-          if (!rect.width || !rect.height) return;
+          // CSS scene travel scales the visual bounds. Allocate from layout
+          // dimensions so resizing mid-scroll does not magnify the buffer twice.
+          const width = host.clientWidth;
+          const height = host.clientHeight;
+          if (!width || !height) return;
           mobile = window.matchMedia('(max-width: 767px)').matches;
           pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.25) * qualityScale;
           // setPixelRatio itself calls setSize. Update all three dimensions
           // together, and skip the observer's identical initial notification.
-          if (bufferWidth !== rect.width || bufferHeight !== rect.height
+          if (bufferWidth !== width || bufferHeight !== height
             || renderer.getPixelRatio() !== pixelRatio) {
-            renderer.setDrawingBufferSize(rect.width, rect.height, pixelRatio);
-            bufferWidth = rect.width;
-            bufferHeight = rect.height;
+            renderer.setDrawingBufferSize(width, height, pixelRatio);
+            bufferWidth = width;
+            bufferHeight = height;
           }
           material.uniforms.uPixelRatio.value = pixelRatio;
-          camera.aspect = rect.width / rect.height;
+          camera.aspect = width / height;
           material.uniforms.uPointerAspect.value = camera.aspect;
           cameraBaseZ = (mobile ? 6.85 : 6.45) / Math.min(1, Math.max(0.38, camera.aspect));
           camera.position.z = cameraBaseZ;
@@ -270,7 +271,8 @@ function Sculpture({ host }) {
           const nextScale = rasterBudget.sample(realDelta);
           if (nextScale !== null) { qualityScale = nextScale; resize(); }
           if (pendingPointer) {
-            const rect = hostRect || host.getBoundingClientRect();
+            // Read once per input frame, after the authored scale/translation.
+            const rect = host.getBoundingClientRect();
             pointer.set(((pendingPointer.x - rect.left) / rect.width) * 2 - 1,
               1 - ((pendingPointer.y - rect.top) / rect.height) * 2);
             pendingPointer = null;
@@ -358,7 +360,7 @@ function Sculpture({ host }) {
         };
         const press = (event) => {
           pendingPointer = null;
-          const rect = hostRect || host.getBoundingClientRect();
+          const rect = host.getBoundingClientRect();
           pointer.set(
             ((event.clientX - rect.left) / rect.width) * 2 - 1,
             1 - ((event.clientY - rect.top) / rect.height) * 2,

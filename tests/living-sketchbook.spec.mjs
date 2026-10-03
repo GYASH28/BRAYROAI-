@@ -323,6 +323,31 @@ test('particle hero, footer and pinned proof respond across input, resize and re
  await expect.poll(()=>page.locator('[data-sculpture]').getAttribute('data-render-state')).toBe('ready');
  await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-draw-calls','1');
  await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-render-points','9600');
+ // Scroll transforms change visual bounds without changing layout dimensions.
+ // Pointer coordinates must follow that visual surface; buffers must not.
+ await page.locator('[data-sculpture]').evaluate(host=>{
+  const rect=host.getBoundingClientRect();
+  host.dispatchEvent(new PointerEvent('pointerdown',{clientX:rect.left+rect.width*.25,clientY:rect.top+rect.height*.2,pointerType:'touch'}));
+ });
+ const readPointer=()=>page.locator('.sculpture-canvas').evaluate(canvas=>{
+  const gl=canvas.getContext('webgl2'),program=gl.getParameter(gl.CURRENT_PROGRAM);
+  return [...gl.getUniform(program,gl.getUniformLocation(program,'uPointer'))];
+ });
+ await expect.poll(async()=>Math.abs((await readPointer())[0]+.5)).toBeLessThan(.001);
+ await expect.poll(async()=>Math.abs((await readPointer())[1]-.6)).toBeLessThan(.001);
+ await page.locator('[data-sculpture]').evaluate(host=>{
+  const rect=host.getBoundingClientRect();
+  host.dispatchEvent(new PointerEvent('pointermove',{clientX:rect.left+rect.width*.75,clientY:rect.top+rect.height*.8,pointerType:'mouse'}));
+ });
+ await expect.poll(async()=>Math.abs((await readPointer())[0]-.5)).toBeLessThan(.001);
+ await expect.poll(async()=>Math.abs((await readPointer())[1]+.6)).toBeLessThan(.001);
+ await page.setViewportSize({width:1400,height:900});
+ await expect.poll(()=>page.locator('[data-sculpture]').evaluate(host=>{
+  const canvas=host.querySelector('canvas'),gl=canvas.getContext('webgl2'),program=gl.getParameter(gl.CURRENT_PROGRAM);
+  const ratio=Number(gl.getUniform(program,gl.getUniformLocation(program,'uPixelRatio')).toFixed(6));
+  return canvas.width===Math.floor(host.clientWidth*ratio)&&canvas.height===Math.floor(host.clientHeight*ratio);
+ })).toBe(true);
+ await page.setViewportSize({width:1440,height:900});
  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
  const bufferSizes=await page.evaluate(()=>window.__particleBufferSizes);
  expect(bufferSizes.length).toBeGreaterThan(0);

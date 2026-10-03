@@ -39,3 +39,10 @@ GitHub main9318028 already contains the3.2second First Signal fullscreen opening
 5. Qualify each coherent change through existing source, browser, accessibility, load and Lighthouse gates, matching canonical Vercel main and both workflows. Record original failures honestly, and diagnose before repeating tests.
 
 Before the usage window ends, update ignored RESUME.md with the exact commit, actual qualification state and next unfinished item; adjust the existing heartbeat to shortly after the fresh actual reset. Notify the owner for meaningful changes, completion, failure or required external action. Stop and pause the heartbeat once the brief and concrete remaining backlog are achieved, or follow newer owner steering. No Smart Model Router or older/Astra workers. No test-agent detection, weaker budgets, global error filters or empty churn.
+
+
+## Particle transformed-bounds cycle
+
+- Diagnosed actual scroll-pose pointer offset and double-scaled draw buffers on resize. Separate layout-sized allocations from current visual input coordinates; preserve all9600particles/shaders/formation and original raster tiers.
+- Runtime shader-guard A/B did not demonstrate a frame improvement and was not adopted. Diagnostic static WebGL draw isolates most lab scheduling cost, without proving a hardware GPU bottleneck or60fps. Further device/trace attribution remains open.
+- Qualify exact canonical release and full existing workflows before declaring this fix complete.

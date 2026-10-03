@@ -52,11 +52,23 @@ test('brand opening hands control to visitors without blocking or replaying over
  await page.getByRole('button',{name:'Skip intro'}).click();
  await expect(page.locator('.brand-opening')).toHaveCount(0);
 
+});
+
+test('portrait opening keeps controls separate and honors keyboard, pointer and reduced-motion intent',async({page})=>{
  // Portrait beats keep opaque mosaic material above the commercial copy.
  const desktopViewport=page.viewportSize();
  await page.setViewportSize({width:390,height:844});
- await page.reload({waitUntil:'domcontentloaded'});
+ await page.goto('/',{waitUntil:'domcontentloaded'});
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
+ // Both fixed controls must retain distinct, fully clickable touch targets.
+ const targets=await page.evaluate(()=>{
+  const skip=document.querySelector('.studio-prelude-skip').getBoundingClientRect();
+  const rae=document.querySelector('.rae-launcher').getBoundingClientRect();
+  return {gap:rae.top-skip.bottom,skipHeight:skip.height,raeHeight:rae.height};
+ });
+ expect(targets.gap).toBeGreaterThanOrEqual(24);
+ expect(targets.skipHeight).toBeGreaterThanOrEqual(44);
+ expect(targets.raeHeight).toBeGreaterThanOrEqual(44);
  await expect(page.locator('.brand-opening')).toBeAttached({timeout:5000});
  for(const time of [1100,1650,2200]){
   const overlap=await page.evaluate(time=>{
@@ -115,7 +127,7 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
  await expect.poll(()=>page.locator('#work').evaluate(node=>Math.abs(node.getBoundingClientRect().top-document.querySelector('.site-header').getBoundingClientRect().bottom-16))).toBeLessThan(2);
  await page.locator('.work-desktop').scrollIntoViewIfNeeded();
  await expect.poll(()=>page.locator('.work-desktop img').evaluate(image=>image.complete&&image.naturalWidth>0)).toBe(true);
- await page.getByRole('link',{name:'Open the FakhriMart case study'}).click();
+ await page.getByRole('link',{name:'Inside the project: FakhriMart case study'}).click();
  await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
  await expect(page.getByRole('heading',{level:1,name:/Fakhri\s*Mart/i})).toBeVisible();
  await expect(page.getByRole('link',{name:'Visit the live website'})).toHaveAttribute('href','https://fakhriyarns.vercel.app/');

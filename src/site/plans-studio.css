@@ -56,3 +56,10 @@ html.plan-detail-open{overflow:hidden}.page-plans .plan-detail-dialog{width:min(
  .page-plans .plan-tabs{top:var(--header)}
  .page-plans .offer{scroll-margin-top:calc(var(--header) + 84px)}
 }
+
+
+/* Isolate plan cards from legacy .offer-scope/.offer rules used by AI pages. */
+.page-plans .offer-scope{margin:0;display:block;grid-template-columns:none;gap:0;align-self:start}
+.page-plans .offer details{grid-row:auto}
+.page-plans .offer-actions,.page-plans .offer-detail-action,.page-plans .offer-action{width:100%}
+@media(min-width:1051px){.page-plans .offer details{grid-row:2}}

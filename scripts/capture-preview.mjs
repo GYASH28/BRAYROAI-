@@ -13,6 +13,9 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  for(const time of [300,1100,1650,2200,3100]){await openingPage.waitForTimeout(Math.max(0,time-elapsed));elapsed=time;await openingPage.screenshot({path:`${folder}/${device}-opening-${String(time).padStart(4,'0')}.png`})}
  await openingPage.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='settled',undefined,{timeout:5000});
  await openingPage.screenshot({path:`${folder}/${device}-opening-settled.png`});
+ await openingPage.evaluate(()=>{const section=document.querySelector('.studio-hero');scrollTo({top:section.offsetTop+(section.offsetHeight-innerHeight)*.94,behavior:'instant'})});
+ await openingPage.waitForTimeout(900);
+ await openingPage.screenshot({path:`${folder}/${device}-hero-handoff.png`});
  await openingContext.close();
 
  const context=await browser.newContext({viewport:{width,height},deviceScaleFactor:1,reducedMotion:'reduce'});
@@ -27,7 +30,7 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  await page.screenshot({path:`${folder}/${device}-project-path.png`});
  for(const [route,name] of [['/plans','plans'],['/clients','clients'],['/clients/fakhrimart','case'],['/founder','founder'],['/ai-workflow-audit','audit'],['/company-second-brain','brain'],['/terms','terms']]){
   await page.goto(base+route,{waitUntil:'networkidle'});await page.screenshot({path:`${folder}/${device}-${name}.png`});
-  if(name==='plans'){await page.locator('#starter-build').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-plans-builds.png`})}
+  if(name==='plans'){await page.locator('#starter-build').evaluate(node=>node.scrollIntoView({block:'start',behavior:'instant'}));await page.waitForTimeout(120);await page.screenshot({path:`${folder}/${device}-plans-builds.png`})}
   if(name==='founder'){await page.locator('.founder-opening').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-founder-opening.png`})}
   if(name==='terms'){await page.locator('#pricing').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-terms-reading.png`})}
  }

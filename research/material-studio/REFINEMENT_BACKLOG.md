@@ -24,6 +24,12 @@ GitHub main9318028 already contains the3.2second First Signal fullscreen opening
 - Diagnostic isolation identified inherited light variables on the whole hero as avoidable style work. Direct atmosphere transforms preserve the same motion while caching bounds and disposing correctly on hidden/preference/history events.
 - Matched36move lab workload: style recalculations290→146 and style time454→248ms; frame median50ms and tail66.7/66.8ms remain effectively unchanged. This is a style-work reduction, not a60fps result. Preserve complete particles, text interaction and gradient movement.
 
+## Shared navigation refinement
+
+- Replaced the oversized shared menu list with a route index, destination descriptions, real work/founder/brand previews and complete mobile controls. Kept native links/dialog focus, lazy assets, bounded transitions and truthful market routing.
+- Added desktop preview/rapid-reopen/backdrop/focus/access regressions. The expanded audit uncovered and fixed plans-index secondary text contrast measured3.67:1.
+- Preserve current particle/frame optimization backlog; this UI cycle is not a claim of consistent60fps.
+
 ## Next measured cycles
 
 1. Inspect the current home performance trace and identify the largest attributable CPU/raster/compositor/GPU costs. The headless renderer may be SwiftShader: distinguish compatibility diagnostics from hardware60fps evidence. Keep full particle geometry and visual fidelity.

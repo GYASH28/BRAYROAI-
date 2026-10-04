@@ -47,7 +47,7 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
     await page.locator('#monthly-builds').evaluate(node=>node.scrollIntoView({block:'start',behavior:'instant'}));await page.waitForTimeout(120);await page.screenshot({path:`${folder}/${device}-plans-monthly.png`});
     await page.locator('#one-time-builds').evaluate(node=>node.scrollIntoView({block:'start',behavior:'instant'}));await page.waitForTimeout(120);await page.screenshot({path:`${folder}/${device}-plans-onetime.png`});
    }
-  if(name==='founder'){await page.locator('.founder-opening').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-founder-opening.png`})}
+  if(name==='founder'){await page.locator('#story.studio-letter').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-founder-story.png`})}
   if(name==='terms'){await page.locator('#pricing').scrollIntoViewIfNeeded();await page.screenshot({path:`${folder}/${device}-terms-reading.png`})}
  }
  await page.locator('.rae-launcher').click();

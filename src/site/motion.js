@@ -17,7 +17,25 @@ export async function initStudioMotion(){
   let roomRefresh=0;
   const refreshRoom=()=>{cancelAnimationFrame(roomRefresh);roomRefresh=requestAnimationFrame(()=>ScrollTrigger.refresh())};
   const rooms=[...document.querySelectorAll('.page-home main>section:not(.studio-hero),.page-home .premium-footer')];
-  rooms.forEach(room=>room.addEventListener('contentvisibilityautostatechange',refreshRoom));
+  // Rendering a cached room does not necessarily change its geometry. Refresh
+  // trigger measurements only when its border box actually changes, using the
+  // observer's already-computed sizes rather than forcing another layout read.
+  let roomResize=null;
+  if('ResizeObserver' in window){
+   const sizes=new WeakMap();
+   roomResize=new ResizeObserver(entries=>{
+    let changed=false;
+    for(const entry of entries){
+     const box=entry.borderBoxSize?.[0]||entry.borderBoxSize;
+     const size={width:box?.inlineSize??entry.contentRect.width,height:box?.blockSize??entry.contentRect.height};
+     const previous=sizes.get(entry.target);
+     if(previous&&(Math.abs(size.width-previous.width)>.5||Math.abs(size.height-previous.height)>.5))changed=true;
+     sizes.set(entry.target,size);
+    }
+    if(changed)refreshRoom();
+   });
+   rooms.forEach(room=>roomResize.observe(room,{box:'border-box'}));
+  }else rooms.forEach(room=>room.addEventListener('contentvisibilityautostatechange',refreshRoom));
   const arrivals=new WeakMap();
   const arrivalObserver=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;arrivalObserver.unobserve(entry.target);arrivals.get(entry.target)?.()}},{rootMargin:'0px 0px -8% 0px'});
   const onArrival=(el,run)=>{arrivals.set(el,run);arrivalObserver.observe(el)};
@@ -57,7 +75,7 @@ export async function initStudioMotion(){
   }
   gsap.from('.footer-mark',{yPercent:8,opacity:.6,ease:'none',scrollTrigger:{trigger:'.footer-mark',start:'top bottom',end:'bottom bottom',scrub:.7}});
   return()=>{
-   arrivalObserver.disconnect();cancelAnimationFrame(roomRefresh);rooms.forEach(room=>room.removeEventListener('contentvisibilityautostatechange',refreshRoom));
+   arrivalObserver.disconnect();cancelAnimationFrame(roomRefresh);roomResize?.disconnect();rooms.forEach(room=>room.removeEventListener('contentvisibilityautostatechange',refreshRoom));
    if(hero){hero.removeAttribute('style');hero.removeAttribute('data-hero-progress');hero.removeAttribute('data-assembly-progress');hero.querySelector('.hero-intro')?.removeAttribute('inert');hero.querySelector('.hero-intro')?.removeAttribute('aria-hidden');const next=hero.querySelector('.hero-next');if(next){next.inert=true;next.setAttribute('aria-hidden','true')}}
    document.querySelectorAll('[data-enter],[data-step],.moving-word').forEach(el=>{el.style.removeProperty('transform');el.style.removeProperty('opacity')});
    document.querySelectorAll('[data-line]').forEach(path=>{path.style.removeProperty('opacity');path.style.removeProperty('stroke-dasharray');path.style.removeProperty('stroke-dashoffset')});

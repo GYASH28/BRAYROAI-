@@ -142,6 +142,33 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
  expect(errors).toEqual([]);
 });
 
+test('parallax stays aligned when an earlier room changes height',async({page})=>{
+ await page.goto('/#studio');
+ const portrait=page.locator('.person-photo img');
+ await portrait.evaluate(image=>image.decode());
+ await expect(page.locator('.studio-hero')).toHaveAttribute('data-hero-progress','1.000');
+ const position=()=>page.evaluate(()=>{
+  const room=document.querySelector('#studio');
+  scrollTo({top:room.offsetTop+room.offsetHeight*.35,behavior:'instant'});
+ });
+ const translation=()=>portrait.evaluate(image=>new DOMMatrixReadOnly(getComputedStyle(image).transform).m42);
+ await position();
+ await expect.poll(()=>portrait.getAttribute('style')).toMatch(/transform/);
+ await page.waitForTimeout(700);
+ const reference=await translation();
+ // A real layout change above this room must move its trigger with the image.
+ await page.locator('#method').evaluate(room=>{
+  room.style.paddingBottom=`${parseFloat(getComputedStyle(room).paddingBottom)+400}px`;
+ });
+ await position();
+ await page.waitForTimeout(700);
+ await expect.poll(async()=>Math.abs(await translation()-reference)).toBeLessThan(1);
+ await page.locator('#method').evaluate(room=>room.style.removeProperty('padding-bottom'));
+ await position();
+ await page.waitForTimeout(700);
+ await expect.poll(async()=>Math.abs(await translation()-reference)).toBeLessThan(1);
+});
+
 test('regional price books are English and exact',async({page})=>{
  for(const [route,label,price] of [['/plans','India · INR','₹9,999'],['/ae/plans','UAE · AED','AED 2,990'],['/au/plans','Australia · AUD','A$1,490']]){
   await page.goto(route);await expect(page.getByRole('button',{name:new RegExp(label)}).first()).toBeVisible();

@@ -142,6 +142,32 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
  expect(errors).toEqual([]);
 });
 
+test('footer reveal starts on approach, reverses and reverts with reduced motion',async({page})=>{
+ await page.goto('/#work');
+ await expect(page.locator('.studio-hero')).toHaveAttribute('data-hero-progress','1.000');
+ const mark=page.locator('.footer-mark');
+ // Distant footer setup must not force the contained room to render at first scroll.
+ expect(await mark.evaluate(node=>node.style.transform)).toBe('');
+ await mark.scrollIntoViewIfNeeded();
+ await expect.poll(()=>mark.evaluate(node=>node.style.transform)).toMatch(/translate/);
+ const room=await mark.evaluate(node=>({
+  top:node.getBoundingClientRect().top+scrollY-new DOMMatrixReadOnly(getComputedStyle(node).transform).m42,
+  height:node.offsetHeight,viewport:innerHeight
+ }));
+ const position=progress=>page.evaluate(({room,progress})=>scrollTo({top:room.top-room.viewport+room.height*progress,behavior:'instant'}),{room,progress});
+ const opacity=()=>mark.evaluate(node=>Number(getComputedStyle(node).opacity));
+ await position(.2);await page.waitForTimeout(900);
+ await expect.poll(opacity).toBeLessThan(.75);
+ const initial=await opacity();
+ await position(.8);await page.waitForTimeout(900);
+ await expect.poll(opacity).toBeGreaterThan(.85);
+ await position(.2);await page.waitForTimeout(900);
+ await expect.poll(async()=>Math.abs(await opacity()-initial)).toBeLessThan(.03);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect.poll(()=>mark.evaluate(node=>node.style.transform)).toBe('');
+ await expect(mark).toHaveCSS('opacity','1');
+});
+
 test('parallax stays aligned when an earlier room changes height',async({page})=>{
  await page.goto('/#studio');
  const portrait=page.locator('.person-photo img');

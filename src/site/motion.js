@@ -13,7 +13,7 @@ export async function initStudioMotion(){
  reading();
  if(reduced.matches)return;
  const mm=gsap.matchMedia();
- mm.add('(prefers-reduced-motion:no-preference)',()=>{
+ mm.add('(prefers-reduced-motion:no-preference)',context=>{
   let roomRefresh=0;
   const refreshRoom=()=>{cancelAnimationFrame(roomRefresh);roomRefresh=requestAnimationFrame(()=>ScrollTrigger.refresh())};
   const rooms=[...document.querySelectorAll('.page-home main>section:not(.studio-hero),.page-home .premium-footer')];
@@ -73,9 +73,24 @@ export async function initStudioMotion(){
    const follow=gsap.quickTo(state,'progress',{duration:.24,ease:'power2.out',onUpdate:()=>pose(state.progress)});
    ScrollTrigger.create({trigger:hero,start:'top top',end:()=>`+=${Math.max(1,hero.offsetHeight-innerHeight)}`,onUpdate:s=>follow(s.progress),onRefresh:s=>{follow.tween.pause();state.progress=s.progress;pose(s.progress)}});
   }
-  gsap.from('.footer-mark',{yPercent:8,opacity:.6,ease:'none',scrollTrigger:{trigger:'.footer-mark',start:'top bottom',end:'bottom bottom',scrub:.7}});
+  // The footer room has content-visibility:auto. Reading its descendant's
+  // transform at first scroll forces that distant room to render early.
+  // Observe the room's reserved box, then keep the original reveal in the
+  // media context so preference changes also revert this deferred tween.
+  let footerApproach=null;
+  const footerMark=document.querySelector('.footer-mark');
+  if(footerMark){
+   const revealFooter=context.add('revealFooter',()=>gsap.from(footerMark,{yPercent:8,opacity:.6,ease:'none',scrollTrigger:{trigger:footerMark,start:'top bottom',end:'bottom bottom',scrub:.7}}));
+   footerApproach=new IntersectionObserver(entries=>{
+    if(entries.some(entry=>entry.isIntersecting)){
+     footerApproach.disconnect();
+     if(!reduced.matches)revealFooter();
+    }
+   },{rootMargin:'300px'});
+   footerApproach.observe(footerMark.closest('.premium-footer')||footerMark);
+  }
   return()=>{
-   arrivalObserver.disconnect();cancelAnimationFrame(roomRefresh);roomResize?.disconnect();rooms.forEach(room=>room.removeEventListener('contentvisibilityautostatechange',refreshRoom));
+   arrivalObserver.disconnect();footerApproach?.disconnect();cancelAnimationFrame(roomRefresh);roomResize?.disconnect();rooms.forEach(room=>room.removeEventListener('contentvisibilityautostatechange',refreshRoom));
    if(hero){hero.removeAttribute('style');hero.removeAttribute('data-hero-progress');hero.removeAttribute('data-assembly-progress');hero.querySelector('.hero-intro')?.removeAttribute('inert');hero.querySelector('.hero-intro')?.removeAttribute('aria-hidden');const next=hero.querySelector('.hero-next');if(next){next.inert=true;next.setAttribute('aria-hidden','true')}}
    document.querySelectorAll('[data-enter],[data-step],.moving-word').forEach(el=>{el.style.removeProperty('transform');el.style.removeProperty('opacity')});
    document.querySelectorAll('[data-line]').forEach(path=>{path.style.removeProperty('opacity');path.style.removeProperty('stroke-dasharray');path.style.removeProperty('stroke-dashoffset')});

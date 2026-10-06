@@ -18,7 +18,7 @@
   letter-spacing:.08em;
   text-transform:uppercase;
 }
-.page-breadcrumb a{opacity:.56;transition:opacity .2s}
+.page-breadcrumb a{opacity:.76;transition:opacity .2s}
 .page-breadcrumb a:hover,.page-breadcrumb a:focus-visible{opacity:1}
 .page-breadcrumb span{opacity:.32}
 .page-breadcrumb b{font-weight:700;opacity:.78}
@@ -219,7 +219,7 @@
 }
 .studio-case-meta div{padding:20px;border-right:1px solid #c4bcb0}
 .studio-case-meta div:last-child{border-right:0}
-.studio-case-meta small{display:block;margin-bottom:10px;font-size:7px;letter-spacing:.1em;color:#807970}
+.studio-case-meta small{display:block;margin-bottom:10px;font-size:7px;letter-spacing:.1em;color:#5d5851}
 .studio-case-meta strong{font-size:12px}
 .studio-case-section{padding:clamp(88px,9vw,140px) 0}
 .studio-case-section.alt{background:#15161a;color:#f3f0e8}
@@ -250,7 +250,7 @@
   border-radius:14px;
 }
 .studio-case-section.alt .studio-case-facts article{border-color:rgb(255 255 255 / .14)}
-.studio-case-facts span{display:block;font-size:8px;letter-spacing:.1em;opacity:.55}
+.studio-case-facts span{display:block;font-size:8px;letter-spacing:.1em;opacity:.76}
 .studio-case-facts h3{margin-top:35px;font:500 25px/1 Space;letter-spacing:-.04em}
 .studio-case-facts p{margin-top:10px;font-size:10px;line-height:1.55;opacity:.63}
 .studio-case-gallery{

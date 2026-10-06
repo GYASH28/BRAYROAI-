@@ -565,3 +565,20 @@
   .market-suggestion-actions{width:100%}
   .market-suggestion button{flex:1}
 }
+
+
+/* QA: preserve generous touch targets and a clean handoff into the footer. */
+.page-home .contact-plate{padding-bottom:clamp(118px,11vw,170px)}
+.contact-call{min-height:44px;padding-block:10px}
+.premium-footer .footer-columns a,
+.premium-footer .footer-columns button{
+  min-height:44px;
+  padding-block:8px;
+  display:flex;
+  align-items:center;
+}
+.premium-footer .footer-columns>nav,
+.premium-footer .footer-columns>div{gap:2px}
+@media(max-width:760px){
+  .page-home .contact-plate{padding-bottom:110px}
+}

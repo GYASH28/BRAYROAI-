@@ -3,8 +3,8 @@ export const raeDialog = `
   <div class="rae-shell">
     <header class="dialog-head">
       <div class="rae-identity">
-        <small>BRAYRO AI / STUDIO COMPANION</small>
-        <h2 id="rae-heading">Ask Rae<span aria-hidden="true">.</span></h2>
+        <small>BRAYRO AI / STUDIO CONCIERGE</small>
+        <h2 id="rae-heading">Rae<span aria-hidden="true">.</span></h2>\n        <span class="rae-availability"><i aria-hidden="true"></i>AI studio guide</span>
       </div>
       <div class="rae-head-actions">
         <button class="rae-new-conversation" type="button" data-rae-reset aria-label="Start a new conversation with Rae">
@@ -23,7 +23,7 @@ export const raeDialog = `
         </div>
         <div class="rae-intro-copy">
           <span class="rae-kicker">RAE / PROJECT GUIDE</span>
-          <p id="rae-description">Bring the rough version. Rae can help you understand the work, compare a starting point, or find the right route through the studio.</p>
+          <p id="rae-description">Tell Rae what you are trying to build, fix, compare, or understand. She keeps the answer grounded in BRAYRO AI's studio, plans, and published work.</p>
         </div>
         <div class="rae-compass" aria-hidden="true">
           <span>Scope</span><span>Compare</span><span>Explain</span>
@@ -33,15 +33,15 @@ export const raeDialog = `
       <section class="rae-conversation" aria-label="Conversation with Rae">
         <div class="rae-thread" tabindex="0" role="region" aria-label="Conversation and starting questions">
           <div class="rae-starts" role="group" aria-label="Ways Rae can help">
-            <p><span>Start with a question</span><small>Choose a path or write your own.</small></p>
+            <p><span>Choose an intent</span><small>Or write naturally below.</small></p>
             <button type="button" data-rae-prompt="Help me plan a new website or digital product for my business.">
-              <span>01</span><strong>Plan a project with Rae</strong><i aria-hidden="true">↗</i>
+              <span>01 / PLAN</span><strong>Find the right project path</strong><i aria-hidden="true">↗</i>
             </button>
             <button type="button" data-rae-prompt="Compare BRAYRO AI's website and AI offers for me.">
-              <span>02</span><strong>Compare the offers</strong><i aria-hidden="true">↗</i>
+              <span>02 / COMPARE</span><strong>Compare offers without the sales fog</strong><i aria-hidden="true">↗</i>
             </button>
             <button type="button" data-rae-prompt="Show me verified BRAYRO AI client work and explain what was made.">
-              <span>03</span><strong>Explore real work</strong><i aria-hidden="true">↗</i>
+              <span>03 / PROOF</span><strong>See published work and what it proves</strong><i aria-hidden="true">↗</i>
             </button>
           </div>
 
@@ -58,19 +58,19 @@ export const raeDialog = `
         </div>
 
         <form class="rae-form">
-          <label for="rae-input">ASK ANYTHING ABOUT THE STUDIO</label>
+          <label for="rae-input">MESSAGE RAE</label>
           <div class="rae-composer">
-            <textarea id="rae-input" name="message" rows="2" maxlength="1200" placeholder="What are you working on?" aria-describedby="rae-composer-hint"></textarea>
+            <textarea id="rae-input" name="message" rows="2" maxlength="1200" placeholder="What do you need to build, fix, compare, or understand?" aria-describedby="rae-composer-hint"></textarea>
             <button type="submit" aria-label="Send message to Rae">
               <span aria-hidden="true">Send</span><i aria-hidden="true">↑</i>
             </button>
           </div>
-          <p class="rae-composer-hint" id="rae-composer-hint">Enter for a new line. Ctrl or ⌘ + Enter to send.</p>
+          <p class="rae-composer-hint" id="rae-composer-hint">Enter to send · Shift + Enter for a new line.</p>
         </form>
 
         <footer class="rae-dialog-foot">
-          <span>Project scope and quotes are confirmed with Yash.</span>
-          <a class="rae-fallback" href="mailto:yashganesh.work@gmail.com">Talk to Yash directly ↗</a>
+          <span>Rae can guide the decision. Final scope and quotes are confirmed by Yash.</span>
+          <a class="rae-fallback" href="mailto:yashganesh.work@gmail.com">Human handoff ↗</a>
         </footer>
       </section>
     </div>

@@ -199,7 +199,8 @@ export function initRae() {
   };
 
   try { input.value = (sessionStorage.getItem(draftKey) || '').slice(0, 1200); } catch {}
-  input.addEventListener('input', () => { saveDraft(); resizeComposer(); });\n  resizeComposer();
+  input.addEventListener('input', () => { saveDraft(); resizeComposer(); });
+  resizeComposer();
   input.addEventListener('focus', () => { if (!activeRequest) setCharacter('listening'); });
   input.addEventListener('blur', () => { if (!activeRequest) setCharacter('idle'); });
   input.addEventListener('keydown', (event) => {

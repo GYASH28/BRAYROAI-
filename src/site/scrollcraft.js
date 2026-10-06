@@ -985,64 +985,122 @@
     addEventListener('pointerdown', prime, { passive: true, once: true });
 
     // ---- pointer devices --------------------------------------------------
+    // Pointer work is event-driven and coalesced to one animation frame. The
+    // old loop stayed awake forever and mixed layout reads with style writes on
+    // every raw pointer event, which was needlessly expensive on busy pages.
     var tilts = [], magnets = [], spots = [];
+    var pointerFrame = 0, pointerSample = null, pointerNeedsMeasure = false;
     function initPointer() {
       if (reduce || !fineMQ.matches) return;
       Array.prototype.forEach.call(root.querySelectorAll('[data-sc-tilt]'), function (el) {
-        tilts.push({ el: el, max: parseFloat(el.getAttribute('data-sc-tilt')) || 6, x: 0, ty: 0, tx: 0, y: 0 });
+        tilts.push({ el: el, max: parseFloat(el.getAttribute('data-sc-tilt')) || 6, x: 0, ty: 0, tx: 0, y: 0, rect: null });
       });
       Array.prototype.forEach.call(root.querySelectorAll('[data-sc-magnet]'), function (el) {
-        magnets.push({ el: el, k: parseFloat(el.getAttribute('data-sc-magnet')) || 0.3, x: 0, y: 0, tx: 0, ty: 0 });
+        magnets.push({ el: el, k: parseFloat(el.getAttribute('data-sc-magnet')) || 0.3, x: 0, y: 0, tx: 0, ty: 0, rect: null });
       });
       Array.prototype.forEach.call(root.querySelectorAll('[data-sc-spotlight]'), function (el) {
-        spots.push(el);
+        spots.push({ el: el, rect: null, mx: 0.5, my: 0.5 });
       });
       if (!tilts.length && !magnets.length && !spots.length) return;
 
-      addEventListener('pointermove', function (e) {
-        if (e.pointerType !== 'mouse') return;
-        for (var i = 0; i < tilts.length; i++) {
-          var T = tilts[i], r = T.el.getBoundingClientRect();
-          if (r.bottom < -200 || r.top > vh + 200) { T.tx = 0; T.ty = 0; continue; }
-          var nx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
-          var ny = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+      function schedulePointer() {
+        if (!pointerFrame && !document.hidden) pointerFrame = requestAnimationFrame(pointerTick);
+      }
+      function measurePointerTargets() {
+        // Read every box first, then write. Interleaving getBoundingClientRect()
+        // with transform/style writes forces synchronous layout per element.
+        for (var i = 0; i < tilts.length; i++) tilts[i].rect = tilts[i].el.getBoundingClientRect();
+        for (var m = 0; m < magnets.length; m++) magnets[m].rect = magnets[m].el.getBoundingClientRect();
+        for (var s = 0; s < spots.length; s++) spots[s].rect = spots[s].el.getBoundingClientRect();
+
+        if (!pointerSample) return;
+        var px = pointerSample.x, py = pointerSample.y;
+        for (var ti = 0; ti < tilts.length; ti++) {
+          var T = tilts[ti], r = T.rect;
+          if (!r || !r.width || !r.height || r.bottom < -200 || r.top > vh + 200) { T.tx = 0; T.ty = 0; continue; }
+          var nx = (px - (r.left + r.width / 2)) / (r.width / 2);
+          var ny = (py - (r.top + r.height / 2)) / (r.height / 2);
           var inside = Math.abs(nx) < 1.6 && Math.abs(ny) < 1.6;
           T.tx = inside ? clamp(ny, -1, 1) * -T.max : 0;
           T.ty = inside ? clamp(nx, -1, 1) * T.max : 0;
         }
-        for (var m = 0; m < magnets.length; m++) {
-          var M = magnets[m], mr = M.el.getBoundingClientRect();
-          var dx = e.clientX - (mr.left + mr.width / 2);
-          var dy = e.clientY - (mr.top + mr.height / 2);
+        for (var mi = 0; mi < magnets.length; mi++) {
+          var M = magnets[mi], mr = M.rect;
+          if (!mr || !mr.width || !mr.height) { M.tx = 0; M.ty = 0; continue; }
+          var dx = px - (mr.left + mr.width / 2);
+          var dy = py - (mr.top + mr.height / 2);
           var near = Math.abs(dx) < mr.width && Math.abs(dy) < mr.height * 2.5;
           M.tx = near ? dx * M.k : 0;
           M.ty = near ? dy * M.k : 0;
         }
-        for (var s = 0; s < spots.length; s++) {
-          var sr = spots[s].getBoundingClientRect();
-          spots[s].style.setProperty('--sc-mx', clamp01((e.clientX - sr.left) / sr.width).toFixed(3));
-          spots[s].style.setProperty('--sc-my', clamp01((e.clientY - sr.top) / sr.height).toFixed(3));
+        for (var si = 0; si < spots.length; si++) {
+          var S = spots[si], sr = S.rect;
+          if (!sr || !sr.width || !sr.height) continue;
+          S.mx = clamp01((px - sr.left) / sr.width);
+          S.my = clamp01((py - sr.top) / sr.height);
         }
-      }, { passive: true });
+      }
+      function pointerTick() {
+        pointerFrame = 0;
+        if (document.hidden) return;
 
-      (function pointerTick() {
-        // Interpolate toward the target rather than tracking the pointer
-        // directly. Direct tracking reads as artificial because it carries no
-        // momentum; the lerp gives it weight.
+        if (pointerNeedsMeasure) {
+          measurePointerTargets();
+          pointerNeedsMeasure = false;
+          // Spotlight values do not need spring interpolation.
+          for (var s = 0; s < spots.length; s++) {
+            spots[s].el.style.setProperty('--sc-mx', spots[s].mx.toFixed(3));
+            spots[s].el.style.setProperty('--sc-my', spots[s].my.toFixed(3));
+          }
+        }
+
+        var active = false;
         for (var i = 0; i < tilts.length; i++) {
           var T = tilts[i];
           T.x += (T.tx - T.x) * 0.09; T.y += (T.ty - T.y) * 0.09;
-          if (Math.abs(T.x) > 0.001 || Math.abs(T.y) > 0.001) {
+          if (Math.abs(T.tx - T.x) < 0.001) T.x = T.tx;
+          if (Math.abs(T.ty - T.y) < 0.001) T.y = T.ty;
+          if (Math.abs(T.x) > 0.001 || Math.abs(T.y) > 0.001 || T.tx || T.ty) {
             T.el.style.transform = 'perspective(1100px) rotateX(' + T.x.toFixed(3) + 'deg) rotateY(' + T.y.toFixed(3) + 'deg)';
-          }
+          } else if (T.el.style.transform) T.el.style.removeProperty('transform');
+          if (Math.abs(T.tx - T.x) > 0.001 || Math.abs(T.ty - T.y) > 0.001) active = true;
         }
         for (var m = 0; m < magnets.length; m++) {
           var M = magnets[m];
           M.x += (M.tx - M.x) * 0.12; M.y += (M.ty - M.y) * 0.12;
-          M.el.style.transform = 'translate3d(' + M.x.toFixed(2) + 'px,' + M.y.toFixed(2) + 'px,0)';
+          if (Math.abs(M.tx - M.x) < 0.01) M.x = M.tx;
+          if (Math.abs(M.ty - M.y) < 0.01) M.y = M.ty;
+          if (Math.abs(M.x) > 0.01 || Math.abs(M.y) > 0.01 || M.tx || M.ty) {
+            M.el.style.transform = 'translate3d(' + M.x.toFixed(2) + 'px,' + M.y.toFixed(2) + 'px,0)';
+          } else if (M.el.style.transform) M.el.style.removeProperty('transform');
+          if (Math.abs(M.tx - M.x) > 0.01 || Math.abs(M.ty - M.y) > 0.01) active = true;
         }
-        requestAnimationFrame(pointerTick);
-      })();
+        if (active || pointerNeedsMeasure) schedulePointer();
+      }
+
+      addEventListener('pointermove', function (e) {
+        if (e.pointerType !== 'mouse') return;
+        pointerSample = { x: e.clientX, y: e.clientY };
+        pointerNeedsMeasure = true;
+        schedulePointer();
+      }, { passive: true });
+
+      // Geometry moves under a stationary pointer while the page scrolls.
+      // Mark boxes stale and let the next frame refresh them once.
+      var invalidatePointerGeometry = function () {
+        if (!pointerSample) return;
+        pointerNeedsMeasure = true;
+        schedulePointer();
+      };
+      addEventListener('scroll', invalidatePointerGeometry, { passive: true });
+      addEventListener('resize', invalidatePointerGeometry, { passive: true });
+      addEventListener('blur', function () {
+        pointerSample = null;
+        pointerNeedsMeasure = false;
+        for (var i = 0; i < tilts.length; i++) { tilts[i].tx = 0; tilts[i].ty = 0; }
+        for (var m = 0; m < magnets.length; m++) { magnets[m].tx = 0; magnets[m].ty = 0; }
+        schedulePointer();
+      });
     }
 
     // ---- wiring -----------------------------------------------------------

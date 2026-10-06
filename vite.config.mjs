@@ -83,7 +83,7 @@ function shell(){
   const schema=schemaFor(route,canonical);
   const verification=process.env.GOOGLE_SITE_VERIFICATION?`<meta name="google-site-verification" content="${process.env.GOOGLE_SITE_VERIFICATION}">`:'';
   const social=`<meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="website"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${canonical}"><meta property="og:locale" content="en_IN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="https://brayroai.vercel.app/brand/og-card.png">`;
-  const observability='<script src="/analytics-bootstrap.js"></script><script defer src="/_vercel/insights/script.js"></script><script defer src="/_vercel/speed-insights/script.js"></script>';
+  const observability='<script defer src="/analytics-bootstrap.js"></script>';
   return html.replace('<head>','<head><script src="/view-transition-lifecycle.js"></script>').replace('<body ','<body id="top" ').replace('<!-- SHELL_HEADER -->',`<header class="site-header"><div class="container header-inner">${currentNav}</div></header>`)
    .replace('<main id="main">',`<main id="main">${breadcrumb}`)
    .replace('<!-- SHELL_FOOTER -->',footer)

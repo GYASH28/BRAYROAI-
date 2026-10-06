@@ -3,6 +3,7 @@ import {initMarket} from './market.js';
 import {initPlans} from './plans.js';
 import {initContact} from './contact.js';
 import {initMenu} from './menu.js';
+import {initAnalytics} from './analytics.js';
 
 if(initMarket()){
  const customArrow=direction=>{const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 240 90');svg.setAttribute('class',`ui-arrow ${direction==='↘'?'ui-arrow--down':''}`);svg.setAttribute('aria-hidden','true');const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M8 70C48 28 105 18 204 39m-30-25 34 26-38 22');svg.append(path);return svg};
@@ -19,6 +20,7 @@ if(initMarket()){
  }
  initPlans();
  initContact();
+ initAnalytics();
 
  // Rae's transport and panel handlers are loaded when the visitor actually asks.
  const raeButtons=[...document.querySelectorAll('[data-rae-open]')];

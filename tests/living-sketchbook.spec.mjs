@@ -549,7 +549,7 @@ test('keyboard menu, market dialog, and accessibility',async({page})=>{
  await expect(menu).not.toBeVisible();
  await expect(page.getByRole('button',{name:'Open menu'})).toHaveAttribute('aria-expanded','false');
  await page.setViewportSize({width:390,height:844});
- for(const route of ['/','/plans','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms']){
+ for(const route of ['/','/plans','/clients','/clients/fakhrimart','/work/lernio','/work/brace','/founder','/ai-workflow-audit','/company-second-brain','/terms','/privacy']){
   await page.goto(route);await page.waitForTimeout(1200);
   const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
   expect(result.violations.map(item=>item.id)).toEqual([]);

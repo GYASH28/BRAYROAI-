@@ -55,7 +55,27 @@ export function initRae() {
   const sendButton = form.querySelector('button[type="submit"]');
   const stopButton = dialog.querySelector('[data-rae-stop]');
   const launcher = document.querySelector('.rae-launcher');
+  const pageNode = dialog.querySelector('[data-rae-page]');
+  const marketNode = dialog.querySelector('[data-rae-market]');
+  const modeNode = dialog.querySelector('[data-rae-mode]');
+  const presenceState = dialog.querySelector('[data-rae-presence-state]');
+  const sessionLabel = dialog.querySelector('[data-rae-session-label]');
   const draftKey = 'brayro_rae_draft';
+
+  const pageLabel = (() => {
+    const path = location.pathname;
+    if (path.includes('/plans')) return 'Plans';
+    if (path.includes('/clients/fakhrimart')) return 'Fakhri Mart';
+    if (path.includes('/clients')) return 'Work';
+    if (path.includes('/founder')) return 'Founder';
+    if (path.includes('/ai-workflow-audit')) return 'AI Audit';
+    if (path.includes('/company-second-brain')) return 'Second Brain';
+    if (path.includes('/terms')) return 'Terms';
+    return 'Studio';
+  })();
+  const marketLabel = ({ in: 'India', ae: 'UAE', au: 'Australia' })[currentMarket()] || 'Global';
+  if (pageNode) pageNode.textContent = pageLabel;
+  if (marketNode) marketNode.textContent = marketLabel;
 
   let history = [];
   let activeRequest = null;
@@ -70,13 +90,6 @@ export function initRae() {
     return range.createContextualFragment(characterMarkup(variant));
   };
   actor.replaceChildren(characterNode('stage'));
-  if (!document.querySelector('link[data-rae-emotions]')) {
-    const skin = document.createElement('link');
-    skin.rel = 'stylesheet';
-    skin.href = '/rae/rae-character-emotions.css';
-    skin.dataset.raeEmotions = '';
-    document.head.append(skin);
-  }
   const character = actor.querySelector('[data-rae-character]');
   if (launcher) launcher.replaceChildren(characterNode('launcher'));
 
@@ -84,6 +97,19 @@ export function initRae() {
     dialog.dataset.raeState = next;
     character?.setAttribute('data-state', next);
     launcher?.querySelector('[data-rae-character]')?.setAttribute('data-state', next);
+    if (presenceState) {
+      presenceState.textContent = ({
+        opening: 'Waking',
+        listening: 'Listening',
+        thinking: 'Thinking',
+        speaking: 'Responding',
+        positive: 'Ready',
+        proud: 'Ready',
+        error: 'Interrupted',
+        offline: 'Offline',
+        idle: 'Ready',
+      })[next] || 'Ready';
+    }
   };
   const state = (text) => {
     status.textContent = text;
@@ -192,6 +218,8 @@ export function initRae() {
     log.replaceChildren();
     dialog.classList.remove('rae-has-conversation');
     state('');
+    if (modeNode) modeNode.textContent = 'Explore';
+    if (sessionLabel) sessionLabel.textContent = 'Untitled brief';
     input.value = '';
     saveDraft();
     input.focus();
@@ -212,7 +240,9 @@ export function initRae() {
   dialog.querySelectorAll('[data-rae-prompt]').forEach((button) => {
     button.addEventListener('click', () => {
       if (activeRequest) return;
+      if (modeNode) modeNode.textContent = button.dataset.raeModeChoice || 'Explore';
       input.value = button.dataset.raePrompt;
+      resizeComposer();
       saveDraft();
       form.requestSubmit();
     });
@@ -273,6 +303,11 @@ export function initRae() {
     if (activeRequest) return;
     const question = input.value.trim();
     if (!question) { input.focus(); return; }
+
+    if (modeNode?.textContent === 'Explore') modeNode.textContent = 'Discover';
+    if (sessionLabel?.textContent === 'Untitled brief') {
+      sessionLabel.textContent = question.length > 42 ? `${question.slice(0, 41)}…` : question;
+    }
 
     clearTimeout(openingTimer);
     const request = { version: ++requestVersion, controller: new AbortController(), question, metadata: [] };
@@ -376,7 +411,7 @@ export function initRae() {
       history = history.slice(-8);
       state('');
       const emotion = request.metadata.find(meta => meta?.emotion)?.emotion;
-      setCharacter(['positive', 'proud', 'curious', 'surprised', 'playful', 'shy', 'laugh', 'wink'].includes(emotion) ? emotion : 'positive');
+      setCharacter(emotion === 'proud' ? 'proud' : 'positive');
       if (follow) scrollLatest();
     } catch (caught) {
       if (!ownsRequest(request)) return;

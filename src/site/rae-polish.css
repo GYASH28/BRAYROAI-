@@ -218,7 +218,8 @@
 .rae-dialog .rae-character--stage{
   position:relative;
   z-index:1;
-  width:min(310px,96%);
+  width:min(320px,96%);
+  height:374px;
   filter:drop-shadow(0 28px 28px rgb(0 0 0 / .42));
 }
 .rae-dialog .rae-presence-copy{
@@ -667,7 +668,7 @@
   .rae-dialog .rae-head-context{display:none}
   .rae-dialog .rae-workspace{grid-template-columns:260px minmax(0,1fr)}
   .rae-dialog .rae-presence{padding-inline:16px}
-  .rae-dialog .rae-character--stage{width:min(245px,96%)}
+  .rae-dialog .rae-character--stage{width:min(255px,96%);height:298px}
   .rae-dialog .rae-starts button{min-height:115px}
 }
 @media(max-width:700px){
@@ -708,7 +709,7 @@
     margin:0;
   }
   .rae-dialog .rae-actor::after{display:none}
-  .rae-dialog .rae-character--stage{width:94px}
+  .rae-dialog .rae-character--stage{width:94px;height:110px}
   .rae-dialog .rae-presence-copy{
     align-self:center;
     padding:0;
@@ -759,7 +760,7 @@
 }
 @media(max-width:430px){
   .rae-dialog .rae-presence{grid-template-columns:72px minmax(0,1fr);min-height:100px;flex-basis:100px}
-  .rae-dialog .rae-character--stage{width:78px}
+  .rae-dialog .rae-character--stage{width:78px;height:91px}
   .rae-dialog .rae-presence-copy p{display:none}
   .rae-dialog .rae-starts-heading h3{font-size:28px}
   .rae-dialog .rae-dialog-foot>span{display:none}

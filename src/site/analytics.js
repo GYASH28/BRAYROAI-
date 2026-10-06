@@ -6,6 +6,12 @@ const send=(name,data)=>{
 };
 
 export function initAnalytics(){
+ const disable=document.querySelector('[data-analytics-disable]');
+ if(disable){
+  const paint=()=>{const off=localStorage.getItem('va-disable')==='1';disable.textContent=off?'Analytics disabled on this browser':'Disable analytics on this browser';disable.setAttribute('aria-pressed',String(off))};
+  paint();
+  disable.addEventListener('click',()=>{localStorage.setItem('va-disable','1');paint()});
+ }
  let briefStarted=false;
  const brief=document.querySelector('#project-brief');
  const markBrief=()=>{

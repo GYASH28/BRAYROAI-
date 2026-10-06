@@ -3,13 +3,23 @@ export const raeDialog = `
   <div class="rae-shell">
     <header class="dialog-head">
       <div class="rae-identity">
-        <small>BRAYRO AI / STUDIO CONCIERGE</small>
-        <h2 id="rae-heading">Rae<span aria-hidden="true">.</span></h2>
-        <span class="rae-availability"><i aria-hidden="true"></i>AI studio guide</span>
+        <span class="rae-monogram" aria-hidden="true">R</span>
+        <div>
+          <small>BRAYRO / STUDIO INTELLIGENCE</small>
+          <h2 id="rae-heading">Rae</h2>
+        </div>
+        <span class="rae-availability"><i aria-hidden="true"></i>Online · context aware</span>
       </div>
+
+      <div class="rae-head-context" aria-label="Rae context">
+        <span><small>PAGE</small><strong data-rae-page>Studio</strong></span>
+        <span><small>MARKET</small><strong data-rae-market>India</strong></span>
+        <span><small>MODE</small><strong data-rae-mode>Explore</strong></span>
+      </div>
+
       <div class="rae-head-actions">
         <button class="rae-new-conversation" type="button" data-rae-reset aria-label="Start a new conversation with Rae">
-          <span aria-hidden="true">New thread</span>
+          <span aria-hidden="true">New</span><i aria-hidden="true">＋</i>
         </button>
         <button class="rae-close" type="button" data-rae-close aria-label="Close Rae">
           <span aria-hidden="true">×</span>
@@ -18,61 +28,96 @@ export const raeDialog = `
     </header>
 
     <div class="rae-workspace">
-      <aside class="rae-intro" aria-label="About Rae">
+      <aside class="rae-presence" aria-label="Rae presence">
+        <div class="rae-presence-grid" aria-hidden="true"></div>
+        <div class="rae-presence-index" aria-hidden="true">
+          <span>R / 01</span><span>BRAYRO SYSTEM</span>
+        </div>
+
         <div class="rae-actor" data-rae-actor aria-hidden="true">
-          <img class="rae-face" src="/assets/rae-face.svg" alt="" width="180" height="180">
+          <img class="rae-face" src="/assets/rae-face.svg" alt="" width="320" height="380">
         </div>
-        <div class="rae-intro-copy">
-          <span class="rae-kicker">RAE / PROJECT GUIDE</span>
-          <p id="rae-description">Tell Rae what you are trying to build, fix, compare, or understand. She keeps the answer grounded in BRAYRO AI's studio, plans, and published work.</p>
+
+        <div class="rae-presence-copy">
+          <span class="rae-kicker">RAE / DIGITAL CONCIERGE</span>
+          <p id="rae-description">A studio-side intelligence for shaping briefs, comparing offers, and finding the strongest route through BRAYRO.</p>
         </div>
-        <div class="rae-compass" aria-hidden="true">
-          <span>Scope</span><span>Compare</span><span>Proof</span>
+
+        <div class="rae-presence-state" aria-live="polite">
+          <span class="rae-presence-pulse" aria-hidden="true"></span>
+          <div><small>STATE</small><strong data-rae-presence-state>Ready</strong></div>
+          <div><small>SCOPE</small><strong>Studio only</strong></div>
         </div>
-        <p class="rae-trust-note"><span aria-hidden="true">◎</span> Context-aware. No invented case studies.</p>
       </aside>
 
       <section class="rae-conversation" aria-label="Conversation with Rae">
+        <div class="rae-session-bar">
+          <div class="rae-session-title">
+            <span aria-hidden="true">◌</span>
+            <div><small>ACTIVE THREAD</small><strong data-rae-session-label>Untitled brief</strong></div>
+          </div>
+          <span class="rae-session-note">Rae uses this page + BRAYRO's verified studio context.</span>
+        </div>
+
         <div class="rae-thread" tabindex="0" role="region" aria-label="Conversation and starting questions">
           <div class="rae-starts" role="group" aria-label="Ways Rae can help">
-            <p><span>Choose an intent</span><small>Or write naturally below.</small></p>
-            <button type="button" data-rae-prompt="Help me plan a new website or digital product for my business.">
-              <span>01 / PLAN</span><strong>Find the right project path</strong><i aria-hidden="true">↗</i>
+            <div class="rae-starts-heading">
+              <span class="rae-starts-eyebrow">START ANYWHERE</span>
+              <h3>What are we making?</h3>
+              <p>Give Rae the messy version. She will turn it into a direction.</p>
+            </div>
+
+            <button type="button" data-rae-mode-choice="Plan" data-rae-prompt="Help me turn my rough idea into the right BRAYRO website or digital product plan.">
+              <span>01</span>
+              <div><small>SHAPE</small><strong>A rough idea into a clear project</strong></div>
+              <i aria-hidden="true">↗</i>
             </button>
-            <button type="button" data-rae-prompt="Compare BRAYRO AI's website and AI offers for me.">
-              <span>02 / COMPARE</span><strong>Compare offers without the sales fog</strong><i aria-hidden="true">↗</i>
+
+            <button type="button" data-rae-mode-choice="Compare" data-rae-prompt="Compare BRAYRO AI's offers for my needs, explain the tradeoffs, and tell me where I should start.">
+              <span>02</span>
+              <div><small>COMPARE</small><strong>Find the right offer without the sales fog</strong></div>
+              <i aria-hidden="true">↗</i>
             </button>
-            <button type="button" data-rae-prompt="Show me verified BRAYRO AI client work and explain what was made.">
-              <span>03 / PROOF</span><strong>See published work and what it proves</strong><i aria-hidden="true">↗</i>
+
+            <button type="button" data-rae-mode-choice="Proof" data-rae-prompt="Show me verified BRAYRO AI work and explain what each project proves.">
+              <span>03</span>
+              <div><small>PROOF</small><strong>Explore real work before making a decision</strong></div>
+              <i aria-hidden="true">↗</i>
             </button>
           </div>
 
           <div class="rae-thread-empty" aria-hidden="true">
-            <span>Ready when you are</span>
-            <p>One rough sentence is enough.</p>
+            <span>CONVERSATION CANVAS</span>
+            <p>Your first message becomes the working brief.</p>
           </div>
+
           <div class="rae-messages" role="log" aria-label="Messages" aria-live="polite" aria-relevant="additions text"></div>
         </div>
 
         <div class="rae-status-row">
           <p class="rae-status" role="status"></p>
-          <button class="rae-stop" type="button" data-rae-stop hidden>Stop response</button>
+          <button class="rae-stop" type="button" data-rae-stop hidden>Stop</button>
         </div>
 
         <form class="rae-form">
-          <label for="rae-input">MESSAGE RAE</label>
-          <div class="rae-composer">
-            <textarea id="rae-input" name="message" rows="2" maxlength="1200" placeholder="What do you need to build, fix, compare, or understand?" aria-describedby="rae-composer-hint"></textarea>
-            <button type="submit" aria-label="Send message to Rae">
-              <span aria-hidden="true">Send</span><i aria-hidden="true">↑</i>
-            </button>
+          <div class="rae-composer-shell">
+            <div class="rae-composer-meta">
+              <span>COMMAND / MESSAGE</span>
+              <span>Rae reads the current page</span>
+            </div>
+            <div class="rae-composer">
+              <textarea id="rae-input" name="message" rows="2" maxlength="1200" placeholder="Describe the thing you want to build, fix, compare, or understand…" aria-describedby="rae-composer-hint"></textarea>
+              <button type="submit" aria-label="Send message to Rae">
+                <span aria-hidden="true">Send</span><i aria-hidden="true">↗</i>
+              </button>
+            </div>
           </div>
-          <p class="rae-composer-hint" id="rae-composer-hint">Enter to send · Shift + Enter for a new line.</p>
+          <p class="rae-composer-hint" id="rae-composer-hint">Enter to send · Shift + Enter for a new line</p>
         </form>
 
         <footer class="rae-dialog-foot">
-          <span>Rae can guide the decision. Final scope and quotes are confirmed by Yash.</span>
-          <a class="rae-fallback" href="mailto:yashganesh.work@gmail.com">Human handoff ↗</a>
+          <span><i aria-hidden="true">◎</i> Rae does not invent case studies, prices, or guarantees.</span>
+          <a class="rae-fallback" href="mailto:yashganesh.work@gmail.com">Hand off to Yash ↗</a>
         </footer>
       </section>
     </div>

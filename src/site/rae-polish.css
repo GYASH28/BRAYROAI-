@@ -1245,7 +1245,7 @@
 }
 .rae-dialog .rae-identity small {
   grid-column: 1 / -1;
-  color: #77766e;
+  color: #68675f;
   font-size: 7px;
   letter-spacing: .2em;
 }
@@ -1472,7 +1472,7 @@
   background: var(--rae-paper-strong);
 }
 .rae-dialog .rae-form label {
-  color: #76766e;
+  color: #62625b;
   font-size: 7px;
 }
 .rae-dialog .rae-form label::before {
@@ -1512,12 +1512,12 @@
 }
 .rae-dialog .rae-composer-hint {
   margin-top: 7px;
-  color: #8a887f;
+  color: #68675f;
   font-size: 8px;
 }
 .rae-dialog .rae-dialog-foot {
   padding: 11px 28px 17px;
-  color: #77766f;
+  color: #67665f;
   background: var(--rae-paper-strong);
   font-size: 8px;
 }

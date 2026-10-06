@@ -547,7 +547,7 @@
   justify-content:space-between;
   gap:16px;
   padding:0 3px 7px;
-  color:#77766e;
+  color:#66655e;
   font:700 6px/1 Manrope,sans-serif;
   letter-spacing:.12em;
 }
@@ -589,6 +589,7 @@
 }
 .rae-dialog .rae-form button[type="submit"] i{font-style:normal;font-size:12px}
 .rae-dialog .rae-form button[type="submit"]:is(:hover,:focus-visible){
+  color:#171916;
   background:var(--orange);
   transform:translateY(-1px);
 }

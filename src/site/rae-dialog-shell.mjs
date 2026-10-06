@@ -96,7 +96,7 @@ export const raeDialog = `
 
         <div class="rae-status-row">
           <p class="rae-status" role="status"></p>
-          <button class="rae-stop" type="button" data-rae-stop hidden>Stop</button>
+          <button class="rae-stop" type="button" data-rae-stop aria-label="Stop response" hidden>Stop</button>
         </div>
 
         <form class="rae-form">

@@ -4,7 +4,8 @@ export const raeDialog = `
     <header class="dialog-head">
       <div class="rae-identity">
         <small>BRAYRO AI / STUDIO CONCIERGE</small>
-        <h2 id="rae-heading">Rae<span aria-hidden="true">.</span></h2>\n        <span class="rae-availability"><i aria-hidden="true"></i>AI studio guide</span>
+        <h2 id="rae-heading">Rae<span aria-hidden="true">.</span></h2>
+        <span class="rae-availability"><i aria-hidden="true"></i>AI studio guide</span>
       </div>
       <div class="rae-head-actions">
         <button class="rae-new-conversation" type="button" data-rae-reset aria-label="Start a new conversation with Rae">
@@ -26,8 +27,9 @@ export const raeDialog = `
           <p id="rae-description">Tell Rae what you are trying to build, fix, compare, or understand. She keeps the answer grounded in BRAYRO AI's studio, plans, and published work.</p>
         </div>
         <div class="rae-compass" aria-hidden="true">
-          <span>Scope</span><span>Compare</span><span>Explain</span>
+          <span>Scope</span><span>Compare</span><span>Proof</span>
         </div>
+        <p class="rae-trust-note"><span aria-hidden="true">◎</span> Context-aware. No invented case studies.</p>
       </aside>
 
       <section class="rae-conversation" aria-label="Conversation with Rae">
@@ -46,8 +48,8 @@ export const raeDialog = `
           </div>
 
           <div class="rae-thread-empty" aria-hidden="true">
-            <span>Conversation space</span>
-            <p>A first idea is enough.</p>
+            <span>Ready when you are</span>
+            <p>One rough sentence is enough.</p>
           </div>
           <div class="rae-messages" role="log" aria-label="Messages" aria-live="polite" aria-relevant="additions text"></div>
         </div>

@@ -127,7 +127,7 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
  await expect.poll(()=>page.locator('#work').evaluate(node=>Math.abs(node.getBoundingClientRect().top-document.querySelector('.site-header').getBoundingClientRect().bottom-16))).toBeLessThan(2);
  await page.locator('.work-desktop').scrollIntoViewIfNeeded();
  await expect.poll(()=>page.locator('.work-desktop img').evaluate(image=>image.complete&&image.naturalWidth>0)).toBe(true);
- await page.getByRole('link',{name:'Inside the project: FakhriMart case study'}).click();
+ await page.getByRole('link',{name:'Inside the project',exact:true}).click();
  await expect(page).toHaveURL(/\/clients\/fakhrimart$/);
  await expect(page.getByRole('heading',{level:1,name:/Fakhri\s*Mart/i})).toBeVisible();
  await expect(page.getByRole('link',{name:'Visit the live website'})).toHaveAttribute('href','https://fakhriyarns.vercel.app/');
@@ -230,7 +230,7 @@ test('restored founder, client and AI pages stay navigable in each market',async
 
 test('plans preserve both monthly website builds and bigger one-time projects',async({page})=>{
  await page.goto('/plans');
- await expect(page.getByRole('heading',{level:1,name:/Same ambition. Two ways to build./i})).toBeVisible();
+ await expect(page.getByRole('heading',{level:1,name:/Choose the build.*Keep the ambition/i})).toBeVisible();
  await expect(page.locator('#monthly-builds')).toBeVisible();
  await expect(page.locator('#one-time-builds')).toBeVisible();
  await expect(page.locator('#monthly-starter-plan [data-price="monthly-starter"]')).toHaveText('₹2,599/mo');
@@ -368,7 +368,7 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('#method')).toBeVisible();
  await page.route('**/assets/*.js',route=>route.abort());
  await page.goto('/plans');
- await expect(page.getByRole('heading',{name:/Same ambition/i})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Choose the build.*Keep the ambition/i})).toBeVisible();
  await expect(page.locator('#ai-systems')).toBeVisible();
  await page.goto('/#method');
  await page.getByRole('radio',{name:'A monthly website build'}).check();

@@ -18,6 +18,33 @@ export function initPlans(){
   const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-in');observer.unobserve(entry.target)}},{rootMargin:'0px 0px -9% 0px',threshold:.05});
   reveals.forEach(node=>observer.observe(node));
  }
+ const tiltCards=[...document.querySelectorAll('[data-plan-tilt]')];
+ if(!reduced.matches&&matchMedia('(hover:hover) and (pointer:fine)').matches){
+  for(const card of tiltCards){
+   let frame=0,lastEvent=null;
+   const paint=()=>{
+    frame=0;
+    if(!lastEvent)return;
+    const rect=card.getBoundingClientRect();
+    const px=Math.max(0,Math.min(1,(lastEvent.clientX-rect.left)/rect.width));
+    const py=Math.max(0,Math.min(1,(lastEvent.clientY-rect.top)/rect.height));
+    const strength=card.classList.contains('hero-plan-card')?4:2.4;
+    card.style.setProperty('--ry',`${((px-.5)*strength*2).toFixed(2)}deg`);
+    card.style.setProperty('--rx',`${((.5-py)*strength*2).toFixed(2)}deg`);
+    card.style.setProperty('--mx',`${(px*100).toFixed(1)}%`);
+    card.style.setProperty('--my',`${(py*100).toFixed(1)}%`);
+   };
+   card.addEventListener('pointermove',event=>{lastEvent=event;if(!frame)frame=requestAnimationFrame(paint)},{passive:true});
+   card.addEventListener('pointerleave',()=>{
+    lastEvent=null;
+    if(frame){cancelAnimationFrame(frame);frame=0}
+    card.style.setProperty('--rx','0deg');
+    card.style.setProperty('--ry','0deg');
+    card.style.removeProperty('--mx');
+    card.style.removeProperty('--my');
+   },{passive:true});
+  }
+ }
  const routeLinks=[...document.querySelectorAll('[data-plan-route]')];
  const sections=[...document.querySelectorAll('[data-plan-section]')];
  if('IntersectionObserver'in window&&sections.length){

@@ -2,7 +2,7 @@ import monogramSource from '../../static/brand/brayro-monogram.svg?raw';
 import './brand-opening.css';
 import {playStudioPrelude} from './studio-prelude.js';
 
-const OPENING_DURATION=3200;
+const OPENING_DURATION=1300;
 
 // A finite brand impression, never a loading gate. The live proposition and
 // controls stay above this decorative layer while native animations own only
@@ -180,7 +180,7 @@ function initMosaicOpening(){
   ],{easing:'linear'});
 
   Promise.allSettled(animations.map(animation=>animation.finished)).then(settle);
-  safetyTimer=setTimeout(settle,3380);
+  safetyTimer=setTimeout(settle,1450);
  }catch(error){settle();throw error}
  return {finished};
 }

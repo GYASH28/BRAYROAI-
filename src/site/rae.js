@@ -95,6 +95,10 @@ export function initRae() {
       else sessionStorage.removeItem(draftKey);
     } catch {}
   };
+  const resizeComposer = () => {
+    input.style.height = 'auto';
+    input.style.height = `${Math.min(Math.max(input.scrollHeight, 58), 140)}px`;
+  };
   const setBusy = (busy) => {
     sendButton.disabled = busy;
     if (stopButton) stopButton.hidden = !busy;
@@ -112,6 +116,38 @@ export function initRae() {
     log.append(node);
     scrollLatest();
     return node;
+  };
+  const structureAnswer = (node, text) => {
+    const fragment = document.createDocumentFragment();
+    let list = null;
+    const closeList = () => {
+      if (!list) return;
+      fragment.append(list);
+      list = null;
+    };
+    for (const raw of text.split(/\n+/)) {
+      const line = raw.trim();
+      if (!line) continue;
+      const bullet = line.match(/^[•*-]\s+(.+)/);
+      const numbered = line.match(/^\d+[.)]\s+(.+)/);
+      if (bullet || numbered) {
+        const type = numbered ? 'ol' : 'ul';
+        if (!list || list.tagName.toLowerCase() !== type) {
+          closeList();
+          list = document.createElement(type);
+        }
+        const item = document.createElement('li');
+        item.textContent = (bullet || numbered)[1];
+        list.append(item);
+        continue;
+      }
+      closeList();
+      const paragraph = document.createElement('p');
+      paragraph.textContent = line.replace(/^#{1,3}\s+/, '');
+      fragment.append(paragraph);
+    }
+    closeList();
+    if (fragment.childNodes.length) node.replaceChildren(fragment);
   };
   const renderMeta = (node, metadata) => {
     const actions = metadata.flatMap(meta => [meta?.card?.action, ...(Array.isArray(meta?.actions) ? meta.actions : [])]);
@@ -163,14 +199,14 @@ export function initRae() {
   };
 
   try { input.value = (sessionStorage.getItem(draftKey) || '').slice(0, 1200); } catch {}
-  input.addEventListener('input', saveDraft);
+  input.addEventListener('input', () => { saveDraft(); resizeComposer(); });\n  resizeComposer();
   input.addEventListener('focus', () => { if (!activeRequest) setCharacter('listening'); });
   input.addEventListener('blur', () => { if (!activeRequest) setCharacter('idle'); });
   input.addEventListener('keydown', (event) => {
-    if (!event.isComposing && event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-      event.preventDefault();
-      form.requestSubmit();
-    }
+    if (event.isComposing || event.key !== 'Enter') return;
+    if (event.shiftKey) return;
+    event.preventDefault();
+    form.requestSubmit();
   });
   dialog.querySelectorAll('[data-rae-prompt]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -331,9 +367,11 @@ export function initRae() {
       if (!ownsRequest(request)) return;
       if (error || !completed || !answer.textContent.trim()) throw new Error(error || 'Rae’s response stopped early. Please retry.');
       answer.textContent = answer.textContent.replace(/\*\*/g, '').replace(/^\s*[-*]\s+/gm, '• ');
+      const answerText = answer.textContent;
+      structureAnswer(answer, answerText);
       const follow = followsLatest();
       renderMeta(answer, request.metadata);
-      history.push({ role: 'user', text: question }, { role: 'assistant', text: answer.textContent });
+      history.push({ role: 'user', text: question }, { role: 'assistant', text: answerText });
       history = history.slice(-8);
       state('');
       const emotion = request.metadata.find(meta => meta?.emotion)?.emotion;

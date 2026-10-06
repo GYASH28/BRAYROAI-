@@ -7,8 +7,8 @@
   isolation:isolate;
   transform-origin:50% 58%;
 }
-.rae-character--stage[data-rae-rig="v6"]{width:min(330px,100%);height:auto}
-.rae-character--launcher[data-rae-rig="v6"]{width:54px;height:54px}
+.rae-character--stage[data-rae-rig="v6"]{width:min(330px,100%);height:385px}
+.rae-character--launcher[data-rae-rig="v6"]{width:54px;height:58px}
 .rae-character[data-rae-rig="v6"] .rae-character__shadow{fill:#000;opacity:.24;filter:blur(7px)}
 .rae-character[data-rae-rig="v6"] .rae-character__aura{opacity:.58;transform-box:fill-box;transform-origin:center}
 .rae-character[data-rae-rig="v6"] .rae-character__halo{
@@ -166,7 +166,7 @@
 @keyframes raeAtelierEye{from{transform:scaleX(.82);opacity:.62}to{transform:scaleX(1.08);opacity:1}}
 @keyframes raeAtelierBoot{0%{opacity:0;transform:translateY(15px) scale(.9);filter:blur(4px)}65%{opacity:1;transform:translateY(-2px) scale(1.01);filter:blur(0)}100%{transform:none}}
 @media(max-width:700px){
-  .rae-character--stage[data-rae-rig="v6"]{width:175px}
+  .rae-character--stage[data-rae-rig="v6"]{width:175px;height:204px}
   .rae-character--launcher[data-rae-rig="v6"]{width:50px;height:50px}
 }
 @media(prefers-reduced-motion:reduce){

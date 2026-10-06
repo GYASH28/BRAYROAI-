@@ -582,3 +582,11 @@
 @media(max-width:760px){
   .page-home .contact-plate{padding-bottom:110px}
 }
+
+
+/* Contact is conversion-critical and taller than its old intrinsic placeholder.
+   Keep its real block size in layout so the footer can never overlap it. */
+.page-home .contact-plate{
+  content-visibility:visible;
+  contain-intrinsic-size:none;
+}

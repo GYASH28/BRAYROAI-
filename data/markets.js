@@ -3,7 +3,7 @@ export const MARKETS=Object.freeze({
   ae:Object.freeze({id:'ae',name:'United Arab Emirates',label:'UAE · AED',locale:'en-AE',currency:'AED',prefix:'/ae',contactName:'UAE'}),
   au:Object.freeze({id:'au',name:'Australia',label:'Australia · AUD',locale:'en-AU',currency:'AUD',prefix:'/au',contactName:'Australia'})
 });
-export const MARKET_ROUTES=Object.freeze(['/','/plans','/clients','/clients/fakhrimart','/founder','/ai-workflow-audit','/company-second-brain','/terms']);
+export const MARKET_ROUTES=Object.freeze(['/','/plans','/clients','/clients/fakhrimart','/work/lernio','/work/brace','/founder','/ai-workflow-audit','/company-second-brain','/terms','/privacy']);
 export const MARKET_PREFIXES=Object.freeze(['/ae','/au']);
 export function splitMarketPath(pathname='/'){
   const prefix=MARKET_PREFIXES.find(value=>pathname===value||pathname.startsWith(value+'/'));

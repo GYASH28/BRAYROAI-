@@ -16,7 +16,7 @@ export function ensureRaeCharacterSkin() {
 export const characterMarkup = (variant = 'stage') => {
   ensureRaeCharacterSkin();
   const id = 'raeAtelier' + (++raeCharacterInstance);
-  const viewBox = variant === 'launcher' ? '142 72 196 278' : '140 55 200 430';
+  const viewBox = variant === 'launcher' ? '145 100 190 205' : '100 80 280 327';
   return '<svg class="rae-character rae-character--' + variant + '" data-rae-character data-rae-rig="v6" data-rae-vector="atelier-android" data-state="idle" viewBox="' + viewBox + '" aria-hidden="true" focusable="false">' +
     '<defs>' +
       '<linearGradient id="' + id + 'Porcelain" x1=".18" y1=".04" x2=".88" y2=".96"><stop offset="0" stop-color="#fffdf8"/><stop offset=".34" stop-color="#e7e1d7"/><stop offset=".72" stop-color="#b7afa4"/><stop offset="1" stop-color="#716b66"/></linearGradient>' +

@@ -1,6 +1,6 @@
 import './studio-prelude.css';
 
-export const PRELUDE_DURATION = 2700;
+export const PRELUDE_DURATION = 900;
 
 // An independent editorial film before the original brand impression. Native
 // transforms own this disposable stage; the live site's inputs remain usable.

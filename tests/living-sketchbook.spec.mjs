@@ -552,7 +552,8 @@ test('keyboard menu, market dialog, and accessibility',async({page})=>{
  for(const route of ['/','/plans','/clients','/clients/fakhrimart','/work/lernio','/work/brace','/founder','/ai-workflow-audit','/company-second-brain','/terms','/privacy']){
   await page.goto(route);await page.waitForTimeout(1200);
   const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
-  expect(result.violations.map(item=>item.id)).toEqual([]);
+  const violations=result.violations.map(item=>({id:item.id,nodes:item.nodes.map(node=>node.target.join(' '))}));
+  expect(violations,`Accessibility violations on ${route}: ${JSON.stringify(violations)}`).toEqual([]);
  }
 });
 

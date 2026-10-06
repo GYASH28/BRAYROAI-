@@ -6,7 +6,7 @@ for(const path of ['index.html','plans.html','clients/index.html','clients/fakhr
 const home=readFileSync('dist/index.html','utf8');
 assert(home.includes('Make your mark.')&&home.includes('class="site-header"')&&home.includes('class="footer premium-footer"'),'Static content or shell missing');
 assert(home.includes('rel="canonical"')&&home.includes('hreflang="en-AE"')&&home.includes('application/ld+json'),'SEO metadata missing from built homepage');
-assert(home.includes('/_vercel/insights/script.js')&&home.includes('/_vercel/speed-insights/script.js'),'Field analytics scripts missing');
+assert(home.includes('/analytics-bootstrap.js'),'Analytics bootstrap missing from built homepage');
 const sitemap=readFileSync('dist/sitemap.xml','utf8');assert(sitemap.includes('/work/lernio')&&sitemap.includes('/work/brace')&&sitemap.includes('hreflang="x-default"'),'Regional sitemap incomplete');
 assert(!home.includes('cinematic-v')&&!home.includes('brayro-v'),'Historical runtime still referenced');
 assert(!readdirSync('dist').some(name=>name==='rae.js'||name==='brayro-v15.js'),'Unused legacy runtime shipped');

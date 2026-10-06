@@ -129,6 +129,21 @@
       "source": "/ae/ar/:path*",
       "destination": "/ae/:path*",
       "permanent": true
+    },
+    {
+      "source": "/work-lernio.html",
+      "destination": "/work/lernio",
+      "permanent": true
+    },
+    {
+      "source": "/work-brace.html",
+      "destination": "/work/brace",
+      "permanent": true
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "/privacy",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -223,6 +238,42 @@
     {
       "source": "/au/company-second-brain",
       "destination": "/au/company-second-brain/index.html"
+    },
+    {
+      "source": "/work/lernio",
+      "destination": "/work-lernio.html"
+    },
+    {
+      "source": "/work/brace",
+      "destination": "/work-brace.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/ae/work/lernio",
+      "destination": "/ae/work/lernio/index.html"
+    },
+    {
+      "source": "/ae/work/brace",
+      "destination": "/ae/work/brace/index.html"
+    },
+    {
+      "source": "/ae/privacy",
+      "destination": "/ae/privacy/index.html"
+    },
+    {
+      "source": "/au/work/lernio",
+      "destination": "/au/work/lernio/index.html"
+    },
+    {
+      "source": "/au/work/brace",
+      "destination": "/au/work/brace/index.html"
+    },
+    {
+      "source": "/au/privacy",
+      "destination": "/au/privacy/index.html"
     }
   ],
   "headers": [
@@ -251,7 +302,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; img-src 'self' data:; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:; upgrade-insecure-requests"
+          "value": "default-src 'self'; img-src 'self' data: https://raw.githubusercontent.com; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:; upgrade-insecure-requests"
         }
       ]
     },

@@ -44,6 +44,12 @@ const schemaFor=(route,canonical)=>{
   {'@type':'Offer','itemOffered':{'@type':'Service',name:'Website design and development',provider:{'@id':`${origin}/#organization`}}},
   {'@type':'Offer','itemOffered':{'@type':'Service',name:'AI workflow systems',provider:{'@id':`${origin}/#organization`}}}
  ]});
+ if(route==='/plans')graph.push({'@type':'FAQPage',mainEntity:[
+  {'@type':'Question',name:'Which website plan should I choose?',acceptedAnswer:{'@type':'Answer',text:'Use a monthly build for a lower starting commitment and an agreed build period. Use a one-time project for one clearly bounded website engagement.'}},
+  {'@type':'Question',name:'How long does a website take?',acceptedAnswer:{'@type':'Answer',text:'Timing depends on scope, content and feedback speed. The written project proposal confirms the expected build window before work begins.'}},
+  {'@type':'Question',name:'Are domain, hosting and paid tools included?',acceptedAnswer:{'@type':'Answer',text:'Domains, hosting, paid APIs, ecommerce services, stock assets and other third-party costs are separate unless the written scope explicitly includes them.'}},
+  {'@type':'Question',name:'Can BRAYRO work with businesses outside India?',acceptedAnswer:{'@type':'Answer',text:'Yes. BRAYRO works remotely and publishes regional starting prices for India, the UAE and Australia.'}}
+ ]});
  if(route==='/ai-workflow-audit'||route==='/company-second-brain')graph.push({'@type':'Service',name:routeLabels[route],url:canonical,provider:{'@id':`${origin}/#organization`},areaServed:['India','United Arab Emirates','Australia']});
  if(route==='/clients/fakhrimart'||route.startsWith('/work/'))graph.push({'@type':'CreativeWork',name:routeLabels[route],url:canonical,creator:{'@id':`${origin}/#organization`},isPartOf:{'@id':`${origin}/#website`}});
  const crumbs=breadcrumbRoutes[route];

@@ -59,7 +59,13 @@ export function initMarket(){
   document.documentElement.classList.add('market-detecting');
   fetch('/api/market',{credentials:'same-origin',cache:'no-store'}).then(response=>response.ok?response.json():null).then(data=>{
    if(detectionCancelled||recalled()||!data||!valid(data.market)||data.market==='in'||location.pathname!=='/')return;
-   changeMarket(marketDestination(data.market,'/'),true);
+   const suggestion=document.createElement('aside');
+   suggestion.className='market-suggestion';
+   suggestion.setAttribute('aria-label','Regional pricing suggestion');
+   suggestion.innerHTML=`<p>Looks like <strong>${MARKETS[data.market].name}</strong> may be a better price book for you.</p><div class="market-suggestion-actions"><button type="button" data-market-dismiss>Stay here</button><button type="button" data-market-accept>View ${MARKETS[data.market].currency}</button></div>`;
+   document.body.append(suggestion);
+   suggestion.querySelector('[data-market-dismiss]').addEventListener('click',()=>{detectionCancelled=true;suggestion.remove()});
+   suggestion.querySelector('[data-market-accept]').addEventListener('click',()=>{remember(data.market);suggestion.remove();changeMarket(marketDestination(data.market,'/'))});
   }).catch(()=>{}).finally(()=>document.documentElement.classList.remove('market-detecting'));
  }
  return true;

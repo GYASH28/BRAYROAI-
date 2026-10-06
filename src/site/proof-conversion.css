@@ -2,13 +2,16 @@
    Keeps proof explicit: client work is separated from self-initiated studio systems. */
 
 .page-breadcrumb{
-  position:relative;
+  position:absolute;
   z-index:20;
+  left:50%;
+  top:0;
+  transform:translateX(-50%);
   display:flex;
   align-items:center;
   gap:8px;
   width:min(1320px,calc(100% - 48px));
-  margin:0 auto;
+  margin:0;
   padding:calc(var(--header,72px) + 18px) 0 0;
   font-size:9px;
   line-height:1;
@@ -374,7 +377,7 @@
 }
 .founder-direct-grid article{padding:23px;border-right:1px solid #bbb3a7}
 .founder-direct-grid article:last-child{border-right:0}
-.founder-direct-grid span{font-size:8px;letter-spacing:.11em;color:#8a8279}
+.founder-direct-grid span{font-size:8px;letter-spacing:.11em;color:#5d5851}
 .founder-direct-grid h3{margin-top:38px;font:500 27px/1 Space;letter-spacing:-.045em}
 .founder-direct-grid p{margin-top:12px;font-size:11px;line-height:1.62;color:#655f57}
 

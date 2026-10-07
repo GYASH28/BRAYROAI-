@@ -17,7 +17,7 @@ await context.addInitScript(()=>{
  window.__stopFrameProbe=()=>{const probe=window.__frameProbe;if(!probe)return[];cancelAnimationFrame(probe.frame);window.__frameProbe=null;window.__brayroPerf.intervals.push({label:probe.label,intervals:probe.intervals});return probe.intervals};
  // Start before application modules run, so the short prelude and startup
  // work are included rather than waiting for an already-playing sequence.
- window.__startFrameProbe('opening');
+ window.__startFrameProbe('cold-startup');
 });
 const page=await context.newPage();
 const strictErrors=[];page.on('pageerror',error=>strictErrors.push(error.message));page.on('console',message=>{if(message.type()==='error')strictErrors.push(message.text())});
@@ -37,9 +37,12 @@ const summarise=values=>{
 try{
  await page.goto(new URL('/',base).href,{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='settled',undefined,{timeout:8000});
- summaries.opening=summarise(await page.evaluate(()=>{window.__brayroPerf.openingProbeEndedAt=performance.now();return window.__stopFrameProbe()}));
+ summaries.opening=summarise(await page.evaluate(()=>{window.__brayroPerf.openingProbeEndedAt=performance.now();return [...window.__frameProbe.intervals]}));
 
  await page.waitForFunction(()=>['ready','fallback'].includes(document.querySelector('[data-sculpture]')?.dataset.renderState),undefined,{timeout:6000});
+ // Keep the inclusive startup sample running through the first particle draw.
+ // Its import/React/shader work must not disappear into an unmeasured warmup.
+ summaries.coldStartup=summarise(await page.evaluate(()=>{window.__brayroPerf.particleReadyAt=performance.now();return window.__stopFrameProbe()}));
  // Measure a warmed interaction, separately from imports and the first draw.
  await page.waitForTimeout(1200);
  await page.evaluate(()=>window.__startFrameProbe('pointer'));

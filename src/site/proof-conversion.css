@@ -270,11 +270,11 @@
 
 .project-brief-fields{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
   margin:0 0 12px;
 }
-.project-brief-fields label{display:grid;gap:7px}
+.project-brief-fields label{display:grid;gap:7px;min-width:0}
 .project-brief-fields span{
   font-size:8px;
   letter-spacing:.08em;
@@ -283,6 +283,7 @@
 }
 .project-brief-fields select{
   width:100%;
+  min-width:0;
   min-height:48px;
   padding:0 34px 0 12px;
   border:1px solid currentColor;
@@ -592,4 +593,11 @@
 .page-home .contact-plate{
   content-visibility:visible;
   contain-intrinsic-size:none;
+}
+
+/* Leave room for the project brief at tablet widths without clipping controls. */
+.page-home .contact-grid{grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr)}
+.page-home .contact-grid>div,.page-home .contact-form{min-width:0}
+@media(max-width:1050px){
+  .page-home .contact-grid{grid-template-columns:1fr;gap:40px}
 }

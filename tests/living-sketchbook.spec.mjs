@@ -158,11 +158,17 @@ test('footer reveal starts on approach, reverses and reverts with reduced motion
  expect(await mark.evaluate(node=>node.style.transform)).toBe('');
  await mark.scrollIntoViewIfNeeded();
  await expect.poll(()=>mark.evaluate(node=>node.style.transform)).toMatch(/translate/);
- const room=await mark.evaluate(node=>({
-  top:node.getBoundingClientRect().top+scrollY-new DOMMatrixReadOnly(getComputedStyle(node).transform).m42,
-  height:node.offsetHeight,viewport:innerHeight
- }));
- const position=progress=>page.evaluate(({room,progress})=>scrollTo({top:room.top-room.viewport+room.height*progress,behavior:'instant'}),{room,progress});
+ // Cached room heights can settle after a large scroll jump. Position each
+ // pose against the current untransformed footer, retaining the opacity gate.
+ const position=async progress=>{
+  await expect.poll(()=>mark.evaluate((node,progress)=>{
+   const top=node.getBoundingClientRect().top+scrollY-new DOMMatrixReadOnly(getComputedStyle(node).transform).m42;
+   const target=top-innerHeight+node.offsetHeight*progress;
+   const gap=Math.abs(scrollY-target);
+   scrollTo({top:target,behavior:'instant'});
+   return gap;
+  },progress)).toBeLessThan(2);
+ };
  const opacity=()=>mark.evaluate(node=>Number(getComputedStyle(node).opacity));
  await position(.2);await page.waitForTimeout(900);
  await expect.poll(opacity).toBeLessThan(.75);
@@ -177,7 +183,7 @@ test('footer reveal starts on approach, reverses and reverts with reduced motion
 });
 
 test('contact actions stay inside their room and remain separate from the footer',async({page})=>{
- for(const viewport of [{width:412,height:823},{width:1440,height:900}]){
+ for(const viewport of [{width:412,height:823},{width:768,height:900},{width:1024,height:900},{width:1440,height:900}]){
   await page.setViewportSize(viewport);
   await page.goto('/#work');
   await expect(page.locator('.studio-hero')).toHaveAttribute('data-hero-progress','1.000');
@@ -187,6 +193,13 @@ test('contact actions stay inside their room and remain separate from the footer
    const contact=document.querySelector('#contact').getBoundingClientRect(),whatsapp=document.querySelector('#contact [data-contact-whatsapp]').getBoundingClientRect(),email=document.querySelector('.footer-contact').getBoundingClientRect();
    return {inside:contact.bottom-whatsapp.bottom,separation:email.top-whatsapp.bottom};
   });
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+  const fields=page.locator('.project-brief-fields select');
+  await expect(fields).toHaveCount(3);
+  expect(await fields.evaluateAll(nodes=>nodes.every(node=>{
+   const box=node.getBoundingClientRect();
+   return box.left>=0&&box.right<=innerWidth&&box.width>=72;
+  }))).toBe(true);
   expect(gaps.inside).toBeGreaterThanOrEqual(24);
   expect(gaps.separation).toBeGreaterThanOrEqual(24);
   const email=page.locator('.footer-contact');

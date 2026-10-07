@@ -1,5 +1,6 @@
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
+import {execFileSync} from 'node:child_process';
 import {chromium} from '@playwright/test';
 
 const [base='http://127.0.0.1:4173/',folder='artifacts/performance']=process.argv.slice(2);
@@ -8,14 +9,18 @@ const browser=await chromium.launch({headless:true,args:['--enable-precise-memor
 const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1,reducedMotion:'no-preference'});
 await context.addInitScript(()=>{
  try{localStorage.setItem('brayro_market_manual','in')}catch{}
- window.__brayroPerf={longTasks:[],longAnimationFrames:[],intervals:[]};
+ window.__brayroPerf={longTasks:[],longAnimationFrames:[],intervals:[],openingProbeStartedAt:performance.now()};
  const supported=PerformanceObserver.supportedEntryTypes||[];
  if(supported.includes('longtask'))new PerformanceObserver(list=>{for(const entry of list.getEntries())window.__brayroPerf.longTasks.push({startTime:entry.startTime,duration:entry.duration,name:entry.name})}).observe({type:'longtask',buffered:true});
  if(supported.includes('long-animation-frame'))new PerformanceObserver(list=>{for(const entry of list.getEntries())window.__brayroPerf.longAnimationFrames.push({startTime:entry.startTime,duration:entry.duration,blockingDuration:entry.blockingDuration,scripts:(entry.scripts||[]).slice(0,8).map(script=>({sourceURL:script.sourceURL,sourceFunctionName:script.sourceFunctionName,duration:script.duration,forcedStyleAndLayoutDuration:script.forcedStyleAndLayoutDuration}))})}).observe({type:'long-animation-frame',buffered:true});
  window.__startFrameProbe=label=>{const probe={label,last:0,intervals:[],frame:0};const tick=time=>{if(probe.last)probe.intervals.push(time-probe.last);probe.last=time;probe.frame=requestAnimationFrame(tick)};probe.frame=requestAnimationFrame(tick);window.__frameProbe=probe};
  window.__stopFrameProbe=()=>{const probe=window.__frameProbe;if(!probe)return[];cancelAnimationFrame(probe.frame);window.__frameProbe=null;window.__brayroPerf.intervals.push({label:probe.label,intervals:probe.intervals});return probe.intervals};
+ // Start before application modules run, so the short prelude and startup
+ // work are included rather than waiting for an already-playing sequence.
+ window.__startFrameProbe('opening');
 });
 const page=await context.newPage();
+const strictErrors=[];page.on('pageerror',error=>strictErrors.push(error.message));page.on('console',message=>{if(message.type()==='error')strictErrors.push(message.text())});
 const cdp=await context.newCDPSession(page);
 await cdp.send('Performance.enable');
 let traceCompleteResolve;
@@ -23,6 +28,7 @@ const traceComplete=new Promise(resolve=>{traceCompleteResolve=resolve});
 cdp.once('Tracing.tracingComplete',traceCompleteResolve);
 await cdp.send('Tracing.start',{categories:'devtools.timeline,blink.user_timing,disabled-by-default-devtools.timeline.frame',transferMode:'ReturnAsStream'});
 
+const source={commit:process.env.GITHUB_SHA||execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),dirty:Boolean(execFileSync('git',['status','--porcelain','--untracked-files=no'],{encoding:'utf8'}).trim()),variant:process.env.PERF_VARIANT||null};
 const summaries={};
 const summarise=values=>{
  const sorted=[...values].sort((a,b)=>a-b),pick=q=>sorted.length?sorted[Math.min(sorted.length-1,Math.floor((sorted.length-1)*q))]:null;
@@ -30,10 +36,8 @@ const summarise=values=>{
 };
 try{
  await page.goto(new URL('/',base).href,{waitUntil:'domcontentloaded'});
- await page.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='playing',undefined,{timeout:1800});
- await page.evaluate(()=>window.__startFrameProbe('opening'));
  await page.waitForFunction(()=>document.querySelector('.hero-stage')?.dataset.openingState==='settled',undefined,{timeout:8000});
- summaries.opening=summarise(await page.evaluate(()=>window.__stopFrameProbe()));
+ summaries.opening=summarise(await page.evaluate(()=>{window.__brayroPerf.openingProbeEndedAt=performance.now();return window.__stopFrameProbe()}));
 
  await page.waitForFunction(()=>['ready','fallback'].includes(document.querySelector('[data-sculpture]')?.dataset.renderState),undefined,{timeout:6000});
  // Measure a warmed interaction, separately from imports and the first draw.
@@ -62,8 +66,9 @@ try{
   return {userAgent:navigator.userAgent,viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio},hardwareConcurrency:navigator.hardwareConcurrency??null,deviceMemory:navigator.deviceMemory??null,webgl:gl?{renderer:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER),vendor:debug?gl.getParameter(debug.UNMASKED_VENDOR_WEBGL):gl.getParameter(gl.VENDOR),drawingBuffer:{width:gl.drawingBufferWidth,height:gl.drawingBufferHeight},drawCalls:Number(host?.dataset.drawCalls||NaN),points:Number(host?.dataset.renderPoints||NaN),state:host?.dataset.renderState||null}:null,performance:window.__brayroPerf};
  });
  const metrics=await cdp.send('Performance.getMetrics');
- const report={capturedAt:new Date().toISOString(),url:page.url(),browser:`Chromium ${browser.version()}`,environment:'Headless Chromium lab workload in CI/local automation; not physical-device qualification.',measurementLimits:'rAF intervals measure callback scheduling, not guaranteed displayed GPU frames. Use the accompanying Chromium trace for presentation/main-thread attribution and treat physical 60/90/120Hz qualification separately.',workloads:summaries,runtime,cdpMetrics:Object.fromEntries(metrics.metrics.map(metric=>[metric.name,metric.value]))};
+ const report={source,capturedAt:new Date().toISOString(),url:page.url(),browser:`Chromium ${browser.version()}`,environment:'Headless Chromium lab workload in CI/local automation; not physical-device qualification.',strictErrors,measurementLimits:'rAF intervals measure callback scheduling, not guaranteed displayed GPU frames. Use the accompanying Chromium trace for presentation/main-thread attribution and treat physical 60/90/120Hz qualification separately.',workloads:summaries,runtime,cdpMetrics:Object.fromEntries(metrics.metrics.map(metric=>[metric.name,metric.value]))};
  writeFileSync(resolve(folder,'home-profile.json'),JSON.stringify(report,null,2));
+ if(strictErrors.length)throw new Error(JSON.stringify(strictErrors));
  console.log(JSON.stringify({browser:report.browser,workloads:report.workloads,webgl:report.runtime.webgl,longTasks:report.runtime.performance.longTasks.length,longAnimationFrames:report.runtime.performance.longAnimationFrames.length},null,2));
 }finally{
  await cdp.send('Tracing.end');

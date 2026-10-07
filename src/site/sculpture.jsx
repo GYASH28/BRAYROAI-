@@ -264,6 +264,11 @@ function Sculpture({ host }) {
         let activePointCount = particleData.count;
         let bufferWidth = 0;
         let bufferHeight = 0;
+        // The mount has no padding/border. Cache its untransformed layout box
+        // once; ResizeObserver delivers subsequent sizes without forcing layout
+        // from inside an active render frame when the raster budget changes.
+        let layoutWidth = host.clientWidth;
+        let layoutHeight = host.clientHeight;
 
         const applyPointCount = (count) => {
           const next = Math.max(1, Math.min(particleData.count, Math.round(count)));
@@ -280,8 +285,8 @@ function Sculpture({ host }) {
           if (rendered) pointBudget.reset();
           // CSS scene travel scales the visual bounds. Allocate from layout
           // dimensions so resizing mid-scroll does not magnify the buffer twice.
-          const width = host.clientWidth;
-          const height = host.clientHeight;
+          const width = layoutWidth;
+          const height = layoutHeight;
           if (!width || !height) return;
           mobile = window.matchMedia('(max-width: 767px)').matches;
           pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.25) * qualityScale;
@@ -302,7 +307,13 @@ function Sculpture({ host }) {
           field.scale.setScalar(mobile ? 0.9 : 1);
           camera.updateProjectionMatrix();
         };
-        const resizeObserver = new ResizeObserver(resize);
+        const resizeObserver = new ResizeObserver(([entry]) => {
+          // Match clientWidth/clientHeight's integer CSS-pixel dimensions;
+          // transforms belong to pointer mapping, never buffer allocation.
+          layoutWidth = Math.round(entry.contentRect.width);
+          layoutHeight = Math.round(entry.contentRect.height);
+          resize();
+        });
         resizeObserver.observe(host);
         resize();
 

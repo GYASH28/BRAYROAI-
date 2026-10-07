@@ -430,6 +430,61 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('[data-path-panel=monthly] a')).toHaveAttribute('href','/plans#monthly-builds');
 });
 
+test('particle resolution changes reuse layout while real resizes update the buffer',async({page})=>{
+ const errors=[];page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
+ await page.addInitScript(()=>{
+  window.__sceneLayoutReads=0;window.__watchSceneLayout=false;
+  for(const name of ['clientWidth','clientHeight']){
+   const descriptor=Object.getOwnPropertyDescriptor(Element.prototype,name);
+   Object.defineProperty(Element.prototype,name,{...descriptor,get(){
+    if(window.__watchSceneLayout&&this.matches?.('[data-sculpture]'))window.__sceneLayoutReads++;
+    return descriptor.get.call(this);
+   }});
+  }
+  // Exercise the existing time-based pressure path deterministically. This is
+  // a simulated slow frame clock, not measured browser performance evidence.
+  const nativeFrame=requestAnimationFrame;let extraTime=0;
+  window.requestAnimationFrame=callback=>nativeFrame(time=>{
+   if(window.__watchSceneLayout)extraTime+=20;
+   callback(time+extraTime);
+  });
+ });
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/#work');
+ await expect(page.locator('.studio-hero')).toHaveAttribute('data-hero-progress','1.000');
+ await page.evaluate(()=>{
+  const hero=document.querySelector('.studio-hero');scrollTo({top:hero.offsetTop+(hero.offsetHeight-innerHeight)*.66,behavior:'instant'});
+ });
+ const scene=page.locator('[data-sculpture]');
+ await expect(scene).toHaveAttribute('data-render-state','ready');
+ const buffer=()=>scene.evaluate(host=>{
+  const canvas=host.querySelector('canvas'),gl=canvas.getContext('webgl2'),program=gl.getParameter(gl.CURRENT_PROGRAM);
+  const ratio=gl.getUniform(program,gl.getUniformLocation(program,'uPixelRatio'));
+  return {width:canvas.width,height:canvas.height,ratio};
+ });
+ const initial=await buffer();
+ await page.evaluate(()=>{window.__watchSceneLayout=true});
+ await expect.poll(async()=>(await buffer()).ratio).toBeLessThan(initial.ratio-.05);
+ expect(await page.evaluate(()=>window.__sceneLayoutReads)).toBe(0);
+ await page.setViewportSize({width:1401,height:851});
+ await expect.poll(async()=>{
+  const size=await buffer();
+  return size.width===Math.floor(1401*size.ratio)&&size.height===Math.floor(851*size.ratio);
+ }).toBe(true);
+ expect(await page.evaluate(()=>window.__sceneLayoutReads)).toBe(0);
+ // Scroll scaling keeps CSS layout fixed, including a complete reverse.
+ for(const progress of [.94,0,.66]){
+  await page.evaluate(progress=>{
+   const hero=document.querySelector('.studio-hero');scrollTo({top:hero.offsetTop+(hero.offsetHeight-innerHeight)*progress,behavior:'instant'});
+  },progress);
+  await expect(scene).toHaveAttribute('data-render-state','ready');
+ }
+ expect(await page.evaluate(()=>window.__sceneLayoutReads)).toBe(0);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect(scene).toHaveAttribute('data-render-state','reduced-motion');
+ expect(errors).toEqual([]);
+});
+
 test('particle hero, footer and pinned proof respond across input, resize and reversed scroll',async({page,context})=>{
  await page.addInitScript(()=>{
   window.__particleBufferSizes=[];

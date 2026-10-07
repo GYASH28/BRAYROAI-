@@ -545,20 +545,6 @@
           }
         });
       }
-      // A pinned act whose stage is not actually sticky fails silently: the
-      // stage just scrolls by, the copy cues correctly against a frame nobody
-      // can see, and every automated check passes. Any author rule that sets
-      // `position` on the stage causes it. Say so.
-      acts.forEach(function (a) {
-        if (!a.pinned || !a.stage || a.stageChecked) return;
-        a.stageChecked = true;
-        var pos = getComputedStyle(a.stage).position;
-        if (pos !== 'sticky' && pos !== '-webkit-sticky') {
-          console.warn('[scrollcraft] act "' + (a.el.id || a.device) + '" will not pin: its stage computes ' +
-            'position:' + pos + ', not sticky. Something is overriding .sc-stage.', a.stage);
-        }
-      });
-
       worlds.forEach(function (W) {
         W.top = W.el.getBoundingClientRect().top + scrollY;
         if (W.checked) return;
@@ -764,6 +750,20 @@
       y = scrollY || pageYOffset;
       var driftA = null, driftB = null, driftT = 0;
       var maxY = Math.max((document.documentElement.scrollHeight || 0) - vh, 1);
+
+      // Validate pinning before the stage can enter view. Reading a distant
+      // content-visibility descendant's computed position forces its room to
+      // render early. Use cached outer bounds for approach, and finish these
+      // reads before the per-act style writes below.
+      acts.forEach(function (a) {
+        if (!a.pinned || !a.stage || a.stageChecked || y <= a.top - vh * 1.25 || y >= a.top + a.height + vh * 1.25) return;
+        a.stageChecked = true;
+        var pos = getComputedStyle(a.stage).position;
+        if (pos !== 'sticky' && pos !== '-webkit-sticky') {
+          console.warn('[scrollcraft] act "' + (a.el.id || a.device) + '" will not pin: its stage computes ' +
+            'position:' + pos + ', not sticky. Something is overriding .sc-stage.', a.stage);
+        }
+      });
 
       for (var i = 0; i < acts.length; i++) {
         var a = acts[i];

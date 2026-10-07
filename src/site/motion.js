@@ -46,7 +46,30 @@ export async function initStudioMotion(){
    onArrival(el,()=>gsap.fromTo(el.querySelectorAll('.moving-word'),{yPercent:115,y:0,rotate:3},{yPercent:0,y:0,rotate:0,duration:1.05,stagger:.055,ease:'power3.out',clearProps:'transform'}));
   });
   document.querySelectorAll('[data-enter]:not([data-opening]):not([data-motion-text])').forEach(el=>{el.style.opacity='0';el.style.transform='translate3d(0,35px,0)';onArrival(el,()=>gsap.to(el,{y:0,opacity:1,duration:.85,ease:'power3.out',clearProps:'transform,opacity'}))});
-  document.querySelectorAll('[data-parallax]').forEach(el=>{const amount=Number(el.dataset.parallax)||-.1;gsap.fromTo(el,{y:()=>-innerHeight*amount*.5},{y:()=>innerHeight*amount*.5,ease:'none',scrollTrigger:{trigger:el,start:'top bottom',end:'bottom top',scrub:.55,invalidateOnRefresh:true}})});
+  const revealParallax=context.add('revealParallax',el=>{
+   const amount=Number(el.dataset.parallax)||-.1;
+   gsap.fromTo(el,{y:()=>-innerHeight*amount*.5},{y:()=>innerHeight*amount*.5,ease:'none',scrollTrigger:{trigger:el,start:'top bottom',end:'bottom top',scrub:.55,invalidateOnRefresh:true}});
+  });
+  // GSAP reads a target's computed transform while creating its tween. Keep
+  // distant content-visibility rooms asleep by observing their reserved outer
+  // boxes, then create the original parallax before the reader reaches them.
+  // Visible inner-page artwork retains immediate setup and the media context
+  // also owns deferred tweens, so reduced motion reverts them normally.
+  const parallaxRooms=new Map();
+  const parallaxApproach=new IntersectionObserver(entries=>{
+   for(const entry of entries){
+    if(!entry.isIntersecting)continue;
+    parallaxApproach.unobserve(entry.target);
+    if(!reduced.matches)parallaxRooms.get(entry.target)?.forEach(revealParallax);
+    parallaxRooms.delete(entry.target);
+   }
+  },{rootMargin:'300px'});
+  document.querySelectorAll('[data-parallax]').forEach(el=>{
+   const room=el.closest('.page-home main>section:not(.studio-hero)');
+   if(!room){revealParallax(el);return}
+   if(!parallaxRooms.has(room)){parallaxRooms.set(room,[]);parallaxApproach.observe(room)}
+   parallaxRooms.get(room).push(el);
+  });
   document.querySelectorAll('[data-line]').forEach(path=>{path.style.opacity='0';onArrival(path,()=>{const length=path.getTotalLength();gsap.fromTo(path,{opacity:1,strokeDasharray:length,strokeDashoffset:length},{strokeDashoffset:0,duration:1.15,ease:'power2.out'})})});
   document.querySelectorAll('[data-process]').forEach(process=>{const items=[...process.querySelectorAll('[data-step]')];items.forEach((item,i)=>{item.style.opacity='0';item.style.transform='translate3d(0,40px,0)';onArrival(item,()=>gsap.to(item,{y:0,opacity:1,duration:.8,delay:matchMedia('(min-width:761px)').matches?i*.09:0,ease:'power3.out',clearProps:'transform,opacity'}))})});
   const work=document.querySelector('.work-exhibit');
@@ -90,7 +113,7 @@ export async function initStudioMotion(){
    footerApproach.observe(footerMark.closest('.premium-footer')||footerMark);
   }
   return()=>{
-   arrivalObserver.disconnect();footerApproach?.disconnect();cancelAnimationFrame(roomRefresh);roomResize?.disconnect();rooms.forEach(room=>room.removeEventListener('contentvisibilityautostatechange',refreshRoom));
+   arrivalObserver.disconnect();parallaxApproach.disconnect();parallaxRooms.clear();footerApproach?.disconnect();cancelAnimationFrame(roomRefresh);roomResize?.disconnect();rooms.forEach(room=>room.removeEventListener('contentvisibilityautostatechange',refreshRoom));
    if(hero){hero.removeAttribute('style');hero.removeAttribute('data-hero-progress');hero.removeAttribute('data-assembly-progress');hero.querySelector('.hero-intro')?.removeAttribute('inert');hero.querySelector('.hero-intro')?.removeAttribute('aria-hidden');const next=hero.querySelector('.hero-next');if(next){next.inert=true;next.setAttribute('aria-hidden','true')}}
    document.querySelectorAll('[data-enter],[data-step],.moving-word').forEach(el=>{el.style.removeProperty('transform');el.style.removeProperty('opacity')});
    document.querySelectorAll('[data-line]').forEach(path=>{path.style.removeProperty('opacity');path.style.removeProperty('stroke-dasharray');path.style.removeProperty('stroke-dashoffset')});

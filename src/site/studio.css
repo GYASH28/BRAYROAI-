@@ -213,7 +213,9 @@ dialog{border:1px solid #514b41;background:var(--deep);color:var(--bone);padding
 @media(prefers-reduced-motion:reduce){.particle-mark{display:none}.formation-label{display:none}.hero-veil{opacity:1}}
 
 /* Native offscreen rendering keeps the opening independent of later rooms. */
-.page-home main>section:not(.studio-hero){content-visibility:auto;contain-intrinsic-block-size:auto var(--room-size,900px)}
+/* The contact form uses its real block size; a cached placeholder can put its
+   lower actions into the footer before the room has entered the viewport. */
+.page-home main>section:not(.studio-hero):not(.contact-plate){content-visibility:auto;contain-intrinsic-block-size:auto var(--room-size,900px)}
 .page-home .path-studio{--room-size:772px}.page-home .scope-preview{--room-size:623px}.page-home .contact-plate{--room-size:412px}
 .page-home .premium-footer{content-visibility:auto;contain-intrinsic-block-size:auto 840px}
 @media(max-width:760px){.page-home .path-studio{--room-size:1214px}.page-home .person-section{--room-size:calc(max(68svh,420px) + 590px)}.page-home .scope-preview{--room-size:585px}.page-home .contact-plate{--room-size:593px}.page-home .premium-footer{contain-intrinsic-block-size:auto 800px}}

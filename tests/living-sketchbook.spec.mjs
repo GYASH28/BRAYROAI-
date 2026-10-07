@@ -9,25 +9,33 @@ test.afterEach(({page})=>{expect(runtimeErrors.get(page),'Uncaught browser excep
 
 test('brand opening hands control to visitors without blocking or replaying over deep links',async({page})=>{
  await page.goto('/',{waitUntil:'domcontentloaded'});
- await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
- await expect(page.getByRole('button',{name:'Skip intro'})).toBeVisible();
- await expect(page.locator('.studio-prelude')).toBeVisible();
- await expect(page.locator('.prelude-frame')).toHaveCount(12);
- await expect(page.locator('.prelude-type')).toContainText('UNMISS');
- const preludeBox=await page.locator('.studio-prelude').boundingBox();
+ // Capture transient structure and visibility in one browser turn. Separate
+ // locator round trips can outlast a short native sequence on a busy host.
+ const prelude=await (await page.waitForFunction(()=>{
+  const root=document.querySelector('.studio-prelude'),skip=document.querySelector('.studio-prelude-skip');
+  if(!root||!skip||document.querySelector('.hero-stage')?.dataset.openingState!=='playing')return false;
+  const style=getComputedStyle(root),box=root.getBoundingClientRect(),button=skip.getBoundingClientRect();
+  return {frames:root.querySelectorAll('.prelude-frame').length,text:root.querySelector('.prelude-type')?.textContent,visible:style.visibility==='visible'&&style.display!=='none'&&box.width>0&&box.height>0,skipVisible:getComputedStyle(skip).visibility==='visible'&&button.width>0&&button.height>0,box:{x:box.x,y:box.y,width:box.width,height:box.height}};
+ })).jsonValue();
+ // Input during the NEW sequence must skip the entire queue, not play the old one.
+ await page.keyboard.press('Escape');
+ expect(prelude.visible).toBe(true);expect(prelude.skipVisible).toBe(true);
+ expect(prelude.frames).toBe(12);expect(prelude.text).toContain('UNMISS');
+ const preludeBox=prelude.box;
  expect(Math.abs(preludeBox.x)).toBeLessThan(2);expect(Math.abs(preludeBox.y)).toBeLessThan(2);
  expect(Math.abs(preludeBox.width-page.viewportSize().width)).toBeLessThan(2);
  expect(Math.abs(preludeBox.height-page.viewportSize().height)).toBeLessThan(2);
- // Input during the NEW sequence must skip the entire queue, not play the old one.
- await page.keyboard.press('Escape');
  await expect(page.locator('.studio-prelude,.brand-opening')).toHaveCount(0);
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled');
  await page.reload({waitUntil:'domcontentloaded'});
- await expect(page.locator('.hero-stage')).toHaveAttribute('data-prelude-state','complete',{timeout:5000});
- await expect(page.locator('.studio-prelude')).toHaveCount(0);
- await expect(page.locator('.opening-tile')).toHaveCount(38);
- await expect(page.locator('.opening-plane')).toHaveCount(2);
- const openingBox=await page.locator('.brand-opening').boundingBox();
+ const mosaic=await (await page.waitForFunction(()=>{
+  const stage=document.querySelector('.hero-stage'),root=document.querySelector('.brand-opening');
+  if(stage?.dataset.preludeState!=='complete'||!root)return false;
+  const box=root.getBoundingClientRect();
+  return {tiles:root.querySelectorAll('.opening-tile').length,planes:root.querySelectorAll('.opening-plane').length,preludeRemaining:document.querySelectorAll('.studio-prelude').length,box:{x:box.x,y:box.y,width:box.width,height:box.height}};
+ },undefined,{timeout:5000})).jsonValue();
+ expect(mosaic.preludeRemaining).toBe(0);expect(mosaic.tiles).toBe(38);expect(mosaic.planes).toBe(2);
+ const openingBox=mosaic.box;
  const viewport=page.viewportSize();
  expect(Math.abs(openingBox.x)).toBeLessThan(2);expect(Math.abs(openingBox.y)).toBeLessThan(2);
  expect(Math.abs(openingBox.width-viewport.width)).toBeLessThan(2);expect(Math.abs(openingBox.height-viewport.height)).toBeLessThan(2);
@@ -38,7 +46,7 @@ test('brand opening hands control to visitors without blocking or replaying over
  await expect(page.locator('.brand-opening')).toHaveCount(0);
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled');
 
- // A fresh entry plays the independent 2.7s film, THEN the existing 3.2s score.
+ // A fresh entry plays the independent full-screen film, THEN the original mosaic.
  await page.reload({waitUntil:'domcontentloaded'});
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','playing');
  await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:8000});
@@ -168,11 +176,37 @@ test('footer reveal starts on approach, reverses and reverts with reduced motion
  await expect(mark).toHaveCSS('opacity','1');
 });
 
-test('parallax stays aligned when an earlier room changes height',async({page})=>{
- await page.goto('/#studio');
+test('contact actions stay inside their room and remain separate from the footer',async({page})=>{
+ for(const viewport of [{width:412,height:823},{width:1440,height:900}]){
+  await page.setViewportSize(viewport);
+  await page.goto('/#work');
+  await expect(page.locator('.studio-hero')).toHaveAttribute('data-hero-progress','1.000');
+  // Check offscreen flow before scrolling into the form. Measuring a child of
+  // a cached, undersized room used to place this CTA over the footer email.
+  const gaps=await page.evaluate(()=>{
+   const contact=document.querySelector('#contact').getBoundingClientRect(),whatsapp=document.querySelector('#contact [data-contact-whatsapp]').getBoundingClientRect(),email=document.querySelector('.footer-contact').getBoundingClientRect();
+   return {inside:contact.bottom-whatsapp.bottom,separation:email.top-whatsapp.bottom};
+  });
+  expect(gaps.inside).toBeGreaterThanOrEqual(24);
+  expect(gaps.separation).toBeGreaterThanOrEqual(24);
+  const email=page.locator('.footer-contact');
+  await email.scrollIntoViewIfNeeded();
+  await expect(email).toBeInViewport();
+  await expect.poll(()=>email.evaluate(node=>{
+   const box=node.getBoundingClientRect();
+   return node.contains(document.elementFromPoint(box.x+box.width/2,box.y+box.height/2));
+  })).toBe(true);
+ }
+});
+
+test('parallax waits for its room, stays aligned through layout changes and reverts',async({page})=>{
+ await page.goto('/#work');
  const portrait=page.locator('.person-photo img');
- await portrait.evaluate(image=>image.decode());
  await expect(page.locator('.studio-hero')).toHaveAttribute('data-hero-progress','1.000');
+ // Initial motion setup must not measure a distant content-visibility child.
+ expect(await portrait.evaluate(image=>image.style.transform)).toBe('');
+ await page.locator('#studio').scrollIntoViewIfNeeded();
+ await portrait.evaluate(image=>image.decode());
  const position=()=>page.evaluate(()=>{
   const room=document.querySelector('#studio');
   scrollTo({top:room.offsetTop+room.offsetHeight*.35,behavior:'instant'});
@@ -193,6 +227,13 @@ test('parallax stays aligned when an earlier room changes height',async({page})=
  await position();
  await page.waitForTimeout(700);
  await expect.poll(async()=>Math.abs(await translation()-reference)).toBeLessThan(1);
+ // A return visit preserves the same scrub pose after the room leaves view.
+ await page.locator('#work').scrollIntoViewIfNeeded();
+ await position();await page.waitForTimeout(700);
+ await expect.poll(async()=>Math.abs(await translation()-reference)).toBeLessThan(1);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect.poll(()=>portrait.evaluate(image=>image.style.transform)).toBe('');
+ await expect(portrait).toHaveCSS('transform','none');
 });
 
 test('regional price books are English and exact',async({page})=>{

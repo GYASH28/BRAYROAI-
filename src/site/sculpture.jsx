@@ -245,6 +245,9 @@ function Sculpture({ host }) {
         let modalOpen = Boolean(document.querySelector('dialog[open]'));
         let mobile = window.matchMedia('(max-width: 767px)').matches;
         let contextLost = false;
+        let disposed = false;
+        let compiled = false;
+        let compileVersion = 0;
         let rendered = false;
         let previousTime = 0;
         let elapsed = 0;
@@ -319,7 +322,7 @@ function Sculpture({ host }) {
 
         function render(time) {
           frame = 0;
-          if (!visible || !intersecting || modalOpen || contextLost) return;
+          if (disposed || !compiled || !visible || !intersecting || modalOpen || contextLost) return;
           const realDelta = previousTime ? (time - previousTime) / 1000 : 0;
           const delta = Math.min(realDelta, 0.05);
           previousTime = time;
@@ -386,7 +389,7 @@ function Sculpture({ host }) {
         }
 
         const resume = () => {
-          if (!frame && visible && intersecting && !modalOpen && !contextLost) {
+          if (!disposed && compiled && !frame && visible && intersecting && !modalOpen && !contextLost) {
             previousTime = 0;
             rasterBudget.reset();
             pointBudget.reset();
@@ -436,6 +439,8 @@ function Sculpture({ host }) {
         const lost = (event) => {
           event.preventDefault();
           contextLost = true;
+          compiled = false;
+          compileVersion++;
           suspend();
           host.classList.remove('is-ready');
           host.dataset.renderState = 'fallback';
@@ -443,7 +448,7 @@ function Sculpture({ host }) {
         const restored = () => {
           contextLost = false;
           rendered = false;
-          resume();
+          prepare();
         };
         host.addEventListener('pointermove', move, { passive: true });
         host.addEventListener('pointerdown', press, { passive: true });
@@ -451,9 +456,10 @@ function Sculpture({ host }) {
         document.addEventListener('visibilitychange', visibility);
         canvas.addEventListener('webglcontextlost', lost);
         canvas.addEventListener('webglcontextrestored', restored);
-        resume();
-
         disposeScene = () => {
+          disposed = true;
+          compiled = false;
+          compileVersion++;
           suspend();
           resizeObserver.disconnect();
           intersectionObserver.disconnect();
@@ -472,6 +478,34 @@ function Sculpture({ host }) {
           host.removeAttribute('data-render-points');
           host.removeAttribute('data-render-quality');
         };
+        // Wait for the driver to finish linking without forcing the first
+        // frame's diagnostic queries to wait for compilation. Three retains
+        // its normal shader error checks; unsupported parallel compilation
+        // still uses the library's regular fallback. Completion only belongs
+        // to this live context, never a disposed or restored scene generation.
+        function prepare() {
+          const version = ++compileVersion;
+          compiled = false;
+          host.dataset.renderState = 'loading';
+          const failed = (error) => {
+            if (disposed || contextLost || version !== compileVersion) return;
+            contextLost = true;
+            suspend();
+            host.classList.remove('is-ready');
+            host.dataset.renderState = 'fallback';
+            console.error('Particle shader preparation failed', error);
+          };
+          try {
+            renderer.compileAsync(scene, camera).then(() => {
+              if (disposed || contextLost || version !== compileVersion) return;
+              compiled = true;
+              resume();
+            }).catch(failed);
+          } catch (error) {
+            failed(error);
+          }
+        }
+        prepare();
       } catch {
         renderer.dispose();
         host.classList.remove('is-ready');

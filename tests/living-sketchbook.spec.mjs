@@ -430,6 +430,99 @@ test('small screens, reduced motion and enhancement failure preserve content',as
  await expect(page.locator('[data-path-panel=monthly] a')).toHaveAttribute('href','/plans#monthly-builds');
 });
 
+// Deterministic driver-readiness control tests ownership, not FPS. Real
+// WebGL compilation and the normal diagnostic path still run on release.
+// SwiftShader lacks KHR_parallel_shader_compile: simulate only its readiness
+// interface, then query the real link status when the controlled gate opens.
+const holdParticleCompilation = async page => page.addInitScript(() => {
+ window.__releaseParticleCompile = false;
+ window.__particleCompile = {checks:0,draws:0,deleted:0,logs:0};
+ const prototype = WebGL2RenderingContext.prototype;
+ const getExtension = prototype.getExtension;
+ prototype.getExtension = function(name) {
+  const extension = getExtension.call(this,name);
+  return name==='KHR_parallel_shader_compile' && this.canvas?.classList.contains('sculpture-canvas')
+   ? (extension || {COMPLETION_STATUS_KHR:0x91B1}) : extension;
+ };
+ for (const name of ['getProgramParameter','drawElements','deleteProgram','getProgramInfoLog']) {
+  const native = prototype[name];
+  prototype[name] = function (...args) {
+   if (this.canvas?.classList.contains('sculpture-canvas')) {
+    if (name==='getProgramParameter' && args[1]===0x91B1) {
+     window.__particleCompile.checks++;
+     if (this.isContextLost()) return false;
+     if (!window.__releaseParticleCompile) return false;
+     return native.call(this,args[0],this.LINK_STATUS);
+    }
+    if (name==='drawElements') window.__particleCompile.draws++;
+    if (name==='deleteProgram') window.__particleCompile.deleted++;
+    if (name==='getProgramInfoLog') window.__particleCompile.logs++;
+   }
+   return native.apply(this,args);
+  };
+ }
+});
+
+test('pending particle compilation disposes with reduced motion and waits behind an open dialog',async({page})=>{
+ const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
+ await holdParticleCompilation(page);
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/');
+ await expect.poll(()=>page.evaluate(()=>window.__particleCompile.checks)).toBeGreaterThan(0);
+ const scene=page.locator('[data-sculpture]');
+ await expect(scene).toHaveAttribute('data-render-state','loading');
+ expect(await page.evaluate(()=>window.__particleCompile.draws)).toBe(0);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect(scene).toHaveAttribute('data-render-state','reduced-motion');
+ await expect.poll(()=>page.evaluate(()=>window.__particleCompile.deleted)).toBeGreaterThan(0);
+ // Complete the now-disposed generation: it must never make a stale draw.
+ await page.evaluate(()=>{window.__releaseParticleCompile=true});
+ await page.waitForTimeout(100);
+ expect(await page.evaluate(()=>window.__particleCompile.draws)).toBe(0);
+ await expect(scene).not.toHaveClass(/is-ready/);
+ const checks=await page.evaluate(()=>{window.__releaseParticleCompile=false;return window.__particleCompile.checks});
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await expect.poll(()=>page.evaluate(()=>window.__particleCompile.checks)).toBeGreaterThan(checks);
+ await page.locator('.rae-launcher').click();
+ await expect(page.locator('#rae-dialog')).toBeVisible();
+ const before=await page.evaluate(()=>window.__particleCompile.checks);
+ await page.evaluate(()=>{window.__releaseParticleCompile=true});
+ // Allow an actual native completion query while the modal covers the scene.
+ await expect.poll(()=>page.evaluate(()=>window.__particleCompile.checks)).toBeGreaterThan(before);
+ await page.waitForTimeout(100);
+ expect(await page.evaluate(()=>window.__particleCompile.draws)).toBe(0);
+ await page.keyboard.press('Escape');
+ await expect(scene).toHaveAttribute('data-render-state','ready');
+ await expect(scene).toHaveAttribute('data-draw-calls','1');
+ expect(await page.evaluate(()=>window.__particleCompile.logs)).toBeGreaterThan(0);
+ expect(errors).toEqual([]);
+});
+
+test('particle context restoration owns a fresh compilation before drawing',async({page})=>{
+ const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
+ await holdParticleCompilation(page);
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/');
+ await expect.poll(()=>page.evaluate(()=>window.__particleCompile.checks)).toBeGreaterThan(0);
+ const scene=page.locator('[data-sculpture]');
+ await page.locator('.sculpture-canvas').evaluate(canvas=>{
+  window.__pendingParticleContext=canvas.getContext('webgl2').getExtension('WEBGL_lose_context');
+  if(!window.__pendingParticleContext)throw new Error('Context-loss extension unavailable');
+  window.__pendingParticleContext.loseContext();
+ });
+ await expect(scene).toHaveAttribute('data-render-state','fallback');
+ expect(await page.evaluate(()=>window.__particleCompile.draws)).toBe(0);
+ const before=await page.evaluate(()=>{const count=window.__particleCompile.checks;window.__pendingParticleContext.restoreContext();return count});
+ await expect.poll(()=>page.evaluate(()=>window.__particleCompile.checks)).toBeGreaterThan(before);
+ await expect(scene).toHaveAttribute('data-render-state','loading');
+ expect(await page.evaluate(()=>window.__particleCompile.draws)).toBe(0);
+ await page.evaluate(()=>{window.__releaseParticleCompile=true});
+ await expect(scene).toHaveAttribute('data-render-state','ready');
+ await expect(scene).toHaveAttribute('data-draw-calls','1');
+ expect(await page.evaluate(()=>window.__particleCompile.logs)).toBeGreaterThan(0);
+ expect(errors).toEqual([]);
+});
+
 test('particle resolution changes reuse layout while real resizes update the buffer',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
  await page.addInitScript(()=>{

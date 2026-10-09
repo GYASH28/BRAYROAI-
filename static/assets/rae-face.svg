@@ -1,18 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="48 16 384 260" role="img" aria-labelledby="title">
-  <title id="title">Rae</title>
-  <defs>
-    <linearGradient id="shell" x2="1" y2="1"><stop stop-color="#fffdf7"/><stop offset=".55" stop-color="#f1e9dc"/><stop offset="1" stop-color="#cfc3b2"/></linearGradient>
-    <linearGradient id="dark" x2="0" y2="1"><stop stop-color="#292b31"/><stop offset="1" stop-color="#030407"/></linearGradient>
-    <radialGradient id="eye"><stop stop-color="#fffbe7"/><stop offset=".32" stop-color="#ffd97d"/><stop offset=".72" stop-color="#ff9626"/><stop offset="1" stop-color="#ff5a12"/></radialGradient>
-    <linearGradient id="orange" x2="1" y2="1"><stop stop-color="#ffd073"/><stop offset=".4" stop-color="#ff9b2f"/><stop offset="1" stop-color="#ff5a12"/></linearGradient>
-  </defs>
-  <path d="M94 87 63 50Q58 44 62 86L73 127Zm292 0 31-37q5-6 1 36l-11 41Z" fill="url(#shell)" stroke="#ada091" stroke-width="2"/>
-  <path d="m77 85-11-20 3 34Zm326 0 11-20-3 34Z" fill="url(#orange)"/>
-  <ellipse cx="78" cy="139" rx="27" ry="40" fill="url(#dark)"/><ellipse cx="402" cy="139" rx="27" ry="40" fill="url(#dark)"/>
-  <ellipse cx="78" cy="139" rx="18" ry="28" fill="none" stroke="url(#orange)" stroke-width="7"/><ellipse cx="402" cy="139" rx="18" ry="28" fill="none" stroke="url(#orange)" stroke-width="7"/>
-  <path d="M91 78Q118 35 183 27H297Q362 35 389 78Q408 111 403 160Q398 209 366 235Q332 260 240 262Q148 260 114 235Q82 209 77 160Q72 111 91 78Z" fill="url(#shell)"/>
-  <path d="M119 87Q144 60 188 58H292Q338 61 363 88Q380 110 376 156Q372 195 346 216Q317 238 240 239Q163 238 134 216Q108 195 104 156Q100 111 119 87Z" fill="url(#dark)" stroke="#fff" stroke-width="3"/>
-  <ellipse cx="190" cy="151" rx="20" ry="28" fill="url(#eye)"/><ellipse cx="290" cy="151" rx="20" ry="28" fill="url(#eye)"/>
-  <ellipse cx="185" cy="144" rx="4.5" ry="6.5" fill="#191b20"/><ellipse cx="285" cy="144" rx="4.5" ry="6.5" fill="#191b20"/>
-  <path d="M213 190c17 18 37 18 55-2" fill="none" stroke="url(#orange)" stroke-width="6" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" role="img" aria-labelledby="title desc">
+<title id="title">Rae</title><desc id="desc">BRAYRO AI sculptural studio intelligence</desc>
+<defs>
+<linearGradient id="p" x1=".18" y1=".04" x2=".88" y2=".96"><stop stop-color="#fffdf8"/><stop offset=".34" stop-color="#e7e1d7"/><stop offset=".72" stop-color="#b7afa4"/><stop offset="1" stop-color="#716b66"/></linearGradient>
+<linearGradient id="g" x1=".12" y1="0" x2=".88" y2="1"><stop stop-color="#30343a"/><stop offset=".38" stop-color="#111419"/><stop offset="1" stop-color="#050608"/></linearGradient>
+<linearGradient id="m"><stop stop-color="#d9d0c4"/><stop offset=".55" stop-color="#80766f"/><stop offset="1" stop-color="#332f2d"/></linearGradient>
+<linearGradient id="a"><stop stop-color="#d74312"/><stop offset=".55" stop-color="#ff7a32"/><stop offset=".75" stop-color="#ffd0a0"/><stop offset="1" stop-color="#d74312"/></linearGradient>
+</defs>
+<ellipse cx="240" cy="512" rx="126" ry="18" fill="#000" opacity=".2"/>
+<circle cx="240" cy="245" r="176" fill="none" stroke="#ff6a24" stroke-opacity=".28" stroke-dasharray="2 10"/>
+<path d="M91 510c17-76 67-119 149-119s132 43 149 119H91Z" fill="url(#g)"/>
+<path d="M91 510c15-59 50-97 104-113l24 26-42 87H91Z" fill="url(#m)"/>
+<path d="M389 510c-15-59-50-97-104-113l-24 26 42 87h86Z" fill="url(#m)"/>
+<path d="M171 405l35-39h68l35 39-37 38h-64Z" fill="#0a0c10" stroke="#3b3b3c"/>
+<path d="M205 304h70l12 75-27 29h-40l-27-29Z" fill="url(#m)"/>
+<path d="M145 160c7-61 43-99 95-99s88 38 95 99l13 51-21 82-55 49h-64l-55-49-21-82Z" fill="url(#p)" stroke="#827a72"/>
+<path d="M145 160c19-39 52-58 95-58s76 19 95 58l-12 34-83-43-83 43Z" fill="#0a0c10"/>
+<path d="M175 157q65-54 130 0l17 52-15 82-48 38h-38l-48-38-15-82Z" fill="url(#g)" stroke="#040507" stroke-width="1.6"/>
+<path d="M188 207q24-17 47-6M245 201q23-11 47 6" fill="none" stroke="#a8a198"/>
+<path d="M191 222q21-13 42 0-21 8-42 0Z" fill="url(#a)"/>
+<path d="M247 222q21-13 42 0-21 8-42 0Z" fill="url(#a)"/>
+<path d="M239 218v42l-12 15h26l-12-15M190 282q50 42 100 0" fill="none" stroke="#8e877e" stroke-linecap="round"/>
+<circle cx="240" cy="190" r="23" fill="none" stroke="#ff8d56" stroke-dasharray="5 6"/>
+<circle cx="240" cy="190" r="7" fill="#ff6a24"/>
+<path d="M199 190h22l7-12 9 25 10-31 9 18h25" fill="none" stroke="#ffd0b2" stroke-opacity=".7"/>
 </svg>

@@ -170,6 +170,19 @@ function Sculpture({ host }) {
     function start() {
       if (stopped || disposeScene || motionPreference.matches) return;
       host.dataset.renderState = 'loading';
+      // Size a 1x canvas before creating WebGL so its first backing buffer is
+      // useful. Three reads these dimensions in its constructor. Higher-DPR
+      // desktop rendering keeps the normal logical-size/pixel-ratio API path.
+      // Cache the untransformed layout box; ResizeObserver owns later sizes.
+      let layoutWidth = host.clientWidth;
+      let layoutHeight = host.clientHeight;
+      const initialMobile = window.matchMedia('(max-width: 767px)').matches;
+      const initialRatio = Math.min(window.devicePixelRatio || 1, initialMobile ? 1 : 1.25);
+      const preparedSize = initialRatio === 1 && layoutWidth > 0 && layoutHeight > 0;
+      if (preparedSize) {
+        if (canvas.width !== layoutWidth) canvas.width = layoutWidth;
+        if (canvas.height !== layoutHeight) canvas.height = layoutHeight;
+      }
       let renderer;
       try {
         renderer = new THREE.WebGLRenderer({
@@ -243,7 +256,7 @@ function Sculpture({ host }) {
         let visible = !document.hidden;
         let intersecting = true;
         let modalOpen = Boolean(document.querySelector('dialog[open]'));
-        let mobile = window.matchMedia('(max-width: 767px)').matches;
+        let mobile = initialMobile;
         let contextLost = false;
         let disposed = false;
         let compiled = false;
@@ -265,14 +278,8 @@ function Sculpture({ host }) {
         const rasterBudget = createRasterBudget();
         const pointBudget = createPointBudget(particleData.count);
         let activePointCount = particleData.count;
-        let bufferWidth = 0;
-        let bufferHeight = 0;
-        // The mount has no padding/border. Cache its untransformed layout box
-        // once; ResizeObserver delivers subsequent sizes without forcing layout
-        // from inside an active render frame when the raster budget changes.
-        let layoutWidth = host.clientWidth;
-        let layoutHeight = host.clientHeight;
-
+        let bufferWidth = preparedSize ? layoutWidth : 0;
+        let bufferHeight = preparedSize ? layoutHeight : 0;
         const applyPointCount = (count) => {
           const next = Math.max(1, Math.min(particleData.count, Math.round(count)));
           if (next === activePointCount) return;

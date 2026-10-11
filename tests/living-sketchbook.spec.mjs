@@ -8,7 +8,9 @@ test.beforeEach(({page})=>{const errors=[];runtimeErrors.set(page,errors);page.o
 test.afterEach(({page})=>{expect(runtimeErrors.get(page),'Uncaught browser exceptions').toEqual([])});
 
 test('brand opening hands control to visitors without blocking or replaying over deep links',async({page})=>{
- await page.goto('/',{waitUntil:'domcontentloaded'});
+ // Observe before entry scripts run. A DOMContentLoaded round trip plus its
+ // trace snapshot can outlast the owner's short 900ms prelude on a busy host.
+ await page.goto('/',{waitUntil:'commit'});
  // Capture transient structure and visibility in one browser turn. Separate
  // locator round trips can outlast a short native sequence on a busy host.
  const prelude=await (await page.waitForFunction(()=>{
@@ -522,6 +524,62 @@ test('particle context restoration owns a fresh compilation before drawing',asyn
  expect(await page.evaluate(()=>window.__particleCompile.logs)).toBeGreaterThan(0);
  expect(errors).toEqual([]);
 });
+
+for(const {label,width,height,dpr} of [
+ {label:'desktop 1x',width:1440,height:900,dpr:1},
+ {label:'desktop 2x',width:1440,height:900,dpr:2},
+ {label:'phone 3x',width:390,height:844,dpr:3}
+]){
+ test.describe(label,()=>{
+  test.use({viewport:{width,height},deviceScaleFactor:dpr});
+  test('particle first draw uses the correct viewport without redundant 1x live-buffer resets',async({page})=>{
+   const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
+   // Observe the native allocation boundary and the first real draw, before
+   // pressure adaptation can change resolution. Do not assert driver timing.
+   await page.addInitScript(()=>{
+    const active=new WeakSet(),writes=[];
+    const nativeContext=HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext=function(...args){
+     const context=nativeContext.apply(this,args);
+     if(context&&args[0]==='webgl2'&&this.classList.contains('sculpture-canvas'))active.add(this);
+     return context;
+    };
+    for(const name of ['width','height']){
+     const descriptor=Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype,name);
+     Object.defineProperty(HTMLCanvasElement.prototype,name,{...descriptor,set(value){
+      if(this.classList.contains('sculpture-canvas'))writes.push({name,live:active.has(this)});
+      descriptor.set.call(this,value);
+     }});
+    }
+    window.addEventListener('studio:ready',event=>{
+     if(window.__firstParticleDraw)return;
+     const host=event.target,canvas=host.querySelector('canvas'),gl=canvas.getContext('webgl2');
+     const program=gl.getParameter(gl.CURRENT_PROGRAM);
+     window.__firstParticleDraw={
+      layout:[host.clientWidth,host.clientHeight],buffer:[canvas.width,canvas.height],
+      viewport:[...gl.getParameter(gl.VIEWPORT)],writes:[...writes],
+      ratio:gl.getUniform(program,gl.getUniformLocation(program,'uPixelRatio')),
+      calls:host.dataset.drawCalls
+     };
+    },true);
+   });
+   await page.goto('/',{waitUntil:'domcontentloaded'});
+   await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:8000});
+   // The phone deliberately defers WebGL until scroll intent. Exercise that
+   // real handoff rather than changing application startup for the test.
+   if(width<768)await page.evaluate(()=>scrollTo({top:80,behavior:'instant'}));
+   await expect(page.locator('[data-sculpture]')).toHaveAttribute('data-render-state','ready');
+   const first=await page.evaluate(()=>window.__firstParticleDraw);
+   const ratio=Math.min(dpr,width<768?1:1.25);
+   expect(first.ratio).toBe(ratio);
+   expect(first.buffer).toEqual(first.layout.map(size=>Math.floor(size*ratio)));
+   expect(first.viewport).toEqual([0,0,...first.buffer]);
+   expect(first.calls).toBe('1');
+   if(ratio===1)expect(first.writes.filter(write=>write.live),'Live buffer resets before the first draw').toEqual([]);
+   expect(errors).toEqual([]);
+  });
+ });
+}
 
 test('particle resolution changes reuse layout while real resizes update the buffer',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});

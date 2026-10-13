@@ -203,6 +203,18 @@ for(const [width,height] of [[1440,900],[390,844]]){
   expect(await desktop.evaluate(node=>node.style.transform)).toBe('');
   await expect(desktop).toHaveCSS('transform','none');
   await page.emulateMedia({reducedMotion:'no-preference'});
+  // Reinstating the pinned hero changes the document's vertical geometry.
+  // Bring the exhibit back into view after that change, using the locator's
+  // stable-layout scroll rather than calculating a target during media refresh.
+  await work.scrollIntoViewIfNeeded();
+  // Media changes rebuild the deferred scene asynchronously. Check its real
+  // current-scroll pose before requesting another position, so a late setup
+  // cannot overwrite a test jump or conceal a stale trigger range.
+  await expect.poll(()=>desktop.evaluate(node=>node.style.transform)).not.toBe('');
+  await expect.poll(()=>work.evaluate(room=>{
+   const progress=Math.max(0,Math.min(1,(scrollY-room.offsetTop)/(room.offsetHeight-innerHeight)));
+   return Math.abs(Number(room.dataset.proofProgress)-progress);
+  })).toBeLessThan(.01);
   await position(.72);
   await page.emulateMedia({reducedMotion:'reduce'});
   await expect.poll(()=>desktop.evaluate(node=>node.style.transform)).toBe('');

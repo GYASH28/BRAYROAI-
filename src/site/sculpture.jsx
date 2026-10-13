@@ -225,7 +225,6 @@ function Sculpture({ host }) {
         // even sample of both the BR mark and surrounding ribbons.
         geometry.setIndex(new THREE.BufferAttribute(createStratifiedPointOrder(particleData.count), 1));
         geometry.setDrawRange(0, particleData.count);
-        geometry.computeBoundingSphere();
 
         const material = new THREE.ShaderMaterial({
           uniforms: {
@@ -247,6 +246,8 @@ function Sculpture({ host }) {
         });
 
         const field = new THREE.Points(geometry, material);
+        // Shader positions move beyond the source geometry. This single,
+        // unsorted draw skips frustum culling and needs no CPU bounds scan.
         field.frustumCulled = false;
         field.rotation.set(0, 0, 0);
         field.position.set(0.12, 0.02, 0);

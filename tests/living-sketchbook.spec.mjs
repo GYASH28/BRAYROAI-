@@ -152,6 +152,64 @@ test('new visitor reaches real work, case study, and returns',async({page})=>{
  expect(errors).toEqual([]);
 });
 
+for(const [width,height] of [[1440,900],[390,844]]){
+ test(`client proof waits through hero scroll and preserves reversal, resize and motion preference at ${width}px`,async({page})=>{
+  const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
+  await page.setViewportSize({width,height});
+  await page.addInitScript(()=>{
+   window.__watchWork=false;window.__workStyleReads=0;
+   const native=getComputedStyle;
+   window.getComputedStyle=function(element,...args){
+    if(window.__watchWork&&element.matches('.work-desktop,.work-mobile'))window.__workStyleReads++;
+    return native.call(window,element,...args);
+   };
+  });
+  const start=async()=>{
+   await page.goto('/',{waitUntil:'domcontentloaded'});
+   await expect(page.locator('.hero-stage')).toHaveAttribute('data-opening-state','settled',{timeout:8000});
+   await page.evaluate(()=>{
+    window.__watchWork=true;
+    const hero=document.querySelector('.studio-hero');scrollTo({top:hero.offsetTop+(hero.offsetHeight-innerHeight)*.18,behavior:'instant'});
+   });
+   await expect.poll(()=>page.locator('.studio-hero').evaluate(node=>Number(node.dataset.heroProgress))).toBeGreaterThan(.17);
+   expect(await page.evaluate(()=>window.__workStyleReads),'Distant screen reads during the first hero scroll').toBe(0);
+   await page.evaluate(()=>{window.__watchWork=false});
+  };
+  const work=page.locator('#work'),desktop=page.locator('.work-desktop');
+  const position=async progress=>{
+   await page.evaluate(progress=>{
+    const room=document.querySelector('#work');scrollTo({top:room.offsetTop+(room.offsetHeight-innerHeight)*progress,behavior:'instant'});
+   },progress);
+   await expect.poll(()=>work.evaluate((room,progress)=>Math.abs(Number(room.dataset.proofProgress)-progress),progress)).toBeLessThan(.01);
+  };
+  const matrix=()=>desktop.evaluate(node=>new DOMMatrixReadOnly(getComputedStyle(node).transform).toFloat64Array().slice(0,12));
+  await start();
+  await position(.72);const forward=await matrix();
+  await position(.15);expect(await matrix()).not.toEqual(forward);
+  await page.setViewportSize({width:width===1440?1401:412,height:height-49});
+  await position(.72);
+  const resized=await matrix();
+  forward.forEach((value,index)=>expect(resized[index]).toBeCloseTo(value,2));
+  await page.goto('/#work');
+  await expect(work).toBeInViewport();
+  await expect.poll(()=>desktop.evaluate(node=>node.style.transform)).not.toBe('');
+
+  // A preference change before approach must cancel pending setup. Turning
+  // motion back on inside the exhibit must use the current scroll position.
+  await start();
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await work.scrollIntoViewIfNeeded();
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  expect(await desktop.evaluate(node=>node.style.transform)).toBe('');
+  await expect(desktop).toHaveCSS('transform','none');
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await position(.72);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect.poll(()=>desktop.evaluate(node=>node.style.transform)).toBe('');
+  expect(errors).toEqual([]);
+ });
+}
+
 test('footer reveal starts on approach, reverses and reverts with reduced motion',async({page})=>{
  await page.goto('/#work');
  await expect(page.locator('.studio-hero')).toHaveAttribute('data-hero-progress','1.000');

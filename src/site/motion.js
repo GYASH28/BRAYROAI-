@@ -73,11 +73,24 @@ export async function initStudioMotion(){
   document.querySelectorAll('[data-line]').forEach(path=>{path.style.opacity='0';onArrival(path,()=>{const length=path.getTotalLength();gsap.fromTo(path,{opacity:1,strokeDasharray:length,strokeDashoffset:length},{strokeDashoffset:0,duration:1.15,ease:'power2.out'})})});
   document.querySelectorAll('[data-process]').forEach(process=>{const items=[...process.querySelectorAll('[data-step]')];items.forEach((item,i)=>{item.style.opacity='0';item.style.transform='translate3d(0,40px,0)';onArrival(item,()=>gsap.to(item,{y:0,opacity:1,duration:.8,delay:matchMedia('(min-width:761px)').matches?i*.09:0,ease:'power3.out',clearProps:'transform,opacity'}))})});
   const work=document.querySelector('.work-exhibit');
+  let workApproach=null;
   if(work){
-   const desktop=document.querySelector('.work-desktop'),phone=document.querySelector('.work-mobile'),state={progress:0};
-   const pose=p=>{work.dataset.proofProgress=p.toFixed(3);gsap.set(desktop,{rotateY:innerWidth<761?0:-22*(1-p),rotateX:13*(1-p),scale:.68+.32*p,rotateZ:-3*(1-p)});gsap.set(phone,{yPercent:60*(1-p),rotateZ:10-15*p,scale:.85+.15*p})};
-   const follow=gsap.quickTo(state,'progress',{duration:.3,ease:'power2.out',onUpdate:()=>pose(state.progress)});
-   ScrollTrigger.create({trigger:work,start:'top top',end:()=>`+=${work.offsetHeight-innerHeight}`,onUpdate:s=>follow(s.progress),onRefresh:s=>{follow.tween.pause();state.progress=s.progress;pose(s.progress)}});
+   // The first hero scroll does not need the distant exhibit's computed
+   // transforms. Start its original perspective motion from the reserved
+   // room's approach, including direct entry at any restored scroll position.
+   const revealWork=context.add('revealWork',()=>{
+    const desktop=work.querySelector('.work-desktop'),phone=work.querySelector('.work-mobile'),state={progress:0};
+    const pose=p=>{work.dataset.proofProgress=p.toFixed(3);gsap.set(desktop,{rotateY:innerWidth<761?0:-22*(1-p),rotateX:13*(1-p),scale:.68+.32*p,rotateZ:-3*(1-p)});gsap.set(phone,{yPercent:60*(1-p),rotateZ:10-15*p,scale:.85+.15*p})};
+    const follow=gsap.quickTo(state,'progress',{duration:.3,ease:'power2.out',onUpdate:()=>pose(state.progress)});
+    ScrollTrigger.create({trigger:work,start:'top top',end:()=>`+=${work.offsetHeight-innerHeight}`,onUpdate:s=>follow(s.progress),onRefresh:s=>{follow.tween.pause();state.progress=s.progress;pose(s.progress)}});
+   });
+   workApproach=new IntersectionObserver(entries=>{
+    if(entries.some(entry=>entry.isIntersecting)){
+     workApproach.disconnect();
+     if(!reduced.matches)revealWork();
+    }
+   },{rootMargin:'300px'});
+   workApproach.observe(work);
   }
   const hero=document.querySelector('.studio-hero');
   if(hero){
@@ -113,7 +126,7 @@ export async function initStudioMotion(){
    footerApproach.observe(footerMark.closest('.premium-footer')||footerMark);
   }
   return()=>{
-   arrivalObserver.disconnect();parallaxApproach.disconnect();parallaxRooms.clear();footerApproach?.disconnect();cancelAnimationFrame(roomRefresh);roomResize?.disconnect();rooms.forEach(room=>room.removeEventListener('contentvisibilityautostatechange',refreshRoom));
+   arrivalObserver.disconnect();parallaxApproach.disconnect();parallaxRooms.clear();workApproach?.disconnect();footerApproach?.disconnect();cancelAnimationFrame(roomRefresh);roomResize?.disconnect();rooms.forEach(room=>room.removeEventListener('contentvisibilityautostatechange',refreshRoom));
    if(hero){hero.removeAttribute('style');hero.removeAttribute('data-hero-progress');hero.removeAttribute('data-assembly-progress');hero.querySelector('.hero-intro')?.removeAttribute('inert');hero.querySelector('.hero-intro')?.removeAttribute('aria-hidden');const next=hero.querySelector('.hero-next');if(next){next.inert=true;next.setAttribute('aria-hidden','true')}}
    document.querySelectorAll('[data-enter],[data-step],.moving-word').forEach(el=>{el.style.removeProperty('transform');el.style.removeProperty('opacity')});
    document.querySelectorAll('[data-line]').forEach(path=>{path.style.removeProperty('opacity');path.style.removeProperty('stroke-dasharray');path.style.removeProperty('stroke-dashoffset')});

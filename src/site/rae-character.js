@@ -1,196 +1,78 @@
 let raeCharacterInstance = 0;
 
 export function ensureRaeCharacterSkin() {
-  if (typeof document === 'undefined' || document.querySelector('link[data-rae-character-skin="v4"]')) return;
+  if (typeof document === 'undefined' || document.querySelector('link[data-rae-character-skin="v6"]')) return;
+  document.querySelectorAll('link[data-rae-character-skin]').forEach((node) => node.remove());
   const link = document.createElement('link');
   link.rel = 'stylesheet';
   link.href = '/rae/rae-character-v2.css';
-  link.dataset.raeCharacterSkin = 'v4';
+  link.dataset.raeCharacterSkin = 'v6';
   document.head.append(link);
 }
 
-// One structured SVG actor powers every live Rae placement. No raster body,
-// sprite sheet, canvas, or face image is used by the character.
+// Rae v6: a sculptural humanoid studio intelligence. The silhouette, faceplate,
+// cognition core and light states are all vector so the character remains crisp,
+// fast and brand-owned at every size.
 export const characterMarkup = (variant = 'stage') => {
   ensureRaeCharacterSkin();
-  const id = `raeVector${++raeCharacterInstance}`;
-  const viewBox = variant === 'stage' ? '0 0 480 620' : '60 18 360 360';
-  return `
-<svg class="rae-character rae-character--${variant}" data-rae-character data-rae-rig="v3" data-rae-vector="full-body" data-state="idle" viewBox="${viewBox}" aria-hidden="true" focusable="false">
-  <defs>
-    <linearGradient id="${id}Shell" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf7"/><stop offset=".48" stop-color="#f1e9dc"/><stop offset="1" stop-color="#cfc3b2"/></linearGradient>
-    <linearGradient id="${id}ShellDark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ece4d8"/><stop offset="1" stop-color="#b8ab99"/></linearGradient>
-    <linearGradient id="${id}Ink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2b30"/><stop offset=".45" stop-color="#101116"/><stop offset="1" stop-color="#030407"/></linearGradient>
-    <linearGradient id="${id}Visor" x1=".12" y1=".05" x2=".86" y2=".95"><stop offset="0" stop-color="#292b31"/><stop offset=".34" stop-color="#111318"/><stop offset="1" stop-color="#030407"/></linearGradient>
-    <linearGradient id="${id}Orange" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd073"/><stop offset=".36" stop-color="#ff9b2f"/><stop offset="1" stop-color="#ff5a12"/></linearGradient>
-    <linearGradient id="${id}Ceramic" x1="0" y1="0" x2="1" y2=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".32" stop-color="#fffaf0"/><stop offset=".7" stop-color="#dfd3c3"/><stop offset="1" stop-color="#aa9c8d"/></linearGradient>
-    <linearGradient id="${id}Glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".28"/><stop offset=".28" stop-color="#b8c3d1" stop-opacity=".03"/><stop offset=".73" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffc17b" stop-opacity=".11"/></linearGradient>
-    <linearGradient id="${id}Joint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#515159"/><stop offset=".34" stop-color="#1b1c23"/><stop offset="1" stop-color="#050508"/></linearGradient>
-    <radialGradient id="${id}Eye"><stop offset="0" stop-color="#fffbe7"/><stop offset=".27" stop-color="#ffd97d"/><stop offset=".7" stop-color="#ff9626"/><stop offset="1" stop-color="#ff5a12"/></radialGradient>
-    <radialGradient id="${id}Glow"><stop offset="0" stop-color="#ff9827" stop-opacity=".56"/><stop offset="1" stop-color="#ff6a16" stop-opacity="0"/></radialGradient>
-    <clipPath id="${id}VisorClip"><path d="M119 87Q144 60 188 58H292Q338 61 363 88Q380 110 376 156Q372 195 346 216Q317 238 240 239Q163 238 134 216Q108 195 104 156Q100 111 119 87Z"/></clipPath>
-  </defs>
-
-  <ellipse class="rae-character__shadow" cx="240" cy="588" rx="116" ry="17"/>
-
-  <g class="rae-character__body">
-    <g class="rae-character__legs">
-      <g class="rae-character__leg rae-character__leg--l">
-        <circle class="rae-character__hip" cx="191" cy="392" r="24" fill="url(#${id}Ink)"/>
-        <path class="rae-character__calf" d="M158 401Q187 386 218 402L211 476Q188 494 162 478Z" fill="url(#${id}Shell)"/>
-        <path d="M160 405Q175 396 183 400L172 473Q165 471 161 464Z" fill="url(#${id}Ceramic)" opacity=".7"/>
-        <path d="M201 417L208 413L204 468L198 474Z" fill="#786e67" opacity=".28"/>
-        <path class="rae-character__panel-line" d="M171 416Q188 406 205 415M169 462Q188 472 205 462" fill="none" stroke="#9f9587" stroke-width="1"/>
-        <rect class="rae-character__leg-light" x="177" y="433" width="8" height="27" rx="4" fill="url(#${id}Orange)"/>
-        <circle class="rae-character__joint" cx="187" cy="492" r="22" fill="url(#${id}Ink)"/>
-        <path d="M170 490q17-11 34 0" fill="none" stroke="#77777b" stroke-width="3" opacity=".55"/>
-        <path class="rae-character__foot" d="M140 509Q184 489 223 512L234 557Q229 576 206 579H145Q126 574 128 552Z" fill="url(#${id}Shell)"/>
-        <path d="M132 548Q183 531 229 550L234 557Q229 576 206 579H145Q126 574 128 552Z" fill="url(#${id}Ink)" opacity=".95"/>
-        <rect class="rae-character__foot-light" x="157" y="552" width="50" height="8" rx="4" fill="url(#${id}Orange)"/>
-        <path d="M147 522Q176 507 207 515M137 550Q181 538 224 552" fill="none" stroke="#fff8ed" stroke-width="2" opacity=".55"/>
-      </g>
-      <g class="rae-character__leg rae-character__leg--r">
-        <circle class="rae-character__hip" cx="289" cy="392" r="24" fill="url(#${id}Ink)"/>
-        <path class="rae-character__calf" d="M262 402Q290 386 322 402L317 477Q292 494 267 478Z" fill="url(#${id}Shell)"/>
-        <path d="M265 407Q278 397 289 399L277 472Q268 469 265 461Z" fill="url(#${id}Ceramic)" opacity=".68"/>
-        <path d="M307 416L316 412L312 466L304 473Z" fill="#786e67" opacity=".28"/>
-        <path class="rae-character__panel-line" d="M274 416Q291 406 308 415M272 462Q291 472 308 462" fill="none" stroke="#9f9587" stroke-width="1"/>
-        <rect class="rae-character__leg-light" x="295" y="433" width="8" height="27" rx="4" fill="url(#${id}Orange)"/>
-        <circle class="rae-character__joint" cx="294" cy="492" r="22" fill="url(#${id}Ink)"/>
-        <path d="M277 490q17-11 34 0" fill="none" stroke="#77777b" stroke-width="3" opacity=".55"/>
-        <path class="rae-character__foot" d="M256 512Q296 489 340 509L352 552Q354 574 333 579H270Q248 575 247 557Z" fill="url(#${id}Shell)"/>
-        <path d="M251 550Q302 531 348 548L352 552Q354 574 333 579H270Q248 575 247 557Z" fill="url(#${id}Ink)" opacity=".95"/>
-        <rect class="rae-character__foot-light" x="273" y="552" width="50" height="8" rx="4" fill="url(#${id}Orange)"/>
-        <path d="M266 522Q296 506 329 518M255 550Q300 538 346 551" fill="none" stroke="#fff8ed" stroke-width="2" opacity=".53"/>
-      </g>
-    </g>
-
-    <g class="rae-character__torso-wrap">
-      <ellipse class="rae-character__joint" cx="240" cy="246" rx="31" ry="19" fill="url(#${id}Ink)"/>
-      <path d="M214 245Q240 259 266 245M218 254Q240 265 262 254" fill="none" stroke="#7a7779" stroke-width="2" opacity=".5"/>
-      <path class="rae-character__torso" d="M153 260Q240 225 327 260L315 356Q291 390 240 391Q188 390 165 356Z" fill="url(#${id}Shell)"/>
-      <path d="M157 270Q163 261 175 258L183 350Q171 340 166 326Z" fill="url(#${id}Ceramic)" opacity=".8"/>
-      <path d="M323 269Q316 263 309 259L302 350Q314 340 317 326Z" fill="#8e8073" opacity=".24"/>
-      <path d="M189 275Q240 259 292 275L298 344Q271 365 240 366Q209 365 182 344Z" fill="none" stroke="#fdf8ec" stroke-width="2" opacity=".45"/>
-      <path class="rae-character__shell-hi" d="M171 272Q236 245 309 270Q281 260 253 267Q211 259 177 289Z" fill="#fff" opacity=".46"/>
-      <path class="rae-character__panel-line" d="M177 330Q240 347 303 330M183 352Q240 369 297 352" fill="none" stroke="#a59a8b" stroke-width="1.1" opacity=".7"/>
-      <rect class="rae-character__chest-light" x="219" y="293" width="42" height="10" rx="5" fill="url(#${id}Orange)"/>
-      <rect x="216" y="290" width="48" height="16" rx="8" fill="none" stroke="#a9a094" stroke-width="1"/>
-      <path d="M191 280l14 6M275 286l14-6M196 342l14 6M270 348l14-6" fill="none" stroke="#a99c8f" stroke-width="1.5" opacity=".7"/>
-      <text class="rae-character__brand-mark" x="240" y="327" text-anchor="middle" fill="#242226" font-family="Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="1.4">BRAYROAI</text>
-      <path class="rae-character__pelvis-shell" d="M171 365Q240 391 309 365L298 420Q240 444 182 420Z" fill="url(#${id}ShellDark)"/>
-      <path d="M186 379Q240 397 294 379L286 410Q240 426 194 410Z" fill="url(#${id}Ink)" opacity=".94"/>
-      <path d="M207 401q33 12 66 0" fill="none" stroke="#55575b" stroke-width="3" opacity=".65"/>
-      <path d="M228 414h24" fill="none" stroke="url(#${id}Orange)" stroke-width="3" stroke-linecap="round" opacity=".82"/>
-    </g>
-
-    <g class="rae-character__arms">
-      <g class="rae-character__arm rae-character__arm--l">
-        <circle class="rae-character__shoulder-joint" cx="151" cy="276" r="27" fill="url(#${id}Ink)"/>
-        <path class="rae-character__shoulder-shell" d="M123 254Q147 232 172 251L176 282Q151 295 126 281Z" fill="url(#${id}Shell)"/>
-        <path d="M128 259q19-16 39-5M129 280q20 12 42 0" fill="none" stroke="#fffdf7" stroke-width="2" opacity=".65"/>
-        <path class="rae-character__upper-arm" d="M119 279Q145 267 164 288L148 342Q123 355 103 334Z" fill="url(#${id}Ink)"/>
-        <circle class="rae-character__elbow" cx="119" cy="345" r="19" fill="url(#${id}Ink)"/>
-        <path class="rae-character__forearm" d="M88 343Q114 328 138 345L129 401Q104 417 81 395Z" fill="url(#${id}Shell)"/>
-        <path d="M87 390q21 14 43 2M94 353q19-9 35-2" fill="none" stroke="#8d8073" stroke-width="1.7" opacity=".62"/>
-        <rect class="rae-character__arm-light" x="90" y="365" width="7" height="23" rx="3.5" fill="url(#${id}Orange)"/>
-        <g class="rae-character__hand rae-character__hand--l">
-          <ellipse cx="105" cy="397" rx="18" ry="8" fill="url(#${id}Joint)"/>
-          <g class="rae-character__glove rae-character__glove--rest">
-            <path d="M84 400Q100 391 117 400L122 416Q119 429 105 433Q88 434 80 421Z" fill="url(#${id}Ink)" stroke="#55545a" stroke-width="1.3"/>
-            <path class="rae-character__finger" d="M83 416Q77 412 75 415Q71 420 78 425L87 430M91 425Q90 438 96 441Q102 442 103 434M104 426Q104 442 111 442Q117 439 115 428M116 420Q123 433 128 428Q132 424 124 416" fill="none" stroke="url(#${id}Joint)" stroke-width="8" stroke-linecap="round"/>
-            <path d="M88 405q15-8 27 1M91 417q14 4 25-2" fill="none" stroke="#8d8b90" stroke-width="1.5" opacity=".55"/>
-            <path d="M91 430l4 3m13 1 4-2" fill="none" stroke="#b6b2af" stroke-width="1" opacity=".65"/>
-          </g>
-          <g class="rae-character__glove rae-character__glove--open">
-            <path class="rae-character__finger" d="M84 424L66 434Q59 438 63 443Q68 447 74 442L86 436M90 434L78 454Q74 461 80 464Q86 467 90 460L99 441M101 438L95 463Q93 471 100 472Q106 472 108 463L109 442M111 437L116 461Q118 469 125 467Q131 465 127 457L119 433M118 424L136 441Q142 447 148 442Q153 437 146 431L124 415" fill="none" stroke="url(#${id}Joint)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M82 412Q99 402 116 412L123 433Q115 447 101 448Q86 446 77 432Z" fill="url(#${id}Ink)" stroke="#66646a" stroke-width="1.5"/>
-            <path d="M84 417q13-8 29-2M88 438q13 8 25 0M93 420v7m9-8v8m9-10v8" fill="none" stroke="#a7a2a0" stroke-width="1.4" opacity=".58"/>
-          </g>
-        </g>
-      </g>
-      <g class="rae-character__arm rae-character__arm--r">
-        <circle class="rae-character__shoulder-joint" cx="329" cy="276" r="27" fill="url(#${id}Ink)"/>
-        <path class="rae-character__shoulder-shell" d="M308 251Q334 232 357 254L354 281Q330 295 305 282Z" fill="url(#${id}Shell)"/>
-        <path d="M312 254q20-13 39 5M310 280q23 12 43-1" fill="none" stroke="#fffdf7" stroke-width="2" opacity=".65"/>
-        <path class="rae-character__upper-arm" d="M316 288Q337 267 361 280L377 333Q357 355 332 342Z" fill="url(#${id}Ink)"/>
-        <circle class="rae-character__elbow" cx="361" cy="345" r="19" fill="url(#${id}Ink)"/>
-        <path class="rae-character__forearm" d="M342 346Q367 329 392 344L399 394Q375 416 350 401Z" fill="url(#${id}Shell)"/>
-        <path d="M352 393q20 12 42-1M351 353q18-9 35-2" fill="none" stroke="#8d8073" stroke-width="1.7" opacity=".62"/>
-        <rect class="rae-character__arm-light" x="383" y="365" width="7" height="23" rx="3.5" fill="url(#${id}Orange)"/>
-        <g class="rae-character__hand rae-character__hand--r">
-          <ellipse cx="375" cy="397" rx="18" ry="8" fill="url(#${id}Joint)"/>
-          <g transform="translate(480 0) scale(-1 1)">
-            <g class="rae-character__glove rae-character__glove--rest">
-              <path d="M84 400Q100 391 117 400L122 416Q119 429 105 433Q88 434 80 421Z" fill="url(#${id}Ink)" stroke="#55545a" stroke-width="1.3"/>
-              <path class="rae-character__finger" d="M83 416Q77 412 75 415Q71 420 78 425L87 430M91 425Q90 438 96 441Q102 442 103 434M104 426Q104 442 111 442Q117 439 115 428M116 420Q123 433 128 428Q132 424 124 416" fill="none" stroke="url(#${id}Joint)" stroke-width="8" stroke-linecap="round"/>
-              <path d="M88 405q15-8 27 1M91 417q14 4 25-2" fill="none" stroke="#8d8b90" stroke-width="1.5" opacity=".55"/>
-              <path d="M91 430l4 3m13 1 4-2" fill="none" stroke="#b6b2af" stroke-width="1" opacity=".65"/>
-            </g>
-            <g class="rae-character__glove rae-character__glove--open">
-              <path class="rae-character__finger" d="M84 424L66 434Q59 438 63 443Q68 447 74 442L86 436M90 434L78 454Q74 461 80 464Q86 467 90 460L99 441M101 438L95 463Q93 471 100 472Q106 472 108 463L109 442M111 437L116 461Q118 469 125 467Q131 465 127 457L119 433M118 424L136 441Q142 447 148 442Q153 437 146 431L124 415" fill="none" stroke="url(#${id}Joint)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M82 412Q99 402 116 412L123 433Q115 447 101 448Q86 446 77 432Z" fill="url(#${id}Ink)" stroke="#66646a" stroke-width="1.5"/>
-              <path d="M84 417q13-8 29-2M88 438q13 8 25 0M93 420v7m9-8v8m9-10v8" fill="none" stroke="#a7a2a0" stroke-width="1.4" opacity=".58"/>
-            </g>
-            <g class="rae-character__glove rae-character__glove--peace">
-              <path d="M86 424L67 436Q61 440 65 445Q70 449 77 443L88 436M91 416L79 460Q77 468 84 470Q91 470 93 463L103 430M103 418L107 465Q108 472 115 471Q122 469 120 462L116 428" fill="none" stroke="url(#${id}Joint)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M82 407Q99 397 117 407L124 425Q126 439 113 445Q95 449 80 435Z" fill="url(#${id}Ink)" stroke="#66646a" stroke-width="1.4"/>
-              <path d="M86 413q15-7 29-1M88 432q12 7 24 2M81 460l5 1m23 5 6-1" fill="none" stroke="#a9a5a2" stroke-width="1.4" opacity=".68"/>
-            </g>
-          </g>
-        </g>
-      </g>
-    </g>
-  </g>
-
-  <g class="rae-character__head-wrap">
-    <g class="rae-character__ears">
-      <path class="rae-character__ear rae-character__ear--l" d="M94 87L63 50Q58 44 62 86L73 127Z" fill="url(#${id}ShellDark)"/>
-      <path d="M90 86L63 53Q69 70 72 109" fill="none" stroke="#fffaf0" stroke-width="2.5" opacity=".7"/>
-      <path d="M77 85L66 65L69 99Z" fill="url(#${id}Orange)"/>
-      <path class="rae-character__ear rae-character__ear--r" d="M386 87L417 50Q422 44 418 86L407 127Z" fill="url(#${id}ShellDark)"/>
-      <path d="M390 86l27-33q-6 17-9 56" fill="none" stroke="#fffaf0" stroke-width="2.5" opacity=".7"/>
-      <path d="M403 85L414 65L411 99Z" fill="url(#${id}Orange)"/>
-      <ellipse cx="78" cy="139" rx="27" ry="40" fill="url(#${id}Ink)"/><ellipse class="rae-character__ear-ring-light" cx="78" cy="139" rx="18" ry="28" fill="none" stroke="url(#${id}Orange)" stroke-width="7"/>
-      <ellipse cx="402" cy="139" rx="27" ry="40" fill="url(#${id}Ink)"/><ellipse class="rae-character__ear-ring-light" cx="402" cy="139" rx="18" ry="28" fill="none" stroke="url(#${id}Orange)" stroke-width="7"/>
-      <ellipse cx="78" cy="139" rx="8" ry="15" fill="url(#${id}Joint)"/><ellipse cx="402" cy="139" rx="8" ry="15" fill="url(#${id}Joint)"/>
-    </g>
-    <path class="rae-character__head" d="M91 78Q118 35 183 27H297Q362 35 389 78Q408 111 403 160Q398 209 366 235Q332 260 240 262Q148 260 114 235Q82 209 77 160Q72 111 91 78Z" fill="url(#${id}Shell)"/>
-    <path d="M96 81q29-45 95-51h100q70 5 96 49" fill="none" stroke="#fffdf8" stroke-width="4" opacity=".7"/>
-    <path d="M84 153q5 66 45 84M395 151q-5 66-45 84" fill="none" stroke="#92877a" stroke-width="2" opacity=".44"/>
-    <path class="rae-character__shell-hi" d="M113 76Q150 46 199 43H287Q334 47 365 74Q320 56 275 60H188Q145 61 113 76Z" fill="#fff" opacity=".54"/>
-    <path class="rae-character__panel-line" d="M105 88Q119 61 159 50M376 89Q361 62 322 50" fill="none" stroke="#aaa092" stroke-width="1.2"/>
-    <path class="rae-character__visor" d="M119 87Q144 60 188 58H292Q338 61 363 88Q380 110 376 156Q372 195 346 216Q317 238 240 239Q163 238 134 216Q108 195 104 156Q100 111 119 87Z" fill="url(#${id}Visor)"/>
-    <g clip-path="url(#${id}VisorClip)" aria-hidden="true">
-      <path d="M115 98Q202 42 306 68Q218 67 148 124Z" fill="url(#${id}Glass)"/>
-      <path d="M326 65Q379 103 370 172Q356 117 328 98Z" fill="#f5f8ff" opacity=".08"/>
-      <path d="M140 213Q238 249 341 206" fill="none" stroke="#ffb976" stroke-width="3" opacity=".09"/>
-    </g>
-    <path class="rae-character__visor-rim" d="M119 87Q144 60 188 58H292Q338 61 363 88Q380 110 376 156Q372 195 346 216Q317 238 240 239Q163 238 134 216Q108 195 104 156Q100 111 119 87Z" fill="none" stroke="#fff" stroke-width="3"/>
-    <path d="M139 86Q177 66 220 67" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" opacity=".12"/>
-    <path d="M121 225q46 28 119 30q73-2 119-30" fill="none" stroke="#fff8ec" stroke-width="2" opacity=".65"/>
-    <g class="rae-character__face" clip-path="url(#${id}VisorClip)">
-      <g class="rae-character__brows">
-        <path class="rae-character__brow rae-character__brow--l" d="M161 121c17-10 39-10 55-3"/>
-        <path class="rae-character__brow rae-character__brow--r" d="M266 118c17-8 38-7 54 3"/>
-      </g>
-      <g class="rae-character__eyes">
-        <g class="rae-character__eye rae-character__eye--l"><ellipse class="rae-character__eye-glow" cx="190" cy="151" rx="39" ry="47" fill="url(#${id}Glow)"/><ellipse class="rae-character__eye-white" cx="190" cy="151" rx="19" ry="27" fill="url(#${id}Eye)"/><ellipse class="rae-character__pupil" cx="185" cy="144" rx="4.5" ry="6.5"/></g>
-        <g class="rae-character__eye rae-character__eye--r"><ellipse class="rae-character__eye-glow" cx="290" cy="151" rx="39" ry="47" fill="url(#${id}Glow)"/><ellipse class="rae-character__eye-white" cx="290" cy="151" rx="19" ry="27" fill="url(#${id}Eye)"/><ellipse class="rae-character__pupil" cx="285" cy="144" rx="4.5" ry="6.5"/></g>
-        <path class="rae-character__lid rae-character__lid--l" d="M169 151c12-10 29-10 42 0"/>
-        <path class="rae-character__lid rae-character__lid--r" d="M269 151c12-10 29-10 42 0"/>
-      </g>
-      <g class="rae-character__smile-eyes"><path d="M168 157c11-20 31-22 44-3"/><path d="M268 154c11-20 31-22 44-3"/></g>
-      <ellipse class="rae-character__cheek rae-character__cheek--l" cx="145" cy="186" rx="18" ry="7"/>
-      <ellipse class="rae-character__cheek rae-character__cheek--r" cx="335" cy="186" rx="18" ry="7"/>
-      <path class="rae-character__mouth" d="M206 186Q240 214 274 185" stroke="url(#${id}Orange)"/>
-      <path class="rae-character__mouth-frown" d="M217 202Q240 182 263 202" fill="none" stroke="url(#${id}Orange)" stroke-width="5" stroke-linecap="round"/>
-      <ellipse class="rae-character__mouth-oh" cx="241" cy="194" rx="9" ry="12" fill="url(#${id}Eye)"/>
-      <ellipse class="rae-character__speaking-mouth" cx="241" cy="194" rx="17" ry="12" fill="url(#${id}Eye)"/>
-    </g>
-    <text class="rae-character__thought" x="350" y="86" fill="#ff9a25" font-family="Arial,sans-serif" font-size="42" font-weight="700">?</text>
-    <circle class="rae-character__listening-ring" cx="374" cy="158" r="27" fill="none" stroke="#ff8a1e" stroke-width="4"/>
-    <g class="rae-character__spark" transform="translate(352 53)"><path d="M0 10h20M10 0v20"/></g>
-  </g>
-</svg>`;
+  const id = 'raeAtelier' + (++raeCharacterInstance);
+  const viewBox = variant === 'launcher' ? '145 100 190 205' : '100 80 280 327';
+  return '<svg class="rae-character rae-character--' + variant + '" data-rae-character data-rae-rig="v6" data-rae-vector="atelier-android" data-state="idle" viewBox="' + viewBox + '" aria-hidden="true" focusable="false">' +
+    '<defs>' +
+      '<linearGradient id="' + id + 'Porcelain" x1=".18" y1=".04" x2=".88" y2=".96"><stop offset="0" stop-color="#fffdf8"/><stop offset=".34" stop-color="#e7e1d7"/><stop offset=".72" stop-color="#b7afa4"/><stop offset="1" stop-color="#716b66"/></linearGradient>' +
+      '<linearGradient id="' + id + 'Graphite" x1=".12" y1="0" x2=".88" y2="1"><stop offset="0" stop-color="#30343a"/><stop offset=".38" stop-color="#111419"/><stop offset="1" stop-color="#050608"/></linearGradient>' +
+      '<linearGradient id="' + id + 'Metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9d0c4"/><stop offset=".45" stop-color="#80766f"/><stop offset=".72" stop-color="#332f2d"/><stop offset="1" stop-color="#aaa197"/></linearGradient>' +
+      '<linearGradient id="' + id + 'Amber" x1="0" x2="1"><stop stop-color="#d74312"/><stop offset=".46" stop-color="#ff7a32"/><stop offset=".7" stop-color="#ffd0a0"/><stop offset="1" stop-color="#d74312"/></linearGradient>' +
+      '<radialGradient id="' + id + 'Core"><stop offset="0" stop-color="#fffaf1"/><stop offset=".18" stop-color="#ffd5ad"/><stop offset=".55" stop-color="#ff6a24"/><stop offset="1" stop-color="#7e1c00"/></radialGradient>' +
+      '<radialGradient id="' + id + 'Aura"><stop offset="0" stop-color="#ff6a24" stop-opacity=".22"/><stop offset=".52" stop-color="#ff6a24" stop-opacity=".06"/><stop offset="1" stop-color="#ff6a24" stop-opacity="0"/></radialGradient>' +
+      '<filter id="' + id + 'Glow" x="-120%" y="-120%" width="340%" height="340%"><feGaussianBlur stdDeviation="12"/></filter>' +
+      '<filter id="' + id + 'Soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="5"/></filter>' +
+    '</defs>' +
+    '<ellipse class="rae-character__shadow" cx="240" cy="512" rx="126" ry="18"/>' +
+    '<circle class="rae-character__aura" cx="240" cy="250" r="206" fill="url(#' + id + 'Aura)"/>' +
+    '<g class="rae-character__halo">' +
+      '<circle cx="240" cy="245" r="176"/>' +
+      '<path class="rae-character__halo-arc rae-character__halo-arc--a" d="M82 245A158 158 0 0 1 240 87"/>' +
+      '<path class="rae-character__halo-arc rae-character__halo-arc--b" d="M240 403A158 158 0 0 0 398 245"/>' +
+      '<path class="rae-character__halo-tick" d="M240 52v18M240 420v18M47 245h18M415 245h18"/>' +
+    '</g>' +
+    '<g class="rae-character__bust">' +
+      '<path class="rae-character__shoulder rae-character__shoulder--back" d="M91 510c17-76 67-119 149-119s132 43 149 119H91Z" fill="url(#' + id + 'Graphite)"/>' +
+      '<path class="rae-character__shoulder rae-character__shoulder--left" d="M91 510c15-59 50-97 104-113l24 26-42 87H91Z" fill="url(#' + id + 'Metal)"/>' +
+      '<path class="rae-character__shoulder rae-character__shoulder--right" d="M389 510c-15-59-50-97-104-113l-24 26 42 87h86Z" fill="url(#' + id + 'Metal)"/>' +
+      '<path class="rae-character__sternum" d="M218 404h44l27 106h-98Z" fill="url(#' + id + 'Graphite)"/>' +
+      '<path class="rae-character__collar" d="M171 405l35-39h68l35 39-37 38h-64Z" fill="#0a0c10"/>' +
+      '<path class="rae-character__collar-edge" d="M178 408l31-34h62l31 34-33 29h-58Z"/>' +
+      '<path class="rae-character__neck" d="M205 304h70l12 75-27 29h-40l-27-29Z" fill="url(#' + id + 'Metal)"/>' +
+      '<path class="rae-character__neck-core" d="M224 323h32l8 56-14 14h-20l-14-14Z" fill="#090b0e"/>' +
+      '<path class="rae-character__neck-light" d="M232 343h16v33h-16Z" fill="url(#' + id + 'Amber)"/>' +
+    '</g>' +
+    '<g class="rae-character__head">' +
+      '<path class="rae-character__cowl" d="M145 160c7-61 43-99 95-99s88 38 95 99l13 51-21 82-55 49h-64l-55-49-21-82Z" fill="url(#' + id + 'Porcelain)"/>' +
+      '<path class="rae-character__cowl-shadow" d="M145 160c19-39 52-58 95-58s76 19 95 58l-12 34-83-43-83 43Z" fill="#0a0c10"/>' +
+      '<path class="rae-character__temple rae-character__temple--l" d="M145 163l28 13-10 112-24-20-8-61Z" fill="url(#' + id + 'Metal)"/>' +
+      '<path class="rae-character__temple rae-character__temple--r" d="M335 163l-28 13 10 112 24-20 8-61Z" fill="url(#' + id + 'Metal)"/>' +
+      '<path class="rae-character__face" d="M175 157q65-54 130 0l17 52-15 82-48 38h-38l-48-38-15-82Z" fill="url(#' + id + 'Graphite)"/>' +
+      '<path class="rae-character__face-sheen" d="M183 161q57-42 114 0l11 30q-60-16-128 4Z"/>' +
+      '<path class="rae-character__brow" d="M188 207q24-17 47-6M245 201q23-11 47 6"/>' +
+      '<path class="rae-character__eye rae-character__eye--l" d="M191 222q21-13 42 0-21 8-42 0Z" fill="url(#' + id + 'Amber)"/>' +
+      '<path class="rae-character__eye rae-character__eye--r" d="M247 222q21-13 42 0-21 8-42 0Z" fill="url(#' + id + 'Amber)"/>' +
+      '<path class="rae-character__bridge" d="M239 218v42l-12 15h26l-12-15"/>' +
+      '<path class="rae-character__jawline" d="M190 282q50 42 100 0"/>' +
+      '<path class="rae-character__cheek-cut rae-character__cheek-cut--l" d="M178 247l34 28-17 22"/>' +
+      '<path class="rae-character__cheek-cut rae-character__cheek-cut--r" d="M302 247l-34 28 17 22"/>' +
+      '<path class="rae-character__crown-line" d="M171 143q69-68 138 0M198 113l17-35M282 113l-17-35"/>' +
+    '</g>' +
+    '<g class="rae-character__cognition">' +
+      '<circle class="rae-character__core-haze" cx="240" cy="190" r="38" fill="#ff6a24" filter="url(#' + id + 'Glow)"/>' +
+      '<circle class="rae-character__core-ring" cx="240" cy="190" r="23"/>' +
+      '<circle class="rae-character__core" cx="240" cy="190" r="7" fill="url(#' + id + 'Core)"/>' +
+      '<path class="rae-character__signal-wave" d="M199 190h22l7-12 9 25 10-31 9 18h25"/>' +
+    '</g>' +
+    '<g class="rae-character__microdetail">' +
+      '<path d="M122 338h38M320 338h38M119 352h20M341 352h20"/>' +
+      '<circle cx="160" cy="368" r="2"/><circle cx="320" cy="368" r="2"/>' +
+      '<path d="M191 486h98M211 469h58"/>' +
+    '</g>' +
+  '</svg>';
 };

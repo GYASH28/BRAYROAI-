@@ -22,16 +22,38 @@ if(initMarket()){
  initContact();
  initAnalytics();
 
- // Rae's transport and panel handlers are loaded when the visitor actually asks.
+ // Rae loads on demand. Keep the opener available if a chunk fails to load,
+ // so visitors can retry instead of losing access to the assistant.
  const raeButtons=[...document.querySelectorAll('[data-rae-open]')];
  let loadingRae=null;
  const openRae=async()=>{
-  raeButtons.forEach(button=>button.removeEventListener('click',openRae));
-  loadingRae ||= import('./rae.js').then(module=>module.initRae());
-  await loadingRae;
-  const dialog=document.querySelector('#rae-dialog');
-  if(!dialog.open)dialog.showModal();
-  dialog.querySelector('textarea')?.focus();
+  raeButtons.forEach(button=>button.setAttribute('aria-busy','true'));
+  try{
+   loadingRae ||= import('./rae.js').then(module=>module.initRae());
+   await loadingRae;
+   const dialog=document.querySelector('#rae-dialog');
+   if(!dialog)throw new Error('Rae dialog is unavailable');
+   dialog.querySelector('.rae-status')?.replaceChildren();
+   // initRae owns subsequent openings, but only after initialization succeeds.
+   raeButtons.forEach(button=>button.removeEventListener('click',openRae));
+   if(!dialog.open)dialog.showModal();
+   dialog.querySelector('textarea')?.focus();
+  }catch(error){
+   loadingRae=null;
+   console.error('Rae could not load',error);
+   const dialog=document.querySelector('#rae-dialog');
+   if(dialog){
+    const status=dialog.querySelector('.rae-status');
+    if(status)status.textContent='Rae could not load. Refresh this page to retry, or contact the studio by email.';
+    if(!dialog.open)dialog.showModal();
+    // The close handler is normally installed by the lazy module.
+    if(!dialog.dataset.raeInitialized){
+     dialog.querySelector('[data-rae-close]')?.addEventListener('click',()=>dialog.close(),{once:true});
+    }
+   }
+  }finally{
+   raeButtons.forEach(button=>button.removeAttribute('aria-busy'));
+  }
  };
  raeButtons.forEach(button=>button.addEventListener('click',openRae));
 

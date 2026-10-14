@@ -16,7 +16,7 @@ let changingMarket=false;
 // a native snapshot transition can race the modal leaving the top layer.
 const changeMarket=(url,replace=false)=>{
  if(changingMarket)return;changingMarket=true;
- (window.brayroPageRevealed||Promise.resolve()).then(()=>{
+ Promise.resolve(window.brayroPageRevealed).catch(()=>{}).then(()=>{
   const style=document.createElement('style');style.dataset.marketNavigation='';style.textContent='@view-transition{navigation:none}';document.head.append(style);
   document.documentElement.classList.add('market-switching');
   const delay=matchMedia('(prefers-reduced-motion:reduce)').matches?0:180;
@@ -55,18 +55,16 @@ export function initMarket(){
   const choices=[...dialog.querySelectorAll('[data-market-choice]')],index=choices.indexOf(document.activeElement);
   if(index<0)return;event.preventDefault();choices[(index+(event.key==='ArrowDown'||event.key==='ArrowRight'?1:choices.length-1))%choices.length].focus();
  });
- if(!manual&&here.market==='in'&&location.pathname==='/'){
-  document.documentElement.classList.add('market-detecting');
-  fetch('/api/market',{credentials:'same-origin',cache:'no-store'}).then(response=>response.ok?response.json():null).then(data=>{
-   if(detectionCancelled||recalled()||!data||!valid(data.market)||data.market==='in'||location.pathname!=='/')return;
-   const suggestion=document.createElement('aside');
-   suggestion.className='market-suggestion';
-   suggestion.setAttribute('aria-label','Regional pricing suggestion');
-   suggestion.innerHTML=`<p>Looks like <strong>${MARKETS[data.market].name}</strong> may be a better price book for you.</p><div class="market-suggestion-actions"><button type="button" data-market-dismiss>Stay here</button><button type="button" data-market-accept>View ${MARKETS[data.market].currency}</button></div>`;
-   document.body.append(suggestion);
-   suggestion.querySelector('[data-market-dismiss]').addEventListener('click',()=>{detectionCancelled=true;suggestion.remove()});
-   suggestion.querySelector('[data-market-accept]').addEventListener('click',()=>{remember(data.market);suggestion.remove();changeMarket(marketDestination(data.market,'/'))});
-  }).catch(()=>{}).finally(()=>document.documentElement.classList.remove('market-detecting'));
+ // First-time visitors arriving on any Indian route see the country-specific
+ // price book when the edge provides a reliable supported country. Direct
+ // regional URLs and every explicit manual choice always take precedence.
+ if(!manual&&here.market==='in'){
+  fetch('/api/market',{credentials:'same-origin',cache:'no-store'})
+   .then(response=>response.ok?response.json():null)
+   .then(data=>{
+    if(detectionCancelled||recalled()||!data||!valid(data.market)||data.market==='in'||currentMarket()!=='in')return;
+    changeMarket(marketDestination(data.market,here.route),true);
+   }).catch(()=>{});
  }
  return true;
 }

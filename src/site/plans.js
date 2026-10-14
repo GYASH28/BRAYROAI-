@@ -71,10 +71,21 @@ export function initPlans(){
    detailModule||=import('./plan-details.js');
    const module=await detailModule;
    if(ticket!==request||!visible(trigger))return;
+   trigger.parentElement?.querySelector('[data-plan-load-error]')?.remove();
    module.openPlanDetails(id,trigger);
   }catch(error){
    detailModule=null;
    console.error('Plan details failed',error);
+   if(ticket===request&&visible(trigger)){
+    let feedback=trigger.parentElement?.querySelector('[data-plan-load-error]');
+    if(!feedback&&trigger.parentElement){
+     feedback=document.createElement('small');
+     feedback.dataset.planLoadError='';
+     feedback.setAttribute('role','alert');
+     trigger.parentElement.append(feedback);
+    }
+    if(feedback)feedback.textContent='Full details could not load. Try again, or use the enquiry link for this plan.';
+   }
   }finally{trigger.removeAttribute('aria-busy')}
  });
 }

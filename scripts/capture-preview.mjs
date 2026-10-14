@@ -39,8 +39,15 @@ for(const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  await page.locator('#work').scrollIntoViewIfNeeded();
  await page.locator('.work-desktop img').evaluate(image=>image.decode());
  await page.screenshot({path:`${folder}/${device}-work.png`});
+ await page.locator('#studio-systems').scrollIntoViewIfNeeded();
+ await page.waitForTimeout(150);
+ await page.screenshot({path:`${folder}/${device}-studio-systems.png`});
  await page.locator('[data-project-path] .path-heading').scrollIntoViewIfNeeded();
  await page.screenshot({path:`${folder}/${device}-project-path.png`});
+ await page.locator('label:has(input[name="project-path"][value="monthly"])').click();
+ await page.screenshot({path:`${folder}/${device}-project-path-monthly.png`});
+ await page.locator('#contact').scrollIntoViewIfNeeded();
+ await page.screenshot({path:`${folder}/${device}-contact-desk.png`});
  for(const [route,name] of [['/plans','plans'],['/clients','clients'],['/clients/fakhrimart','case'],['/founder','founder'],['/ai-workflow-audit','audit'],['/company-second-brain','brain'],['/terms','terms']]){
   await page.goto(base+route,{waitUntil:'networkidle'});await page.screenshot({path:`${folder}/${device}-${name}.png`});
   if(name==='plans'){

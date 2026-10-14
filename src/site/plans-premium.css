@@ -713,3 +713,14 @@
     transform:none!important;
   }
 }
+
+/* Keep lazy-loaded plan detail failures legible beside their existing enquiry CTA. */
+[data-plan-load-error] {
+ display: block;
+ flex-basis: 100%;
+ width: 100%;
+ font-size: .78rem;
+ line-height: 1.45;
+ color: #853c20;
+ margin-block-start: .5rem;
+}

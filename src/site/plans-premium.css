@@ -724,3 +724,7 @@
  color: #853c20;
  margin-block-start: .5rem;
 }
+
+.ai-premium-card.is-featured [data-plan-load-error] {
+ color: #ffbc9c;
+}

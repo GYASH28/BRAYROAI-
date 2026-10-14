@@ -388,6 +388,22 @@ test('manual market choice survives navigation and late detection',async({page})
  await expect(page.locator('[data-price="launch-website"]').first()).toHaveText('AED 2,990');
 });
 
+test('country detection follows the route and never overrides a manual choice',async({page})=>{
+ await page.route('**/api/market',route=>route.fulfill({
+  status:200,contentType:'application/json',
+  body:JSON.stringify({country:'AU',market:'au',language:'en',source:'edge-country'})
+ }));
+ await page.goto('/plans?ref=campaign#monthly-builds');
+ await expect(page).toHaveURL(/\/au\/plans\?ref=campaign#monthly-builds$/);
+ await expect(page.locator('.header-inner [data-market-open]')).toContainText('Australia · AUD');
+ await expect(page.locator('#monthly-builds [data-price="monthly-starter"]').first()).toHaveText('A$390/month');
+
+ await page.evaluate(()=>localStorage.setItem('brayro_market_manual','in'));
+ await page.goto('/plans?ref=manual#monthly-builds');
+ await expect(page).toHaveURL(/\/plans\?ref=manual#monthly-builds$/);
+ await expect(page.locator('.header-inner [data-market-open]')).toContainText('India · INR');
+});
+
 test('old Arabic URLs and manual preferences resolve to English UAE',async({page})=>{
  await page.goto('/ae/ar/plans');
  await expect(page).toHaveURL(/\/ae\/plans$/);

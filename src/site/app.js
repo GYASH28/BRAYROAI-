@@ -44,7 +44,7 @@ if(initMarket()){
    const dialog=document.querySelector('#rae-dialog');
    if(dialog){
     const status=dialog.querySelector('.rae-status');
-    if(status)status.textContent='Rae could not load. Close this window and try again, or contact the studio by email.';
+    if(status)status.textContent='Rae could not load. Refresh this page to retry, or contact the studio by email.';
     if(!dialog.open)dialog.showModal();
     // The close handler is normally installed by the lazy module.
     if(!dialog.dataset.raeInitialized){

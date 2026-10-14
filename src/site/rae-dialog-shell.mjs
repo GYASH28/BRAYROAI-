@@ -33,7 +33,7 @@ export const raeDialog = `
       <section class="rae-conversation" aria-label="Conversation with Rae">
         <div class="rae-thread" tabindex="0" role="region" aria-label="Conversation and starting questions">
           <div class="rae-starts" role="group" aria-label="Ways Rae can help">
-            <p><span>Start with a question</span><small>Choose a path or write your own.</small></p>
+            <p><span>Start with a question</span><small>Your conversation stays in this tab as you explore.</small></p>
             <button type="button" data-rae-prompt="Help me plan a new website or digital product for my business.">
               <span>01</span><strong>Plan a project with Rae</strong><i aria-hidden="true">↗</i>
             </button>

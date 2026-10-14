@@ -56,6 +56,7 @@ export function initRae() {
   const stopButton = dialog.querySelector('[data-rae-stop]');
   const launcher = document.querySelector('.rae-launcher');
   const draftKey = 'brayro_rae_draft';
+  const historyKey = 'brayro_rae_history_v1';
 
   let history = [];
   let activeRequest = null;
@@ -113,6 +114,52 @@ export function initRae() {
     scrollLatest();
     return node;
   };
+  // Keep only completed turns in this tab. The server receives them only on the next question.
+  const persistHistory = () => {
+    try {
+      if (history.length) sessionStorage.setItem(historyKey, JSON.stringify(history));
+      else sessionStorage.removeItem(historyKey);
+    } catch {}
+  };
+  const addCopyAction = (answer) => {
+    const tools = document.createElement('div');
+    tools.className = 'rae-answer-tools';
+    const copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'rae-copy-answer';
+    copy.setAttribute('aria-label', 'Copy Rae answer');
+    copy.textContent = 'Copy answer';
+    copy.addEventListener('click', async () => {
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(answer.textContent);
+        copy.textContent = 'Copied';
+        state('Answer copied to clipboard.');
+      } catch {
+        state('Copy unavailable. Select the answer text to copy it.');
+      }
+    });
+    tools.append(copy);
+    answer.after(tools);
+  };
+  const restoreHistory = () => {
+    let stored;
+    try { stored = JSON.parse(sessionStorage.getItem(historyKey) || 'null'); } catch { return; }
+    if (!Array.isArray(stored)) return;
+    const valid = stored.slice(-8).filter(item => item
+      && ['user', 'assistant'].includes(item.role)
+      && typeof item.text === 'string' && item.text.trim())
+      .map(({role, text}) => ({role, text: text.slice(0, 1200)}));
+    // Do not display an incomplete or malformed pair as a valid conversation.
+    if (valid.length % 2 || valid.some((item, i) => item.role !== (i % 2 ? 'assistant' : 'user'))) return;
+    history = valid;
+    for (const item of history) {
+      const node = message(item.role, item.text);
+      if (item.role === 'assistant') addCopyAction(node);
+    }
+    if (history.length) dialog.classList.add('rae-has-conversation');
+  };
+
   const renderMeta = (node, metadata) => {
     const actions = metadata.flatMap(meta => [meta?.card?.action, ...(Array.isArray(meta?.actions) ? meta.actions : [])]);
     const links = new Map();
@@ -153,6 +200,7 @@ export function initRae() {
     clearTimeout(openingTimer);
     cancelActive();
     history = [];
+    persistHistory();
     log.replaceChildren();
     dialog.classList.remove('rae-has-conversation');
     state('');
@@ -163,6 +211,7 @@ export function initRae() {
   };
 
   try { input.value = (sessionStorage.getItem(draftKey) || '').slice(0, 1200); } catch {}
+  restoreHistory();
   input.addEventListener('input', saveDraft);
   input.addEventListener('focus', () => { if (!activeRequest) setCharacter('listening'); });
   input.addEventListener('blur', () => { if (!activeRequest) setCharacter('idle'); });
@@ -333,8 +382,10 @@ export function initRae() {
       answer.textContent = answer.textContent.replace(/\*\*/g, '').replace(/^\s*[-*]\s+/gm, '• ');
       const follow = followsLatest();
       renderMeta(answer, request.metadata);
+      addCopyAction(answer);
       history.push({ role: 'user', text: question }, { role: 'assistant', text: answer.textContent });
       history = history.slice(-8);
+      persistHistory();
       state('');
       const emotion = request.metadata.find(meta => meta?.emotion)?.emotion;
       setCharacter(['positive', 'proud', 'curious', 'surprised', 'playful', 'shy', 'laugh', 'wink'].includes(emotion) ? emotion : 'positive');

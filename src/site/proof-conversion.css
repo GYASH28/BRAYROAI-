@@ -720,7 +720,7 @@
  background-size:25% 100%,auto;
 }
 .page-home .contact-grid{
- display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);
  gap:clamp(45px,7vw,118px);align-items:start;
 }
 .page-home .contact-grid>div:first-child{position:sticky;top:calc(var(--header,72px) + 60px)}
@@ -734,7 +734,7 @@
 }
 .page-home .contact-grid h2{
  max-width:9ch;margin:clamp(30px,4vw,60px) 0;
- font:520 clamp(70px,8vw,128px)/.9 Space,sans-serif;
+ font:520 clamp(66px,7vw,108px)/.9 Space,sans-serif;
  letter-spacing:-.075em;color:#171b20;
 }
 .page-home .contact-grid h2 i{color:#b94e2d;font-style:normal}

@@ -601,3 +601,104 @@
 @media(max-width:1050px){
   .page-home .contact-grid{grid-template-columns:1fr;gap:40px}
 }
+
+
+/* Editorial study: distinct artefacts rather than twin SaaS feature cards.
+   These are real application screenshots, never generated or invented proof. */
+.page-home .studio-proof{
+  padding:clamp(84px,9vw,142px) 0 clamp(92px,12vw,190px);
+  background:#141516;
+  color:#f1eee7;
+}
+.page-home .studio-proof::before{
+  background:linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
+    radial-gradient(ellipse at 82% 8%,rgba(211,96,55,.13),transparent 48%);
+  background-size:25% 100%,auto;
+  opacity:.66;
+}
+.page-home .studio-proof>.wrap{position:relative;isolation:isolate}
+.page-home .studio-proof-head{
+  grid-template-columns:minmax(0,1.3fr) minmax(240px,.52fr);
+  align-items:end;
+  padding:0 0 clamp(30px,4vw,56px);
+  border-color:#e8e0d52c;
+  gap:clamp(30px,6vw,96px);
+}
+.page-home .studio-proof-head .label{
+  display:flex;align-items:center;gap:14px;letter-spacing:.18em;font-size:9px;color:#ff9468;
+}
+.page-home .studio-proof-head .label::before{content:"02";font:550 17px/1 Space,sans-serif;color:#f6f1e7;border-right:1px solid #ff6b39;padding-right:14px}
+.page-home .studio-proof-head h2{max-width:13ch;font-size:clamp(58px,7.4vw,116px);line-height:.87;margin-top:24px;text-wrap:balance}
+.page-home .studio-proof-head h2 em{color:#fa7548}
+.page-home .studio-proof-head>div:last-child{padding:0 0 6px 24px;border-left:1px solid #ed80514a}
+.page-home .studio-proof-head>div:last-child p{max-width:37ch;font-size:clamp(13px,1.1vw,15px);line-height:1.75;color:#b1b3b4}
+.page-home .studio-system-grid{
+  grid-template-columns:minmax(0,1.13fr) minmax(0,.87fr);
+  align-items:start;gap:clamp(22px,3vw,52px);
+  margin-top:clamp(30px,5vw,80px);
+}
+.page-home .studio-system-card{
+  display:flex;min-width:0;min-height:0;flex-direction:column;
+  overflow:visible;border:0;border-radius:0;box-shadow:none;
+  transition:transform .55s cubic-bezier(.22,1,.36,1);
+}
+.page-home .studio-system-card:hover{transform:translateY(-5px);box-shadow:none;border:0}
+.page-home .studio-system-card:first-child{background:#e7e4dc;color:#17191d;padding:clamp(17px,2vw,32px)}
+.page-home .studio-system-card:last-child{
+  margin-top:clamp(24px,7vw,112px);padding:clamp(18px,2vw,31px);
+  border:1px solid #6a789059;background:#111a24;color:#f2f0e9;
+}
+.page-home .studio-system-card figure{
+  height:auto;min-height:0;aspect-ratio:1.62;overflow:hidden;
+  border:1px solid #eae4db30;border-radius:0;background:#0a111a;
+}
+.page-home .studio-system-card:last-child figure{order:2;aspect-ratio:1.46;margin-top:25px}
+.page-home .studio-system-card img{display:block;width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .9s cubic-bezier(.22,1,.36,1)}
+.page-home .studio-system-card:hover img{transform:scale(1.027)}
+.page-home .studio-system-card figure::after{background:linear-gradient(to bottom,transparent 64%,rgba(0,0,0,.5))}
+.page-home .studio-system-card figcaption{
+  position:absolute;bottom:15px;left:17px;z-index:1;
+  color:#f5eee6;font:750 9px/1.4 Manrope,sans-serif;letter-spacing:.16em;
+  text-shadow:0 2px 15px #000;
+}
+.page-home .studio-system-copy{padding:clamp(25px,3vw,42px) clamp(2px,1vw,15px) 10px}
+.page-home .studio-system-card:last-child .studio-system-copy{order:1;padding:18px 2px 0}
+.page-home .proof-kind{margin-bottom:clamp(26px,3vw,48px);color:#626363;letter-spacing:.16em;font-size:9px}
+.page-home .proof-kind b{color:#c1502b}
+.page-home .studio-system-card:last-child .proof-kind{color:#aab8c8}
+.page-home .studio-system-card:last-child .proof-kind b{color:#ff9d6f}
+.page-home .studio-system-copy h3{max-width:none;font-size:clamp(49px,5.7vw,92px);line-height:.9;letter-spacing:-.07em}
+.page-home .studio-system-copy p{max-width:47ch;margin-top:19px;font-size:clamp(13px,1.03vw,16px);line-height:1.66;color:#4e5258}
+.page-home .studio-system-card:last-child .studio-system-copy h3{font-size:clamp(48px,5vw,78px)}
+.page-home .studio-system-card:last-child .studio-system-copy p{color:#b3c1cd}
+.page-home .system-proof-meta{margin-top:27px;gap:6px}
+.page-home .system-proof-meta span{border-radius:0;padding:7px 9px;border-color:#1b1d2530;color:#50535a;font-size:9px;letter-spacing:0}
+.page-home .studio-system-card:last-child .system-proof-meta span{color:#c6d0db;border-color:#c3ccdf40}
+.page-home .studio-system-copy>a{
+  margin-top:clamp(31px,4vw,58px);min-height:52px;padding-top:18px;
+  border-color:#1b1d2540;color:#17191d;font-size:12px;
+}
+.page-home .studio-system-copy>a span{font-size:25px;line-height:1;transition:translate .2s}
+.page-home .studio-system-copy>a:hover span{translate:5px -5px}
+.page-home .studio-system-card:last-child .studio-system-copy>a{color:#eeeae4;border-color:#d6e0ea3d}
+@media(max-width:800px){
+ .page-home .studio-proof-head{grid-template-columns:1fr;gap:28px}
+ .page-home .studio-proof-head>div:last-child{max-width:52ch}
+ .page-home .studio-system-grid{grid-template-columns:1fr;gap:22px;margin-top:38px}
+ .page-home .studio-system-card:last-child{margin-top:0}
+ .page-home .studio-system-card:last-child figure{order:0;aspect-ratio:1.62;margin-top:0}
+ .page-home .studio-system-card:last-child .studio-system-copy{order:0;padding-top:28px}
+}
+@media(max-width:520px){
+ .page-home .studio-proof{padding-block:77px 98px}
+ .page-home .studio-proof-head h2{font-size:clamp(55px,13.5vw,80px)}
+ .page-home .studio-system-card:first-child,.page-home .studio-system-card:last-child{padding:14px}
+ .page-home .studio-system-card figure,.page-home .studio-system-card:last-child figure{aspect-ratio:1.4}
+ .page-home .studio-system-copy{padding:28px 8px 9px}
+ .page-home .studio-system-card:last-child .studio-system-copy{padding:26px 8px 9px}
+ .page-home .studio-system-copy h3,.page-home .studio-system-card:last-child .studio-system-copy h3{font-size:clamp(50px,14vw,74px)}
+ .page-home .proof-kind{flex-wrap:wrap;gap:9px;margin-bottom:32px}
+}
+@media(prefers-reduced-motion:reduce){
+ .page-home .studio-system-card,.page-home .studio-system-card img,.page-home .studio-system-copy>a span{transition:none!important;transform:none!important}
+}

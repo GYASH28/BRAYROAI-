@@ -26,7 +26,7 @@ export const raeDialog = `
           <p id="rae-description">Bring the rough version. Rae can help you understand the work, compare a starting point, or find the right route through the studio.</p>
         </div>
         <div class="rae-compass" aria-hidden="true">
-          <span>Scope</span><span>Compare</span><span>Explain</span>
+          <span>Discover</span><span>Shape</span><span>Build</span>
         </div>
       </aside>
 
@@ -46,8 +46,8 @@ export const raeDialog = `
           </div>
 
           <div class="rae-thread-empty" aria-hidden="true">
-            <span>Conversation space</span>
-            <p>A first idea is enough.</p>
+            <span>RAE / THE THINKING DESK</span>
+            <p>Tell me what you want to make real.</p>
           </div>
           <div class="rae-messages" role="log" aria-label="Messages" aria-live="polite" aria-relevant="additions text"></div>
         </div>

@@ -482,6 +482,32 @@ test('Rae replaces interrupted text and retains only completed answers',async({p
  expect(requests[1].history).toEqual([{role:'user',text:'What are the starting prices?'},{role:'assistant',text:'Launch Website starts at ₹9,999. Monthly Website Starter starts at ₹2,599/mo.'}]);
 });
 
+test('Rae preserves completed turns across pages and clears them on reset',async({page})=>{
+ const response='We can begin with a clear website brief and a published starting scope.';
+ const stream=['event: delta','data: '+JSON.stringify({text:response}),'','event: done','data: {"finishReason":"stop"}','',''].join('\n');
+ await page.route('**/api/rae-chat',route=>route.fulfill({status:200,contentType:'text/event-stream',body:stream}));
+ await page.goto('/plans');
+ await page.locator('.rae-launcher').click();
+ await page.locator('#rae-input').fill('Help me plan a website.');
+ await page.getByRole('button',{name:'Send message to Rae'}).click();
+ await expect(page.locator('.rae-message.assistant')).toHaveText(response);
+ expect(await page.evaluate(()=>JSON.parse(sessionStorage.getItem('brayro_rae_history_v1')).length)).toBe(2);
+ await page.goto('/clients');
+ await page.locator('.rae-launcher').click();
+ await expect(page.locator('.rae-message.user')).toHaveText('Help me plan a website.');
+ await expect(page.locator('.rae-message.assistant')).toHaveText(response);
+ await page.evaluate(()=>{
+  window.__raeCopied='';
+  Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{window.__raeCopied=text}}});
+ });
+ await page.getByRole('button',{name:'Copy Rae answer'}).click();
+ expect(await page.evaluate(()=>window.__raeCopied)).toBe(response);
+ await expect(page.locator('.rae-status')).toContainText('copied');
+ await page.locator('[data-rae-reset]').click();
+ await expect(page.locator('.rae-message')).toHaveCount(0);
+ expect(await page.evaluate(()=>sessionStorage.getItem('brayro_rae_history_v1'))).toBeNull();
+});
+
 test('Rae renders only allowlisted, market-aware suggestions',async({page})=>{
  const body=[
   'event: delta\ndata: {"text":"The audit is a focused first step."}\n\n',

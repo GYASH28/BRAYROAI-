@@ -1205,3 +1205,42 @@
 .rae-dialog .rae-starts .ui-arrow { width: 20px; height: 12px; }
 .rae-dialog .rae-fallback .ui-arrow { width: 19px; height: 12px; margin-left: 4px; }
 .rae-launcher { --rae-ease: cubic-bezier(.22, 1, .36, 1); }
+
+/* Quiet utilities for completed answers: no extra panels or persistent animations. */
+.rae-dialog .rae-answer-tools {
+  display: flex;
+  justify-content: flex-end;
+  padding: 9px 10px 13px 0;
+  margin-left: 74px;
+}
+.rae-dialog .rae-copy-answer {
+  min-height: 36px;
+  padding: 7px 13px;
+  border: 1px solid rgb(242 238 231 / .22);
+  border-radius: 999px;
+  color: #d8dde8;
+  background: rgb(255 255 255 / .035);
+  font: 650 10px/1.2 Manrope, sans-serif;
+  letter-spacing: .025em;
+  transition: border-color .2s, background .2s;
+}
+.rae-dialog .rae-copy-answer::before {
+  content: '▢';
+  color: #ff9c72;
+  margin-right: 8px;
+}
+.rae-dialog .rae-copy-answer:is(:hover,:focus-visible) {
+  border-color: #ff9c72;
+  background: rgb(255 107 44 / .10);
+}
+@media (max-width: 600px) {
+  .rae-dialog .rae-answer-tools { margin-left: 55px; }
+  .rae-dialog .rae-message { font-size: 14px; line-height: 1.62; }
+  .rae-dialog .rae-intro-copy p { font-size: 12.5px; }
+}
+@media (max-width: 390px) {
+  .rae-dialog .rae-intro-copy p { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rae-dialog .rae-copy-answer { transition: none; }
+}

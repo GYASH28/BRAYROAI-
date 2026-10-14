@@ -13,18 +13,33 @@ export function initPlans(){
  document.documentElement.classList.add('js-ready');
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const reveals=[...document.querySelectorAll('[data-plan-reveal]')];
+ let revealObserver=null;
  if(reduced.matches||!('IntersectionObserver'in window))reveals.forEach(node=>node.classList.add('is-in'));
  else{
-  const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-in');observer.unobserve(entry.target)}},{rootMargin:'0px 0px -9% 0px',threshold:.05});
-  reveals.forEach(node=>observer.observe(node));
+  revealObserver=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-in');revealObserver.unobserve(entry.target)}},{rootMargin:'0px 0px -9% 0px',threshold:.05});
+  reveals.forEach(node=>revealObserver.observe(node));
  }
+ // Visitors can enable reduced motion while the Plans page is open.
+ // Reveal pending content immediately; never leave sections waiting for a scroll.
+ reduced.addEventListener('change',()=>{
+  if(!reduced.matches)return;
+  revealObserver?.disconnect();
+  reveals.forEach(node=>node.classList.add('is-in'));
+ });
  const tiltCards=[...document.querySelectorAll('[data-plan-tilt]')];
- if(!reduced.matches&&matchMedia('(hover:hover) and (pointer:fine)').matches){
+ const resetTilt=card=>{
+  card.style.setProperty('--rx','0deg');
+  card.style.setProperty('--ry','0deg');
+  card.style.removeProperty('--mx');
+  card.style.removeProperty('--my');
+ };
+ reduced.addEventListener('change',()=>{if(reduced.matches)tiltCards.forEach(resetTilt)});
+ if(matchMedia('(hover:hover) and (pointer:fine)').matches){
   for(const card of tiltCards){
    let frame=0,lastEvent=null;
    const paint=()=>{
     frame=0;
-    if(!lastEvent)return;
+    if(!lastEvent||reduced.matches)return;
     const rect=card.getBoundingClientRect();
     const px=Math.max(0,Math.min(1,(lastEvent.clientX-rect.left)/rect.width));
     const py=Math.max(0,Math.min(1,(lastEvent.clientY-rect.top)/rect.height));
@@ -34,24 +49,29 @@ export function initPlans(){
     card.style.setProperty('--mx',`${(px*100).toFixed(1)}%`);
     card.style.setProperty('--my',`${(py*100).toFixed(1)}%`);
    };
-   card.addEventListener('pointermove',event=>{lastEvent=event;if(!frame)frame=requestAnimationFrame(paint)},{passive:true});
+   card.addEventListener('pointermove',event=>{if(reduced.matches)return;lastEvent=event;if(!frame)frame=requestAnimationFrame(paint)},{passive:true});
    card.addEventListener('pointerleave',()=>{
     lastEvent=null;
     if(frame){cancelAnimationFrame(frame);frame=0}
-    card.style.setProperty('--rx','0deg');
-    card.style.setProperty('--ry','0deg');
-    card.style.removeProperty('--mx');
-    card.style.removeProperty('--my');
+    resetTilt(card);
    },{passive:true});
   }
  }
  const routeLinks=[...document.querySelectorAll('[data-plan-route]')];
  const sections=[...document.querySelectorAll('[data-plan-section]')];
  if('IntersectionObserver'in window&&sections.length){
+  // IntersectionObserver reports only changed entries, not every section.
+  // Keep the full visible set so a departing section cannot steal the highlight.
+  const ratios=new Map(sections.map(section=>[section,0]));
   const activeObserver=new IntersectionObserver(entries=>{
-   const current=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-   if(!current)return;
-   routeLinks.forEach(link=>{const on=link.dataset.planRoute===current.target.id;link.classList.toggle('is-active',on);if(on)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current')});
+   for(const entry of entries)ratios.set(entry.target,entry.isIntersecting?entry.intersectionRatio:0);
+   const current=[...ratios].filter(([,ratio])=>ratio>0).sort((a,b)=>b[1]-a[1])[0]?.[0];
+   routeLinks.forEach(link=>{
+    const on=Boolean(current)&&link.dataset.planRoute===current.id;
+    link.classList.toggle('is-active',on);
+    if(on)link.setAttribute('aria-current','location');
+    else link.removeAttribute('aria-current');
+   });
   },{rootMargin:'-30% 0px -58% 0px',threshold:[0,.05,.2,.5]});
   sections.forEach(section=>activeObserver.observe(section));
  }

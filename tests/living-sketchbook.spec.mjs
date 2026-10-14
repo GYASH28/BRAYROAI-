@@ -482,6 +482,20 @@ test('Rae replaces interrupted text and retains only completed answers',async({p
  expect(requests[1].history).toEqual([{role:'user',text:'What are the starting prices?'},{role:'assistant',text:'Launch Website starts at ₹9,999. Monthly Website Starter starts at ₹2,599/mo.'}]);
 });
 
+test('Plans reveals and tilt stop safely when motion preference changes',async({page})=>{
+ await page.goto('/plans');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect(page.locator('[data-plan-reveal]:not(.is-in)')).toHaveCount(0);
+ const cards=page.locator('[data-plan-tilt]');
+ expect(await cards.count()).toBeGreaterThan(0);
+ const values=await cards.first().evaluate(card=>({
+  rx:card.style.getPropertyValue('--rx'),ry:card.style.getPropertyValue('--ry')
+ }));
+ expect(values).toEqual({rx:'0deg',ry:'0deg'});
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await expect(page.locator('[data-plan-reveal]:not(.is-in)')).toHaveCount(0);
+});
+
 test('Rae preserves completed turns across pages and clears them on reset',async({page})=>{
  const response='We can begin with a clear website brief and a published starting scope.';
  const stream=['event: delta','data: '+JSON.stringify({text:response}),'','event: done','data: {"finishReason":"stop"}','',''].join('\n');

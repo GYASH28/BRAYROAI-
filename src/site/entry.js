@@ -35,15 +35,48 @@ export function initStudioEntry(){
   window.addEventListener('pageshow',event=>{if(event.persisted&&scrollY>0){arrival.disconnect();loadMotion()}});
  }
  const scene=document.querySelector('[data-sculpture]');
- let sculpture=null,loading=null;
+ let sculpture=null,loading=null,sceneIdle=0,sceneIdleKind='';
  const loadSculpture=()=>{
-  if(!scene||reduced.matches)return Promise.resolve();if(loading)return loading;
+  if(!scene?.isConnected||reduced.matches)return Promise.resolve();if(loading)return loading;
   const sync=()=>{const hero=scene.closest('.studio-hero');scene.dispatchEvent(new CustomEvent('studio:travel',{detail:{progress:Number(hero?.dataset.heroProgress||0)}}));scene.dispatchEvent(new CustomEvent('studio:assembly',{detail:{progress:Number(hero?.dataset.assemblyProgress||0)}}))};
   scene.addEventListener('studio:ready',sync,{once:true});
-  loading=import('./sculpture.jsx').then(m=>{sculpture=m.mountSculpture(scene)}).catch(()=>{scene.dataset.renderState='fallback'});return loading;
+  loading=import('./sculpture.jsx').then(m=>{
+   // An expensive module may finish loading after reduced motion is enabled.
+   if(reduced.matches||!scene.isConnected){loading=null;return}
+   sculpture=m.mountSculpture(scene);
+  }).catch(()=>{scene.dataset.renderState='fallback'});
+  return loading;
  };
- if(scene&&!reduced.matches&&matchMedia('(min-width:761px)').matches)opening.finished.then(()=>{if(!document.hidden)loadSculpture()});
- window.addEventListener('scroll',()=>opening.finished.then(loadSculpture),{once:true,passive:true});
+ const sceneNearby=()=>{
+  const box=scene?.closest('.studio-hero')?.getBoundingClientRect();
+  return !!box&&scene.isConnected&&box.bottom>-160&&box.top<innerHeight+320;
+ };
+ const cancelSceneIdle=()=>{
+  if(!sceneIdle)return;
+  if(sceneIdleKind==='idle')window.cancelIdleCallback?.(sceneIdle);
+  else clearTimeout(sceneIdle);
+  sceneIdle=0;sceneIdleKind='';
+ };
+ const scheduleScene=()=>{
+  if(!scene||reduced.matches||loading||sculpture||sceneIdle||document.hidden)return;
+  const begin=()=>{
+   sceneIdle=0;sceneIdleKind='';
+   opening.finished.then(()=>{if(!reduced.matches&&!document.hidden&&sceneNearby())loadSculpture()});
+  };
+  // Let the poster handle the scroll while Three.js loads during idle.
+  if('requestIdleCallback' in window){
+   sceneIdleKind='idle';sceneIdle=window.requestIdleCallback(begin,{timeout:1000});
+  }else{
+   sceneIdleKind='timer';sceneIdle=window.setTimeout(begin,200);
+  }
+ };
+ if(scene){
+  if(!reduced.matches&&matchMedia('(min-width:761px)').matches)opening.finished.then(scheduleScene);
+  window.addEventListener('scroll',scheduleScene,{passive:true});
+  reduced.addEventListener('change',()=>{if(reduced.matches)cancelSceneIdle();else scheduleScene()});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleScene()});
+  window.addEventListener('pageshow',event=>{if(event.persisted)scheduleScene()});
+ }
  const hero=document.querySelector('.hero-stage');
  if(hero&&!reduced.matches&&matchMedia('(pointer:fine)').matches){
   let disposeType=null,pendingTypePointer=null;
@@ -59,5 +92,5 @@ export function initStudioEntry(){
  const mark=document.querySelector('[data-footer-wordmark]');if(mark){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./footer-wordmark.js').then(m=>m.initFooterWordmark(mark)).catch(()=>{})}},{rootMargin:'300px'});observer.observe(mark)}
  const path=document.querySelector('[data-project-path]');if(path){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();import('./project-path.js').then(m=>m.initProjectPath(path)).catch(()=>{})}},{rootMargin:'500px'});observer.observe(path)}
  const planDesk=document.querySelector('[data-plan-desk]');if(planDesk)import('./plan-desk.jsx').then(m=>m.mountPlanDesk(planDesk)).catch(()=>{});
- window.addEventListener('pagehide',event=>{if(!event.persisted)sculpture?.()});
+ window.addEventListener('pagehide',event=>{cancelSceneIdle();if(!event.persisted)sculpture?.()});
 }

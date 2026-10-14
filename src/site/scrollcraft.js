@@ -139,7 +139,8 @@
 (function (global) {
   'use strict';
 
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var motionMQ = matchMedia('(prefers-reduced-motion: reduce)');
+  var reduce = motionMQ.matches;
   var fineMQ = matchMedia('(hover: hover) and (pointer: fine)');
   var smallMQ = matchMedia('(max-width: 860px)');
   var coarse = matchMedia('(hover: none) and (pointer: coarse)').matches;
@@ -945,7 +946,13 @@
     // Split from read() on purpose: seeking is asynchronous and rate-limited by
     // the decoder, while read() must stay cheap enough to run on every scroll
     // event. The lerp here is also what turns a jittery wheel into a glide.
+    var decoderFrame = 0;
+    function startDecoder() {
+      if (playheads.length && !decoderFrame && !reduce && !document.hidden) decoderFrame = requestAnimationFrame(tick);
+    }
     function tick() {
+      decoderFrame = 0;
+      if (reduce || document.hidden) return;
       // Deadband. A phone decoder cannot service a seek every frame, so asking
       // for one costs more than it shows; 20ms of clip is under a frame of
       // footage anyway.
@@ -963,7 +970,7 @@
         var t = clamp(V.cur, 0, 0.999) * dur;
         if (Math.abs(V.el.currentTime - t) > eps) { try { V.el.currentTime = t; } catch (e) {} }
       }
-      requestAnimationFrame(tick);
+      startDecoder();
     }
 
     // iOS will not paint a muted video that has never been handed a user
@@ -1004,7 +1011,7 @@
       if (!tilts.length && !magnets.length && !spots.length) return;
 
       function schedulePointer() {
-        if (!pointerFrame && !document.hidden) pointerFrame = requestAnimationFrame(pointerTick);
+        if (!pointerFrame && !document.hidden && !reduce) pointerFrame = requestAnimationFrame(pointerTick);
       }
       function measurePointerTargets() {
         // Read every box first, then write. Interleaving getBoundingClientRect()
@@ -1042,7 +1049,7 @@
       }
       function pointerTick() {
         pointerFrame = 0;
-        if (document.hidden) return;
+        if (document.hidden || reduce) return;
 
         if (pointerNeedsMeasure) {
           measurePointerTargets();
@@ -1079,7 +1086,7 @@
       }
 
       addEventListener('pointermove', function (e) {
-        if (e.pointerType !== 'mouse') return;
+        if (reduce || e.pointerType !== 'mouse') return;
         pointerSample = { x: e.clientX, y: e.clientY };
         pointerNeedsMeasure = true;
         schedulePointer();
@@ -1148,11 +1155,39 @@
     document.documentElement.classList.add('sc-ready');
     layout();
     initPointer();
-    // Still-image scenes update on scroll; only video decoders need an idle
-    // frame loop. An empty loop keeps waking the main thread for no result.
-    if (playheads.length) requestAnimationFrame(tick);
-
-    var api = { layout: layout, read: read, acts: acts, worlds: worlds, clips: playheads, lerp: LERP };
+    // Decode only while the tab is active and the visitor accepts motion.
+    startDecoder();
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { cancelAnimationFrame(decoderFrame); decoderFrame = 0; }
+      else startDecoder();
+    });
+    function onMotionChange() {
+      if (reduce) {
+        cancelAnimationFrame(decoderFrame);
+        decoderFrame = 0;
+        cancelAnimationFrame(pointerFrame);
+        pointerFrame = 0;
+        pointerSample = null;
+        pointerNeedsMeasure = false;
+        tilts.forEach(function (item) {
+          item.x = item.y = item.tx = item.ty = 0;
+          item.el.style.removeProperty('transform');
+        });
+        magnets.forEach(function (item) {
+          item.x = item.y = item.tx = item.ty = 0;
+          item.el.style.removeProperty('transform');
+        });
+        spots.forEach(function (item) {
+          item.el.style.removeProperty('--sc-mx');
+          item.el.style.removeProperty('--sc-my');
+        });
+        acts.forEach(function (act) {
+          act.parallax.forEach(function (item) { item.el.style.removeProperty('transform'); });
+        });
+      } else startDecoder();
+      read();
+    }
+    var api = { layout: layout, read: read, acts: acts, worlds: worlds, clips: playheads, lerp: LERP, onMotionChange: onMotionChange };
     global.ScrollCraft.instances.push(api);
     return api;
   }
@@ -1162,4 +1197,10 @@
   // frame the page never actually holds, so the harness has to be able to ask
   // whether the playhead has arrived rather than guess with a timeout.
   global.ScrollCraft = { mount: mount, reduce: reduce, instances: [] };
+  // The old startup snapshot ignored preference changes during the session.
+  motionMQ.addEventListener('change', function (event) {
+    reduce = event.matches;
+    global.ScrollCraft.reduce = reduce;
+    global.ScrollCraft.instances.forEach(function (instance) { instance.onMotionChange(); });
+  });
 })(window);

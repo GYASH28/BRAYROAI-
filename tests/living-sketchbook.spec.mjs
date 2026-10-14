@@ -482,6 +482,18 @@ test('Rae replaces interrupted text and retains only completed answers',async({p
  expect(requests[1].history).toEqual([{role:'user',text:'What are the starting prices?'},{role:'assistant',text:'Launch Website starts at ₹9,999. Monthly Website Starter starts at ₹2,599/mo.'}]);
 });
 
+test('ScrollCraft responds to live changes in reduced motion',async({page})=>{
+ await page.goto('/');
+ await page.evaluate(()=>window.scrollTo({top:Math.max(50,innerHeight*.55),behavior:'instant'}));
+ await expect.poll(()=>page.evaluate(()=>window.ScrollCraft?.instances?.length||0),{timeout:20000}).toBeGreaterThan(0);
+ expect(await page.evaluate(()=>window.ScrollCraft.reduce)).toBe(false);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect.poll(()=>page.evaluate(()=>window.ScrollCraft?.reduce)).toBe(true);
+ await expect(page.locator('.work-exhibit')).toBeVisible();
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await expect.poll(()=>page.evaluate(()=>window.ScrollCraft?.reduce)).toBe(false);
+});
+
 test('Plans reveals and tilt stop safely when motion preference changes',async({page})=>{
  await page.goto('/plans');
  await page.emulateMedia({reducedMotion:'reduce'});

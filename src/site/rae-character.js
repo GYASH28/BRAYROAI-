@@ -175,15 +175,15 @@ export const characterMarkup = (variant = 'stage') => {
         <path class="rae-character__brow rae-character__brow--r" d="M266 118c17-8 38-7 54 3"/>
       </g>
       <g class="rae-character__eyes">
-        <g class="rae-character__eye rae-character__eye--l"><ellipse class="rae-character__eye-glow" cx="190" cy="151" rx="39" ry="47" fill="url(#${id}Glow)"/><ellipse class="rae-character__eye-white" cx="190" cy="151" rx="19" ry="27" fill="url(#${id}Eye)"/><ellipse class="rae-character__pupil" cx="185" cy="144" rx="4.5" ry="6.5"/></g>
-        <g class="rae-character__eye rae-character__eye--r"><ellipse class="rae-character__eye-glow" cx="290" cy="151" rx="39" ry="47" fill="url(#${id}Glow)"/><ellipse class="rae-character__eye-white" cx="290" cy="151" rx="19" ry="27" fill="url(#${id}Eye)"/><ellipse class="rae-character__pupil" cx="285" cy="144" rx="4.5" ry="6.5"/></g>
+        <g class="rae-character__eye rae-character__eye--l"><ellipse class="rae-character__eye-glow" cx="190" cy="151" rx="30" ry="36" fill="url(#${id}Glow)"/><ellipse class="rae-character__eye-white" cx="190" cy="151" rx="15.5" ry="21" fill="url(#${id}Eye)"/><ellipse class="rae-character__pupil" cx="185" cy="145" rx="3.5" ry="5"/></g>
+        <g class="rae-character__eye rae-character__eye--r"><ellipse class="rae-character__eye-glow" cx="290" cy="151" rx="30" ry="36" fill="url(#${id}Glow)"/><ellipse class="rae-character__eye-white" cx="290" cy="151" rx="15.5" ry="21" fill="url(#${id}Eye)"/><ellipse class="rae-character__pupil" cx="285" cy="145" rx="3.5" ry="5"/></g>
         <path class="rae-character__lid rae-character__lid--l" d="M169 151c12-10 29-10 42 0"/>
         <path class="rae-character__lid rae-character__lid--r" d="M269 151c12-10 29-10 42 0"/>
       </g>
       <g class="rae-character__smile-eyes"><path d="M168 157c11-20 31-22 44-3"/><path d="M268 154c11-20 31-22 44-3"/></g>
       <ellipse class="rae-character__cheek rae-character__cheek--l" cx="145" cy="186" rx="18" ry="7"/>
       <ellipse class="rae-character__cheek rae-character__cheek--r" cx="335" cy="186" rx="18" ry="7"/>
-      <path class="rae-character__mouth" d="M206 186Q240 214 274 185" stroke="url(#${id}Orange)"/>
+      <path class="rae-character__mouth" d="M215 193Q240 210 265 193" stroke="url(#${id}Orange)"/>
       <path class="rae-character__mouth-frown" d="M217 202Q240 182 263 202" fill="none" stroke="url(#${id}Orange)" stroke-width="5" stroke-linecap="round"/>
       <ellipse class="rae-character__mouth-oh" cx="241" cy="194" rx="9" ry="12" fill="url(#${id}Eye)"/>
       <ellipse class="rae-character__speaking-mouth" cx="241" cy="194" rx="17" ry="12" fill="url(#${id}Eye)"/>

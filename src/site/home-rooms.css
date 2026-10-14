@@ -52,7 +52,7 @@
  color:#c3c5c8;transition:padding .35s cubic-bezier(.22,1,.36,1),background .3s;
 }
 .page-home .path-choices label::before{content:"0" counter(path-options);grid-column:1;align-self:start;padding-top:4px;font:550 12px/1 Space;color:#8c98a3}
-.page-home .path-choices input{position:absolute;opacity:0;top:50%;left:17px;width:2px;height:2px;pointer-events:none}
+.page-home .path-choices input{position:absolute;opacity:0;top:calc(50% - 9px);left:17px;width:18px;height:18px;pointer-events:auto;cursor:pointer}
 .page-home .path-choice-label{display:grid;gap:9px;grid-column:2;align-self:center}
 .page-home .path-choice-label strong{font:500 clamp(19px,2vw,26px)/1.1 Space,sans-serif;letter-spacing:-.035em}
 .page-home .path-choice-label small{font:400 11px/1.5 Manrope,sans-serif;color:#8e9ba9}

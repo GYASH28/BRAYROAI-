@@ -8,7 +8,10 @@ for(const [prefix,market,label] of [['','in','India · INR'],['ae/','ae','UAE ·
   assert(!/[\u0600-\u06ff]/.test(html),'Arabic text shipped '+file);
   const expectedCanonical=`https://brayroai.vercel.app/${prefix}${route==='index.html'?'':route.replace('/index.html','')}`.replace(/\/$/,'/') ;
   assert(html.includes('rel="alternate" hreflang="en-IN"'),'Regional alternates missing '+file);
-  assert(html.includes('property="og:locale"'),'Open Graph locale missing '+file);
+  assert(html.includes('rel="canonical" href="'+expectedCanonical+'"'),'Incorrect canonical '+file);
+  assert(html.includes('property="og:url" content="'+expectedCanonical+'"'),'Incorrect Open Graph URL '+file);
+  const expectedLocale={in:'en_IN',ae:'en_AE',au:'en_AU'}[market];
+  assert(html.includes('property="og:locale" content="'+expectedLocale+'"'),'Incorrect Open Graph locale '+file);
  }
  const plans=readFileSync(`dist/${prefix}plans/index.html`,'utf8');
  for(const id of Object.keys(OFFERS))assert(plans.includes(`data-price="${id}">${priceFor(id,market)}`),'Wrong '+market+' price for '+id);
